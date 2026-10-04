@@ -1,11 +1,15 @@
 import { cn } from "@/lib/utils";
 import type { Visual } from "@/lib/games/types";
+import { ScratchBlocks } from "./scratch-blocks";
 
 export function fractionLayout(parts: number, shape: "bar" | "area" | "circle") {
   if (shape === "area") {
     if (parts === 4) return { rows: 2, cols: 2 };
     if (parts === 6) return { rows: 2, cols: 3 };
     if (parts === 8) return { rows: 2, cols: 4 };
+    // Marcos de diez (inicial): 2 filas de 5.
+    if (parts === 10) return { rows: 2, cols: 5 };
+    if (parts === 20) return { rows: 4, cols: 5 };
   }
   return { rows: 1, cols: parts };
 }
@@ -25,7 +29,7 @@ export function FractionCells({
   return (
     <div
       className="grid overflow-hidden rounded-lg border-2 border-foreground"
-      style={{ gridTemplateColumns: `repeat(${cols}, 3.5rem)`, gridTemplateRows: `repeat(${rows}, ${shape === "bar" ? "3.5rem" : "3.5rem"})` }}
+      style={{ gridTemplateColumns: `repeat(${cols}, ${cols > 8 ? "2.25rem" : "3.5rem"})`, gridTemplateRows: `repeat(${rows}, 3.5rem)` }}
     >
       {Array.from({ length: parts }, (_, i) => (
         <button
@@ -179,16 +183,293 @@ function NumberLine({ v }: { v: Extract<Visual, { kind: "numberLine" }> }) {
 function FractionLine({ v }: { v: Extract<Visual, { kind: "fractionLine" }> }) {
   const W = 560;
   const pad = 30;
-  const x = (k: number) => pad + (k / v.parts) * (W - pad * 2);
+  const wholes = v.wholes ?? 1;
+  const total = v.parts * wholes;
+  const x = (k: number) => pad + (k / total) * (W - pad * 2);
   return (
-    <svg viewBox={`0 0 ${W} 80`} className="w-full max-w-xl">
-      <line x1={pad} x2={W - pad} y1={45} y2={45} className="stroke-foreground" strokeWidth={2} />
-      {Array.from({ length: v.parts + 1 }, (_, k) => (
-        <line key={k} x1={x(k)} x2={x(k)} y1={35} y2={55} className="stroke-foreground" strokeWidth={2} />
+    <svg viewBox={`0 0 ${W} 90`} className="w-full max-w-xl">
+      <line x1={pad} x2={W - pad} y1={50} y2={50} className="stroke-foreground" strokeWidth={2} />
+      {Array.from({ length: total + 1 }, (_, k) => (
+        <line key={k} x1={x(k)} x2={x(k)} y1={40} y2={60} className="stroke-foreground" strokeWidth={2} />
       ))}
-      <text x={x(0)} y={74} textAnchor="middle" className="fill-foreground text-[15px]">0</text>
-      <text x={x(v.parts)} y={74} textAnchor="middle" className="fill-foreground text-[15px]">1</text>
-      <circle cx={x(v.marked)} cy={45} r={8} className="fill-brand-green stroke-foreground" strokeWidth={2} />
+      {v.title && <text x={pad} y={18} className="fill-foreground text-[16px] font-medium">{v.title}</text>}
+      <text x={x(0)} y={80} textAnchor="middle" className="fill-foreground text-[15px]">{v.labels?.[0] ?? 0}</text>
+      <text x={x(total)} y={80} textAnchor="middle" className="fill-foreground text-[15px]">{v.labels?.[1] ?? wholes}</text>
+      {v.marked !== undefined && <circle cx={x(v.marked)} cy={50} r={8} className="fill-brand-green stroke-foreground" strokeWidth={2} />}
+      {v.points?.map((p) => (
+        <g key={p.label}>
+          <circle cx={x(p.at)} cy={50} r={7} className="fill-brand-green stroke-foreground" strokeWidth={2} />
+          <text x={x(p.at)} y={28} textAnchor="middle" className="fill-foreground text-[16px] font-medium">{p.label}</text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+// Barras del mismo ancho total, para comparar fracciones equivalentes.
+function EqualWidthBar({ parts, shaded }: { parts: number; shaded: number }) {
+  return (
+    <div className="grid h-12 w-72 max-w-full overflow-hidden rounded-lg border-2 border-foreground" style={{ gridTemplateColumns: `repeat(${parts}, minmax(0, 1fr))` }}>
+      {Array.from({ length: parts }, (_, i) => (
+        <div key={i} className={cn("border-r border-foreground/40 last:border-r-0", i < shaded ? "bg-brand-green/60" : "bg-background")} />
+      ))}
+    </div>
+  );
+}
+
+// Centésimos: cuadrícula de 10 × 10, sombreada por columnas.
+function DecimalGrid({ hundredths }: { hundredths: number }) {
+  return (
+    <svg viewBox="0 0 202 202" className="size-52">
+      {Array.from({ length: 100 }, (_, i) => {
+        const col = Math.floor(i / 10);
+        const row = i % 10;
+        return <rect key={i} x={1 + col * 20} y={1 + row * 20} width={20} height={20} className={cn("stroke-foreground/50", i < hundredths ? "fill-brand-green/60" : "fill-background")} strokeWidth={1} />;
+      })}
+      <rect x={1} y={1} width={200} height={200} className="fill-none stroke-foreground" strokeWidth={2} />
+    </svg>
+  );
+}
+
+function LinesPair({ v }: { v: Extract<Visual, { kind: "lines" }> }) {
+  const second = v.relation === "paralelas" ? { rot: 0, dy: 26 } : v.relation === "perpendiculares" ? { rot: 90, dy: 0 } : { rot: 50, dy: 0 };
+  return (
+    <svg viewBox="0 0 160 160" className="size-44">
+      <g transform={`rotate(${v.rotation} 80 80)`}>
+        <line x1={14} x2={146} y1={v.relation === "paralelas" ? 54 : 80} y2={v.relation === "paralelas" ? 54 : 80} className="stroke-foreground" strokeWidth={3} strokeLinecap="round" />
+        <g transform={`rotate(${second.rot} 80 80)`}>
+          <line x1={14} x2={146} y1={80 + second.dy} y2={80 + second.dy} className="stroke-brand-green" strokeWidth={3} strokeLinecap="round" />
+        </g>
+        {v.relation === "perpendiculares" && <path d="M80 68 H92 V80" className="fill-none stroke-foreground" strokeWidth={1.5} />}
+      </g>
+    </svg>
+  );
+}
+
+function AngleFigure({ v }: { v: Extract<Visual, { kind: "angle" }> }) {
+  const rad = (v.degrees * Math.PI) / 180;
+  const len = 62;
+  const ex = 80 + len * Math.cos(-rad);
+  const ey = 90 + len * Math.sin(-rad);
+  const ar = 20;
+  const ax = 80 + ar * Math.cos(-rad);
+  const ay = 90 + ar * Math.sin(-rad);
+  return (
+    <svg viewBox="0 0 160 160" className="size-44">
+      <g transform={`rotate(${v.rotation} 80 90)`}>
+        <line x1={80} y1={90} x2={80 + len} y2={90} className="stroke-foreground" strokeWidth={3} strokeLinecap="round" />
+        <line x1={80} y1={90} x2={ex} y2={ey} className="stroke-foreground" strokeWidth={3} strokeLinecap="round" />
+        {v.degrees === 90 ? (
+          <path d="M94 90 V76 H80" className="fill-none stroke-brand-green" strokeWidth={2.5} />
+        ) : (
+          <path d={`M${80 + ar} 90 A${ar} ${ar} 0 ${v.degrees > 180 ? 1 : 0} 0 ${ax} ${ay}`} className="fill-none stroke-brand-green" strokeWidth={2.5} />
+        )}
+        <circle cx={80} cy={90} r={3.5} className="fill-foreground" />
+      </g>
+    </svg>
+  );
+}
+
+function PolygonFigure({ v }: { v: Extract<Visual, { kind: "polygon" }> }) {
+  const n = v.points.length;
+  const cx = v.points.reduce((s, p) => s + p[0], 0) / n;
+  const cy = v.points.reduce((s, p) => s + p[1], 0) / n;
+  return (
+    <svg viewBox="-28 -22 156 144" className="h-52 w-60">
+      <polygon points={v.points.map((p) => p.join(",")).join(" ")} className="fill-brand-green/25 stroke-foreground" strokeWidth={2} strokeLinejoin="round" />
+      {v.rightAngles?.map((i) => {
+        const p = v.points[i];
+        const a = v.points[(i + n - 1) % n];
+        const b = v.points[(i + 1) % n];
+        const unit = (q: [number, number]) => {
+          const d = Math.hypot(q[0] - p[0], q[1] - p[1]) || 1;
+          return [((q[0] - p[0]) / d) * 8, ((q[1] - p[1]) / d) * 8];
+        };
+        const [ux, uy] = unit(a);
+        const [wx, wy] = unit(b);
+        return <path key={i} d={`M${p[0] + ux} ${p[1] + uy} L${p[0] + ux + wx} ${p[1] + uy + wy} L${p[0] + wx} ${p[1] + wy}`} className="fill-none stroke-foreground" strokeWidth={1.5} />;
+      })}
+      {v.sideLabels?.map((label, i) => {
+        if (!label) return null;
+        const p = v.points[i];
+        const q = v.points[(i + 1) % n];
+        const mx = (p[0] + q[0]) / 2;
+        const my = (p[1] + q[1]) / 2;
+        const d = Math.hypot(mx - cx, my - cy) || 1;
+        return (
+          <text key={i} x={mx + ((mx - cx) / d) * 19} y={my + ((my - cy) / d) * 13 + 4} textAnchor="middle" className="fill-foreground text-[11px] font-medium">
+            {label}
+          </text>
+        );
+      })}
+    </svg>
+  );
+}
+
+// --- Inicial -----------------------------------------------------------------
+
+function Frame({ size, count }: { size: 5 | 10; count: number }) {
+  return (
+    <div className="grid grid-cols-5 overflow-hidden rounded-lg border-2 border-foreground">
+      {Array.from({ length: size }, (_, i) => (
+        <div key={i} className="flex size-11 items-center justify-center border border-foreground/40 bg-background">
+          {i < count && <span className="size-7 rounded-full bg-brand-green ring-2 ring-foreground" />}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const CUBE_COLORS = ["bg-brand-green/70", "bg-sky-400/80", "bg-amber-400/80"];
+
+function Cubes({ v }: { v: Extract<Visual, { kind: "cubes" }> }) {
+  const total = v.groups.reduce((a, b) => a + b, 0);
+  const cubes = v.groups.flatMap((n, g) => Array.from({ length: n }, () => g));
+  return (
+    <div className={cn("flex", v.vertical ? "flex-col-reverse" : "flex-wrap justify-center")}>
+      {cubes.map((g, i) => (
+        <div key={i} className={cn("relative flex size-9 items-center justify-center border-2 border-foreground", CUBE_COLORS[g % CUBE_COLORS.length])}>
+          {v.crossed !== undefined && i >= total - v.crossed && <span className="text-2xl font-bold leading-none text-foreground">✕</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Scatter({ v }: { v: Extract<Visual, { kind: "scatter" }> }) {
+  return (
+    <div className="relative size-64 rounded-2xl border border-border">
+      {v.items.map((it, i) => (
+        <span key={i} className="absolute -translate-x-1/2 -translate-y-1/2 text-3xl leading-none" style={{ left: `${10 + it.x * 0.8}%`, top: `${10 + it.y * 0.8}%` }}>
+          {it.emoji}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function Clock({ hour, minute }: { hour: number; minute: number }) {
+  const hand = (deg: number, len: number, width: number) => {
+    const rad = ((deg - 90) * Math.PI) / 180;
+    return <line x1={60} y1={60} x2={60 + len * Math.cos(rad)} y2={60 + len * Math.sin(rad)} className="stroke-foreground" strokeWidth={width} strokeLinecap="round" />;
+  };
+  return (
+    <svg viewBox="0 0 120 120" className="size-48">
+      <circle cx={60} cy={60} r={56} className="fill-background stroke-foreground" strokeWidth={3} />
+      {Array.from({ length: 12 }, (_, i) => {
+        const rad = (((i + 1) * 30 - 90) * Math.PI) / 180;
+        return (
+          <text key={i} x={60 + 45 * Math.cos(rad)} y={60 + 45 * Math.sin(rad) + 4} textAnchor="middle" className="fill-foreground text-[11px] font-medium">
+            {i + 1}
+          </text>
+        );
+      })}
+      {hand((hour % 12) * 30 + minute * 0.5, 26, 4)}
+      {hand(minute * 6, 38, 2.5)}
+      <circle cx={60} cy={60} r={3} className="fill-foreground" />
+    </svg>
+  );
+}
+
+const COIN_LABEL: Record<number, [string, string]> = { 10: ["10", "céntimos"], 20: ["20", "céntimos"], 50: ["50", "céntimos"], 100: ["1", "sol"], 200: ["2", "soles"], 500: ["5", "soles"] };
+
+function Coins({ coins }: { coins: number[] }) {
+  return (
+    <div className="flex max-w-md flex-wrap justify-center gap-2">
+      {coins.map((c, i) => (
+        <div
+          key={i}
+          className={cn(
+            "flex flex-col items-center justify-center rounded-full border-2 border-foreground leading-none",
+            c >= 100 ? "size-16 bg-amber-300/70" : "size-14 bg-zinc-300/70 dark:bg-zinc-500/60"
+          )}
+        >
+          <span className="text-xl font-bold tabular-nums">{COIN_LABEL[c][0]}</span>
+          <span className="text-[9px]">{COIN_LABEL[c][1]}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Venn({ v }: { v: Extract<Visual, { kind: "venn" }> }) {
+  const zone = (items: string[], cls: string) => <div className={cn("flex flex-wrap content-center items-center justify-center gap-1 text-2xl", cls)}>{items.map((e, i) => <span key={i}>{e}</span>)}</div>;
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <div className="flex w-80 max-w-full justify-between text-sm font-medium">
+        <span>{v.leftLabel}</span>
+        <span>{v.rightLabel}</span>
+      </div>
+      <div className="relative h-44 w-80 max-w-full">
+        <div className="absolute left-0 top-0 h-44 w-52 rounded-full border-2 border-foreground bg-sky-400/15" />
+        <div className="absolute right-0 top-0 h-44 w-52 rounded-full border-2 border-foreground bg-amber-400/15" />
+        {zone(v.left, "absolute left-2 top-6 h-32 w-24")}
+        {zone(v.both, "absolute left-1/2 top-6 h-32 w-20 -translate-x-1/2")}
+        {zone(v.right, "absolute right-2 top-6 h-32 w-24")}
+      </div>
+    </div>
+  );
+}
+
+function SplitShape({ v }: { v: Extract<Visual, { kind: "splitShape" }> }) {
+  if (v.shape === "bar") {
+    return (
+      <svg viewBox="0 0 204 64" className="h-20 w-64">
+        <rect x={2} y={2} width={200} height={60} className="fill-brand-green/25 stroke-foreground" strokeWidth={3} />
+        {v.cuts.map((c, i) => <line key={i} x1={2 + c * 2} x2={2 + c * 2} y1={2} y2={62} className="stroke-foreground" strokeWidth={3} />)}
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 104 104" className="size-40">
+      <circle cx={52} cy={52} r={50} className="fill-brand-green/25 stroke-foreground" strokeWidth={3} />
+      {v.cuts.map((deg, i) => {
+        const rad = ((deg - 90) * Math.PI) / 180;
+        return <line key={i} x1={52} y1={52} x2={52 + 50 * Math.cos(rad)} y2={52 + 50 * Math.sin(rad)} className="stroke-foreground" strokeWidth={3} />;
+      })}
+    </svg>
+  );
+}
+
+// Desarrollos planos de cuerpos geométricos.
+function Net({ name }: { name: string }) {
+  const p = { className: "fill-brand-green/30 stroke-foreground", strokeWidth: 2, strokeLinejoin: "round" as const };
+  const sq = (x: number, y: number, w = 24, h = 24) => <rect key={`${x}-${y}-${w}`} x={x} y={y} width={w} height={h} {...p} />;
+  return (
+    <svg viewBox="0 0 140 110" className="h-40 w-52">
+      {name === "cubo" && [sq(46, 6), sq(22, 30), sq(46, 30), sq(70, 30), sq(94, 30), sq(46, 54)]}
+      {name === "prisma rectangular" && [sq(40, 4, 30, 16), sq(10, 20, 30, 40), sq(40, 20, 30, 40), sq(70, 20, 30, 40), sq(100, 20, 30, 40), sq(40, 60, 30, 16)]}
+      {name === "pirámide cuadrada" && (
+        <>
+          {sq(52, 37, 36, 36)}
+          <polygon points="52,37 88,37 70,5" {...p} />
+          <polygon points="52,73 88,73 70,105" {...p} />
+          <polygon points="52,37 52,73 20,55" {...p} />
+          <polygon points="88,37 88,73 120,55" {...p} />
+        </>
+      )}
+      {name === "prisma triangular" && (
+        <>
+          {sq(20, 30, 32, 40)}
+          {sq(52, 30, 32, 40)}
+          {sq(84, 30, 32, 40)}
+          <polygon points="52,30 84,30 68,4" {...p} />
+          <polygon points="52,70 84,70 68,96" {...p} />
+        </>
+      )}
+      {name === "cilindro" && (
+        <>
+          {sq(30, 30, 80, 40)}
+          <circle cx={70} cy={15} r={14} {...p} />
+          <circle cx={70} cy={85} r={14} {...p} />
+        </>
+      )}
+      {name === "cono" && (
+        <>
+          <path d="M70,8 L28,72 A50,50 0 0 0 112,72 Z" {...p} />
+          <circle cx={70} cy={92} r={14} {...p} />
+        </>
+      )}
     </svg>
   );
 }
@@ -258,14 +539,132 @@ function CoordPlane({ v }: { v: Extract<Visual, { kind: "coordPlane" }> }) {
   );
 }
 
+function CodeGrid({ v }: { v: Extract<Visual, { kind: "codeGrid" }> }) {
+  const at = (list: { r: number; c: number }[] | undefined, r: number, c: number) => list?.some((p) => p.r === r && p.c === c);
+  return (
+    <div className="grid gap-1 rounded-xl border border-border p-2" style={{ gridTemplateColumns: `repeat(${v.size}, minmax(0, 1fr))` }}>
+      {Array.from({ length: v.size * v.size }, (_, i) => {
+        const r = Math.floor(i / v.size);
+        const c = i % v.size;
+        const mark = v.marks?.find((m) => m.r === r && m.c === c);
+        const content =
+          v.robot.r === r && v.robot.c === c
+            ? "🤖"
+            : v.goal && v.goal.r === r && v.goal.c === c
+              ? "⭐"
+              : at(v.walls, r, c)
+                ? "🧱"
+                : mark
+                  ? mark.label
+                  : at(v.path, r, c)
+                    ? "•"
+                    : "";
+        return (
+          <div
+            key={i}
+            className={cn(
+              "flex size-11 items-center justify-center rounded-md border border-border text-2xl sm:size-12",
+              at(v.path, r, c) && "bg-brand-green/20",
+              mark && "font-medium"
+            )}
+          >
+            {content}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+const KEY_ROWS = [
+  ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "Borrar"],
+  ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
+  ["Bloq Mayús", "a", "s", "d", "f", "g", "h", "j", "k", "l", "ñ", "Enter"],
+  ["Shift", "z", "x", "c", "v", "b", "n", "m", ",", "."],
+  ["Espacio"],
+];
+
+function Keyboard({ highlight }: { highlight: string[] }) {
+  return (
+    <div className="flex w-full max-w-xl flex-col gap-1 rounded-xl border border-border p-2">
+      {KEY_ROWS.map((row, i) => (
+        <div key={i} className="flex justify-center gap-1">
+          {row.map((key) => (
+            <span
+              key={key}
+              className={cn(
+                "flex h-8 min-w-6 items-center justify-center rounded-md border border-border px-1 text-xs sm:h-9 sm:min-w-8 sm:text-sm",
+                key === "Espacio" && "w-48 sm:w-64",
+                highlight.includes(key) && "border-brand-green bg-brand-green/40 font-medium"
+              )}
+            >
+              {key.length === 1 ? key.toUpperCase() : key}
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Sheet({ v }: { v: Extract<Visual, { kind: "sheet" }> }) {
+  const cols = Math.max(...v.cells.map((row) => row.length));
+  const letter = (c: number) => String.fromCharCode(65 + c);
+  return (
+    <div className="max-w-full overflow-x-auto">
+      <table className="border-collapse text-sm tabular-nums sm:text-base">
+        <thead>
+          <tr>
+            <th className="border border-border bg-muted px-2 py-1" />
+            {Array.from({ length: cols }, (_, c) => (
+              <th key={c} className="border border-border bg-muted px-3 py-1 font-medium">{letter(c)}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {v.cells.map((row, r) => (
+            <tr key={r}>
+              <th className="border border-border bg-muted px-2 py-1 font-medium">{r + 1}</th>
+              {Array.from({ length: cols }, (_, c) => (
+                <td
+                  key={c}
+                  className={cn(
+                    "min-w-14 border border-border px-3 py-1 text-center",
+                    v.highlight === `${letter(c)}${r + 1}` && "bg-brand-green/30 font-medium ring-2 ring-brand-green ring-inset"
+                  )}
+                >
+                  {row[c] ?? ""}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export function VisualView({ visual }: { visual: Visual }) {
   switch (visual.kind) {
     case "text":
-      return <p className="whitespace-pre text-center text-4xl font-medium tabular-nums sm:text-5xl">{visual.text}</p>;
+      return (
+        <p
+          className={cn(
+            "whitespace-pre-wrap text-center text-base font-medium tabular-nums"
+          )}
+        >
+          {visual.text}
+        </p>
+      );
     case "objects":
       return (
         <div className="flex max-w-md flex-wrap justify-center gap-2 text-4xl">
-          {Array.from({ length: visual.count }, (_, i) => <span key={i}>{visual.emoji}</span>)}
+          {Array.from({ length: visual.count }, (_, i) => (
+            <span key={i} className="flex flex-col items-center">
+              {visual.emoji}
+              {visual.numbered && <span className="text-base font-medium tabular-nums">{i + 1}</span>}
+            </span>
+          ))}
         </div>
       );
     case "groups":
@@ -296,11 +695,141 @@ export function VisualView({ visual }: { visual: Visual }) {
       return <NumberLine v={visual} />;
     case "fractionLine":
       return <FractionLine v={visual} />;
+    case "fractionLines":
+      return (
+        <div className="flex w-full flex-col items-center gap-1">
+          {visual.lines.map((line, i) => (
+            <FractionLine key={i} v={{ kind: "fractionLine", parts: line.parts, marked: line.marked, title: line.title }} />
+          ))}
+        </div>
+      );
+    case "fractionPair":
+      return (
+        <div className="flex flex-col items-center gap-3">
+          {visual.items.map((it, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <EqualWidthBar parts={it.parts} shaded={it.shaded} />
+              <span className="w-12 text-xl font-medium tabular-nums">{i === 0 || visual.showAll ? `${it.shaded}/${it.parts}` : `?/${it.parts}`}</span>
+            </div>
+          ))}
+        </div>
+      );
+    case "array":
+      return (
+        <div className="grid gap-1 text-3xl" style={{ gridTemplateColumns: `repeat(${visual.cols}, minmax(0, 1fr))` }}>
+          {Array.from({ length: visual.rows * visual.cols }, (_, i) => (
+            <span key={i} className="flex size-11 items-center justify-center">{visual.emoji}</span>
+          ))}
+        </div>
+      );
+    case "equalGroups":
+      return (
+        <div className="flex max-w-xl flex-wrap justify-center gap-3 text-3xl">
+          {Array.from({ length: visual.groups }, (_, g) => (
+            <span key={g} className="flex max-w-36 flex-wrap justify-center gap-1 rounded-2xl border border-border p-3">
+              {Array.from({ length: visual.each }, (_, i) => <span key={i}>{visual.emoji}</span>)}
+            </span>
+          ))}
+        </div>
+      );
+    case "decimalGrid":
+      return <DecimalGrid hundredths={visual.hundredths} />;
+    case "lines":
+      return <LinesPair v={visual} />;
+    case "angle":
+      return <AngleFigure v={visual} />;
+    case "polygon":
+      return <PolygonFigure v={visual} />;
+    case "frame":
+      return (
+        <div className="flex flex-wrap justify-center gap-3">
+          {visual.counts.map((c, i) => <Frame key={i} size={visual.size} count={c} />)}
+        </div>
+      );
+    case "cubes":
+      return <Cubes v={visual} />;
+    case "scatter":
+      return <Scatter v={visual} />;
+    case "rows":
+      return (
+        <div className="flex flex-col gap-2">
+          {visual.rows.map((row, i) => (
+            <div key={i} className="flex items-center gap-2">
+              {row.label !== undefined && <span className="w-16 text-right text-sm font-medium">{row.label}</span>}
+              <div className="flex max-w-[25rem] flex-wrap text-3xl">
+                {Array.from({ length: row.count }, (_, k) => <span key={k} className="w-10 text-center">{row.emoji}</span>)}
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    case "box":
+      return (
+        <div className="flex items-center gap-4 text-4xl">
+          <div className="flex min-h-24 min-w-28 flex-wrap items-center justify-center gap-2 rounded-xl border-4 border-foreground p-3">
+            {visual.inside.map((e, i) => <span key={i}>{e}</span>)}
+          </div>
+          {visual.outside.map((e, i) => <span key={i}>{e}</span>)}
+        </div>
+      );
+    case "venn":
+      return <Venn v={visual} />;
+    case "clock":
+      return <Clock hour={visual.hour} minute={visual.minute} />;
+    case "coins":
+      return <Coins coins={visual.coins} />;
+    case "splitShape":
+      return <SplitShape v={visual} />;
+    case "net":
+      return <Net name={visual.name} />;
+    case "codeGrid":
+      return <CodeGrid v={visual} />;
+    case "keyboard":
+      return <Keyboard highlight={visual.highlight} />;
+    case "sheet":
+      return <Sheet v={visual} />;
+    case "scratch":
+      return (
+        <div className="flex flex-col items-center gap-3">
+          {visual.title && <p className="whitespace-pre-line text-center text-base">{visual.title}</p>}
+          <ScratchBlocks code={visual.code} scale={0.95} />
+        </div>
+      );
+    case "code":
+      return (
+        <div className="flex w-full max-w-xl flex-col items-center gap-2">
+          {visual.title && <p className="whitespace-pre-line text-center text-base">{visual.title}</p>}
+          <pre className="w-full overflow-x-auto rounded-xl border border-border bg-muted/50 p-4 text-left font-mono text-sm leading-relaxed">
+            {visual.text}
+          </pre>
+        </div>
+      );
+    case "picture":
+      return (
+        <div className="flex flex-col items-center gap-2">
+          <span className="whitespace-pre-line text-center text-7xl leading-none">{visual.emoji}</span>
+          {visual.caption && <span className="text-center text-base font-medium">{visual.caption}</span>}
+        </div>
+      );
+    case "passage":
+      return (
+        <div className="flex w-full max-w-xl flex-col gap-2 rounded-2xl border border-border p-4 text-left">
+          {(visual.emoji || visual.title) && (
+            <p className="flex items-center gap-2 text-base font-medium">
+              {visual.emoji && <span className="text-3xl">{visual.emoji}</span>}
+              {visual.title}
+            </p>
+          )}
+          {visual.text.split("\n").map((para, i) => (
+            <p key={i} className="text-base leading-relaxed">{para}</p>
+          ))}
+        </div>
+      );
     case "hundredsChart": {
       const blank = new Set(visual.blank);
       return (
         <div className="grid grid-cols-10 gap-px overflow-hidden rounded-lg border border-border bg-border text-xs tabular-nums sm:text-sm">
-          {Array.from({ length: 100 }, (_, i) => i + 1).map((n) => (
+          {Array.from({ length: visual.max ?? 100 }, (_, i) => i + 1).map((n) => (
             <div
               key={n}
               className={cn(
@@ -318,6 +847,24 @@ export function VisualView({ visual }: { visual: Visual }) {
     case "placeValue":
       return (
         <div className="flex flex-wrap items-end justify-center gap-6">
+          {!!visual.thousands && (
+            <div className="flex items-end gap-2">
+              {Array.from({ length: visual.thousands }, (_, i) => (
+                <div key={i} className="grid size-16 grid-cols-5 grid-rows-5 overflow-hidden rounded-sm border-2 border-foreground bg-brand-green/70">
+                  {Array.from({ length: 25 }, (_, j) => <div key={j} className="border border-foreground/30" />)}
+                </div>
+              ))}
+            </div>
+          )}
+          {!!visual.hundreds && (
+            <div className="grid grid-cols-3 gap-1">
+              {Array.from({ length: visual.hundreds }, (_, i) => (
+                <div key={i} className="grid size-14 grid-cols-10 grid-rows-10 overflow-hidden rounded-sm border-2 border-foreground bg-brand-green/40">
+                  {Array.from({ length: 100 }, (_, j) => <div key={j} className="border-[0.5px] border-foreground/20" />)}
+                </div>
+              ))}
+            </div>
+          )}
           <div className="flex items-end gap-2">
             {Array.from({ length: visual.tens }, (_, i) => (
               <div key={i} className="grid h-24 w-4 grid-rows-10 overflow-hidden rounded-sm border-2 border-foreground bg-brand-green/40">

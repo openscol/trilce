@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireAppContext } from "@/lib/auth/context";
 import { createClient } from "@/lib/supabase/server";
-import { SECTIONS, SKILLS } from "@/lib/games/catalog";
+import { getSkill, skillHref, type ResolvedSkill } from "@/lib/games/catalog";
 import { aggregate, MIN_ATTEMPTS, skillTitle, WEAK_ACCURACY } from "@/lib/games/stats";
 import { cn } from "@/lib/utils";
 import { StudentPicker } from "./student-picker";
@@ -43,6 +43,19 @@ export default async function ProgresoPage(props: PageProps<"/juegos/progreso">)
   const total = rows.reduce((n, r) => n + r.total, 0);
   const correct = rows.reduce((n, r) => n + r.correct, 0);
   const weak = rows.filter((r) => r.total >= MIN_ATTEMPTS && r.accuracy < WEAK_ACCURACY).sort((a, b) => a.accuracy - b.accuracy);
+
+  // "Por tema": juegos practicados agrupados por grado y sección.
+  const played = rows
+    .map((r) => getSkill(r.skillId))
+    .filter((s): s is ResolvedSkill => !!s)
+    .sort((a, b) => a.uid.localeCompare(b.uid, "es", { numeric: true }));
+  const groups = new Map<string, { title: string; skills: ResolvedSkill[] }>();
+  for (const s of played) {
+    const key = `${s.category}/${s.grade}/${s.section}`;
+    const g = groups.get(key) ?? { title: `${s.sectionIcon} ${s.sectionName} · ${s.gradeLabel}`, skills: [] };
+    g.skills.push(s);
+    groups.set(key, g);
+  }
 
   const { data: mistakes } = studentId
     ? await supabase
@@ -94,10 +107,11 @@ export default async function ProgresoPage(props: PageProps<"/juegos/progreso">)
               </p>
             ) : (
               weak.map((r) => (
-                <Link key={r.skillId} href={`/juegos/${r.skillId}`} className="flex items-center justify-between gap-3 rounded-2xl border border-border p-4 hover:bg-accent">
+                <Link key={r.skillId} href={skillHref(r.skillId)} className="flex items-center justify-between gap-3 rounded-2xl border border-border p-4 hover:bg-accent">
                   <span className="flex flex-col gap-0.5">
                     <span className="text-sm font-medium">
-                      <span className="font-mono text-xs text-muted-foreground">{r.skillId}</span> {skillTitle(r.skillId)}
+                      <span className="font-mono text-xs text-muted-foreground">{getSkill(r.skillId)?.id ?? r.skillId}</span> {skillTitle(r.skillId)}
+                      <span className="text-xs font-normal text-muted-foreground"> · {getSkill(r.skillId)?.gradeLabel}</span>
                     </span>
                     {r.weakTags.length > 0 && (
                       <span className="text-xs text-muted-foreground">
@@ -115,19 +129,15 @@ export default async function ProgresoPage(props: PageProps<"/juegos/progreso">)
 
           <div className="flex flex-col gap-4">
             <h2 className="text-sm font-medium uppercase text-muted-foreground">Por tema</h2>
-            {SECTIONS.map((section) => {
-              const list = SKILLS.filter((s) => s.section === section.id && stats.has(s.id));
-              if (list.length === 0) return null;
+            {[...groups.entries()].map(([key, group]) => {
               return (
-                <div key={section.id} className="flex flex-col gap-1">
-                  <p className="text-sm font-medium">
-                    {section.icon} {section.name}
-                  </p>
-                  {list.map((s) => {
-                    const st = stats.get(s.id)!;
+                <div key={key} className="flex flex-col gap-1">
+                  <p className="text-sm font-medium">{group.title}</p>
+                  {group.skills.map((s) => {
+                    const st = stats.get(s.uid)!;
                     const isWeak = st.total >= MIN_ATTEMPTS && st.accuracy < WEAK_ACCURACY;
                     return (
-                      <div key={s.id} className="flex items-center gap-3 text-sm">
+                      <div key={s.uid} className="flex items-center gap-3 text-sm">
                         <span className="w-10 shrink-0 font-mono text-xs text-muted-foreground">{s.id}</span>
                         <span className="min-w-0 flex-1 truncate">{s.title}</span>
                         <div className="h-2 w-28 shrink-0 overflow-hidden rounded-full bg-muted">
@@ -152,7 +162,7 @@ export default async function ProgresoPage(props: PageProps<"/juegos/progreso">)
                 return (
                   <div key={m.id} className="rounded-2xl border border-border p-3 text-sm">
                     <p className="text-xs text-muted-foreground">
-                      <span className="font-mono">{m.skill_id}</span> {skillTitle(m.skill_id)}
+                      <span className="font-mono">{getSkill(m.skill_id)?.id ?? m.skill_id}</span> {skillTitle(m.skill_id)} · {getSkill(m.skill_id)?.gradeLabel}
                     </p>
                     <p>
                       {q?.prompt} {q?.visual?.kind === "text" && <span className="whitespace-pre font-medium">{q.visual.text}</span>}

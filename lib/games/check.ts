@@ -8,6 +8,8 @@ export function correctAnswerString(q: Question): string {
     case "number":
     case "shade":
       return String(q.answer);
+    case "text":
+      return q.answer;
     case "multi":
       return JSON.stringify([...q.answers].sort());
     case "sequence":
@@ -23,6 +25,9 @@ export function checkAnswer(q: Question, given: string): boolean {
     case "number":
     case "shade":
       return Number(given) === q.answer;
+    case "text":
+      // Sin espacios de más; las mayúsculas sí cuentan (se practica Shift).
+      return given.trim().replace(/\s+/g, " ") === q.answer;
     case "multi":
     case "sequence": {
       try {

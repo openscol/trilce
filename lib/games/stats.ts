@@ -1,4 +1,4 @@
-import { SKILLS } from "./catalog";
+import { getSkill } from "./catalog";
 
 export type AttemptRow = { skill_id: string; tag: string | null; is_correct: boolean; answered_at: string };
 
@@ -47,6 +47,6 @@ export function aggregate(rows: AttemptRow[]): Map<string, SkillStat> {
   return out;
 }
 
-export function skillTitle(id: string) {
-  return SKILLS.find((s) => s.id === id)?.title ?? id;
+export function skillTitle(uid: string) {
+  return getSkill(uid)?.title ?? uid;
 }

@@ -2,6 +2,10 @@ import type { Rng } from "../rng";
 import type { Question, Visual } from "../types";
 
 const COLORS = ["🔴", "🔵", "🟢", "🟡"];
+const COLOR_NAME: Record<string, string> = { "🔴": "roja", "🔵": "azul", "🟢": "verde", "🟡": "amarilla" };
+// Opciones del mismo estilo y largo parecido (que la correcta no se delate).
+const take = (c: string) => `Sacar ficha ${COLOR_NAME[c]} ${c}`;
+const SAME = "Igual de probable ⚖️";
 
 // O.1
 export function moreLikely(r: Rng): Question {
@@ -16,8 +20,8 @@ export function moreLikely(r: Rng): Question {
       kind: "choice",
       prompt: "Sacas una ficha sin mirar. ¿Qué es más probable?",
       visual: bag,
-      options: [`Sacar ${c1}`, `Sacar ${c2}`, "Igual de probable"],
-      answer: "Igual de probable",
+      options: [take(c1), take(c2), SAME],
+      answer: SAME,
       explanation: "Hay la misma cantidad de cada color.",
       tag: "igual",
     };
@@ -26,10 +30,10 @@ export function moreLikely(r: Rng): Question {
   const winner = (most ? a > b : a < b) ? c1 : c2;
   return {
     kind: "choice",
-    prompt: `Sacas una ficha sin mirar. ¿Qué color es ${most ? "más" : "menos"} probable?`,
+    prompt: `Sacas una ficha sin mirar. ¿Qué es ${most ? "más" : "menos"} probable?`,
     visual: bag,
-    options: [c1, c2],
-    answer: winner,
+    options: [take(c1), take(c2), SAME],
+    answer: take(winner),
     explanation: `Hay ${a} de ${c1} y ${b} de ${c2}.`,
     tag: most ? "mas-probable" : "menos-probable",
   };

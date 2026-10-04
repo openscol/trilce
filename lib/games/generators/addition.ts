@@ -36,13 +36,16 @@ export function addFacts(r: Rng, max: number): Question {
 
 // B.3 / B.6 y E.3 / E.6 (op = "+" o "−")
 export function makeTargetNumber(r: Rng, max: number, op: "+" | "−"): Question {
-  const target = op === "+" ? r.int(4, max) : r.int(1, Math.min(max, 12));
+  // Hasta 20 (1.° y 2.°) se mantiene el rango original; con 99 se usan
+  // números de dos cifras.
+  const big = max > 20;
+  const target = op === "+" ? r.int(big ? 20 : 4, max) : big ? r.int(10, 70) : r.int(1, Math.min(max, 12));
   const build = (t: number): string => {
     if (op === "+") {
-      const a = r.int(0, t);
+      const a = r.int(big ? 1 : 0, big ? t - 1 : t);
       return `${a} + ${t - a}`;
     }
-    const b = r.int(0, Math.min(6, max - t));
+    const b = big ? r.int(1, max - t) : r.int(0, Math.min(6, max - t));
     return `${t + b} − ${b}`;
   };
   const correct = new Set<string>();
@@ -142,7 +145,7 @@ export function estimateTwoDigit(r: Rng, op: "+" | "−"): Question {
       kind: "choice",
       prompt: `Estima ${op === "+" ? "la suma" : "la resta"} redondeando a la decena más cercana.`,
       visual: { kind: "text", text: `${a} ${op} ${b} ≈ ?` },
-      options: uniqueOptions(r, String(est), [String(est + 10), String(est - 10), String(est + 20), String(Math.max(0, est - 20))]),
+      options: uniqueOptions(r, String(est), [est + 10, est - 10, est + 20, est - 20].filter((n) => n >= 0).map(String)),
       answer: String(est),
       explanation: `${a} ≈ ${roundTen(a)} y ${b} ≈ ${roundTen(b)}; ${roundTen(a)} ${op} ${roundTen(b)} = ${est}.`,
     };
@@ -194,6 +197,76 @@ export function addK(r: Rng, k: number): Question {
   const n = r.int(0, k === 0 ? 20 : 10);
   const [x, y] = r.chance(0.5) ? [n, k] : [k, n];
   return num(n + k, `Suma ${k}.`, `${x} + ${y} = ?`, `${n} + ${k} = ${n + k}.`);
+}
+
+// 2.° D.13: conmutativa, elemento neutro y asociativa.
+export function additionProperties(r: Rng): Question {
+  const form = r.int(0, 2);
+  if (form === 0) {
+    const a = r.int(1, 9);
+    const b = r.int(1, 9);
+    return num(b, "¿Qué número falta?", `${a} + ${b} = ${b} + ?`, `Cambiar el orden de los sumandos no cambia el resultado: ${a} + ${b} = ${b} + ${a}.`, "conmutativa");
+  }
+  if (form === 1) {
+    const a = r.int(1, 20);
+    return r.chance(0.5)
+      ? num(a, "¿Qué número falta?", `${a} + 0 = ?`, `Sumar 0 no cambia el número: ${a} + 0 = ${a}.`, "neutro")
+      : num(0, "¿Qué número falta?", `${a} + ? = ${a}`, `Solo sumando 0 el número queda igual.`, "neutro");
+  }
+  const a = r.int(1, 9);
+  const b = r.int(1, 9);
+  const c = r.int(1, 9);
+  return num(b, "¿Qué número falta?", `(${a} + ${b}) + ${c} = ${a} + (? + ${c})`, `Agrupar los sumandos de otra forma no cambia la suma: falta el ${b}.`, "asociativa");
+}
+
+// 2.° D.14 / D.15: suma repetida por filas de una matriz.
+export function arrayRepeatedAddition(r: Rng, maxTotal: number): Question {
+  let rows: number;
+  let cols: number;
+  do {
+    rows = r.int(2, 5);
+    cols = r.int(2, 5);
+  } while (rows * cols > maxTotal);
+  const sum = (times: number, n: number) => `${Array.from({ length: times }, () => n).join(" + ")} = ${times * n}`;
+  const answer = sum(rows, cols);
+  const byCols = sum(cols, rows);
+  const distractors = [sum(rows, cols + 1), sum(rows + 1, cols), sum(rows, Math.max(1, cols - 1)), sum(Math.max(2, rows - 1), cols)].filter(
+    (d) => d !== answer && d !== byCols
+  );
+  return {
+    kind: "choice",
+    prompt: `Hay ${rows} filas. ¿Qué suma repetida muestra la matriz?`,
+    visual: { kind: "array", emoji: r.pick(COUNTABLES), rows, cols },
+    options: uniqueOptions(r, answer, distractors),
+    answer,
+    explanation: `Cada fila tiene ${cols}; sumamos ${cols} ${rows} veces: ${answer}.`,
+  };
+}
+
+// 2.° E.7: completar una suma de dos cifras.
+export function addMissingTwoDigit(r: Rng): Question {
+  const c = r.int(30, 99);
+  const a = r.int(10, c - 10);
+  const b = c - a;
+  return r.chance(0.5)
+    ? num(b, "¿Qué número falta?", `${a} + ? = ${c}`, `${c} − ${a} = ${b}, así que ${a} + ${b} = ${c}.`)
+    : num(a, "¿Qué número falta?", `? + ${b} = ${c}`, `${c} − ${b} = ${a}, así que ${a} + ${b} = ${c}.`);
+}
+
+// 2.° E.8
+export function addHundreds(r: Rng): Question {
+  const a = r.int(1, 8) * 100;
+  const b = r.int(1, (1000 - a) / 100) * 100;
+  return num(a + b, "Suma los múltiplos de 100.", `${a} + ${b} = ?`, `${a / 100} centenas + ${b / 100} centenas = ${(a + b) / 100} centenas: ${a + b}.`);
+}
+
+// 2.° E.9
+export function addThreeDigit(r: Rng): Question {
+  const a = r.int(100, 899);
+  const b = r.chance(0.5) ? r.int(10, 99) : r.int(100, 999 - a);
+  if (b < 10 || a + b > 999) return addThreeDigit(r);
+  const regroup = (a % 10) + (b % 10) >= 10 || (Math.floor(a / 10) % 10) + (Math.floor(b / 10) % 10) >= 10;
+  return num(a + b, "Resuelve la suma.", `${a} + ${b} = ?`, `Sumamos unidades, decenas y centenas: ${a} + ${b} = ${a + b}.`, regroup ? "con-reagrupacion" : "sin-reagrupacion");
 }
 
 export { numberOptions };

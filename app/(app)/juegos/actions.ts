@@ -65,14 +65,14 @@ export async function recordAttempt(input: {
       .select("id, score, answered, correct_count, mastered_at")
       .eq("id", input.sessionId)
       .eq("student_id", studentId)
-      .eq("skill_id", skill.id)
+      .eq("skill_id", skill.uid)
       .maybeSingle();
     session = data;
   }
   if (!session) {
     const { data, error } = await supabase
       .from("game_sessions")
-      .insert({ school_id: schoolId, student_id: studentId, skill_id: skill.id, recorded_by: recordedBy })
+      .insert({ school_id: schoolId, student_id: studentId, skill_id: skill.uid, recorded_by: recordedBy })
       .select("id, score, answered, correct_count, mastered_at")
       .single();
     if (error || !data) return { ok: false, error: "No se pudo guardar el resultado." };
@@ -83,7 +83,7 @@ export async function recordAttempt(input: {
     session_id: session.id,
     school_id: schoolId,
     student_id: studentId,
-    skill_id: skill.id,
+    skill_id: skill.uid,
     recorded_by: recordedBy,
     seed: input.seed,
     tag: question.tag ?? null,

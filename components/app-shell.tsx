@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -11,6 +12,7 @@ import {
   IdCardIcon,
   LayoutDashboardIcon,
   LogOutIcon,
+  MenuIcon,
   ReceiptTextIcon,
   SettingsIcon,
   ShieldIcon,
@@ -22,6 +24,7 @@ import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -104,6 +107,40 @@ function navForRole(
   return FAMILY_NAV;
 }
 
+function NavLinks({
+  items,
+  pathname,
+  onNavigate,
+}: {
+  items: NavItem[];
+  pathname: string;
+  onNavigate?: () => void;
+}) {
+  return (
+    <nav className="flex flex-1 flex-col gap-1 p-2">
+      {items.map((item) => {
+        const active = pathname.startsWith(item.matchPrefix ?? item.href);
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onNavigate}
+            className={cn(
+              "flex items-center gap-2 rounded-lg border-l-2 border-transparent px-3 py-2 text-sm text-secondary-foreground transition-colors",
+              active
+                ? "border-l-primary bg-accent text-accent-foreground"
+                : "hover:bg-accent hover:text-accent-foreground"
+            )}
+          >
+            <item.icon className="size-4" />
+            {item.label}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
 export function AppShell({
   schoolName,
   email,
@@ -121,40 +158,43 @@ export function AppShell({
 }) {
   const pathname = usePathname();
   const navItems = [...navForRole(role, isPlatformStaff), ACCOUNT_ITEM];
+  // En pantallas angostas el menú vive en un panel que se abre con ☰.
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen">
-      <aside className="flex w-56 print:hidden shrink-0 flex-col border-r border-border bg-card">
+      <aside className="hidden w-56 shrink-0 flex-col border-r border-border bg-card md:flex print:hidden">
         <div className="flex h-14 items-center border-b border-border px-4">
           <span className="text-sm font-medium">Trilce</span>
         </div>
-        <nav className="flex flex-1 flex-col gap-1 p-2">
-          {navItems.map((item) => {
-            const active = pathname.startsWith(item.matchPrefix ?? item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-2 rounded-lg border-l-2 border-transparent px-3 py-2 text-sm text-secondary-foreground transition-colors",
-                  active
-                    ? "border-l-primary bg-accent text-accent-foreground"
-                    : "hover:bg-accent hover:text-accent-foreground"
-                )}
-              >
-                <item.icon className="size-4" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <NavLinks items={navItems} pathname={pathname} />
       </aside>
 
-      <div className="flex flex-1 flex-col">
-        <header className="flex h-14 print:hidden items-center justify-between border-b border-border px-6">
-          <span className="text-sm font-medium text-secondary-foreground">
-            {schoolName ?? "Plataforma"}
-          </span>
+      <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+        <SheetContent side="left" className="w-64 gap-0 bg-card p-0 md:hidden">
+          <div className="flex h-14 items-center border-b border-border px-4">
+            <SheetTitle className="text-sm font-medium">Trilce</SheetTitle>
+          </div>
+          <NavLinks items={navItems} pathname={pathname} onNavigate={() => setMenuOpen(false)} />
+        </SheetContent>
+      </Sheet>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="flex h-14 items-center justify-between gap-2 border-b border-border px-4 md:px-6 print:hidden">
+          <div className="flex min-w-0 items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setMenuOpen(true)}
+              aria-label="Abrir menú"
+            >
+              <MenuIcon />
+            </Button>
+            <span className="truncate text-sm font-medium text-secondary-foreground">
+              {schoolName ?? "Plataforma"}
+            </span>
+          </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <DropdownMenu>
@@ -198,7 +238,7 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="flex-1 p-6 print:p-0">{children}</main>
+        <main className="min-w-0 flex-1 p-4 md:p-6 print:p-0">{children}</main>
       </div>
     </div>
   );

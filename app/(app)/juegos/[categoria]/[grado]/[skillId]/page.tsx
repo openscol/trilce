@@ -1,17 +1,16 @@
 import { notFound } from "next/navigation";
 import { requireAppContext } from "@/lib/auth/context";
 import { createClient } from "@/lib/supabase/server";
-import { SECTIONS, getSkill } from "@/lib/games/catalog";
+import { getSkill, skillUid } from "@/lib/games/catalog";
 import { newSeed } from "@/lib/games/rng";
 import { classGroupLabel } from "@/lib/class-group";
 import { SkillPlayer, type Roster } from "./skill-player";
 
-export default async function SkillPage(props: PageProps<"/juegos/[skillId]">) {
-  const { skillId } = await props.params;
-  const skill = getSkill(decodeURIComponent(skillId));
+export default async function SkillPage(props: PageProps<"/juegos/[categoria]/[grado]/[skillId]">) {
+  const { categoria, grado, skillId } = await props.params;
+  const skill = getSkill(skillUid(categoria, grado, decodeURIComponent(skillId)));
   if (!skill) notFound();
   const ctx = await requireAppContext();
-  const section = SECTIONS.find((s) => s.id === skill.section);
 
   // Modo un solo dispositivo: el docente elige qué alumno de su sección juega.
   // Los alumnos que ve cada docente ya los limita la RLS de students.
@@ -50,10 +49,14 @@ export default async function SkillPage(props: PageProps<"/juegos/[skillId]">) {
 
   return (
     <SkillPlayer
-      key={skill.id}
+      key={skill.uid}
+      skillUid={skill.uid}
       skillId={skill.id}
       title={skill.title}
-      sectionName={section?.name ?? ""}
+      sectionName={skill.sectionName}
+      gradeLabel={skill.gradeLabel}
+      backHref={`/juegos/${categoria}/${grado}#${encodeURIComponent(skill.id)}`}
+      sessionLength={skill.sessionLength}
       initialSeed={newSeed()}
       isStudent={ctx.role === "alumno"}
       roster={roster}

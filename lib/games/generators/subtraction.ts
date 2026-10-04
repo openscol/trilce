@@ -105,3 +105,35 @@ export function subK(r: Rng, k: number): Question {
   const n = r.int(k, Math.min(18, k + 10));
   return num(n - k, `Resta ${k}.`, `${n} − ${k} = ?`, `${n} − ${k} = ${n - k}.`);
 }
+
+// 2.° F.6: restar un número de una cifra a uno de 10 a 18.
+export function subOneDigitFromTeen(r: Rng): Question {
+  const a = r.int(10, 18);
+  const b = r.int(1, 9);
+  return num(a - b, "Resuelve la resta.", `${a} − ${b} = ?`, `${a} − ${b} = ${a - b}.`, a - b < 10 ? "pasa-de-10" : "sin-pasar-de-10");
+}
+
+// 2.° G.7: completar una resta de dos cifras.
+export function subMissingTwoDigit(r: Rng): Question {
+  const a = r.int(30, 99);
+  const b = r.int(10, a - 10);
+  const c = a - b;
+  return r.chance(0.5)
+    ? num(b, "¿Qué número falta?", `${a} − ? = ${c}`, `${a} − ${c} = ${b}.`)
+    : num(a, "¿Qué número falta?", `? − ${b} = ${c}`, `${c} + ${b} = ${a}.`);
+}
+
+// 2.° G.8
+export function subHundreds(r: Rng): Question {
+  const a = r.int(2, 10) * 100;
+  const b = r.int(1, a / 100) * 100;
+  return num(a - b, "Resta los múltiplos de 100.", `${a} − ${b} = ?`, `${a / 100} centenas − ${b / 100} centenas = ${(a - b) / 100} centenas: ${a - b}.`);
+}
+
+// 2.° G.9
+export function subThreeDigit(r: Rng): Question {
+  const a = r.int(200, 999);
+  const b = r.chance(0.5) ? r.int(10, 99) : r.int(100, a - 1);
+  const borrow = a % 10 < b % 10 || Math.floor(a / 10) % 10 < Math.floor(b / 10) % 10;
+  return num(a - b, "Resuelve la resta.", `${a} − ${b} = ?`, `Restamos unidades, decenas y centenas: ${a} − ${b} = ${a - b}.`, borrow ? "con-llevadas" : "sin-llevadas");
+}

@@ -182,3 +182,69 @@ export function solidFaces(r: Rng): Question {
     tag: solid,
   };
 }
+
+// ---------------------------------------------------------------------------
+// 2.° grado
+// ---------------------------------------------------------------------------
+
+const PLURAL: Record<string, string> = {
+  círculo: "círculos",
+  triángulo: "triángulos",
+  cuadrado: "cuadrados",
+  rectángulo: "rectángulos",
+  pentágono: "pentágonos",
+  hexágono: "hexágonos",
+  cubo: "cubos",
+  "prisma rectangular": "prismas rectangulares",
+  cilindro: "cilindros",
+  cono: "conos",
+  esfera: "esferas",
+  "pirámide cuadrada": "pirámides cuadradas",
+};
+
+const LETTERS = "ABCDEF";
+
+// Varias figuras rotuladas A-F; el alumno marca todas las del tipo pedido.
+function selectAll(r: Rng, pool: string[], kind: "shapes" | "solids"): Question {
+  const target = r.pick(pool);
+  const count = r.int(5, 6);
+  const hits = r.int(1, 3);
+  const others = pool.filter((n) => n !== target);
+  const names = r.shuffle([...Array.from({ length: hits }, () => target), ...Array.from({ length: count - hits }, () => r.pick(others))]);
+  const letters = names.map((_, i) => LETTERS[i]);
+  return {
+    kind: "multi",
+    prompt: `Selecciona todos los ${PLURAL[target] ?? target}.`.replace("todos los esferas", "todas las esferas").replace("todos los pirámides", "todas las pirámides"),
+    visual: { kind, names },
+    options: letters,
+    answers: letters.filter((_, i) => names[i] === target),
+    explanation: `Son ${PLURAL[target] ?? target}: ${letters.filter((_, i) => names[i] === target).join(", ")}.`,
+    tag: target,
+  };
+}
+
+// 2.° J.1
+export function selectShapes2d(r: Rng): Question {
+  return selectAll(r, SHAPES_2D.map((s) => s.name), "shapes");
+}
+
+// 2.° J.3
+export function selectSolids(r: Rng): Question {
+  return selectAll(r, SOLID_NAMES_DRAWN, "solids");
+}
+
+export const NET_SOLIDS = ["cubo", "prisma rectangular", "pirámide cuadrada", "prisma triangular", "cilindro", "cono"];
+
+// 2.° J.8: ¿qué cuerpo se arma con este desarrollo?
+export function netOfSolid(r: Rng): Question {
+  const name = r.pick(NET_SOLIDS);
+  return {
+    kind: "choice",
+    prompt: "Si doblas este desarrollo, ¿qué cuerpo se forma?",
+    visual: { kind: "net", name },
+    options: uniqueOptions(r, name, NET_SOLIDS),
+    answer: name,
+    explanation: `Este desarrollo forma un ${name}.`,
+    tag: name,
+  };
+}

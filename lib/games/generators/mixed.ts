@@ -1,6 +1,8 @@
 import type { Rng } from "../rng";
 import type { Question } from "../types";
 import { COUNTABLES, uniqueOptions } from "./common";
+import { addHundreds, addThreeDigit, addTwoTwo } from "./addition";
+import { subHundreds, subThreeDigit, subTwoTwo } from "./subtraction";
 
 function num(answer: number, prompt: string, text: string, explanation: string, tag?: string): Question {
   return { kind: "number", prompt, visual: { kind: "text", text }, answer, explanation, tag };
@@ -37,15 +39,16 @@ export function pictureEquationMixed(r: Rng): Question {
   };
 }
 
-// H.2
-export function mixedTargets(r: Rng): Question {
-  const target = r.int(4, 18);
+// H.2 (1.° y 2.°: hasta 20; 2.° H.10: hasta 100)
+export function mixedTargets(r: Rng, max = 20): Question {
+  const big = max > 20;
+  const target = big ? r.int(20, 90) : r.int(4, 18);
   const build = (t: number): string => {
     if (r.chance(0.5)) {
-      const a = r.int(0, t);
+      const a = big ? r.int(1, t - 1) : r.int(0, t);
       return `${a} + ${t - a}`;
     }
-    const b = r.int(0, Math.min(6, 20 - t));
+    const b = big ? r.int(1, max - t) : r.int(0, Math.min(6, 20 - t));
     return `${t + b} − ${b}`;
   };
   const correct = new Set<string>();
@@ -56,7 +59,7 @@ export function mixedTargets(r: Rng): Question {
   guard = 0;
   while (wrong.size < 6 - correct.size && guard++ < 100) {
     const t = target + r.pick([-3, -2, -1, 1, 2, 3]);
-    if (t < 0 || t > 20) continue;
+    if (t < 0 || t > max) continue;
     const e = build(t);
     if (!correct.has(e)) wrong.add(e);
   }
@@ -170,4 +173,20 @@ export function addSubTens(r: Rng): Question {
   const a = r.int(2, 10) * 10;
   const b = r.int(1, a / 10) * 10;
   return num(a - b, "Resuelve.", `${a} − ${b} = ?`, `${a} − ${b} = ${a - b}.`, "resta");
+}
+
+// 2.° H.9: sumas y restas de hasta dos cifras, con o sin reagrupar.
+export function addSubTwoDigit(r: Rng): Question {
+  const regroup = r.chance(0.5);
+  return r.chance(0.5) ? addTwoTwo(r, regroup) : subTwoTwo(r, regroup);
+}
+
+// 2.° H.11
+export function addSubHundreds(r: Rng): Question {
+  return r.chance(0.5) ? addHundreds(r) : subHundreds(r);
+}
+
+// 2.° H.12
+export function addSubThreeDigit(r: Rng): Question {
+  return r.chance(0.5) ? addThreeDigit(r) : subThreeDigit(r);
 }

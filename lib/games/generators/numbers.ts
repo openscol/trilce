@@ -119,14 +119,14 @@ export function estimateToTen(r: Rng): Question {
   };
 }
 
-// A.13
-export function evenOdd(r: Rng): Question {
+// A.13 (1.°: hasta 30; 2.°: hasta 100)
+export function evenOdd(r: Rng, max = 30): Question {
   const wantEven = r.chance(0.5);
   const nums = new Set<number>();
-  while (nums.size < 8) nums.add(r.int(1, 30));
+  while (nums.size < 8) nums.add(r.int(1, max));
   const options = [...nums].sort((a, b) => a - b).map(String);
   const answers = options.filter((n) => (Number(n) % 2 === 0) === wantEven);
-  if (answers.length === 0 || answers.length === options.length) return evenOdd(r);
+  if (answers.length === 0 || answers.length === options.length) return evenOdd(r, max);
   return {
     kind: "multi",
     prompt: `Selecciona todos los números ${wantEven ? "pares" : "impares"}.`,
@@ -136,5 +136,45 @@ export function evenOdd(r: Rng): Question {
       ? "Los pares terminan en 0, 2, 4, 6 u 8."
       : "Los impares terminan en 1, 3, 5, 7 o 9.",
     tag: wantEven ? "pares" : "impares",
+  };
+}
+
+// 2.° A.2 / A.8: un tramo de la recta (de 1 en 1 o de 10 en 10) o la recta
+// completa en saltos grandes.
+export function numberLineTo(r: Rng, max: 100 | 1000): Question {
+  const small = max === 100 ? 1 : 10;
+  const big = max === 100 ? 10 : 100;
+  const zoomed = r.chance(0.6);
+  const step = zoomed ? small : big;
+  const min = zoomed ? r.int(0, max / (small * 10) - 1) * small * 10 : 0;
+  const top = zoomed ? min + small * 10 : max;
+  let n = min + r.int(1, 9) * step;
+  if (n === min + 5 * step) n += step;
+  return {
+    kind: "choice",
+    prompt: "¿Qué número marca el punto?",
+    visual: { kind: "numberLine", min, max: top, step, labelEvery: step * 5, marked: n },
+    options: numberOptions(r, n, min, top, 4, step),
+    answer: String(n),
+    explanation: `Cada marca avanza ${step}: el punto está en el ${n}.`,
+    tag: zoomed ? "tramo" : "recta-completa",
+  };
+}
+
+// 2.° A.9: patrones de conteo hasta 1.000.
+export function countingPatternTo(r: Rng, max: number): Question {
+  const d = r.pick([1, 2, 5, 10, 100]);
+  const up = r.chance(0.6);
+  const span = d * 4;
+  const start = up ? r.int(0, max - span) : r.int(span, max);
+  const items = [0, 1, 2, 3].map((i) => start + (up ? i : -i) * d);
+  const next = start + (up ? 4 : -4) * d;
+  return {
+    kind: "number",
+    prompt: "Sigue el patrón. ¿Qué número viene después?",
+    visual: { kind: "text", text: `${items.join("  ")}  ?` },
+    answer: next,
+    explanation: `El patrón ${up ? "suma" : "resta"} ${d} cada vez: sigue el ${next}.`,
+    tag: `de-${d}`,
   };
 }
