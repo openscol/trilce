@@ -1,6 +1,7 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { ACTIVE_SCHOOL_COOKIE } from "@/lib/auth/school-cookie";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/database.types";
 
@@ -64,24 +65,23 @@ export async function requireAppContext(): Promise<AppContext> {
     };
   }
 
-  const cookieStore = await cookies();
-  const schoolId = cookieStore.get("active_school_id")?.value;
-
-  if (!schoolId) {
-    redirect("/seleccionar-colegio");
-  }
-
-  const { data: membership } = await supabase
+  const { data: memberships } = await supabase
     .from("memberships")
-    .select("role, is_owner, student_id, guardian_id, staff_id, schools(name)")
+    .select("school_id, role, is_owner, student_id, guardian_id, staff_id, schools(name)")
     .eq("user_id", user.id)
-    .eq("school_id", schoolId)
-    .eq("active", true)
-    .maybeSingle();
+    .eq("active", true);
+
+  // El colegio activo viene de la cookie. Si falta o ya no vale y el usuario
+  // tiene un solo colegio, se usa ese sin pasar por /seleccionar-colegio: esa
+  // página lo devolvería aquí y el navegador quedaría en un bucle de redirecciones.
+  const cookieStore = await cookies();
+  const cookieSchoolId = cookieStore.get(ACTIVE_SCHOOL_COOKIE)?.value;
+  const membership = (memberships ?? []).find((m) => m.school_id === cookieSchoolId) ?? (memberships?.length === 1 ? memberships[0] : null);
 
   if (!membership) {
     redirect("/seleccionar-colegio");
   }
+  const schoolId = membership.school_id;
 
   return {
     userId: user.id,

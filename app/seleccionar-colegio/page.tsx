@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
+import { signOut } from "@/app/(app)/actions";
 import { selectSchool } from "./actions";
 
 export default async function SeleccionarColegioPage() {
@@ -20,8 +21,26 @@ export default async function SeleccionarColegioPage() {
     .eq("user_id", user.id)
     .eq("active", true);
 
+  // Con sesión pero sin colegio no se redirige a /login: esa página devuelve a
+  // /dashboard a quien tiene sesión y el navegador quedaría en un bucle.
   if (!memberships || memberships.length === 0) {
-    redirect("/login");
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-muted/30 p-6">
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+            <CardTitle className="text-xl">Sin acceso a un colegio</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <p className="text-sm text-muted-foreground">Tu cuenta no tiene acceso a ningún colegio. Contacta al administrador.</p>
+            <form action={signOut}>
+              <Button type="submit" variant="outline" className="w-full">
+                Cerrar sesión
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   if (memberships.length === 1) {

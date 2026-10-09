@@ -9,6 +9,7 @@ import {
   CircleDollarSignIcon,
   ClipboardListIcon,
   Gamepad2Icon,
+  ScanLineIcon,
   IdCardIcon,
   LayoutDashboardIcon,
   LogOutIcon,
@@ -51,6 +52,7 @@ const STAFF_NAV: NavItem[] = [
   { href: "/personal", label: "Personal", icon: IdCardIcon },
   { href: "/horario", label: "Horario", icon: CalendarDaysIcon },
   { href: "/cuestionarios", label: "Cuestionarios", icon: ClipboardListIcon },
+  { href: "/examenes", label: "Exámenes", icon: ScanLineIcon },
   { href: "/juegos", label: "Juegos", icon: Gamepad2Icon },
   { href: "/cobros", label: "Cobros", icon: ReceiptTextIcon },
   {
@@ -71,12 +73,14 @@ const DOCENTE_NAV: NavItem[] = [
   { href: "/alumnos", label: "Alumnos", icon: UsersIcon },
   { href: "/horario", label: "Horario", icon: CalendarDaysIcon },
   { href: "/cuestionarios", label: "Cuestionarios", icon: ClipboardListIcon },
+  { href: "/examenes", label: "Exámenes", icon: ScanLineIcon },
   { href: "/juegos", label: "Juegos", icon: Gamepad2Icon },
 ];
 
 const FAMILY_NAV: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
   { href: "/horario", label: "Horario", icon: CalendarDaysIcon },
+  { href: "/examenes", label: "Exámenes", icon: ScanLineIcon },
   { href: "/juegos", label: "Juegos", icon: Gamepad2Icon },
 ];
 

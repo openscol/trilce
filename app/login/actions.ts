@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { ACTIVE_SCHOOL_COOKIE, ACTIVE_SCHOOL_COOKIE_OPTIONS } from "@/lib/auth/school-cookie";
 import { createClient } from "@/lib/supabase/server";
 
 export type LoginState = { error: string } | undefined;
@@ -78,12 +79,7 @@ export async function login(
   }
 
   const cookieStore = await cookies();
-  cookieStore.set("active_school_id", memberships[0].school_id, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "lax",
-    path: "/",
-  });
+  cookieStore.set(ACTIVE_SCHOOL_COOKIE, memberships[0].school_id, ACTIVE_SCHOOL_COOKIE_OPTIONS);
 
   redirect("/dashboard");
 }

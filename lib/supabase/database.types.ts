@@ -1471,6 +1471,331 @@ export type Database = {
           },
         ]
       }
+      exam_answer_keys: {
+        Row: {
+          answers: string
+          exam_id: string
+          school_id: string
+          theme: string
+          updated_at: string
+        }
+        Insert: {
+          answers: string
+          exam_id: string
+          school_id: string
+          theme: string
+          updated_at?: string
+        }
+        Update: {
+          answers?: string
+          exam_id?: string
+          school_id?: string
+          theme?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_answer_keys_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_answer_keys_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exam_class_groups: {
+        Row: {
+          class_group_id: string
+          exam_id: string
+          school_id: string
+        }
+        Insert: {
+          class_group_id: string
+          exam_id: string
+          school_id: string
+        }
+        Update: {
+          class_group_id?: string
+          exam_id?: string
+          school_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_class_groups_class_group_id_fkey"
+            columns: ["class_group_id"]
+            isOneToOne: false
+            referencedRelation: "class_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_class_groups_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_class_groups_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exam_files: {
+        Row: {
+          created_at: string
+          exam_id: string
+          id: string
+          kind: Database["public"]["Enums"]["exam_file_kind"]
+          path: string
+          position: number
+          school_id: string
+          theme: string
+        }
+        Insert: {
+          created_at?: string
+          exam_id: string
+          id?: string
+          kind: Database["public"]["Enums"]["exam_file_kind"]
+          path: string
+          position?: number
+          school_id: string
+          theme: string
+        }
+        Update: {
+          created_at?: string
+          exam_id?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["exam_file_kind"]
+          path?: string
+          position?: number
+          school_id?: string
+          theme?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_files_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_files_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exam_result_files: {
+        Row: {
+          created_at: string
+          exam_id: string
+          id: string
+          path: string
+          position: number
+          school_id: string
+          student_id: string
+        }
+        Insert: {
+          created_at?: string
+          exam_id: string
+          id?: string
+          path: string
+          position?: number
+          school_id: string
+          student_id: string
+        }
+        Update: {
+          created_at?: string
+          exam_id?: string
+          id?: string
+          path?: string
+          position?: number
+          school_id?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_result_files_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_result_files_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_result_files_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exam_results: {
+        Row: {
+          answers: string
+          correct_count: number | null
+          corrections: string | null
+          created_at: string
+          exam_id: string
+          id: string
+          image_path: string | null
+          marks: string | null
+          scanned_by: string | null
+          school_id: string
+          score: number | null
+          sheet_code: string | null
+          student_id: string
+          theme: string
+          updated_at: string
+        }
+        Insert: {
+          answers: string
+          correct_count?: number | null
+          corrections?: string | null
+          created_at?: string
+          exam_id: string
+          id?: string
+          image_path?: string | null
+          marks?: string | null
+          scanned_by?: string | null
+          school_id: string
+          score?: number | null
+          sheet_code?: string | null
+          student_id: string
+          theme: string
+          updated_at?: string
+        }
+        Update: {
+          answers?: string
+          correct_count?: number | null
+          corrections?: string | null
+          created_at?: string
+          exam_id?: string
+          id?: string
+          image_path?: string | null
+          marks?: string | null
+          scanned_by?: string | null
+          school_id?: string
+          score?: number | null
+          sheet_code?: string | null
+          student_id?: string
+          theme?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_results_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_results_scanned_by_fkey"
+            columns: ["scanned_by"]
+            isOneToOne: false
+            referencedRelation: "staff_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_results_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_results_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exams: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          entry_mode: Database["public"]["Enums"]["exam_entry_mode"]
+          exam_date: string
+          id: string
+          max_score: number
+          published: boolean
+          question_count: number
+          school_id: string
+          sheet_layout: string
+          subject: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          entry_mode?: Database["public"]["Enums"]["exam_entry_mode"]
+          exam_date?: string
+          id?: string
+          max_score?: number
+          published?: boolean
+          question_count: number
+          school_id: string
+          sheet_layout?: string
+          subject?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          entry_mode?: Database["public"]["Enums"]["exam_entry_mode"]
+          exam_date?: string
+          id?: string
+          max_score?: number
+          published?: boolean
+          question_count?: number
+          school_id?: string
+          sheet_layout?: string
+          subject?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exams_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "staff_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exams_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quizzes: {
         Row: {
           created_at: string
@@ -2254,6 +2579,14 @@ export type Database = {
           username: string
         }[]
       }
+      delete_staff_member: {
+        Args: { p_staff_id: string }
+        Returns: undefined
+      }
+      remove_membership: {
+        Args: { p_membership_id: string }
+        Returns: undefined
+      }
       create_membership_login: {
         Args: {
           p_email: string
@@ -2320,6 +2653,8 @@ export type Database = {
       document_id_type: "DNI" | "CE" | "Pasaporte" | "Otro"
       document_status: "emitido" | "anulado"
       enrollment_level: "inicial" | "primaria" | "secundaria"
+      exam_entry_mode: "sheet" | "manual"
+      exam_file_kind: "exam" | "answer_sheet"
       gateway_provider: "manual" | "pagoefectivo" | "stripe" | "culqi"
       invite_status: "pending" | "accepted" | "expired" | "revoked"
       invoice_status: "pendiente" | "parcial" | "pagado" | "vencido" | "anulado"
@@ -2491,6 +2826,8 @@ export const Constants = {
       document_id_type: ["DNI", "CE", "Pasaporte", "Otro"],
       document_status: ["emitido", "anulado"],
       enrollment_level: ["inicial", "primaria", "secundaria"],
+      exam_entry_mode: ["sheet", "manual"],
+      exam_file_kind: ["exam", "answer_sheet"],
       gateway_provider: ["manual", "pagoefectivo", "stripe", "culqi"],
       invite_status: ["pending", "accepted", "expired", "revoked"],
       invoice_status: ["pendiente", "parcial", "pagado", "vencido", "anulado"],
