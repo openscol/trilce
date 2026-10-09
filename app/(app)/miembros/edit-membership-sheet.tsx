@@ -1,6 +1,18 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { TrashIcon } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   Sheet,
   SheetContent,
@@ -21,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import type { Database } from "@/lib/supabase/database.types";
 import {
+  removeMembership,
   toggleMembershipActive,
   transferOwnership,
   updateMembershipRole,
@@ -42,12 +55,14 @@ export function EditMembershipSheet({
   onOpenChange,
   isOwner,
   memberName,
+  currentUserId,
 }: {
   membership: Membership | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   isOwner: boolean;
   memberName: string;
+  currentUserId: string;
 }) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -58,6 +73,10 @@ export function EditMembershipSheet({
             membership={membership}
             isOwner={isOwner}
             memberName={memberName}
+            canRemove={
+              !membership.is_owner && membership.user_id !== currentUserId
+            }
+            onRemoved={() => onOpenChange(false)}
           />
         )}
       </SheetContent>
@@ -69,10 +88,14 @@ function EditMembershipBody({
   membership,
   isOwner,
   memberName,
+  canRemove,
+  onRemoved,
 }: {
   membership: Membership;
   isOwner: boolean;
   memberName: string;
+  canRemove: boolean;
+  onRemoved: () => void;
 }) {
   const [role, setRole] = useState(membership.role);
   const [active, setActive] = useState(membership.active);
@@ -108,6 +131,15 @@ function EditMembershipBody({
     startTransition(async () => {
       const result = await transferOwnership(membership.id);
       if (result?.error) setError(result.error);
+    });
+  }
+
+  function handleRemove() {
+    setError(null);
+    startTransition(async () => {
+      const result = await removeMembership(membership.id);
+      if (result?.error) setError(result.error);
+      else onRemoved();
     });
   }
 
@@ -176,7 +208,36 @@ function EditMembershipBody({
         {error && <p className="text-sm text-destructive">{error}</p>}
       </div>
 
-      <SheetFooter />
+      <SheetFooter>
+        {canRemove && (
+          <AlertDialog>
+            <AlertDialogTrigger
+              render={
+                <Button type="button" variant="outline" disabled={isPending} />
+              }
+            >
+              <TrashIcon />
+              Quitar miembro
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>¿Quitar a {memberName}?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Perderá su acceso al sistema y se eliminará su usuario y
+                  contraseña. Su ficha (personal, apoderado o alumno) se
+                  conserva, y luego puedes crearle un acceso nuevo.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction variant="destructive" onClick={handleRemove}>
+                  Quitar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
+      </SheetFooter>
     </>
   );
 }

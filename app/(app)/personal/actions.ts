@@ -103,4 +103,66 @@ export async function updateStaffMember(
   return undefined;
 }
 
+export type StaffDeleteImpact = {
+  hasLogin: boolean;
+  courseOfferings: number;
+  quizzes: number;
+};
+
+/** Qué se borraría por cascada junto con el personal — para avisarlo antes de confirmar. */
+export async function getStaffDeleteImpact(
+  staffId: string
+): Promise<StaffDeleteImpact> {
+  const ctx = await requireAppContext();
+  const supabase = await createClient();
+  const [memberships, offerings, quizzes] = await Promise.all([
+    supabase
+      .from("memberships")
+      .select("id", { count: "exact", head: true })
+      .eq("staff_id", staffId)
+      .eq("school_id", ctx.schoolId!),
+    supabase
+      .from("course_offerings")
+      .select("id", { count: "exact", head: true })
+      .eq("teacher_id", staffId)
+      .eq("school_id", ctx.schoolId!),
+    supabase
+      .from("quizzes")
+      .select("id", { count: "exact", head: true })
+      .eq("created_by", staffId)
+      .eq("school_id", ctx.schoolId!),
+  ]);
+
+  return {
+    hasLogin: (memberships.count ?? 0) > 0,
+    courseOfferings: offerings.count ?? 0,
+    quizzes: quizzes.count ?? 0,
+  };
+}
+
+export async function deleteStaffMember(staffId: string): Promise<FormState> {
+  const ctx = await requireAppContext();
+  if (!ctx.schoolId || !CAN_WRITE_ROLES.includes(ctx.role ?? "")) {
+    return { error: "No tienes permiso para eliminar personal." };
+  }
+
+  const supabase = await createClient();
+  const { data: staff } = await supabase
+    .from("staff_members")
+    .select("id")
+    .eq("id", staffId)
+    .eq("school_id", ctx.schoolId)
+    .maybeSingle();
+  if (!staff) return { error: "Personal no encontrado." };
+
+  const { error } = await supabase.rpc("delete_staff_member", {
+    p_staff_id: staffId,
+  });
+  if (error) return { error: error.message || "No se pudo eliminar el personal." };
+
+  revalidatePath("/personal");
+  revalidatePath("/miembros");
+  return undefined;
+}
+
 export type { StaffMember };

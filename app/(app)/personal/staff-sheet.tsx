@@ -1,6 +1,18 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState, useTransition } from "react";
+import { TrashIcon } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   Sheet,
   SheetContent,
@@ -23,8 +35,11 @@ import {
 import { DOCUMENT_TYPE_LABELS, STAFF_TYPE_LABELS } from "@/lib/enum-labels";
 import {
   createStaffMember,
+  deleteStaffMember,
+  getStaffDeleteImpact,
   updateStaffMember,
   type FormState,
+  type StaffDeleteImpact,
   type StaffMember,
 } from "./actions";
 
@@ -81,6 +96,33 @@ function StaffSheetBody({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pending]);
+
+  const [impact, setImpact] = useState<StaffDeleteImpact | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isDeleting, startDelete] = useTransition();
+
+  function handleDeleteOpenChange(open: boolean) {
+    if (!open || !staffMember) return;
+    setImpact(null);
+    getStaffDeleteImpact(staffMember.id).then(setImpact);
+  }
+
+  function handleDelete() {
+    if (!staffMember) return;
+    setDeleteError(null);
+    startDelete(async () => {
+      const result = await deleteStaffMember(staffMember.id);
+      if (result?.error) setDeleteError(result.error);
+      else onSaved();
+    });
+  }
+
+  const cascade = [
+    impact?.hasLogin && "su acceso al sistema",
+    impact?.courseOfferings &&
+      `${impact.courseOfferings} curso(s) asignados en el horario`,
+    impact?.quizzes && `${impact.quizzes} cuestionario(s) con sus respuestas`,
+  ].filter(Boolean);
 
   return (
     <>
@@ -198,14 +240,52 @@ function StaffSheetBody({
           </div>
         )}
 
-        {state?.error && (
-          <p className="text-sm text-destructive">{state.error}</p>
+        {(state?.error || deleteError) && (
+          <p className="text-sm text-destructive">
+            {state?.error ?? deleteError}
+          </p>
         )}
       </form>
 
       {!readOnly && (
-        <SheetFooter>
-          <Button type="submit" form="staff-form" disabled={pending}>
+        <SheetFooter className="flex-row justify-between">
+          {staffMember ? (
+            <AlertDialog onOpenChange={handleDeleteOpenChange}>
+              <AlertDialogTrigger
+                render={
+                  <Button type="button" variant="outline" disabled={isDeleting} />
+                }
+              >
+                <TrashIcon />
+                Eliminar
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>¿Eliminar a {staffMember.full_name}?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {impact === null
+                      ? "Revisando qué más se borraría…"
+                      : cascade.length > 0
+                        ? `También se borrará: ${cascade.join(", ")}. No se puede deshacer — si solo ya no trabaja aquí, desactívalo.`
+                        : "No se puede deshacer."}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction
+                    variant="destructive"
+                    onClick={handleDelete}
+                    disabled={impact === null}
+                  >
+                    Eliminar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          ) : (
+            <span />
+          )}
+          <Button type="submit" form="staff-form" disabled={pending || isDeleting}>
             {pending ? "Guardando…" : "Guardar"}
           </Button>
         </SheetFooter>

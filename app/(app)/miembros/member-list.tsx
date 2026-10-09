@@ -150,6 +150,7 @@ export function MemberList({
         onOpenChange={(open) => !open && setEditing(null)}
         isOwner={isOwner}
         memberName={editing ? memberName(editing) : ""}
+        currentUserId={currentUserId}
       />
     </>
   );

@@ -124,6 +124,33 @@ export async function toggleMembershipActive(
   return undefined;
 }
 
+export async function removeMembership(
+  membershipId: string
+): Promise<{ error: string } | undefined> {
+  const ctx = await requireAppContext();
+  // Igual que memberships_write en RLS: quitar un acceso es solo del admin.
+  if (!ctx.schoolId || ctx.role !== "admin") {
+    return { error: "Solo un admin puede quitar miembros." };
+  }
+
+  const supabase = await createClient();
+  const { data: membership } = await supabase
+    .from("memberships")
+    .select("id")
+    .eq("id", membershipId)
+    .eq("school_id", ctx.schoolId)
+    .maybeSingle();
+  if (!membership) return { error: "Miembro no encontrado." };
+
+  const { error } = await supabase.rpc("remove_membership", {
+    p_membership_id: membershipId,
+  });
+  if (error) return { error: error.message || "No se pudo quitar el miembro." };
+
+  revalidatePath("/miembros");
+  return undefined;
+}
+
 export async function transferOwnership(
   newOwnerMembershipId: string
 ): Promise<{ error: string } | undefined> {
