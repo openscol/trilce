@@ -58,7 +58,7 @@ export function decimalModel(r: Rng): Question {
   const u = n % 10;
   return r.chance(0.5)
     ? choice(r, "La cuadrícula tiene 100 casillas. ¿Qué número decimal está sombreado?", dec(n), [`${t},${u}`, dec(u * 10 + t), `${n},0`, `0,${String(100 - n).padStart(2, "0")}`], `Hay ${n} de 100 casillas sombreadas: ${n} centésimos = ${dec(n)}.`, visual, "centesimos")
-    : choice(r, "La cuadrícula tiene 100 casillas. ¿Qué fracción está sombreada?", `${n}/100`, [`${n}/10`, `${100 - n}/100`, `${t}/10`, `100/${n}`], `Hay ${n} de 100 casillas sombreadas: ${n}/100.`, visual, "centesimos");
+    : choice(r, "La cuadrícula tiene 100 casillas. ¿Qué fracción está sombreada?", `${n}/100`, [`${n}/10`, `${100 - n}/100`, u === 0 ? `${t}/100` : `${t}/10`, `100/${n}`], `Hay ${n} de 100 casillas sombreadas: ${n}/100.`, visual, "centesimos");
 }
 
 // 3.° R.4: valor posicional en decimales.
@@ -74,9 +74,9 @@ export function decimalPlaceValue(r: Rng): Question {
   ];
   const p = r.pick(places);
   if (r.chance(0.5)) {
-    return { kind: "number", prompt: `En ${text}, ¿qué cifra está en el lugar de los ${p.name}?`, visual: { kind: "text", text }, answer: p.digit, explanation: `Después de la coma van los décimos y luego los centésimos. En los ${p.name} está el ${p.digit}.`, tag: p.name };
+    return { kind: "number", prompt: `En ${text}, ¿qué cifra está en el lugar de ${/^(decenas|unidades)$/.test(p.name) ? "las" : "los"} ${p.name}?`, visual: { kind: "text", text }, answer: p.digit, explanation: `Después de la coma van los décimos y luego los centésimos. En ${/^(decenas|unidades)$/.test(p.name) ? "las" : "los"} ${p.name} está el ${p.digit}.`, tag: p.name };
   }
-  return choice(r, `En ${text}, ¿qué valor tiene la cifra ${p.digit}?`, `${p.digit} ${p.name}`, places.map((x) => `${p.digit} ${x.name}`), `El ${p.digit} está en el lugar de los ${p.name}.`, { kind: "text", text }, p.name);
+  return choice(r, `En ${text}, ¿qué valor tiene la cifra ${p.digit}?`, `${p.digit} ${p.name}`, places.map((x) => `${p.digit} ${x.name}`), `El ${p.digit} está en el lugar de ${/^(decenas|unidades)$/.test(p.name) ? "las" : "los"} ${p.name}.`, { kind: "text", text }, p.name);
 }
 
 // 3.° R.5: redondear decimales a la unidad o al décimo.

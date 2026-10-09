@@ -16,10 +16,12 @@ export type Visual =
   | { kind: "placeValue"; tens: number; ones: number; hundreds?: number; thousands?: number }
   | { kind: "fraction"; shape: "circle" | "bar" | "area"; parts: number; shaded: number }
   // `showAll`: muestra la fracción de cada barra (si no, la segunda va como ?/partes).
-  | { kind: "fractionPair"; items: { parts: number; shaded: number }[]; showAll?: boolean }
+  // `hideLabels`: solo las barras, sin la fracción al lado (números mixtos, sumas).
+  | { kind: "fractionPair"; items: { parts: number; shaded: number }[]; showAll?: boolean; hideLabels?: boolean }
   | { kind: "fractionGroup"; emoji: string; total: number; highlighted: number }
   | { kind: "measureObjects"; itemEmoji: string; unitEmoji: string; count: number }
-  | { kind: "ruler"; length: number }
+  // `unit`: rótulo de la regla ("pulgadas"); `sub`: divisiones por unidad (4 = cuartos).
+  | { kind: "ruler"; length: number; unit?: string; sub?: number }
   | { kind: "thermometer"; value: number; min: number; max: number }
   | { kind: "lengthBars"; a: number; b: number }
   | { kind: "gridObjects"; size: number; cells: { r: number; c: number; emoji: string }[] }
@@ -46,18 +48,37 @@ export type Visual =
   | { kind: "venn"; left: string[]; both: string[]; right: string[]; leftLabel: string; rightLabel: string }
   | { kind: "clock"; hour: number; minute: number }
   // Monedas del Perú; valores en céntimos (10, 20, 50, 100, 200, 500).
+  // Desde 1000 se dibujan como billetes (S/ 10, S/ 20, S/ 50, S/ 100).
   | { kind: "coins"; coins: number[] }
   // Barra o círculo partido en trozos; `cuts` son los cortes (0-100 en la barra, grados en el círculo).
   | { kind: "splitShape"; shape: "bar" | "circle"; cuts: number[] }
   // Cuadrícula de 10 × 10 con `hundredths` casillas sombreadas (centésimos).
-  | { kind: "decimalGrid"; hundredths: number }
+  // `extra`: casillas sumadas, en otro color; `crossed`: las últimas sombreadas van tachadas (resta).
+  | { kind: "decimalGrid"; hundredths: number; extra?: number; crossed?: number }
   // Dos rectas: paralelas, perpendiculares o secantes; `rotation` en grados.
   | { kind: "lines"; relation: "paralelas" | "perpendiculares" | "secantes"; rotation: number }
   // Un ángulo de `degrees` grados, girado `rotation` grados.
-  | { kind: "angle"; degrees: number; rotation: number }
+  // `protractor`: dibuja un transportador sobre el ángulo (usar con rotation 0 y hasta 180°).
+  | { kind: "angle"; degrees: number; rotation: number; protractor?: boolean }
   // Polígono en un lienzo de 100 × 100; `sideLabels[i]` rotula el lado que va
   // del vértice i al i+1; `rightAngles` marca vértices con ángulo recto.
-  | { kind: "polygon"; points: [number, number][]; sideLabels?: string[]; rightAngles?: number[] }
+  // `dashed`: segmentos punteados (ejes de simetría, cortes de una figura compuesta).
+  | { kind: "polygon"; points: [number, number][]; sideLabels?: string[]; rightAngles?: number[]; dashed?: [[number, number], [number, number]][] }
+  // --- 4.° de primaria en adelante ---
+  // Tabla de datos con encabezados (horarios, listas de precios, entrada/salida...).
+  | { kind: "table"; headers?: string[]; rows: string[][]; title?: string }
+  // Gráfico de barras (o de líneas con `line`); el eje va de 0 a `max` de `step` en `step`.
+  | { kind: "barChart"; title?: string; bars: { label: string; value: number }[]; max: number; step: number; line?: boolean }
+  // Diagrama de puntos: una X por cada dato sobre su valor.
+  | { kind: "linePlot"; title?: string; labels: string[]; counts: number[] }
+  // Modelo de área: `top` y `side` rotulan columnas y filas; `cells[fila][columna]`.
+  | { kind: "areaModel"; top: string[]; side: string[]; cells: string[][] }
+  // Diagrama de tiras: cada barra tiene partes con texto y ancho relativo `w`;
+  // `total` es el rótulo de la llave sobre la primera barra.
+  | { kind: "strip"; total?: string; bars: { label?: string; parts: { text: string; w: number }[] }[] }
+  // Punto, recta, segmento, semirrecta o ángulo, con sus letras.
+  // `rotation` gira el dibujo (grados); `labels` cambia las letras (por defecto A, B, C).
+  | { kind: "geoFigure"; figure: "punto" | "recta" | "segmento" | "semirrecta" | "angulo"; rotation?: number; labels?: string[] }
   // Un dibujo grande (emoji) con texto opcional debajo.
   | { kind: "picture"; emoji: string; caption?: string }
   // Lectura: cuento o texto informativo, con título y dibujo opcionales.

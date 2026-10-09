@@ -218,13 +218,19 @@ function EqualWidthBar({ parts, shaded }: { parts: number; shaded: number }) {
 }
 
 // Centésimos: cuadrícula de 10 × 10, sombreada por columnas.
-function DecimalGrid({ hundredths }: { hundredths: number }) {
+function DecimalGrid({ hundredths, extra = 0, crossed = 0 }: { hundredths: number; extra?: number; crossed?: number }) {
   return (
     <svg viewBox="0 0 202 202" className="size-52">
       {Array.from({ length: 100 }, (_, i) => {
         const col = Math.floor(i / 10);
         const row = i % 10;
-        return <rect key={i} x={1 + col * 20} y={1 + row * 20} width={20} height={20} className={cn("stroke-foreground/50", i < hundredths ? "fill-brand-green/60" : "fill-background")} strokeWidth={1} />;
+        const fill = i < hundredths - crossed ? "fill-brand-green/60" : i < hundredths ? "fill-red-400/50" : i < hundredths + extra ? "fill-sky-400/60" : "fill-background";
+        return (
+          <g key={i}>
+            <rect x={1 + col * 20} y={1 + row * 20} width={20} height={20} className={cn("stroke-foreground/50", fill)} strokeWidth={1} />
+            {i >= hundredths - crossed && i < hundredths && <path d={`M${4 + col * 20} ${4 + row * 20} l14 14 m0 -14 l-14 14`} className="stroke-foreground" strokeWidth={1.5} />}
+          </g>
+        );
       })}
       <rect x={1} y={1} width={200} height={200} className="fill-none stroke-foreground" strokeWidth={2} />
     </svg>
@@ -256,6 +262,26 @@ function AngleFigure({ v }: { v: Extract<Visual, { kind: "angle" }> }) {
   const ay = 90 + ar * Math.sin(-rad);
   return (
     <svg viewBox="0 0 160 160" className="size-44">
+      {v.protractor && (
+        <g>
+          <path d="M8 90 A72 72 0 0 1 152 90 Z" className="fill-sky-400/15 stroke-foreground/60" strokeWidth={1} />
+          {Array.from({ length: 19 }, (_, i) => {
+            const a = (-i * 10 * Math.PI) / 180;
+            const big = i % 3 === 0;
+            const r0 = big ? 62 : 66;
+            return (
+              <g key={i}>
+                <line x1={80 + r0 * Math.cos(a)} y1={90 + r0 * Math.sin(a)} x2={80 + 72 * Math.cos(a)} y2={90 + 72 * Math.sin(a)} className="stroke-foreground/70" strokeWidth={1} />
+                {big && (
+                  <text x={80 + 53 * Math.cos(a)} y={90 + 53 * Math.sin(a) + 3} textAnchor="middle" className="fill-foreground text-[8px]">
+                    {i * 10}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+        </g>
+      )}
       <g transform={`rotate(${v.rotation} 80 90)`}>
         <line x1={80} y1={90} x2={80 + len} y2={90} className="stroke-foreground" strokeWidth={3} strokeLinecap="round" />
         <line x1={80} y1={90} x2={ex} y2={ey} className="stroke-foreground" strokeWidth={3} strokeLinecap="round" />
@@ -272,11 +298,14 @@ function AngleFigure({ v }: { v: Extract<Visual, { kind: "angle" }> }) {
 
 function PolygonFigure({ v }: { v: Extract<Visual, { kind: "polygon" }> }) {
   const n = v.points.length;
-  const cx = v.points.reduce((s, p) => s + p[0], 0) / n;
-  const cy = v.points.reduce((s, p) => s + p[1], 0) / n;
+  // Sentido en que se recorren los vértices (en pantalla): decide hacia dónde queda «afuera».
+  const clockwise = v.points.reduce((sum, p, i) => sum + p[0] * v.points[(i + 1) % n][1] - v.points[(i + 1) % n][0] * p[1], 0) > 0;
   return (
     <svg viewBox="-28 -22 156 144" className="h-52 w-60">
       <polygon points={v.points.map((p) => p.join(",")).join(" ")} className="fill-brand-green/25 stroke-foreground" strokeWidth={2} strokeLinejoin="round" />
+      {v.dashed?.map(([a, b], i) => (
+        <line key={`d${i}`} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} className="stroke-brand-green-text" strokeWidth={2} strokeDasharray="5 4" />
+      ))}
       {v.rightAngles?.map((i) => {
         const p = v.points[i];
         const a = v.points[(i + n - 1) % n];
@@ -295,9 +324,13 @@ function PolygonFigure({ v }: { v: Extract<Visual, { kind: "polygon" }> }) {
         const q = v.points[(i + 1) % n];
         const mx = (p[0] + q[0]) / 2;
         const my = (p[1] + q[1]) / 2;
-        const d = Math.hypot(mx - cx, my - cy) || 1;
+        // El rótulo va hacia afuera, perpendicular al lado (sirve también en figuras con entrantes).
+        const len = Math.hypot(q[0] - p[0], q[1] - p[1]) || 1;
+        let nx = (q[1] - p[1]) / len;
+        let ny = -(q[0] - p[0]) / len;
+        if (!clockwise) [nx, ny] = [-nx, -ny];
         return (
-          <text key={i} x={mx + ((mx - cx) / d) * 19} y={my + ((my - cy) / d) * 13 + 4} textAnchor="middle" className="fill-foreground text-[11px] font-medium">
+          <text key={i} x={mx + nx * 19} y={my + ny * 13 + 4} textAnchor="middle" className="fill-foreground text-[11px] font-medium">
             {label}
           </text>
         );
@@ -376,7 +409,12 @@ const COIN_LABEL: Record<number, [string, string]> = { 10: ["10", "céntimos"], 
 function Coins({ coins }: { coins: number[] }) {
   return (
     <div className="flex max-w-md flex-wrap justify-center gap-2">
-      {coins.map((c, i) => (
+      {coins.map((c, i) =>
+        c >= 1000 ? (
+          <div key={i} className="flex h-14 w-28 items-center justify-center rounded-md border-2 border-foreground bg-emerald-300/50 text-xl font-bold tabular-nums">
+            S/ {c / 100}
+          </div>
+        ) : (
         <div
           key={i}
           className={cn(
@@ -387,7 +425,8 @@ function Coins({ coins }: { coins: number[] }) {
           <span className="text-xl font-bold tabular-nums">{COIN_LABEL[c][0]}</span>
           <span className="text-[9px]">{COIN_LABEL[c][1]}</span>
         </div>
-      ))}
+        )
+      )}
     </div>
   );
 }
@@ -474,7 +513,7 @@ function Net({ name }: { name: string }) {
   );
 }
 
-function Ruler({ length }: { length: number }) {
+function Ruler({ length, unit, sub = 1 }: { length: number; unit?: string; sub?: number }) {
   const cm = 40;
   const W = cm * 11 + 20;
   return (
@@ -485,8 +524,12 @@ function Ruler({ length }: { length: number }) {
         <g key={i}>
           <line x1={10 + i * cm} x2={10 + i * cm} y1={66} y2={82} className="stroke-foreground" strokeWidth={2} />
           <text x={10 + i * cm} y={98} textAnchor="middle" className="fill-foreground text-[13px]">{i}</text>
+          {i < 10 && Array.from({ length: sub - 1 }, (_, k) => (
+            <line key={k} x1={10 + (i + (k + 1) / sub) * cm} x2={10 + (i + (k + 1) / sub) * cm} y1={66} y2={sub % 2 === 0 && k + 1 === sub / 2 ? 78 : 74} className="stroke-foreground" strokeWidth={1.5} />
+          ))}
         </g>
       ))}
+      {unit && <text x={W - 12} y={30} textAnchor="end" className="fill-muted-foreground text-[13px]">{unit}</text>}
     </svg>
   );
 }
@@ -644,6 +687,189 @@ function Sheet({ v }: { v: Extract<Visual, { kind: "sheet" }> }) {
   );
 }
 
+// --- 4.° de primaria en adelante ----------------------------------------------
+
+function DataTable({ v }: { v: Extract<Visual, { kind: "table" }> }) {
+  return (
+    <div className="flex max-w-full flex-col items-center gap-2 overflow-x-auto">
+      {v.title && <p className="text-base font-medium">{v.title}</p>}
+      <table className="border-collapse text-base tabular-nums">
+        {v.headers && (
+          <thead>
+            <tr>
+              {v.headers.map((h, i) => (
+                <th key={i} className="border border-border-prominent bg-muted px-3 py-1.5 font-medium">{h}</th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {v.rows.map((row, r) => (
+            <tr key={r}>
+              {row.map((cell, c) => (
+                <td key={c} className={cn("border border-border-prominent px-3 py-1.5 text-center", cell === "?" && "bg-brand-green/25 font-medium")}>{cell}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function BarChart({ v }: { v: Extract<Visual, { kind: "barChart" }> }) {
+  const W = 360;
+  const H = 230;
+  const left = 36;
+  const bottom = 190;
+  const top = 14;
+  const y = (n: number) => bottom - (n / v.max) * (bottom - top);
+  const slot = (W - left - 8) / v.bars.length;
+  const cx = (i: number) => left + slot * (i + 0.5);
+  const ticks: number[] = [];
+  for (let n = 0; n <= v.max; n += v.step) ticks.push(n);
+  return (
+    <div className="flex w-full max-w-md flex-col items-center gap-1">
+      {v.title && <p className="text-base font-medium">{v.title}</p>}
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
+        {ticks.map((n) => (
+          <g key={n}>
+            <line x1={left} x2={W - 4} y1={y(n)} y2={y(n)} className={n === 0 ? "stroke-foreground" : "stroke-foreground/20"} strokeWidth={n === 0 ? 2 : 1} />
+            <text x={left - 6} y={y(n) + 4} textAnchor="end" className="fill-foreground text-[11px]">{n}</text>
+          </g>
+        ))}
+        <line x1={left} x2={left} y1={top} y2={bottom} className="stroke-foreground" strokeWidth={2} />
+        {v.line ? (
+          <>
+            <polyline points={v.bars.map((b, i) => `${cx(i)},${y(b.value)}`).join(" ")} className="fill-none stroke-brand-green-text" strokeWidth={2.5} />
+            {v.bars.map((b, i) => (
+              <circle key={i} cx={cx(i)} cy={y(b.value)} r={4.5} className="fill-brand-green stroke-foreground" strokeWidth={1.5} />
+            ))}
+          </>
+        ) : (
+          v.bars.map((b, i) => <rect key={i} x={cx(i) - slot * 0.3} y={y(b.value)} width={slot * 0.6} height={bottom - y(b.value)} className="fill-brand-green/60 stroke-foreground" strokeWidth={1.5} />)
+        )}
+        {v.bars.map((b, i) => (
+          <text key={i} x={cx(i)} y={bottom + 16} textAnchor="middle" className="fill-foreground text-[11px]">{b.label}</text>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+function LinePlot({ v }: { v: Extract<Visual, { kind: "linePlot" }> }) {
+  const n = v.labels.length;
+  const W = 400;
+  const pad = 30;
+  const tall = Math.max(1, ...v.counts);
+  const base = 24 + tall * 20;
+  const x = (i: number) => (n === 1 ? W / 2 : pad + (i / (n - 1)) * (W - pad * 2));
+  return (
+    <div className="flex w-full max-w-md flex-col items-center gap-1">
+      {v.title && <p className="text-base font-medium">{v.title}</p>}
+      <svg viewBox={`0 0 ${W} ${base + 30}`} className="w-full">
+        <line x1={pad - 16} x2={W - pad + 16} y1={base} y2={base} className="stroke-foreground" strokeWidth={2} />
+        {v.labels.map((label, i) => (
+          <g key={i}>
+            <line x1={x(i)} x2={x(i)} y1={base - 5} y2={base + 5} className="stroke-foreground" strokeWidth={2} />
+            <text x={x(i)} y={base + 22} textAnchor="middle" className="fill-foreground text-[13px]">{label}</text>
+            {Array.from({ length: v.counts[i] }, (_, k) => (
+              <text key={k} x={x(i)} y={base - 8 - k * 20} textAnchor="middle" className="fill-brand-green-text text-[18px] font-bold">✕</text>
+            ))}
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+function AreaModel({ v }: { v: Extract<Visual, { kind: "areaModel" }> }) {
+  return (
+    <div className="grid max-w-full items-center gap-1 text-base tabular-nums" style={{ gridTemplateColumns: `auto repeat(${v.top.length}, minmax(4.5rem, auto))` }}>
+      <span />
+      {v.top.map((t, i) => (
+        <span key={i} className="text-center font-medium">{t}</span>
+      ))}
+      {v.side.map((sLabel, r) => (
+        <div key={r} className="contents">
+          <span className="pr-2 text-right font-medium">{sLabel}</span>
+          {v.top.map((_, c) => (
+            <span key={c} className={cn("flex h-14 items-center justify-center border-2 border-foreground px-2", v.cells[r]?.[c] === "?" ? "bg-brand-green/50 font-medium" : "bg-brand-green/15")}>
+              {v.cells[r]?.[c] ?? ""}
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Strip({ v }: { v: Extract<Visual, { kind: "strip" }> }) {
+  return (
+    <div className="flex w-full max-w-md flex-col gap-2 text-base tabular-nums">
+      {v.total && (
+        <div className="flex flex-col items-center">
+          <span className="font-medium">{v.total}</span>
+          <div className="h-2 w-full rounded-t-md border-x-2 border-t-2 border-foreground" />
+        </div>
+      )}
+      {v.bars.map((bar, i) => (
+        <div key={i} className="flex items-center gap-2">
+          {bar.label && <span className="w-16 shrink-0 text-sm">{bar.label}</span>}
+          <div className="flex h-11 flex-1">
+            {bar.parts.map((part, k) => (
+              <div
+                key={k}
+                className={cn("flex items-center justify-center border-2 border-foreground px-1", k > 0 && "border-l-0", part.text === "?" ? "bg-brand-green/50 font-medium" : part.text === "" ? "border-transparent" : "bg-brand-green/15")}
+                style={{ flexGrow: part.w, flexBasis: 0 }}
+              >
+                {part.text}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function GeoFigure({ figure, rotation = 0, labels = ["A", "B", "C"] }: Omit<Extract<Visual, { kind: "geoFigure" }>, "kind">) {
+  const dot = (cx: number, cy: number, label: string) => (
+    <g>
+      <circle cx={cx} cy={cy} r={4} className="fill-foreground" />
+      <text x={cx} y={cy - 10} textAnchor="middle" transform={`rotate(${-rotation} ${cx} ${cy - 14})`} className="fill-foreground text-[13px] font-medium">{label}</text>
+    </g>
+  );
+  const arrow = (x: number, y: number, dir: 1 | -1) => <path d={`M${x} ${y} l${-9 * dir} -6 v12 z`} className="fill-foreground" />;
+  return (
+    <svg viewBox="0 -45 200 200" className="size-52">
+      <g transform={`rotate(${rotation} 100 60)`}>
+      {figure === "punto" && dot(100, 60, labels[0])}
+      {figure !== "punto" && figure !== "angulo" && (
+        <>
+          <line x1={figure === "recta" ? 14 : 50} x2={figure === "segmento" ? 150 : 186} y1={60} y2={60} className="stroke-foreground" strokeWidth={3} />
+          {figure === "recta" && arrow(8, 60, -1)}
+          {figure !== "segmento" && arrow(192, 60, 1)}
+          {dot(50, 60, labels[0])}
+          {dot(150, 60, labels[1])}
+        </>
+      )}
+      {figure === "angulo" && (
+        <>
+          <line x1={40} y1={90} x2={180} y2={90} className="stroke-foreground" strokeWidth={3} />
+          <line x1={40} y1={90} x2={140} y2={20} className="stroke-foreground" strokeWidth={3} />
+          {arrow(186, 90, 1)}
+          <path d="M70 90 A30 30 0 0 0 64.6 72.8" className="fill-none stroke-brand-green" strokeWidth={2.5} />
+          {dot(40, 90, labels[1])}
+          {dot(150, 90, labels[2])}
+          {dot(108, 42, labels[0])}
+        </>
+      )}
+      </g>
+    </svg>
+  );
+}
+
 export function VisualView({ visual }: { visual: Visual }) {
   switch (visual.kind) {
     case "text":
@@ -709,7 +935,7 @@ export function VisualView({ visual }: { visual: Visual }) {
           {visual.items.map((it, i) => (
             <div key={i} className="flex items-center gap-3">
               <EqualWidthBar parts={it.parts} shaded={it.shaded} />
-              <span className="w-12 text-xl font-medium tabular-nums">{i === 0 || visual.showAll ? `${it.shaded}/${it.parts}` : `?/${it.parts}`}</span>
+              {!visual.hideLabels && <span className="w-12 text-xl font-medium tabular-nums">{i === 0 || visual.showAll ? `${it.shaded}/${it.parts}` : `?/${it.parts}`}</span>}
             </div>
           ))}
         </div>
@@ -733,7 +959,19 @@ export function VisualView({ visual }: { visual: Visual }) {
         </div>
       );
     case "decimalGrid":
-      return <DecimalGrid hundredths={visual.hundredths} />;
+      return <DecimalGrid hundredths={visual.hundredths} extra={visual.extra} crossed={visual.crossed} />;
+    case "table":
+      return <DataTable v={visual} />;
+    case "barChart":
+      return <BarChart v={visual} />;
+    case "linePlot":
+      return <LinePlot v={visual} />;
+    case "areaModel":
+      return <AreaModel v={visual} />;
+    case "strip":
+      return <Strip v={visual} />;
+    case "geoFigure":
+      return <GeoFigure figure={visual.figure} rotation={visual.rotation} labels={visual.labels} />;
     case "lines":
       return <LinesPair v={visual} />;
     case "angle":
@@ -906,7 +1144,7 @@ export function VisualView({ visual }: { visual: Visual }) {
         </div>
       );
     case "ruler":
-      return <Ruler length={visual.length} />;
+      return <Ruler length={visual.length} unit={visual.unit} sub={visual.sub} />;
     case "thermometer":
       return <Thermometer v={visual} />;
     case "lengthBars":
