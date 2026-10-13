@@ -4,7 +4,9 @@ export type Visual =
   | { kind: "objects"; emoji: string; count: number; numbered?: boolean }
   | { kind: "groups"; emoji: string; a: number; b: number }
   | { kind: "takeaway"; emoji: string; total: number; removed: number }
-  | { kind: "numberLine"; min: number; max: number; step: number; labelEvery: number; marked?: number }
+  // `ray`: dibuja desde `marked` una semirrecta (solución de una inecuación);
+  // `closed` = punto relleno (≤, ≥). Los números negativos se rotulan con «−».
+  | { kind: "numberLine"; min: number; max: number; step: number; labelEvery: number; marked?: number; ray?: { closed: boolean; dir: "left" | "right" } }
   // Recta de 0 a `wholes` (1 por defecto) dividida en `parts` partes por unidad.
   // `marked` y `points[].at` se miden en partes desde 0.
   // `labels`: textos de los dos extremos (para rectas de decimales, p. ej. ["3", "4"]).
@@ -26,7 +28,9 @@ export type Visual =
   | { kind: "lengthBars"; a: number; b: number }
   | { kind: "gridObjects"; size: number; cells: { r: number; c: number; emoji: string }[] }
   | { kind: "stack"; items: string[] }
-  | { kind: "coordPlane"; max: number; points: { x: number; y: number; emoji: string }[] }
+  // `connect`: une los puntos en orden con segmentos («closed» cierra la figura).
+  // `min` negativo: plano con los cuatro cuadrantes (por defecto empieza en 0).
+  | { kind: "coordPlane"; max: number; min?: number; points: { x: number; y: number; emoji: string }[]; connect?: "open" | "closed" }
   | { kind: "shapes"; names: string[] }
   | { kind: "solids"; names: string[] }
   | { kind: "pattern"; items: string[] }
@@ -63,12 +67,14 @@ export type Visual =
   // Polígono en un lienzo de 100 × 100; `sideLabels[i]` rotula el lado que va
   // del vértice i al i+1; `rightAngles` marca vértices con ángulo recto.
   // `dashed`: segmentos punteados (ejes de simetría, cortes de una figura compuesta).
-  | { kind: "polygon"; points: [number, number][]; sideLabels?: string[]; rightAngles?: number[]; dashed?: [[number, number], [number, number]][] }
+  | { kind: "polygon"; points: [number, number][]; sideLabels?: string[]; rightAngles?: number[]; dashed?: [[number, number], [number, number]][]; open?: boolean; grid?: boolean }
+  // (`open`: línea quebrada sin cerrar ni rellenar; `grid`: cuadrícula de fondo, una casilla cada 10 unidades.)
   // --- 4.° de primaria en adelante ---
   // Tabla de datos con encabezados (horarios, listas de precios, entrada/salida...).
   | { kind: "table"; headers?: string[]; rows: string[][]; title?: string }
   // Gráfico de barras (o de líneas con `line`); el eje va de 0 a `max` de `step` en `step`.
-  | { kind: "barChart"; title?: string; bars: { label: string; value: number }[]; max: number; step: number; line?: boolean }
+  // `value2` + `legend`: segunda serie (gráficos dobles de barras o de líneas).
+  | { kind: "barChart"; title?: string; bars: { label: string; value: number; value2?: number }[]; max: number; step: number; line?: boolean; legend?: [string, string] }
   // Diagrama de puntos: una X por cada dato sobre su valor.
   | { kind: "linePlot"; title?: string; labels: string[]; counts: number[] }
   // Modelo de área: `top` y `side` rotulan columnas y filas; `cells[fila][columna]`.
@@ -76,9 +82,27 @@ export type Visual =
   // Diagrama de tiras: cada barra tiene partes con texto y ancho relativo `w`;
   // `total` es el rótulo de la llave sobre la primera barra.
   | { kind: "strip"; total?: string; bars: { label?: string; parts: { text: string; w: number }[] }[] }
+  // --- 6.° de primaria en adelante ---
+  // Gráfico circular: cada sector con su rótulo y su porcentaje (los valores suman 100).
+  | { kind: "pie"; title?: string; slices: { label: string; value: number }[] }
+  // Diagrama de caja y bigotes sobre una recta de `axisMin` a `axisMax`.
+  | { kind: "boxPlot"; title?: string; min: number; q1: number; median: number; q3: number; max: number; axisMin: number; axisMax: number; step: number }
+  // --- 5.° de primaria en adelante ---
+  // Cubos unitarios apilados, en perspectiva: `heights[fila][columna]` (la fila 0 es la del fondo).
+  | { kind: "cubes3d"; heights: number[][] }
+  // Rectángulo de `rows` × `cols` casillas: se pintan `cols` primeras columnas hasta `a`
+  // y las primeras `b` filas; el cruce (producto de fracciones o decimales) va más oscuro.
+  | { kind: "fracGrid"; rows: number; cols: number; a: number; b: number }
   // Punto, recta, segmento, semirrecta o ángulo, con sus letras.
   // `rotation` gira el dibujo (grados); `labels` cambia las letras (por defecto A, B, C).
   | { kind: "geoFigure"; figure: "punto" | "recta" | "segmento" | "semirrecta" | "angulo"; rotation?: number; labels?: string[] }
+  // --- 1.° de secundaria en adelante ---
+  // Círculo (o medio círculo / un cuarto) con su radio o su diámetro rotulados.
+  // `sectors`: lo divide en esa cantidad de sectores iguales y pinta uno.
+  | { kind: "circle"; part?: "full" | "semi" | "quarter"; radius?: string; diameter?: string; sectors?: number }
+  // Dos rectas paralelas cortadas por una transversal, con los ocho ángulos
+  // numerados (1-4 arriba, 5-8 abajo). `given`: ángulo cuya medida se muestra.
+  | { kind: "transversal"; given?: { angle: number; text: string } }
   // Un dibujo grande (emoji) con texto opcional debajo.
   | { kind: "picture"; emoji: string; caption?: string }
   // Lectura: cuento o texto informativo, con título y dibujo opcionales.

@@ -6,6 +6,7 @@ import { PencilIcon, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { WINDOW_LABEL, windowStatus } from "@/lib/exams/online";
 import { ExamSheet, type ExamFormData } from "./exam-sheet";
 
 export function ExamList({ exams, classGroups }: { exams: ExamFormData[]; classGroups: { id: string; label: string }[] }) {
@@ -28,7 +29,7 @@ export function ExamList({ exams, classGroups }: { exams: ExamFormData[]; classG
               <TableHead>Examen</TableHead>
               <TableHead>Fecha</TableHead>
               <TableHead>Secciones</TableHead>
-              <TableHead>Fichas</TableHead>
+              <TableHead>Resultados</TableHead>
               <TableHead>Estado</TableHead>
               <TableHead className="w-10" />
             </TableRow>
@@ -49,6 +50,7 @@ export function ExamList({ exams, classGroups }: { exams: ExamFormData[]; classG
                     <span className="text-xs text-muted-foreground">
                       {item.exam.subject ? `${item.exam.subject} · ` : ""}
                       {item.exam.question_count} preguntas
+                      {item.exam.entry_mode === "online" ? " · en línea" : ""}
                     </span>
                   </div>
                 </TableCell>
@@ -57,8 +59,9 @@ export function ExamList({ exams, classGroups }: { exams: ExamFormData[]; classG
                 <TableCell className="font-mono text-sm">{item.resultCount}</TableCell>
                 <TableCell>
                   <div className="flex flex-wrap gap-1">
-                    {Object.keys(item.keys).length === 0 && <Badge variant="outline">Sin clave</Badge>}
-                    <Badge variant={item.exam.published ? "default" : "secondary"}>{item.exam.published ? "Publicado" : "Borrador"}</Badge>
+                    {Object.keys(item.keys).length === 0 && <Badge variant="outline">{item.exam.entry_mode === "online" ? "Sin preguntas" : "Sin clave"}</Badge>}
+                    {item.exam.entry_mode === "online" && <Badge variant={windowStatus(item.exam.opens_at, item.exam.closes_at) === "open" ? "default" : "secondary"}>{WINDOW_LABEL[windowStatus(item.exam.opens_at, item.exam.closes_at)]}</Badge>}
+                    <Badge variant={item.exam.published ? "default" : "secondary"}>{item.exam.published ? "Publicado" : item.exam.entry_mode === "online" ? "Sin liberar" : "Borrador"}</Badge>
                   </div>
                 </TableCell>
                 <TableCell>

@@ -75,7 +75,7 @@ export type AreaMode = "identify" | "cell" | "total" | "partials" | "expanded" |
 
 // 4.° J.5 – J.16 / K.6 – K.10: multiplicar con modelos de área, forma
 // desarrollada y productos parciales. `aDigits` × `bDigits` cifras.
-export function areaMult(r: Rng, aDigits: 1 | 2, bMin: number, bMax: number, mode: AreaMode, teen = false): Question {
+export function areaMult(r: Rng, aDigits: 1 | 2 | 3, bMin: number, bMax: number, mode: AreaMode, teen = false): Question {
   const a = factor(r, aDigits);
   const b = teen ? r.int(11, 19) : factor(r, r.int(bMin, bMax));
   const top = parts(b);

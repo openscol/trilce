@@ -6,6 +6,7 @@ import { requireAppContext } from "@/lib/auth/context";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/database.types";
 import { DEFAULT_LAYOUT, MAX_MANUAL_QUESTIONS, MAX_QUESTIONS, SHEET_LAYOUTS, layoutForQuestions } from "@/lib/exams/shared";
+import { MAX_ONLINE_QUESTIONS, limaInputToIso, type ExamTimeMode } from "@/lib/exams/online";
 
 export type Exam = Database["public"]["Tables"]["exams"]["Row"];
 export type ExamResult = Database["public"]["Tables"]["exam_results"]["Row"];
@@ -31,17 +32,23 @@ type ExamInput = {
   entry_mode: ExamEntryMode;
   classGroupIds: string[];
   keys: { theme: string; answers: string }[];
+  // Solo exámenes en línea.
+  online: { time_mode: ExamTimeMode; time_limit_seconds: number; opens_at: string | null; closes_at: string | null; shuffle_questions: boolean; shuffle_options: boolean } | null;
 };
 
 function readExamForm(formData: FormData): ExamInput | { error: string } {
   const title = str(formData, "title");
   if (!title) return { error: "El título es obligatorio." };
 
-  const entry_mode: ExamEntryMode = formData.get("entry_mode") === "manual" ? "manual" : "sheet";
+  const rawMode = formData.get("entry_mode");
+  const entry_mode: ExamEntryMode = rawMode === "manual" || rawMode === "online" ? rawMode : "sheet";
   const question_count = Number(formData.get("question_count"));
   const validCount = Number.isInteger(question_count) && question_count >= 1;
   let sheet_layout: string | null;
-  if (entry_mode === "manual") {
+  if (entry_mode === "online") {
+    if (!validCount || question_count > MAX_ONLINE_QUESTIONS) return { error: `El número de preguntas debe estar entre 1 y ${MAX_ONLINE_QUESTIONS}.` };
+    sheet_layout = DEFAULT_LAYOUT;
+  } else if (entry_mode === "manual") {
     // Sin ficha no hay límite de la plantilla impresa.
     if (!validCount || question_count > MAX_MANUAL_QUESTIONS) return { error: `El número de preguntas debe estar entre 1 y ${MAX_MANUAL_QUESTIONS}.` };
     sheet_layout = layoutForQuestions(question_count) ?? DEFAULT_LAYOUT;
@@ -59,9 +66,24 @@ function readExamForm(formData: FormData): ExamInput | { error: string } {
   const exam_date = str(formData, "exam_date");
   if (!exam_date || !/^\d{4}-\d{2}-\d{2}$/.test(exam_date)) return { error: "La fecha es obligatoria." };
 
+  let online: ExamInput["online"] = null;
+  if (entry_mode === "online") {
+    const time_mode: ExamTimeMode = formData.get("time_mode") === "per_question" ? "per_question" : "total";
+    const time_limit_seconds = Math.round(Number(formData.get("time_minutes")) * 60 + Number(formData.get("time_seconds") ?? 0));
+    if (!(time_limit_seconds >= 10) || time_limit_seconds > 86400) {
+      return { error: time_mode === "total" ? "Indica cuánto tiempo dura el examen (mínimo 10 segundos)." : "Indica cuánto tiempo hay para cada pregunta (mínimo 10 segundos)." };
+    }
+    const opens_at = limaInputToIso(str(formData, "opens_at"));
+    const closes_at = limaInputToIso(str(formData, "closes_at"));
+    if (opens_at && closes_at && closes_at <= opens_at) return { error: "El cierre debe ser posterior a la apertura." };
+    if (closes_at && !opens_at) return { error: "Para poner una hora de cierre, indica también la de apertura." };
+    online = { time_mode, time_limit_seconds, opens_at, closes_at, shuffle_questions: formData.get("shuffle_questions") === "on", shuffle_options: formData.get("shuffle_options") === "on" };
+  }
+
   const options = sheet.layout.options.join("");
   const keys: ExamInput["keys"] = [];
-  for (const theme of sheet.layout.themes) {
+  // La clave de un examen en línea sale de sus preguntas, no de este formulario.
+  for (const theme of entry_mode === "online" ? [] : sheet.layout.themes) {
     const answers = (str(formData, `key_${theme}`) ?? "").toUpperCase().replace(/[\s,.;-]/g, "");
     if (!answers) continue;
     if (answers.length !== question_count) {
@@ -83,6 +105,7 @@ function readExamForm(formData: FormData): ExamInput | { error: string } {
     entry_mode,
     classGroupIds: formData.getAll("class_group_ids").map(String).filter(Boolean),
     keys,
+    online,
   };
 }
 
@@ -101,6 +124,9 @@ async function syncExamParts(supabase: Awaited<ReturnType<typeof createClient>>,
     const { error } = await supabase.from("exam_class_groups").delete().eq("exam_id", examId).in("class_group_id", toRemove);
     if (error) return "No se pudieron quitar las secciones del examen.";
   }
+
+  // En línea, la clave la mantiene save_online_exam_questions junto con las preguntas.
+  if (input.entry_mode === "online") return null;
 
   if (input.keys.length) {
     const { error } = await supabase.from("exam_answer_keys").upsert(input.keys.map((k) => ({ exam_id: examId, school_id: schoolId, theme: k.theme, answers: k.answers })));
@@ -134,6 +160,7 @@ export async function createExam(_prevState: FormState, formData: FormData): Pro
       sheet_layout: input.sheet_layout,
       entry_mode: input.entry_mode,
       created_by: ctx.targetId,
+      ...(input.online ?? {}),
     })
     .select("id")
     .single();
@@ -143,7 +170,8 @@ export async function createExam(_prevState: FormState, formData: FormData): Pro
   if (partsError) return { error: partsError };
 
   revalidatePath("/examenes");
-  redirect(`/examenes/${data.id}`);
+  // En línea, lo siguiente es escribir las preguntas.
+  redirect(input.entry_mode === "online" ? `/examenes/${data.id}/preguntas` : `/examenes/${data.id}`);
 }
 
 export async function updateExam(examId: string, _prevState: FormState, formData: FormData): Promise<FormState> {
@@ -155,8 +183,13 @@ export async function updateExam(examId: string, _prevState: FormState, formData
   if ("error" in input) return input;
 
   const supabase = await createClient();
-  const { data: exam } = await supabase.from("exams").select("question_count").eq("id", examId).maybeSingle();
+  const { data: exam } = await supabase.from("exams").select("question_count, entry_mode").eq("id", examId).maybeSingle();
   if (!exam) return { error: "El examen no existe o no tienes acceso." };
+  if ((exam.entry_mode === "online") !== (input.entry_mode === "online")) {
+    return { error: "Un examen en línea no se puede convertir en uno de papel (ni al revés). Crea un examen nuevo." };
+  }
+  // En línea, el número de preguntas lo define el editor de preguntas.
+  if (input.entry_mode === "online") input.question_count = exam.question_count;
   if (exam.question_count !== input.question_count) {
     const { count } = await supabase.from("exam_results").select("id", { count: "exact", head: true }).eq("exam_id", examId);
     if (count) return { error: "No se puede cambiar el número de preguntas: ya hay fichas guardadas." };
@@ -173,6 +206,7 @@ export async function updateExam(examId: string, _prevState: FormState, formData
       max_score: input.max_score,
       sheet_layout: input.sheet_layout,
       entry_mode: input.entry_mode,
+      ...(input.online ?? {}),
     })
     .eq("id", examId)
     .eq("school_id", ctx.schoolId);
@@ -193,11 +227,13 @@ export async function deleteExam(examId: string): Promise<{ error: string } | un
   const supabase = await createClient();
   // Las fotos no se borran en cascada con la fila: se quitan primero del almacenamiento.
   const { data: results } = await supabase.from("exam_results").select("image_path").eq("exam_id", examId);
-  const [{ data: files }, { data: graded }] = await Promise.all([
+  const [{ data: files }, { data: graded }, { data: questions }] = await Promise.all([
     supabase.from("exam_files").select("path").eq("exam_id", examId),
     supabase.from("exam_result_files").select("path").eq("exam_id", examId),
+    supabase.from("exam_questions").select("image_path").eq("exam_id", examId),
   ]);
-  const paths = [...(results ?? []).map((r) => r.image_path).filter((p): p is string => !!p), ...(files ?? []).map((f) => f.path), ...(graded ?? []).map((f) => f.path)];
+  const paths = [
+    ...(questions ?? []).map((q) => q.image_path).filter((p): p is string => !!p),...(results ?? []).map((r) => r.image_path).filter((p): p is string => !!p), ...(files ?? []).map((f) => f.path), ...(graded ?? []).map((f) => f.path)];
   if (paths.length) await supabase.storage.from("exam-sheets").remove(paths);
 
   const { error } = await supabase.from("exams").delete().eq("id", examId).eq("school_id", ctx.schoolId);

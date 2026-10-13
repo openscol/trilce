@@ -25,12 +25,17 @@ export type ChoiceItem = Shown & { a: string; d: string[]; blocks?: boolean; mon
 export type MultiItem = Shown & { opts: string[]; ans: string[]; blocks?: boolean };
 export type OrderItem = Shown & { seq: string[]; blocks?: boolean; mono?: boolean };
 
+// Un `t` que es solo un símbolo o emoji (sin letras ni números) es un dibujo:
+// se muestra grande, igual que `pic`.
+const isSymbol = (t: string | undefined): t is string => !!t && [...t].length <= 8 && !/[\p{L}\p{N}]/u.test(t);
+
 function visualOf(item: Shown): Visual | undefined {
   if (item.code) return { kind: "scratch", code: item.code, title: item.t };
   if (item.py) return { kind: "code", text: item.py, title: item.t };
   if (item.read) return { kind: "passage", ...item.read };
   // Con dibujo y texto a la vez, el texto va debajo del dibujo.
   if (item.pic) return { kind: "picture", emoji: item.pic, caption: item.cap ?? item.t };
+  if (isSymbol(item.t)) return { kind: "picture", emoji: item.t };
   if (item.t) return { kind: "text", text: item.t };
   return undefined;
 }
@@ -164,7 +169,10 @@ function judge(r: Rng, prompt: string, item: ChoiceItem): Question {
       ? { kind: "code", text: item.py, title: `${context ? `${context}\n` : ""}${question}\n→ ${shown}` }
       : item.code
       ? { kind: "scratch", code: item.code, title: `${context ? `${context}\n` : ""}${question}\n→ ${shown}` }
-      : { kind: "text", text: `${context ? `${context}\n` : ""}${question}\n→ ${shown}` };
+      : item.pic || isSymbol(item.t)
+        ? // Con dibujo: el emoji va grande, igual que al elegir la respuesta, y el texto debajo.
+          { kind: "picture", emoji: item.pic ?? item.t ?? "", caption: `${item.pic && item.t ? `${item.t}\n` : ""}${question}\n→ ${shown}` }
+        : { kind: "text", text: `${context ? `${context}\n` : ""}${question}\n→ ${shown}` };
   return {
     kind: "choice",
     prompt: "¿Es correcta esta respuesta?",

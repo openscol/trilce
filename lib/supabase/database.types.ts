@@ -14,6 +14,103 @@ export type Database = {
   }
   public: {
     Tables: {
+      attendance_records: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          session_id: string
+          status: Database["public"]["Enums"]["attendance_status"]
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          session_id: string
+          status?: Database["public"]["Enums"]["attendance_status"]
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          session_id?: string
+          status?: Database["public"]["Enums"]["attendance_status"]
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_records_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "attendance_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_records_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      attendance_sessions: {
+        Row: {
+          class_group_id: string
+          created_at: string
+          date: string
+          id: string
+          school_id: string
+          taken_by: string | null
+          updated_at: string
+        }
+        Insert: {
+          class_group_id: string
+          created_at?: string
+          date: string
+          id?: string
+          school_id?: string
+          taken_by?: string | null
+          updated_at?: string
+        }
+        Update: {
+          class_group_id?: string
+          created_at?: string
+          date?: string
+          id?: string
+          school_id?: string
+          taken_by?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_sessions_class_group_id_fkey"
+            columns: ["class_group_id"]
+            isOneToOne: false
+            referencedRelation: "class_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_sessions_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_sessions_taken_by_fkey"
+            columns: ["taken_by"]
+            isOneToOne: false
+            referencedRelation: "staff_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       academic_years: {
         Row: {
           classroom: string | null
@@ -399,6 +496,215 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "document_types_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feed_comment_likes: {
+        Row: {
+          comment_id: string
+          created_at: string
+          school_id: string
+          user_id: string
+        }
+        Insert: {
+          comment_id: string
+          created_at?: string
+          school_id?: string
+          user_id: string
+        }
+        Update: {
+          comment_id?: string
+          created_at?: string
+          school_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_comment_likes_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "feed_comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feed_comments: {
+        Row: {
+          author_name: string
+          author_role: Database["public"]["Enums"]["membership_role"]
+          body: string
+          created_at: string
+          id: string
+          parent_id: string | null
+          post_id: string
+          school_id: string
+          user_id: string | null
+        }
+        Insert: {
+          author_name?: string
+          author_role?: Database["public"]["Enums"]["membership_role"]
+          body: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          post_id: string
+          school_id?: string
+          user_id?: string | null
+        }
+        Update: {
+          author_name?: string
+          author_role?: Database["public"]["Enums"]["membership_role"]
+          body?: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          post_id?: string
+          school_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "feed_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feed_post_images: {
+        Row: {
+          created_at: string
+          id: string
+          path: string
+          position: number
+          post_id: string
+          school_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          path: string
+          position?: number
+          post_id: string
+          school_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          path?: string
+          position?: number
+          post_id?: string
+          school_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_post_images_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "feed_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feed_post_reactions: {
+        Row: {
+          created_at: string
+          post_id: string
+          reaction: Database["public"]["Enums"]["feed_reaction"]
+          school_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          post_id: string
+          reaction: Database["public"]["Enums"]["feed_reaction"]
+          school_id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          post_id?: string
+          reaction?: Database["public"]["Enums"]["feed_reaction"]
+          school_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_post_reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "feed_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feed_posts: {
+        Row: {
+          audience: Database["public"]["Enums"]["feed_audience"]
+          author_name: string
+          author_role: Database["public"]["Enums"]["membership_role"]
+          author_user_id: string | null
+          body: string
+          class_group_id: string | null
+          comments_enabled: boolean
+          created_at: string
+          grade: string | null
+          id: string
+          level: Database["public"]["Enums"]["enrollment_level"] | null
+          pinned_at: string | null
+          school_id: string
+          updated_at: string
+          youtube_id: string | null
+        }
+        Insert: {
+          audience?: Database["public"]["Enums"]["feed_audience"]
+          author_name?: string
+          author_role?: Database["public"]["Enums"]["membership_role"]
+          author_user_id?: string | null
+          body?: string
+          class_group_id?: string | null
+          comments_enabled?: boolean
+          created_at?: string
+          grade?: string | null
+          id?: string
+          level?: Database["public"]["Enums"]["enrollment_level"] | null
+          pinned_at?: string | null
+          school_id: string
+          updated_at?: string
+          youtube_id?: string | null
+        }
+        Update: {
+          audience?: Database["public"]["Enums"]["feed_audience"]
+          author_name?: string
+          author_role?: Database["public"]["Enums"]["membership_role"]
+          author_user_id?: string | null
+          body?: string
+          class_group_id?: string | null
+          comments_enabled?: boolean
+          created_at?: string
+          grade?: string | null
+          id?: string
+          level?: Database["public"]["Enums"]["enrollment_level"] | null
+          pinned_at?: string | null
+          school_id?: string
+          updated_at?: string
+          youtube_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_posts_class_group_id_fkey"
+            columns: ["class_group_id"]
+            isOneToOne: false
+            referencedRelation: "class_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feed_posts_school_id_fkey"
             columns: ["school_id"]
             isOneToOne: false
             referencedRelation: "schools"
@@ -1598,6 +1904,118 @@ export type Database = {
           },
         ]
       }
+      exam_attempts: {
+        Row: {
+          answers: string
+          deadline: string
+          exam_id: string
+          id: string
+          position: number
+          school_id: string
+          started_at: string
+          student_id: string
+          submitted_at: string | null
+        }
+        Insert: {
+          answers: string
+          deadline: string
+          exam_id: string
+          id?: string
+          position?: number
+          school_id: string
+          started_at?: string
+          student_id: string
+          submitted_at?: string | null
+        }
+        Update: {
+          answers?: string
+          deadline?: string
+          exam_id?: string
+          id?: string
+          position?: number
+          school_id?: string
+          started_at?: string
+          student_id?: string
+          submitted_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_attempts_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_attempts_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_attempts_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exam_questions: {
+        Row: {
+          created_at: string
+          exam_id: string
+          id: string
+          image_path: string | null
+          number: number
+          options: string[]
+          points: number
+          school_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          exam_id: string
+          id?: string
+          image_path?: string | null
+          number: number
+          options: string[]
+          points?: number
+          school_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          exam_id?: string
+          id?: string
+          image_path?: string | null
+          number?: number
+          options?: string[]
+          points?: number
+          school_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_questions_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_questions_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exam_result_files: {
         Row: {
           created_at: string
@@ -1747,6 +2165,12 @@ export type Database = {
           sheet_layout: string
           subject: string | null
           title: string
+          closes_at: string | null
+          opens_at: string | null
+          shuffle_options: boolean
+          shuffle_questions: boolean
+          time_limit_seconds: number | null
+          time_mode: Database["public"]["Enums"]["exam_time_mode"]
           updated_at: string
         }
         Insert: {
@@ -1762,6 +2186,12 @@ export type Database = {
           sheet_layout?: string
           subject?: string | null
           title: string
+          closes_at?: string | null
+          opens_at?: string | null
+          shuffle_options?: boolean
+          shuffle_questions?: boolean
+          time_limit_seconds?: number | null
+          time_mode?: Database["public"]["Enums"]["exam_time_mode"]
           updated_at?: string
         }
         Update: {
@@ -1777,6 +2207,12 @@ export type Database = {
           sheet_layout?: string
           subject?: string | null
           title?: string
+          closes_at?: string | null
+          opens_at?: string | null
+          shuffle_options?: boolean
+          shuffle_questions?: boolean
+          time_limit_seconds?: number | null
+          time_mode?: Database["public"]["Enums"]["exam_time_mode"]
           updated_at?: string
         }
         Relationships: [
@@ -2571,6 +3007,65 @@ export type Database = {
       }
     }
     Functions: {
+      answer_online_exam: {
+        Args: { p_exam_id: string; p_number: number; p_option: string | null; p_advance?: boolean }
+        Returns: Json
+      }
+      close_due_exam_attempts: { Args: { p_exam_id: string }; Returns: undefined }
+      feed_page: { Args: { p_school_id: string; p_offset?: number; p_limit?: number }; Returns: Json }
+      feed_post_comments: { Args: { p_post_id: string }; Returns: Json }
+      finish_online_exam: { Args: { p_exam_id: string }; Returns: Json }
+      my_online_exams: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          closes_at: string | null
+          correct_count: number | null
+          exam_date: string
+          exam_id: string
+          is_own: boolean
+          max_score: number
+          opens_at: string | null
+          published: boolean
+          question_count: number
+          result_id: string | null
+          score: number | null
+          status: string
+          student_id: string
+          student_name: string
+          subject: string | null
+          time_limit_seconds: number | null
+          time_mode: Database["public"]["Enums"]["exam_time_mode"]
+          title: string
+        }[]
+      }
+      online_exam_state: { Args: { p_exam_id: string }; Returns: Json }
+      save_online_exam_questions: { Args: { p_exam_id: string; p_questions: Json }; Returns: undefined }
+      start_online_exam: { Args: { p_exam_id: string }; Returns: Json }
+      attendance_roster: {
+        Args: { p_class_group_id: string }
+        Returns: {
+          code: string
+          document_number: string | null
+          first_names: string
+          id: string
+          maternal_surname: string | null
+          paternal_surname: string
+          status: Database["public"]["Enums"]["student_status"]
+        }[]
+      }
+      can_edit_attendance: {
+        Args: { target_class_group_id: string; target_date: string }
+        Returns: boolean
+      }
+      can_take_attendance: {
+        Args: { target_class_group_id: string }
+        Returns: boolean
+      }
+      link_students_to_class_groups: {
+        Args: { p_academic_year: number; p_school_id: string }
+        Returns: number
+      }
+      school_today: { Args: never; Returns: string }
       provision_student_login: {
         Args: { p_student_id: string }
         Returns: {
@@ -2644,6 +3139,12 @@ export type Database = {
     }
     Enums: {
       activation_type: "manual" | "gateway"
+      attendance_status:
+        | "presente"
+        | "tardanza"
+        | "tardanza_justificada"
+        | "falta"
+        | "falta_justificada"
       billing_invoice_status: "pendiente" | "pagado" | "vencido" | "anulado"
       challenge_purpose: "device_verification" | "login_otp" | "password_reset"
       challenge_status: "pending" | "verified" | "expired" | "failed"
@@ -2653,7 +3154,10 @@ export type Database = {
       document_id_type: "DNI" | "CE" | "Pasaporte" | "Otro"
       document_status: "emitido" | "anulado"
       enrollment_level: "inicial" | "primaria" | "secundaria"
-      exam_entry_mode: "sheet" | "manual"
+      exam_entry_mode: "sheet" | "manual" | "online"
+      exam_time_mode: "total" | "per_question"
+      feed_audience: "school" | "grade" | "section"
+      feed_reaction: "like" | "love" | "haha" | "wow" | "sad" | "angry"
       exam_file_kind: "exam" | "answer_sheet"
       gateway_provider: "manual" | "pagoefectivo" | "stripe" | "culqi"
       invite_status: "pending" | "accepted" | "expired" | "revoked"
@@ -2817,6 +3321,13 @@ export const Constants = {
   public: {
     Enums: {
       activation_type: ["manual", "gateway"],
+      attendance_status: [
+        "presente",
+        "tardanza",
+        "tardanza_justificada",
+        "falta",
+        "falta_justificada",
+      ],
       billing_invoice_status: ["pendiente", "pagado", "vencido", "anulado"],
       challenge_purpose: ["device_verification", "login_otp", "password_reset"],
       challenge_status: ["pending", "verified", "expired", "failed"],
@@ -2826,7 +3337,10 @@ export const Constants = {
       document_id_type: ["DNI", "CE", "Pasaporte", "Otro"],
       document_status: ["emitido", "anulado"],
       enrollment_level: ["inicial", "primaria", "secundaria"],
-      exam_entry_mode: ["sheet", "manual"],
+      exam_entry_mode: ["sheet", "manual", "online"],
+      exam_time_mode: ["total", "per_question"],
+      feed_audience: ["school", "grade", "section"],
+      feed_reaction: ["like", "love", "haha", "wow", "sad", "angry"],
       exam_file_kind: ["exam", "answer_sheet"],
       gateway_provider: ["manual", "pagoefectivo", "stripe", "culqi"],
       invite_status: ["pending", "accepted", "expired", "revoked"],

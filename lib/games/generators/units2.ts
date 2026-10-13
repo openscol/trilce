@@ -1,6 +1,6 @@
 import type { Rng } from "../rng";
 import type { Question } from "../types";
-import { NAMES, SYMBOLS, choiceQ, fixedQ, fmt, mixed, numQ, sym, table } from "./kit";
+import { NAMES, SYMBOLS, choiceQ, d3, decQ, fixedQ, fmt, intQ, mixed, numQ, sg, sym, table } from "./kit";
 
 // Unidades de medida de 4.° en adelante: sistema métrico y unidades
 // anglosajonas (pulgadas, libras, galones...). En las anglosajonas la
@@ -194,4 +194,102 @@ export function conversionProblem(r: Rng): Question {
   ];
   const [text, answer, why] = r.pick(forms);
   return numQ(answer, text, undefined, `${why}.`);
+}
+
+// 5.° II.7: convertir unidades anglosajonas con fracciones.
+export function customaryFractions(r: Rng): Question {
+  const [big, small, factor, dens] = r.pick<[string, string, number, number[]]>([["pie", "pulgadas", 12, [2, 3, 4, 6]], ["libra", "onzas", 16, [2, 4, 8]], ["yarda", "pies", 3, [3]], ["galón", "cuartos", 4, [2, 4]], ["hora", "minutos", 60, [2, 3, 4, 6]]]);
+  const d = r.pick(dens);
+  const n = r.int(1, d - 1);
+  const w = r.chance(0.4) ? r.int(1, 3) : 0;
+  const answer = w * factor + (factor / d) * n;
+  const plural = big === "galón" ? "galones" : `${big}s`;
+  const amount = w ? `${w} ${n}/${d} ${plural}` : `${n}/${d} de ${big}`;
+  return numQ(answer, `Convierte. (1 ${big} = ${factor} ${small})`, `${amount} = ? ${small}`, `${n}/${d} de ${factor} = ${(factor / d) * n}${w ? `; ${w} × ${factor} = ${w * factor}; en total ${answer}` : ""} ${small}.`, big);
+}
+
+// 5.° II.10: problemas de varios pasos con unidades anglosajonas.
+export function customaryMultiStep(r: Rng): Question {
+  const name = r.pick(NAMES);
+  const a = r.int(2, 6);
+  const b = r.int(1, 11);
+  const k = r.int(2, 5);
+  const forms: [string, number, string][] = [
+    [`${name} mide ${a} pies ${b} pulgadas. Su hermano mide ${k} pulgadas menos. ¿Cuántas pulgadas mide su hermano? (1 pie = 12 pulgadas)`, a * 12 + b - k, `${a} × 12 + ${b} = ${a * 12 + b}; ${a * 12 + b} − ${k} = ${a * 12 + b - k} pulgadas`],
+    [`Una receta lleva ${a} libras de harina y ${b} onzas de azúcar. ¿Cuántas onzas pesan los dos ingredientes juntos? (1 libra = 16 onzas)`, a * 16 + b, `${a} × 16 = ${a * 16}; ${a * 16} + ${b} = ${a * 16 + b} onzas`],
+    [`${name} compra ${k} cintas de ${a} yardas cada una. ¿Cuántos pies de cinta tiene? (1 yarda = 3 pies)`, k * a * 3, `${k} × ${a} = ${k * a} yardas; ${k * a} × 3 = ${k * a * 3} pies`],
+    [`Un bidón tiene ${a} galones de jugo. Se sirven ${k} cuartos. ¿Cuántos cuartos quedan? (1 galón = 4 cuartos)`, a * 4 - k, `${a} × 4 = ${a * 4}; ${a * 4} − ${k} = ${a * 4 - k} cuartos`],
+  ];
+  const [text, answer, why] = r.pick(forms);
+  return numQ(answer, text, undefined, `${why}.`);
+}
+
+const ESTIMATES: Record<System, [string, string, string[]][]> = {
+  anglosajon: [
+    ["la altura de una puerta", "7 pies", ["7 pulgadas", "7 yardas", "7 millas"]],
+    ["el largo de un lápiz", "7 pulgadas", ["7 pies", "7 yardas", "70 pies"]],
+    ["el largo de una cancha de fútbol", "100 yardas", ["100 pulgadas", "100 millas", "10 pies"]],
+    ["el peso de una manzana", "6 onzas", ["6 libras", "6 toneladas", "60 libras"]],
+    ["el peso de un perro mediano", "40 libras", ["40 onzas", "40 toneladas", "4 onzas"]],
+    ["la gasolina del tanque de un auto", "12 galones", ["12 tazas", "12 pintas", "120 galones"]],
+    ["la leche de un vaso", "1 taza", ["1 galón", "10 galones", "10 cuartos"]],
+    ["la distancia entre dos ciudades vecinas", "30 millas", ["30 pies", "30 yardas", "30 pulgadas"]],
+    ["el peso de un auto", "1 tonelada", ["1 libra", "100 onzas", "10 libras"]],
+    ["el ancho de una mano", "4 pulgadas", ["4 pies", "4 yardas", "40 pulgadas"]],
+    ["el largo de una cama", "6 pies", ["6 pulgadas", "60 pies", "6 millas"]],
+    ["el agua de un balde", "3 galones", ["3 tazas", "30 galones", "3 pintas"]],
+  ],
+  metrico: [
+    ["la altura de una puerta", "2 m", ["2 cm", "2 km", "20 m"]],
+    ["el largo de un lápiz", "18 cm", ["18 mm", "18 m", "180 cm"]],
+    ["la distancia entre dos ciudades vecinas", "50 km", ["50 m", "50 cm", "500 m"]],
+    ["la masa de una manzana", "150 g", ["150 kg", "15 kg", "1,5 g"]],
+    ["la masa de un perro mediano", "18 kg", ["18 g", "180 g", "18 t"]],
+    ["el agua de una botella personal", "600 ml", ["600 l", "6 l", "6 ml"]],
+    ["el agua de un balde", "10 l", ["10 ml", "100 ml", "1000 l"]],
+    ["el grosor de una moneda", "2 mm", ["2 cm", "2 m", "20 cm"]],
+    ["la masa de un auto", "1 t", ["1 kg", "100 g", "10 kg"]],
+    ["el largo de un salón de clases", "8 m", ["8 cm", "8 km", "80 cm"]],
+    ["la masa de un clip", "1 g", ["1 kg", "100 g", "10 kg"]],
+    ["el jarabe de una cucharadita", "5 ml", ["5 l", "50 l", "500 ml"]],
+  ],
+};
+
+// 6.° W.1 / W.2: estimar medidas.
+export function estimateMeasure(r: Rng, system: System): Question {
+  const [thing, answer, wrong] = r.pick(ESTIMATES[system]);
+  return choiceQ(r, `¿Cuál es la mejor estimación de ${thing}?`.replace(" de el ", " del "), answer, wrong, `Lo razonable para ${thing} es ${answer}.`, undefined, system);
+}
+
+// 6.° W.5: multiplicar y dividir unidades anglosajonas mixtas.
+export function multiplyMixedCustomary(r: Rng): Question {
+  const [big, small, factor] = r.pick<[string, string, number]>([["pies", "pulgadas", 12], ["libras", "onzas", 16], ["yardas", "pies", 3], ["galones", "cuartos", 4]]);
+  const k = r.int(2, 5);
+  const a = r.int(1, 4) * factor + r.int(1, factor - 1);
+  const show = (x: number) => (x % factor === 0 ? q(x / factor, big) : x < factor ? q(x, small) : `${q(Math.floor(x / factor), big)} ${q(x % factor, small)}`);
+  const one = ONE[big] ?? big;
+  const hint = `(1 ${one} = ${factor} ${small})`;
+  const wrong = (answer: number) => [answer + factor, answer - factor, answer + 1, answer - 1, answer + 2].filter((x) => x > 0 && x !== answer).map(show);
+  if (r.chance(0.5)) return choiceQ(r, `Resuelve. ${hint}`, show(a * k), wrong(a * k), `${show(a)} = ${a} ${small}; ${a} × ${k} = ${a * k} ${small} = ${show(a * k)}.`, `${k} × (${show(a)}) = ?`, "multiplicar");
+  return choiceQ(r, `Resuelve. ${hint}`, show(a), wrong(a), `${show(a * k)} = ${a * k} ${small}; ${a * k} ÷ ${k} = ${a} ${small} = ${show(a)}.`, `(${show(a * k)}) ÷ ${k} = ?`, "dividir");
+}
+
+// Equivalencias aproximadas entre sistemas (en milésimos de la unidad métrica).
+const CROSS: [string, string, number, string][] = [["pulgadas", "cm", 2500, "1 pulgada ≈ 2,5 cm"], ["millas", "km", 1600, "1 milla ≈ 1,6 km"], ["libras", "kg", 450, "1 libra ≈ 0,45 kg"], ["galones", "l", 3800, "1 galón ≈ 3,8 l"], ["pies", "cm", 30000, "1 pie ≈ 30 cm"], ["yardas", "m", 900, "1 yarda ≈ 0,9 m"]];
+
+// 6.° W.8 / W.9: convertir entre el sistema anglosajón y el métrico.
+export function convertBetweenSystems(r: Rng, bothWays: boolean): Question {
+  const [customary, metric, rate, rule] = r.pick(CROSS);
+  const n = r.int(2, 20);
+  const total = n * rate;
+  if (bothWays && r.chance(0.5)) return numQ(n, `Convierte usando la equivalencia: ${rule}.`, `${d3(total)} ${metric} ≈ ? ${customary}`, `${d3(total)} ÷ ${d3(rate)} = ${n} ${customary}.`, "a-anglosajon");
+  return decQ(r, `Convierte usando la equivalencia: ${rule}.`, total, `${n} × ${d3(rate)} = ${d3(total)} ${metric}.`, `${n} ${customary} ≈ ? ${metric}`, "a-metrico", [total * 10, total / 10, n * 1000].filter(Number.isInteger));
+}
+
+// 6.° W.11: convertir entre grados Celsius y Fahrenheit.
+export function celsiusFahrenheit(r: Rng): Question {
+  const c = r.int(-4, 20) * 5;
+  const f = (c * 9) / 5 + 32;
+  if (r.chance(0.5)) return intQ(r, "Convierte a grados Fahrenheit. °F = °C × 9 ÷ 5 + 32", f, `${sg(c)} × 9 ÷ 5 = ${sg((c * 9) / 5)}; ${sg((c * 9) / 5)} + 32 = ${sg(f)} °F.`, `${sg(c)} °C = ? °F`, "a-fahrenheit", [c + 32, (c * 9) / 5, f + 32]);
+  return intQ(r, "Convierte a grados Celsius. °C = (°F − 32) × 5 ÷ 9", c, `${sg(f)} − 32 = ${sg(f - 32)}; ${sg(f - 32)} × 5 ÷ 9 = ${sg(c)} °C.`, `${sg(f)} °F = ? °C`, "a-celsius", [f - 32, ((f - 32) * 5) / 9 + 5]);
 }

@@ -182,13 +182,13 @@ export function solveEquation(r: Rng, ops: Op[] = ["+", "−", "×", "÷"], max 
   if (op === "+") {
     const x = r.int(5, max);
     const b = r.int(5, max);
-    const text = r.chance(0.5) ? `${letter} + ${b} = ${x + b}` : `${b} + ${letter} = ${x + b}`;
-    return numQ(x, ask, text, `${letter} = ${x + b} − ${b} = ${x}.`, "suma");
+    const text = r.chance(0.5) ? `${letter} + ${fmt(b)} = ${fmt(x + b)}` : `${fmt(b)} + ${letter} = ${fmt(x + b)}`;
+    return numQ(x, ask, text, `${letter} = ${fmt(x + b)} − ${fmt(b)} = ${fmt(x)}.`, "suma");
   }
   if (op === "−") {
     const x = r.int(10, max);
     const b = r.int(1, x - 1);
-    return r.chance(0.5) ? numQ(x, ask, `${letter} − ${b} = ${x - b}`, `${letter} = ${x - b} + ${b} = ${x}.`, "resta") : numQ(b, ask, `${x} − ${letter} = ${x - b}`, `${letter} = ${x} − ${x - b} = ${b}.`, "resta");
+    return r.chance(0.5) ? numQ(x, ask, `${letter} − ${fmt(b)} = ${fmt(x - b)}`, `${letter} = ${fmt(x - b)} + ${fmt(b)} = ${fmt(x)}.`, "resta") : numQ(b, ask, `${fmt(x)} − ${letter} = ${fmt(x - b)}`, `${letter} = ${fmt(x)} − ${fmt(x - b)} = ${fmt(b)}.`, "resta");
   }
   const x = r.int(2, 12);
   const b = r.int(2, 12);

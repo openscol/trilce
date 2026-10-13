@@ -171,3 +171,74 @@ export function nearCents(r: Rng, answer: number, show: (n: number) => string, e
   }
   return [...out].map(show);
 }
+
+// ---------------------------------------------------------------------------
+// 5.° en adelante
+
+// Operaciones con fracciones (el resultado sale simplificado).
+export const fadd = (a: Frac, b: Frac): Frac => simp([a[0] * b[1] + b[0] * a[1], a[1] * b[1]]);
+export const fsub = (a: Frac, b: Frac): Frac => simp([a[0] * b[1] - b[0] * a[1], a[1] * b[1]]);
+export const fmul = (a: Frac, b: Frac): Frac => simp([a[0] * b[0], a[1] * b[1]]);
+// Fracción simplificada; si pasa de 1, como número mixto: fshow([9, 6]) = "1 1/2".
+export const fshow = (f: Frac) => {
+  const [n, d] = simp(f);
+  return mixed(n, d);
+};
+
+// Milésimos → decimal con coma y sin ceros de más: 3450 → "3,45"; 5 → "0,005".
+export function d3(t: number) {
+  const whole = Math.floor(t / 1000);
+  const rest = String(t % 1000).padStart(3, "0").replace(/0+$/, "");
+  return rest ? `${fmt(whole)},${rest}` : fmt(whole);
+}
+
+// Distractores para una cantidad en milésimos: se mueven en la última cifra que
+// usa la respuesta; `extra` sirve para los errores típicos (coma corrida).
+export function nearMil(r: Rng, answer: number, extra: number[] = []): string[] {
+  const step = answer % 10 !== 0 ? 1 : answer % 100 !== 0 ? 10 : answer % 1000 !== 0 ? 100 : 1000;
+  const out = new Set<number>(extra.filter((x) => x > 0 && x !== answer && Number.isInteger(x)));
+  let guard = 0;
+  while (out.size < 6 && guard++ < 80) {
+    const c = answer + r.pick([-2, -1, 1, 2]) * step * r.pick([1, 1, 10]);
+    if (c > 0 && c !== answer) out.add(c);
+  }
+  return [...out].map(d3);
+}
+
+// Respuesta decimal (en milésimos) como opción múltiple.
+export function decQ(r: Rng, prompt: string, answer: number, explanation: string, visual?: Visual | string, tag?: string, extra: number[] = []): Question {
+  return choiceQ(r, prompt, d3(answer), nearMil(r, answer, extra), explanation, visual, tag);
+}
+
+// Respuesta en fracción (simplificada o mixta) como opción múltiple; los
+// distractores nunca valen lo mismo que la respuesta.
+export function fracQ(r: Rng, prompt: string, answer: Frac, explanation: string, visual?: Visual | string, tag?: string, extra: Frac[] = []): Question {
+  const [n, d] = simp(answer);
+  const pool: Frac[] = [...extra, [n + 1, d], [n + d, d], [n + 2, d], [n * 2, d], ...(n > 1 ? [[n - 1, d] as Frac] : []), ...(n > d ? [[n - d, d] as Frac] : [[n, d + 1] as Frac, [n + 1, d + 1] as Frac, [n, d * 2] as Frac])];
+  const same = (f: Frac) => f[0] * d === n * f[1];
+  const wrong = pool.filter((f) => f[0] > 0 && f[1] > 0 && !same(f)).map(fshow);
+  return choiceQ(r, prompt, fshow(answer), wrong.filter((w) => w !== fshow(answer)), explanation, visual, tag);
+}
+
+// 10³, 10⁴...
+const SUP = "⁰¹²³⁴⁵⁶⁷⁸⁹";
+export const pow10 = (e: number) => `10${[...String(e)].map((c) => SUP[Number(c)]).join("")}`;
+
+// ---------------------------------------------------------------------------
+// 6.° en adelante
+
+// Entero con signo para mostrar: −5, 0, 7 (el signo menos tipográfico, no el guion).
+export const sg = (n: number) => (n < 0 ? `−${fmt(-n)}` : fmt(n));
+// Entre paréntesis si es negativo, para escribirlo dentro de una operación: 3 + (−5).
+export const par = (n: number) => (n < 0 ? `(${sg(n)})` : sg(n));
+
+// Respuesta entera que puede ser negativa: va como opción múltiple (el teclado
+// numérico del celular no tiene signo menos). Incluye el error de signo.
+export function intQ(r: Rng, prompt: string, answer: number, explanation: string, visual?: Visual | string, tag?: string, extra: number[] = []): Question {
+  const pool = new Set<number>([...extra, -answer, answer + 1, answer - 1, answer + 2, answer - 2, -answer + 1, -answer - 1, answer + 10, answer - 10]);
+  pool.delete(answer);
+  return choiceQ(r, prompt, sg(answer), [...pool].map(sg), explanation, visual, tag);
+}
+
+// Porcentaje como texto: 25 → "25 %".
+export const pct = (n: number) => `${fmt(n)} %`;

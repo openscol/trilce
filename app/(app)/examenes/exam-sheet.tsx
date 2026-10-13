@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { DEFAULT_LAYOUT, MAX_MANUAL_QUESTIONS, MAX_QUESTIONS, SHEET_LAYOUTS, layoutForQuestions } from "@/lib/exams/shared";
+import { MAX_ONLINE_QUESTIONS, isoToLimaInput, type ExamTimeMode } from "@/lib/exams/online";
 import { createExam, deleteExam, updateExam, type Exam, type ExamEntryMode, type FormState } from "./actions";
 
 export type ExamFormData = { exam: Exam; classGroupIds: string[]; keys: Record<string, string>; resultCount: number };
@@ -50,6 +51,9 @@ function ExamSheetBody({ item, classGroups, onSaved }: { item: ExamFormData | nu
   const [isDeleting, startDelete] = useTransition();
   const [questions, setQuestions] = useState(exam?.question_count ?? 10);
   const [mode, setMode] = useState<ExamEntryMode>(exam?.entry_mode ?? "sheet");
+  const [timeMode, setTimeMode] = useState<ExamTimeMode>(exam?.time_mode ?? "total");
+  const online = mode === "online";
+  const limit = exam?.time_limit_seconds ?? null;
   // La ficha depende del número de preguntas: hasta 10, la de 10; de 11 a 20, la de 20.
   const sheet = SHEET_LAYOUTS[layoutForQuestions(questions) ?? DEFAULT_LAYOUT];
   const layout = sheet.layout;
@@ -76,7 +80,7 @@ function ExamSheetBody({ item, classGroups, onSaved }: { item: ExamFormData | nu
     <form action={formAction} className="flex h-full flex-col">
       <SheetHeader>
         <SheetTitle>{exam ? "Editar examen" : "Nuevo examen"}</SheetTitle>
-        <SheetDescription>Datos del examen y clave de respuestas de cada tipo.</SheetDescription>
+        <SheetDescription>{online ? "Datos del examen en línea. Las preguntas se escriben después de guardar." : "Datos del examen y clave de respuestas de cada tipo."}</SheetDescription>
       </SheetHeader>
 
       <div className="flex flex-1 flex-col gap-4 px-4">
@@ -90,13 +94,17 @@ function ExamSheetBody({ item, classGroups, onSaved }: { item: ExamFormData | nu
         </div>
         <div className="flex flex-col gap-2">
           <Label>Registro de respuestas</Label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2">
             {(
               [
                 ["sheet", "Ficha de respuestas", "El alumno rellena la ficha y se leen sus fotos."],
                 ["manual", "Registro manual", "Sin ficha: escribes lo que marcó cada alumno y subes su examen calificado."],
+                ["online", "Examen en línea", "El alumno lo rinde desde su cuenta, con tiempo; se califica solo."],
               ] as const
-            ).map(([value, title, hint]) => (
+            )
+              // Un examen ya creado no cambia entre papel y en línea.
+              .filter(([value]) => !exam || (value === "online") === (exam.entry_mode === "online"))
+              .map(([value, title, hint]) => (
               <label key={value} className={`flex cursor-pointer flex-col gap-1 rounded-lg border p-3 text-sm ${mode === value ? "border-primary" : "border-border"}`}>
                 <span className="flex items-center gap-2">
                   <input type="radio" name="entry_mode" value={value} checked={mode === value} onChange={() => setMode(value)} className="size-4 accent-primary" />
@@ -119,10 +127,11 @@ function ExamSheetBody({ item, classGroups, onSaved }: { item: ExamFormData | nu
               name="question_count"
               type="number"
               min={1}
-              max={mode === "manual" ? MAX_MANUAL_QUESTIONS : MAX_QUESTIONS}
+              max={online ? MAX_ONLINE_QUESTIONS : mode === "manual" ? MAX_MANUAL_QUESTIONS : MAX_QUESTIONS}
               value={questions}
               onChange={(e) => setQuestions(Number(e.target.value))}
-              readOnly={!!item && item.resultCount > 0}
+              // En línea, una vez creado, el número lo define el editor de preguntas.
+              readOnly={!!item && (item.resultCount > 0 || online)}
               required
             />
           </div>
@@ -134,7 +143,62 @@ function ExamSheetBody({ item, classGroups, onSaved }: { item: ExamFormData | nu
 
         {mode === "sheet" && <p className="text-xs text-muted-foreground">{sheet.name}.</p>}
 
-        <div className="flex flex-col gap-2">
+        {online && (
+          <>
+            <div className="flex flex-col gap-2">
+              <Label>Tiempo</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {(
+                  [
+                    ["total", "Tiempo general", "Un solo reloj para todo el examen. Puede volver a las preguntas."],
+                    ["per_question", "Tiempo por pregunta", "Cada pregunta tiene su reloj. No puede volver atrás."],
+                  ] as const
+                ).map(([value, title, hint]) => (
+                  <label key={value} className={`flex cursor-pointer flex-col gap-1 rounded-lg border p-3 text-sm ${timeMode === value ? "border-primary" : "border-border"}`}>
+                    <span className="flex items-center gap-2">
+                      <input type="radio" name="time_mode" value={value} checked={timeMode === value} onChange={() => setTimeMode(value)} className="size-4 accent-primary" />
+                      {title}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{hint}</span>
+                  </label>
+                ))}
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <Input name="time_minutes" type="number" min={0} max={1440} defaultValue={limit === null ? (timeMode === "total" ? 10 : 2) : Math.floor(limit / 60)} className="w-20" required aria-label="Minutos" />
+                min
+                <Input name="time_seconds" type="number" min={0} max={59} defaultValue={limit === null ? 0 : limit % 60} className="w-20" aria-label="Segundos" />
+                s<span className="text-muted-foreground">{timeMode === "total" ? "para todo el examen" : "por cada pregunta"}</span>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Disponibilidad</Label>
+              <p className="text-xs text-muted-foreground">Los alumnos solo pueden empezar entre la apertura y el cierre (hora del Perú). Déjalo vacío para abrirlo y cerrarlo a mano con los botones del examen.</p>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs text-muted-foreground">Apertura</span>
+                  <Input name="opens_at" type="datetime-local" defaultValue={isoToLimaInput(exam?.opens_at ?? null)} />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs text-muted-foreground">Cierre</span>
+                  <Input name="closes_at" type="datetime-local" defaultValue={isoToLimaInput(exam?.closes_at ?? null)} />
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Orden</Label>
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" name="shuffle_questions" defaultChecked={exam?.shuffle_questions ?? true} className="size-4 accent-primary" />
+                Mezclar las preguntas (cada alumno las recibe en un orden distinto)
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" name="shuffle_options" defaultChecked={exam?.shuffle_options ?? false} className="size-4 accent-primary" />
+                Mezclar también las alternativas
+              </label>
+            </div>
+          </>
+        )}
+
+        <div className={online ? "hidden" : "flex flex-col gap-2"}>
           <Label>Clave de respuestas</Label>
           <p className="text-xs text-muted-foreground">
             Una letra por pregunta, en orden ({layout.options.join(", ")}). Ejemplo para {questions} preguntas: {"BBCCBCBBCB".repeat(5).slice(0, questions)}. Deja vacío el tipo que no uses.

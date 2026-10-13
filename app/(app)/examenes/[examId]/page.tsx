@@ -10,6 +10,8 @@ import { AnswerStrip } from "./answer-strip";
 import { ExamHeader } from "./exam-header";
 import { ExamMaterials } from "./exam-materials";
 import { DeleteResultButton } from "./delete-result-button";
+import { OnlineExamStaff } from "./online-staff";
+import { OnlineReview } from "./online-review";
 
 const STAFF_ROLES = ["admin", "administrativo", "docente"];
 
@@ -36,6 +38,42 @@ export default async function ExamPage({ params, searchParams }: { params: Promi
     const { data: results } = await query.limit(1);
     const result = results?.[0];
     if (!result) notFound();
+
+    if (exam.entry_mode === "online") {
+      // Examen en línea ya liberado: preguntas, lo que marcó y la respuesta correcta.
+      const { data: questions } = await supabase.from("exam_questions").select("number, title, image_path, options, points").eq("exam_id", examId).order("number");
+      const imagePaths = (questions ?? []).map((q) => q.image_path).filter((p): p is string => !!p);
+      const { data: signedImages } = imagePaths.length ? await supabase.storage.from("exam-sheets").createSignedUrls(imagePaths, 3600) : { data: [] };
+      const imageOf = new Map((signedImages ?? []).map((s) => [s.path, s.signedUrl]));
+      return (
+        <div className="flex flex-col gap-4">
+          {back}
+          <div>
+            <h1 className="text-lg font-medium">{exam.title}</h1>
+            <p className="text-sm text-muted-foreground">
+              {exam.subject ? `${exam.subject} · ` : ""}
+              {exam.exam_date}
+              {result.students ? ` · ${studentName(result.students)}` : ""}
+            </p>
+          </div>
+          <div className="flex flex-col gap-1 rounded-2xl border border-border p-4">
+            <div className="flex items-end gap-2">
+              <span className="font-mono text-4xl">{formatScore(result.score)}</span>
+              <span className="pb-1 text-sm text-muted-foreground">/ {formatScore(exam.max_score)}</span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {result.correct_count ?? "—"} de {exam.question_count} respuestas correctas
+            </p>
+          </div>
+          <OnlineReview
+            questions={(questions ?? []).map((q) => ({ number: q.number, title: q.title, options: q.options, points: q.points, imageUrl: q.image_path ? (imageOf.get(q.image_path) ?? null) : null }))}
+            answers={result.answers}
+            marks={result.marks}
+            corrections={result.corrections}
+          />
+        </div>
+      );
+    }
 
     // Material de su tipo de examen (RLS solo devuelve el de su tipo): cuadernillo y ficha de respuestas.
     const [{ data: files }, { data: graded }] = await Promise.all([
@@ -111,6 +149,15 @@ export default async function ExamPage({ params, searchParams }: { params: Promi
             {ownSheet && <Images title="Ficha marcada por el alumno" files={[{ url: ownSheet, pdf: false }]} empty="" />}
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (exam.entry_mode === "online") {
+    return (
+      <div className="flex flex-col gap-4">
+        {back}
+        <OnlineExamStaff exam={exam} />
       </div>
     );
   }

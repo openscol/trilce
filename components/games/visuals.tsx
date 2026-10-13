@@ -169,13 +169,19 @@ function NumberLine({ v }: { v: Extract<Visual, { kind: "numberLine" }> }) {
             <line x1={x(n)} x2={x(n)} y1={labeled ? 36 : 40} y2={labeled ? 54 : 50} className="stroke-foreground" strokeWidth={2} />
             {labeled && v.marked !== n && (
               <text x={x(n)} y={72} textAnchor="middle" className="fill-foreground text-[14px]">
-                {n}
+                {n < 0 ? `−${-n}` : n}
               </text>
             )}
           </g>
         );
       })}
-      {v.marked !== undefined && <circle cx={x(v.marked)} cy={45} r={8} className="fill-brand-green stroke-foreground" strokeWidth={2} />}
+      {v.ray && v.marked !== undefined && (
+        <>
+          <line x1={x(v.marked)} x2={v.ray.dir === "right" ? W - pad + 12 : pad - 12} y1={45} y2={45} className="stroke-brand-green-text" strokeWidth={6} strokeLinecap="round" />
+          <path d={v.ray.dir === "right" ? `M${W - 2} 45 l-12 -8 v16 z` : `M2 45 l12 -8 v16 z`} className="fill-brand-green-text" />
+        </>
+      )}
+      {v.marked !== undefined && <circle cx={x(v.marked)} cy={45} r={8} className={cn("stroke-foreground", v.ray && !v.ray.closed ? "fill-background" : "fill-brand-green")} strokeWidth={2} />}
     </svg>
   );
 }
@@ -302,7 +308,18 @@ function PolygonFigure({ v }: { v: Extract<Visual, { kind: "polygon" }> }) {
   const clockwise = v.points.reduce((sum, p, i) => sum + p[0] * v.points[(i + 1) % n][1] - v.points[(i + 1) % n][0] * p[1], 0) > 0;
   return (
     <svg viewBox="-28 -22 156 144" className="h-52 w-60">
-      <polygon points={v.points.map((p) => p.join(",")).join(" ")} className="fill-brand-green/25 stroke-foreground" strokeWidth={2} strokeLinejoin="round" />
+      {v.grid &&
+        Array.from({ length: 11 }, (_, i) => (
+          <g key={`g${i}`}>
+            <line x1={i * 10} x2={i * 10} y1={0} y2={100} className="stroke-foreground/20" strokeWidth={0.6} />
+            <line x1={0} x2={100} y1={i * 10} y2={i * 10} className="stroke-foreground/20" strokeWidth={0.6} />
+          </g>
+        ))}
+      {v.open ? (
+        <polyline points={v.points.map((p) => p.join(",")).join(" ")} className="fill-none stroke-foreground" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
+      ) : (
+        <polygon points={v.points.map((p) => p.join(",")).join(" ")} className="fill-brand-green/25 stroke-foreground" strokeWidth={2} strokeLinejoin="round" />
+      )}
       {v.dashed?.map(([a, b], i) => (
         <line key={`d${i}`} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} className="stroke-brand-green-text" strokeWidth={2} strokeDasharray="5 4" />
       ))}
@@ -558,26 +575,48 @@ function Thermometer({ v }: { v: Extract<Visual, { kind: "thermometer" }> }) {
 }
 
 function CoordPlane({ v }: { v: Extract<Visual, { kind: "coordPlane" }> }) {
-  const s = 44;
+  const min = v.min ?? 0;
+  const span = v.max - min;
+  const s = min < 0 ? Math.max(22, Math.floor(440 / span)) : 44;
   const o = 30;
-  const size = o * 2 + s * v.max;
-  const px = (x: number) => o + x * s;
-  const py = (y: number) => size - o - y * s;
+  const size = o * 2 + s * span;
+  const px = (x: number) => o + (x - min) * s;
+  const py = (y: number) => size - o - (y - min) * s;
+  const label = (n: number) => (n < 0 ? `−${-n}` : n);
   return (
-    <svg viewBox={`0 0 ${size} ${size}`} className="size-72">
-      {Array.from({ length: v.max + 1 }, (_, i) => (
-        <g key={i}>
-          <line x1={px(i)} x2={px(i)} y1={py(0)} y2={py(v.max)} className="stroke-foreground/25" />
-          <line x1={px(0)} x2={px(v.max)} y1={py(i)} y2={py(i)} className="stroke-foreground/25" />
-          <text x={px(i)} y={py(0) + 18} textAnchor="middle" className="fill-foreground text-[13px]">{i}</text>
-          <text x={px(0) - 12} y={py(i) + 4} textAnchor="middle" className="fill-foreground text-[13px]">{i}</text>
-        </g>
-      ))}
-      <line x1={px(0)} x2={px(v.max)} y1={py(0)} y2={py(0)} className="stroke-foreground" strokeWidth={2} />
-      <line x1={px(0)} x2={px(0)} y1={py(0)} y2={py(v.max)} className="stroke-foreground" strokeWidth={2} />
-      {v.points.map((p, i) => (
-        <text key={i} x={px(p.x)} y={py(p.y) + 8} textAnchor="middle" className="text-[24px]">{p.emoji}</text>
-      ))}
+    <svg viewBox={`0 0 ${size} ${size}`} className={min < 0 ? "size-80" : "size-72"}>
+      {Array.from({ length: span + 1 }, (_, k) => {
+        const i = min + k;
+        return (
+          <g key={i}>
+            <line x1={px(i)} x2={px(i)} y1={py(min)} y2={py(v.max)} className="stroke-foreground/25" />
+            <line x1={px(min)} x2={px(v.max)} y1={py(i)} y2={py(i)} className="stroke-foreground/25" />
+            {(min === 0 || i !== 0) && (
+              <>
+                <text x={px(i)} y={py(0) + 18} textAnchor="middle" className={cn("fill-foreground", min < 0 ? "text-[11px]" : "text-[13px]")}>{label(i)}</text>
+                <text x={px(0) - 12} y={py(i) + 4} textAnchor="middle" className={cn("fill-foreground", min < 0 ? "text-[11px]" : "text-[13px]")}>{label(i)}</text>
+              </>
+            )}
+          </g>
+        );
+      })}
+      <line x1={px(min)} x2={px(v.max)} y1={py(0)} y2={py(0)} className="stroke-foreground" strokeWidth={2} />
+      <line x1={px(0)} x2={px(0)} y1={py(min)} y2={py(v.max)} className="stroke-foreground" strokeWidth={2} />
+      {v.connect && v.points.length > 1 && (
+        <polyline points={[...v.points, ...(v.connect === "closed" ? [v.points[0]] : [])].map((p) => `${px(p.x)},${py(p.y)}`).join(" ")} className="fill-none stroke-brand-green-text" strokeWidth={3} strokeLinejoin="round" />
+      )}
+      {v.points.map((p, i) =>
+        p.emoji === "•" ? (
+          <circle key={i} cx={px(p.x)} cy={py(p.y)} r={7} className="fill-brand-green stroke-foreground" strokeWidth={2} />
+        ) : /^[A-Z]$/.test(p.emoji) ? (
+          <g key={i}>
+            <circle cx={px(p.x)} cy={py(p.y)} r={6} className="fill-brand-green stroke-foreground" strokeWidth={2} />
+            <text x={px(p.x) + 10} y={py(p.y) - 8} className="fill-foreground text-[17px] font-medium">{p.emoji}</text>
+          </g>
+        ) : (
+          <text key={i} x={px(p.x)} y={py(p.y) + 8} textAnchor="middle" className="text-[24px]">{p.emoji}</text>
+        )
+      )}
     </svg>
   );
 }
@@ -742,15 +781,160 @@ function BarChart({ v }: { v: Extract<Visual, { kind: "barChart" }> }) {
         {v.line ? (
           <>
             <polyline points={v.bars.map((b, i) => `${cx(i)},${y(b.value)}`).join(" ")} className="fill-none stroke-brand-green-text" strokeWidth={2.5} />
+            {v.legend && <polyline points={v.bars.map((b, i) => `${cx(i)},${y(b.value2 ?? 0)}`).join(" ")} className="fill-none stroke-sky-500" strokeWidth={2.5} strokeDasharray="6 4" />}
             {v.bars.map((b, i) => (
-              <circle key={i} cx={cx(i)} cy={y(b.value)} r={4.5} className="fill-brand-green stroke-foreground" strokeWidth={1.5} />
+              <g key={i}>
+                <circle cx={cx(i)} cy={y(b.value)} r={4.5} className="fill-brand-green stroke-foreground" strokeWidth={1.5} />
+                {v.legend && <rect x={cx(i) - 4} y={y(b.value2 ?? 0) - 4} width={8} height={8} className="fill-sky-400 stroke-foreground" strokeWidth={1.5} />}
+              </g>
             ))}
           </>
+        ) : v.legend ? (
+          v.bars.map((b, i) => (
+            <g key={i}>
+              <rect x={cx(i) - slot * 0.36} y={y(b.value)} width={slot * 0.36} height={bottom - y(b.value)} className="fill-brand-green/60 stroke-foreground" strokeWidth={1.5} />
+              <rect x={cx(i)} y={y(b.value2 ?? 0)} width={slot * 0.36} height={bottom - y(b.value2 ?? 0)} className="fill-sky-400/70 stroke-foreground" strokeWidth={1.5} />
+            </g>
+          ))
         ) : (
           v.bars.map((b, i) => <rect key={i} x={cx(i) - slot * 0.3} y={y(b.value)} width={slot * 0.6} height={bottom - y(b.value)} className="fill-brand-green/60 stroke-foreground" strokeWidth={1.5} />)
         )}
         {v.bars.map((b, i) => (
           <text key={i} x={cx(i)} y={bottom + 16} textAnchor="middle" className="fill-foreground text-[11px]">{b.label}</text>
+        ))}
+      </svg>
+      {v.legend && (
+        <div className="flex gap-4 text-sm">
+          <span className="flex items-center gap-1.5"><span className="size-3 rounded-sm border border-foreground bg-brand-green/60" />{v.legend[0]}</span>
+          <span className="flex items-center gap-1.5"><span className="size-3 rounded-sm border border-foreground bg-sky-400/70" />{v.legend[1]}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// --- 6.° de primaria en adelante ----------------------------------------------
+
+const PIE_FILLS = ["fill-brand-green/70", "fill-sky-400/70", "fill-amber-300/80", "fill-red-400/60", "fill-violet-400/60", "fill-zinc-400/50"];
+const PIE_DOTS = ["bg-brand-green/70", "bg-sky-400/70", "bg-amber-300/80", "bg-red-400/60", "bg-violet-400/60", "bg-zinc-400/50"];
+
+function CircleFigure({ v }: { v: Extract<Visual, { kind: "circle" }> }) {
+  const part = v.part ?? "full";
+  const [cx, cy, r] = part === "quarter" ? [30, 130, 100] : part === "semi" ? [80, 110, 70] : [80, 80, 66];
+  const shape =
+    part === "quarter" ? `M${cx} ${cy} L${cx + r} ${cy} A${r} ${r} 0 0 0 ${cx} ${cy - r} Z` : part === "semi" ? `M${cx - r} ${cy} A${r} ${r} 0 0 1 ${cx + r} ${cy} Z` : "";
+  const sector = (i: number, n: number) => {
+    const p = (k: number) => `${cx + r * Math.cos((k / n) * 2 * Math.PI - Math.PI / 2)} ${cy + r * Math.sin((k / n) * 2 * Math.PI - Math.PI / 2)}`;
+    return `M${cx} ${cy} L${p(i)} A${r} ${r} 0 0 1 ${p(i + 1)} Z`;
+  };
+  return (
+    <svg viewBox="0 0 160 160" className="size-44">
+      {part === "full" ? <circle cx={cx} cy={cy} r={r} className="fill-brand-green/20 stroke-foreground" strokeWidth={2} /> : <path d={shape} className="fill-brand-green/20 stroke-foreground" strokeWidth={2} />}
+      {v.sectors && Array.from({ length: v.sectors }, (_, i) => <path key={i} d={sector(i, v.sectors!)} className={cn("stroke-foreground", i === 0 ? "fill-brand-green/60" : "fill-transparent")} strokeWidth={1.5} />)}
+      {!v.sectors && <circle cx={cx} cy={cy} r={2.5} className="fill-foreground" />}
+      {v.radius && (
+        <>
+          <line x1={cx} y1={cy} x2={cx + r} y2={cy} className="stroke-foreground" strokeWidth={2} />
+          <text x={cx + r / 2} y={cy - 6} textAnchor="middle" className="fill-foreground text-[13px] font-medium">{v.radius}</text>
+        </>
+      )}
+      {v.diameter && (
+        <>
+          <line x1={cx - r} y1={cy} x2={cx + r} y2={cy} className="stroke-foreground" strokeWidth={2} />
+          <text x={cx} y={part === "semi" ? cy + 16 : cy - 6} textAnchor="middle" className="fill-foreground text-[13px] font-medium">{v.diameter}</text>
+        </>
+      )}
+    </svg>
+  );
+}
+
+function Transversal({ v }: { v: Extract<Visual, { kind: "transversal" }> }) {
+  // Paralelas en y = 60 e y = 130; la transversal sube hacia la derecha.
+  const cross = (y: number) => 150 - (y - 20) * 0.55;
+  const spots = [60, 130].flatMap((y, row) => {
+    const x = cross(y);
+    return [
+      { n: row * 4 + 1, x: x - 20, y: y - 9 },
+      { n: row * 4 + 2, x: x + 28, y: y - 9 },
+      { n: row * 4 + 3, x: x - 28, y: y + 19 },
+      { n: row * 4 + 4, x: x + 20, y: y + 19 },
+    ];
+  });
+  return (
+    <svg viewBox="0 0 220 190" className="h-48 w-56">
+      <line x1={14} x2={206} y1={60} y2={60} className="stroke-foreground" strokeWidth={2.5} strokeLinecap="round" />
+      <line x1={14} x2={206} y1={130} y2={130} className="stroke-foreground" strokeWidth={2.5} strokeLinecap="round" />
+      <line x1={cross(176)} y1={176} x2={cross(14)} y2={14} className="stroke-brand-green" strokeWidth={2.5} strokeLinecap="round" />
+      {spots.map((s) => (
+        <text key={s.n} x={s.x} y={s.y} textAnchor="middle" className={cn("text-[13px] font-medium", v.given?.angle === s.n ? "fill-brand-green" : "fill-foreground")}>
+          {v.given?.angle === s.n ? v.given.text : s.n}
+        </text>
+      ))}
+    </svg>
+  );
+}
+
+function PieChart({ v }: { v: Extract<Visual, { kind: "pie" }> }) {
+  const total = v.slices.reduce((s, x) => s + x.value, 0) || 1;
+  const point = (fraction: number, r: number) => {
+    const a = fraction * 2 * Math.PI - Math.PI / 2;
+    return [100 + r * Math.cos(a), 100 + r * Math.sin(a)];
+  };
+  const starts = v.slices.map((_, i) => v.slices.slice(0, i).reduce((s, x) => s + x.value, 0) / total);
+  return (
+    <div className="flex flex-col items-center gap-2">
+      {v.title && <p className="text-base font-medium">{v.title}</p>}
+      <div className="flex flex-wrap items-center justify-center gap-4">
+        <svg viewBox="0 0 200 200" className="size-48">
+          {v.slices.map((slice, i) => {
+            const start = starts[i];
+            const end = start + slice.value / total;
+            const [x0, y0] = point(start, 90);
+            const [x1, y1] = point(end, 90);
+            const [tx, ty] = point((start + end) / 2, 58);
+            return (
+              <g key={i}>
+                <path d={`M100 100 L${x0} ${y0} A90 90 0 ${end - start > 0.5 ? 1 : 0} 1 ${x1} ${y1} Z`} className={cn("stroke-foreground", PIE_FILLS[i % PIE_FILLS.length])} strokeWidth={1.5} />
+                <text x={tx} y={ty + 4} textAnchor="middle" className="fill-foreground text-[12px] font-medium">{slice.value}%</text>
+              </g>
+            );
+          })}
+        </svg>
+        <ul className="flex flex-col gap-1 text-sm">
+          {v.slices.map((slice, i) => (
+            <li key={i} className="flex items-center gap-2">
+              <span className={cn("size-3 rounded-sm border border-foreground", PIE_DOTS[i % PIE_DOTS.length])} />
+              {slice.label}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function BoxPlot({ v }: { v: Extract<Visual, { kind: "boxPlot" }> }) {
+  const W = 420;
+  const pad = 24;
+  const x = (n: number) => pad + ((n - v.axisMin) / (v.axisMax - v.axisMin)) * (W - pad * 2);
+  const ticks: number[] = [];
+  for (let n = v.axisMin; n <= v.axisMax; n += v.step) ticks.push(n);
+  return (
+    <div className="flex w-full max-w-md flex-col items-center gap-1">
+      {v.title && <p className="text-base font-medium">{v.title}</p>}
+      <svg viewBox={`0 0 ${W} 120`} className="w-full">
+        <line x1={x(v.min)} x2={x(v.q1)} y1={40} y2={40} className="stroke-foreground" strokeWidth={2} />
+        <line x1={x(v.q3)} x2={x(v.max)} y1={40} y2={40} className="stroke-foreground" strokeWidth={2} />
+        <line x1={x(v.min)} x2={x(v.min)} y1={28} y2={52} className="stroke-foreground" strokeWidth={2} />
+        <line x1={x(v.max)} x2={x(v.max)} y1={28} y2={52} className="stroke-foreground" strokeWidth={2} />
+        <rect x={x(v.q1)} y={20} width={x(v.q3) - x(v.q1)} height={40} className="fill-brand-green/40 stroke-foreground" strokeWidth={2} />
+        <line x1={x(v.median)} x2={x(v.median)} y1={20} y2={60} className="stroke-foreground" strokeWidth={3} />
+        <line x1={pad - 8} x2={W - pad + 8} y1={88} y2={88} className="stroke-foreground" strokeWidth={2} />
+        {ticks.map((n) => (
+          <g key={n}>
+            <line x1={x(n)} x2={x(n)} y1={83} y2={93} className="stroke-foreground" strokeWidth={2} />
+            <text x={x(n)} y={110} textAnchor="middle" className="fill-foreground text-[12px]">{n}</text>
+          </g>
         ))}
       </svg>
     </div>
@@ -870,6 +1054,65 @@ function GeoFigure({ figure, rotation = 0, labels = ["A", "B", "C"] }: Omit<Extr
   );
 }
 
+// --- 5.° de primaria en adelante ----------------------------------------------
+
+// Cubos unitarios en perspectiva isométrica; se dibujan de atrás hacia adelante.
+function Cubes3d({ heights }: { heights: number[][] }) {
+  const rows = heights.length;
+  const cols = Math.max(...heights.map((row) => row.length));
+  const top = Math.max(1, ...heights.flat());
+  const u = 22;
+  const hx = u * 0.87;
+  const hy = u * 0.5;
+  const ox = rows * hx + 4;
+  const oy = top * u + 4;
+  const at = (r: number, c: number, z: number): [number, number] => [ox + (c - r) * hx, oy + (c + r) * hy - z * u];
+  const cubes: React.ReactNode[] = [];
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++)
+      for (let z = 0; z < (heights[r][c] ?? 0); z++) {
+        const [x, y] = at(r, c, z + 1);
+        const pts = (list: [number, number][]) => list.map((p) => p.join(",")).join(" ");
+        // Cada cara lleva debajo un fondo opaco: así no se transparentan los cubos de atrás.
+        const face = (list: [number, number][], tint: string) => (
+          <>
+            <polygon points={pts(list)} className="fill-background" />
+            <polygon points={pts(list)} className={tint} />
+          </>
+        );
+        cubes.push(
+          <g key={`${r}-${c}-${z}`} className="stroke-foreground" strokeWidth={1.2} strokeLinejoin="round">
+            {face([[x, y], [x + hx, y + hy], [x, y + 2 * hy], [x - hx, y + hy]], "fill-brand-green/30")}
+            {face([[x - hx, y + hy], [x, y + 2 * hy], [x, y + 2 * hy + u], [x - hx, y + hy + u]], "fill-brand-green/80")}
+            {face([[x + hx, y + hy], [x, y + 2 * hy], [x, y + 2 * hy + u], [x + hx, y + hy + u]], "fill-brand-green/55")}
+          </g>
+        );
+      }
+  const W = (rows + cols) * hx + 8;
+  const H = top * u + (rows + cols) * hy + 8;
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="max-h-60 w-full max-w-xs" style={{ aspectRatio: `${W} / ${H}` }}>
+      {cubes}
+    </svg>
+  );
+}
+
+function FracGrid({ v }: { v: Extract<Visual, { kind: "fracGrid" }> }) {
+  const cell = Math.min(44, Math.floor(220 / Math.max(v.rows, v.cols)));
+  return (
+    <svg viewBox={`-1 -1 ${v.cols * cell + 2} ${v.rows * cell + 2}`} style={{ width: v.cols * cell + 2, height: v.rows * cell + 2 }} className="max-w-full">
+      {Array.from({ length: v.rows * v.cols }, (_, i) => {
+        const r = Math.floor(i / v.cols);
+        const c = i % v.cols;
+        const inA = c < v.a;
+        const inB = r < v.b;
+        return <rect key={i} x={c * cell} y={r * cell} width={cell} height={cell} className={cn("stroke-foreground/50", inA && inB ? "fill-brand-green" : inA ? "fill-sky-400/40" : inB ? "fill-amber-300/50" : "fill-background")} strokeWidth={1} />;
+      })}
+      <rect x={0} y={0} width={v.cols * cell} height={v.rows * cell} className="fill-none stroke-foreground" strokeWidth={2} />
+    </svg>
+  );
+}
+
 export function VisualView({ visual }: { visual: Visual }) {
   switch (visual.kind) {
     case "text":
@@ -970,6 +1213,18 @@ export function VisualView({ visual }: { visual: Visual }) {
       return <AreaModel v={visual} />;
     case "strip":
       return <Strip v={visual} />;
+    case "pie":
+      return <PieChart v={visual} />;
+    case "circle":
+      return <CircleFigure v={visual} />;
+    case "transversal":
+      return <Transversal v={visual} />;
+    case "boxPlot":
+      return <BoxPlot v={visual} />;
+    case "cubes3d":
+      return <Cubes3d heights={visual.heights} />;
+    case "fracGrid":
+      return <FracGrid v={visual} />;
     case "geoFigure":
       return <GeoFigure figure={visual.figure} rotation={visual.rotation} labels={visual.labels} />;
     case "lines":
@@ -1046,7 +1301,7 @@ export function VisualView({ visual }: { visual: Visual }) {
       return (
         <div className="flex flex-col items-center gap-2">
           <span className="whitespace-pre-line text-center text-7xl leading-none">{visual.emoji}</span>
-          {visual.caption && <span className="text-center text-base font-medium">{visual.caption}</span>}
+          {visual.caption && <span className="whitespace-pre-line text-center text-base font-medium">{visual.caption}</span>}
         </div>
       );
     case "passage":

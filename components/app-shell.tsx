@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BuildingIcon,
+  CalendarCheckIcon,
   CalendarDaysIcon,
   CircleDollarSignIcon,
   ClipboardListIcon,
@@ -51,6 +52,7 @@ const STAFF_NAV: NavItem[] = [
   { href: "/apoderados", label: "Apoderados", icon: UserRoundIcon },
   { href: "/personal", label: "Personal", icon: IdCardIcon },
   { href: "/horario", label: "Horario", icon: CalendarDaysIcon },
+  { href: "/asistencia", label: "Asistencia", icon: CalendarCheckIcon },
   { href: "/cuestionarios", label: "Cuestionarios", icon: ClipboardListIcon },
   { href: "/examenes", label: "Exámenes", icon: ScanLineIcon },
   { href: "/juegos", label: "Juegos", icon: Gamepad2Icon },
@@ -72,6 +74,7 @@ const DOCENTE_NAV: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
   { href: "/alumnos", label: "Alumnos", icon: UsersIcon },
   { href: "/horario", label: "Horario", icon: CalendarDaysIcon },
+  { href: "/asistencia", label: "Asistencia", icon: CalendarCheckIcon },
   { href: "/cuestionarios", label: "Cuestionarios", icon: ClipboardListIcon },
   { href: "/examenes", label: "Exámenes", icon: ScanLineIcon },
   { href: "/juegos", label: "Juegos", icon: Gamepad2Icon },

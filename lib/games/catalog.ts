@@ -2,11 +2,17 @@ import { MATEMATICAS_P1 } from "./curricula/matematicas/p1";
 import { MATEMATICAS_P2 } from "./curricula/matematicas/p2";
 import { MATEMATICAS_P3 } from "./curricula/matematicas/p3";
 import { MATEMATICAS_P4 } from "./curricula/matematicas/p4";
+import { MATEMATICAS_P5 } from "./curricula/matematicas/p5";
+import { MATEMATICAS_P6 } from "./curricula/matematicas/p6";
+import { MATEMATICAS_S1 } from "./curricula/matematicas/s1";
 import { MATEMATICAS_I5 } from "./curricula/matematicas/i5";
 import { COMUNICACION_I5 } from "./curricula/comunicacion/i5";
 import { COMUNICACION_P1 } from "./curricula/comunicacion/p1";
 import { COMUNICACION_P2 } from "./curricula/comunicacion/p2";
 import { COMUNICACION_P3 } from "./curricula/comunicacion/p3";
+import { COMUNICACION_P4 } from "./curricula/comunicacion/p4";
+import { COMUNICACION_P5 } from "./curricula/comunicacion/p5";
+import { COMUNICACION_P6 } from "./curricula/comunicacion/p6";
 import { COMPUTACION_P1 } from "./curricula/computacion/p1";
 import { COMPUTACION_P2 } from "./curricula/computacion/p2";
 import { COMPUTACION_P3 } from "./curricula/computacion/p3";
@@ -26,8 +32,8 @@ import type { Curriculum, Skill } from "./types";
 // Una categoría creada desde la app sin contenido aquí se muestra como
 // "Próximamente". Agregar un grado = un archivo en curricula/ + una línea aquí.
 const CURRICULA: Record<string, Partial<Record<GradeKey, Curriculum>>> = {
-  matematicas: { i5: MATEMATICAS_I5, p1: MATEMATICAS_P1, p2: MATEMATICAS_P2, p3: MATEMATICAS_P3, p4: MATEMATICAS_P4 },
-  comunicacion: { i5: COMUNICACION_I5, p1: COMUNICACION_P1, p2: COMUNICACION_P2, p3: COMUNICACION_P3 },
+  matematicas: { i5: MATEMATICAS_I5, p1: MATEMATICAS_P1, p2: MATEMATICAS_P2, p3: MATEMATICAS_P3, p4: MATEMATICAS_P4, p5: MATEMATICAS_P5, p6: MATEMATICAS_P6, s1: MATEMATICAS_S1 },
+  comunicacion: { i5: COMUNICACION_I5, p1: COMUNICACION_P1, p2: COMUNICACION_P2, p3: COMUNICACION_P3, p4: COMUNICACION_P4, p5: COMUNICACION_P5, p6: COMUNICACION_P6 },
   // Computación: cada grado suma los apartados Programación y software,
   // Scratch e IA, y juega partidas de 15 preguntas.
   computacion: {
