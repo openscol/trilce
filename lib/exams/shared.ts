@@ -53,14 +53,15 @@ export type CodeMatch = {
   student: StudentBrief | null;
   // El código existe, pero es de un alumno que no rinde este examen: no se asigna.
   outsider: StudentBrief | null;
-  // Alumnos del examen cuyo código difiere en un solo dígito del marcado.
+  // Alumnos del examen cuyo código o documento difiere en un solo dígito del marcado.
   suggestions: StudentBrief[];
 };
 
 // Decide a quién pertenece una ficha. Un código mal marcado puede coincidir
 // con el de un alumno de otro grado (02050002 en vez de 03050002): por eso solo
 // se asigna sola si el código es de un alumno de las secciones del examen. Si
-// no, la ficha queda sin alumno y se proponen los códigos parecidos del examen.
+// no, la ficha queda sin alumno y se proponen los alumnos del examen con un
+// código o documento parecido.
 export function resolveSheetCode(sheetCode: string, examStudents: StudentBrief[], allStudents: StudentBrief[], width: number): CodeMatch {
   const student = matchStudent(sheetCode, examStudents);
   if (student) return { student, outsider: null, suggestions: [] };
@@ -70,13 +71,17 @@ export function resolveSheetCode(sheetCode: string, examStudents: StudentBrief[]
   const suggestions =
     !sheetCode || unknown > 2
       ? []
-      : examStudents.filter((s) => {
-          const code = digits(s.code).padStart(width, "0");
-          if (code.length !== read.length) return false;
-          let diff = 0;
-          for (let i = 0; i < code.length; i++) if (read[i] !== "?" && read[i] !== code[i]) diff++;
-          return diff <= (unknown ? 0 : 1);
-        });
+      : examStudents.filter((s) =>
+          // El alumno puede haber marcado su código o su documento: se compara con los dos.
+          [s.code, s.document_number].some((value) => {
+            if (!digits(value)) return false;
+            const code = digits(value).padStart(width, "0");
+            if (code.length !== read.length) return false;
+            let diff = 0;
+            for (let i = 0; i < code.length; i++) if (read[i] !== "?" && read[i] !== code[i]) diff++;
+            return diff <= (unknown ? 0 : 1);
+          })
+        );
   return { student: null, outsider: matchStudent(sheetCode, allStudents), suggestions };
 }
 

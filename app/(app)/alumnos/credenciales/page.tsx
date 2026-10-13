@@ -9,7 +9,7 @@ import { requireAppContext } from "@/lib/auth/context";
 import { LEVEL_LABELS } from "@/lib/enum-labels";
 import { PrintButton } from "@/app/(app)/cuestionarios/tarjetas/print-button";
 
-// Lista imprimible de usuarios y contraseñas temporales de los alumnos, para
+// Lista imprimible de usuarios y contraseñas iniciales de los alumnos, para
 // entregársela a cada uno. Solo muestra quienes aún no cambiaron su
 // contraseña (initial_credentials se borra al cambiarla).
 export default async function CredencialesPage(
@@ -65,7 +65,7 @@ export default async function CredencialesPage(
           <div>
             <h1 className="text-lg font-medium">Credenciales de alumnos</h1>
             <p className="text-sm text-muted-foreground">
-              Usuarios y contraseñas temporales. Un alumno sale de esta lista
+              Usuarios y contraseñas iniciales. Un alumno sale de esta lista
               cuando cambia su contraseña.
             </p>
           </div>
@@ -94,7 +94,7 @@ export default async function CredencialesPage(
 
       {rows.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          No hay alumnos con contraseña temporal pendiente de entregar.
+          No hay alumnos con contraseña inicial pendiente de entregar.
         </p>
       ) : (
         <div className="rounded-2xl border border-border print:rounded-none print:border-none">
@@ -151,7 +151,7 @@ export default async function CredencialesPage(
           </table>
           <p className="p-4 text-xs text-muted-foreground print:px-0 print:text-black">
             Ingresa{loginUrl ? ` en ${loginUrl}` : ""} con tu usuario o correo
-            y la contraseña temporal. Luego cámbiala en Mi Cuenta (menú de tu avatar).
+            y la contraseña inicial de esta lista. Luego cámbiala en Mi Cuenta (menú de tu avatar).
           </p>
         </div>
       )}

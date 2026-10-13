@@ -156,7 +156,7 @@ function StudentSheetBody({
             <span className="font-mono">{createdInfo.credentials.email}</span>
           </span>
           <span>
-            Contraseña temporal:{" "}
+            Contraseña inicial:{" "}
             <span className="font-mono">
               {createdInfo.credentials.temp_password}
             </span>
