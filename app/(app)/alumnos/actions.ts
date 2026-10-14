@@ -123,7 +123,7 @@ export async function createStudent(
   }
 
   // Cada alumno nuevo recibe su acceso: correo sintético + usuario +
-  // contraseña inicial, que es su DNI (ver A02_clave_dni.sql). Si falla, el alumno
+  // contraseña inicial (ver 38_student_auto_login.sql y A02). Si falla, el alumno
   // igual queda creado y se informa el motivo.
   const { data: login, error: loginError } = await supabase.rpc(
     "provision_student_login",

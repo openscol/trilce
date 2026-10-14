@@ -7,11 +7,26 @@ import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
 import { requireAppContext } from "@/lib/auth/context";
 import { LEVEL_LABELS } from "@/lib/enum-labels";
-import { PrintButton } from "@/app/(app)/cuestionarios/tarjetas/print-button";
+import { PrintMenu } from "./print-menu";
 
 // Lista imprimible de usuarios y contraseñas iniciales de los alumnos, para
 // entregársela a cada uno. Solo muestra quienes aún no cambiaron su
 // contraseña (initial_credentials se borra al cambiarla).
+// Al imprimir se elige el formato: la lista (tabla) o tarjetas de 6 cm, una
+// por alumno y tres por fila en A4 vertical, para pegar en el cuaderno.
+
+// Dirección que se imprime en las tarjetas.
+const LOGIN_SITE = "www.openscol.com";
+
+// Solo se imprime el formato elegido en PrintMenu (data-print en <html>); con
+// Ctrl+P, la lista. En pantalla, las tarjetas no se muestran.
+const PRINT_CSS = `
+@media print {
+  html:not([data-print="tarjetas"]) .print-cards { display: none !important; }
+  html[data-print="tarjetas"] .print-list { display: none !important; }
+}
+@page { size: A4 portrait; margin: 10mm; }
+`;
 export default async function CredencialesPage(
   props: PageProps<"/alumnos/credenciales">
 ) {
@@ -53,7 +68,8 @@ export default async function CredencialesPage(
   const loginUrl = host ? `${host}/login` : null;
 
   return (
-    <div className="flex flex-col gap-4 print:gap-2 print:bg-white print:p-8 print:text-black">
+    <div className="flex flex-col gap-4 print:gap-2 print:bg-white print:p-0 print:text-black">
+      <style>{PRINT_CSS}</style>
       <div className="flex items-center justify-between gap-4 print:hidden">
         <div className="flex items-center gap-2">
           <Link
@@ -70,7 +86,7 @@ export default async function CredencialesPage(
             </p>
           </div>
         </div>
-        <PrintButton disabled={visible.length === 0} />
+        <PrintMenu disabled={visible.length === 0} />
       </div>
 
       {groups.length > 1 && (
@@ -97,7 +113,40 @@ export default async function CredencialesPage(
           No hay alumnos con contraseña inicial pendiente de entregar.
         </p>
       ) : (
-        <div className="rounded-2xl border border-border print:rounded-none print:border-none">
+        <>
+        <div className="print-cards hidden grid-cols-3 print:grid">
+          {visible.map((r) => (
+            <div
+              key={r.student_id}
+              className="flex h-[6cm] break-inside-avoid flex-col justify-between overflow-hidden border border-dashed border-gray-500 px-[3mm] py-[2.5mm] text-[8pt] leading-tight"
+            >
+              <div>
+                <p>Hola 👋</p>
+                <p className="font-bold uppercase">
+                  {r.paternal_surname} {r.maternal_surname ?? ""}, {r.first_names}
+                </p>
+                <p className="font-mono text-[7.5pt]">{r.code}</p>
+              </div>
+              <div>
+                <p>Bienvenido a OpenSchool, ingresa a:</p>
+                <p className="font-bold">{LOGIN_SITE}</p>
+              </div>
+              <div>
+                <p>Tus datos de acceso:</p>
+                <p>
+                  usuario: <span className="font-mono font-bold">{r.username}</span>
+                </p>
+                <p>
+                  contraseña: <span className="font-mono font-bold">{r.temp_password}</span>
+                </p>
+              </div>
+              <p className="border-t border-gray-400 pt-[1.2mm] text-[6.5pt] leading-tight">
+                Esta plataforma fue desarrollada por el Área de Computación para Computación+ dentro contiene más de 100,000 actividades educativas :)
+              </p>
+            </div>
+          ))}
+        </div>
+        <div className="print-list rounded-2xl border border-border print:rounded-none print:border-none">
           <div className="flex items-baseline justify-between border-b border-border p-4 print:border-black print:px-0">
             <div>
               <p className="font-medium">{ctx.schoolName}</p>
@@ -154,6 +203,7 @@ export default async function CredencialesPage(
             y la contraseña inicial de esta lista. Luego cámbiala en Mi Cuenta (menú de tu avatar).
           </p>
         </div>
+        </>
       )}
     </div>
   );

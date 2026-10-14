@@ -1,17 +1,14 @@
 -- ============================================================================
--- A02. La contraseña inicial del alumno es su número de documento
+-- A02. Contraseñas iniciales de los alumnos: solo minúsculas y dígitos
 -- ============================================================================
--- Reemplaza la contraseña aleatoria de 8 caracteres de 38_student_auto_login
--- por el número de documento (DNI) del alumno. Todo lo demás queda igual: el
--- correo y el usuario se generan como antes, y la contraseña inicial se sigue
--- anotando en `initial_credentials` para la lista imprimible, hasta que el
--- alumno la cambie en Mi Cuenta.
+-- Las contraseñas temporales de 38_student_auto_login mezclaban mayúsculas y
+-- minúsculas, y a los alumnos les costaba escribirlas. Desde ahora:
+--   1. las nuevas se generan solo con letras minúsculas y dígitos (dqk2e4sm);
+--   2. las que ya existen y siguen vigentes se pasan a minúsculas
+--      (dqk2e4sM → dqk2e4sm), tanto en la lista imprimible como en el login.
 --
--- Si el alumno no tiene documento registrado (o tiene menos de 6 caracteres),
--- se mantiene la contraseña aleatoria, para que igual reciba un acceso.
---
--- Solo afecta a los accesos que se creen desde ahora; no cambia la contraseña
--- de los alumnos que ya tienen cuenta.
+-- Solo se tocan las cuentas cuya contraseña actual sigue siendo la temporal
+-- anotada en `initial_credentials`: quien ya la cambió no aparece ahí.
 -- ============================================================================
 
 create or replace function provision_student_login(p_student_id uuid)
@@ -29,8 +26,8 @@ declare
   v_password  text;
   v_user_id   uuid;
   v_suffix    int := 1;
-  -- Sin caracteres ambiguos al imprimir (0/O, 1/l/I).
-  v_alphabet  constant text := 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  -- Solo minúsculas y dígitos, sin caracteres ambiguos al imprimir (0/o, 1/l/i).
+  v_alphabet  constant text := 'abcdefghjkmnpqrstuvwxyz23456789';
   v_bytes     bytea;
   i           int;
 begin
@@ -68,21 +65,15 @@ begin
     v_suffix := v_suffix + 1;
   end loop;
 
-  -- Contraseña inicial: el número de documento del alumno (sin espacios).
-  v_password := regexp_replace(coalesce(v_student.document_number, ''), '\s', '', 'g');
-
-  -- Sin documento (o con uno de menos de 6 caracteres, el mínimo que acepta
-  -- el login): contraseña aleatoria de 8 caracteres con letra y dígito.
-  if length(v_password) < 6 then
-    loop
-      v_bytes := extensions.gen_random_bytes(8);
-      v_password := '';
-      for i in 0..7 loop
-        v_password := v_password || substr(v_alphabet, (get_byte(v_bytes, i) % length(v_alphabet)) + 1, 1);
-      end loop;
-      exit when v_password ~ '[0-9]' and v_password ~ '[a-zA-Z]';
+  -- Contraseña de 8 caracteres con al menos una letra y un dígito.
+  loop
+    v_bytes := extensions.gen_random_bytes(8);
+    v_password := '';
+    for i in 0..7 loop
+      v_password := v_password || substr(v_alphabet, (get_byte(v_bytes, i) % length(v_alphabet)) + 1, 1);
     end loop;
-  end if;
+    exit when v_password ~ '[0-9]' and v_password ~ '[a-z]';
+  end loop;
 
   v_user_id := create_membership_login(
     v_student.school_id,
@@ -105,3 +96,20 @@ $$;
 
 revoke execute on function provision_student_login(uuid) from public;
 grant execute on function provision_student_login(uuid) to authenticated;
+
+-- Contraseñas vigentes → minúsculas. Primero el login (necesita la temporal
+-- original para comprobar que sigue en uso) y luego la lista imprimible.
+update auth.users u
+   set encrypted_password = extensions.crypt(lower(ic.temp_password), extensions.gen_salt('bf')),
+       updated_at = now()
+  from initial_credentials ic
+ where ic.user_id = u.id
+   and ic.temp_password <> lower(ic.temp_password)
+   and u.encrypted_password = extensions.crypt(ic.temp_password, u.encrypted_password);
+
+update initial_credentials ic
+   set temp_password = lower(ic.temp_password)
+  from auth.users u
+ where u.id = ic.user_id
+   and ic.temp_password <> lower(ic.temp_password)
+   and u.encrypted_password = extensions.crypt(lower(ic.temp_password), u.encrypted_password);

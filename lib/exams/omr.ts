@@ -16,6 +16,8 @@ export type SheetLayout = {
   // Posición horizontal (0 = cuadrados de la izquierda, 1 = de la derecha) de cada columna de círculos.
   codeColumns: number[];
   // Posición vertical (0 = cuadrados de arriba, 1 = de abajo) de cada fila, según su barra.
+  // Las de answerRows son las de la ficha modelo: si las preguntas vienen agrupadas de
+  // otra forma, el lector toma las barras de la derecha en orden (ver readSheet).
   codeRows: number[];
   themeRow: number;
   answerRows: number[];
@@ -271,21 +273,26 @@ export function readSheet(img: Gray, layout: SheetLayout = TRILCE_LAYOUT): Sheet
     // En fichas impresas en negro, las barras de la derecha tocan el marco y no
     // quedan como piezas sueltas: se buscan recorriendo una franja vertical por
     // fuera del marco, donde solo sobresalen las barras.
+    // Barras que sobresalen del marco, vistas en una franja vertical a la altura `u`.
+    const scanBars = (u: number, lo: number, hi: number) => {
+      const centers: number[] = [];
+      let start: number | null = null;
+      for (let v = lo; v <= hi + 0.001; v += 0.001) {
+        const ink = v <= hi && isInk(map(u, v)) && isInk(map(u + 0.004, v));
+        if (ink && start === null) start = v;
+        if (!ink && start !== null) {
+          const length = v - start;
+          if (length > 0.004 && length < 0.02) centers.push(start + length / 2);
+          start = null;
+        }
+      }
+      return centers;
+    };
     if (right.filter((v) => v !== null).length < layout.answerRows.length) {
       const lo = Math.min(...layout.answerRows) - 0.03, hi = Math.max(...layout.answerRows) + 0.03;
       let best: { rows: (number | null)[]; count: number; u: number } | null = null;
       for (let u = layout.rightBarU - 0.012; u <= layout.rightBarU + 0.03; u += 0.003) {
-        const centers: number[] = [];
-        let start: number | null = null;
-        for (let v = lo; v <= hi + 0.001; v += 0.001) {
-          const ink = v <= hi && isInk(map(u, v)) && isInk(map(u + 0.004, v));
-          if (ink && start === null) start = v;
-          if (!ink && start !== null) {
-            const length = v - start;
-            if (length > 0.004 && length < 0.02) centers.push(start + length / 2);
-            start = null;
-          }
-        }
+        const centers = scanBars(u, lo, hi);
         const rows = layout.answerRows.map((e) => centers.filter((c) => Math.abs(c - e) < 0.011).sort((p, q) => Math.abs(p - e) - Math.abs(q - e))[0] ?? null);
         const count = rows.filter((v) => v !== null).length;
         if (!best || count > best.count) best = { rows, count, u };
@@ -302,6 +309,19 @@ export function readSheet(img: Gray, layout: SheetLayout = TRILCE_LAYOUT): Sheet
           anchors.push({ u: layout.rightBarEndU, v: layout.answerRows[i], x: end.x, y: end.y });
         }
       }
+    }
+    // Fichas con las preguntas agrupadas de otra manera (por partes, con un
+    // título entre grupos): las barras de la derecha no están donde dice la
+    // plantilla, pero sigue habiendo una por pregunta. Si en el borde derecho
+    // hay exactamente tantas barras como preguntas, cada fila toma la suya en
+    // orden, de arriba abajo.
+    if (right.filter((v) => v !== null).length < layout.answerRows.length - 2) {
+      const lo = 0.15, hi = 0.85;
+      const want = layout.answerRows.length;
+      const options: number[][] = [bars.filter((b) => b.u > 0.95 && b.u < 1.08 && b.v > lo && b.v < hi).map((b) => b.v)];
+      for (let u = layout.rightBarU - 0.012; u <= layout.rightBarU + 0.03; u += 0.003) options.push(scanBars(u, lo, hi));
+      const ordered = options.find((centers) => centers.length === want);
+      if (ordered) right = [...ordered].sort((p, q) => p - q);
     }
     for (const v of [...left, ...right]) if (v !== null) matched++;
     return {
