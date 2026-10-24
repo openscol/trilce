@@ -20,6 +20,8 @@ import { COMUNICACION_P6 } from "./curricula/comunicacion/p6";
 import { COMUNICACION_S1 } from "./curricula/comunicacion/s1";
 import { COMUNICACION_S2 } from "./curricula/comunicacion/s2";
 import { COMUNICACION_S3 } from "./curricula/comunicacion/s3";
+import { COMUNICACION_S4 } from "./curricula/comunicacion/s4";
+import { COMUNICACION_S5 } from "./curricula/comunicacion/s5";
 import { COMPUTACION_P1 } from "./curricula/computacion/p1";
 import { COMPUTACION_P2 } from "./curricula/computacion/p2";
 import { COMPUTACION_P3 } from "./curricula/computacion/p3";
@@ -41,7 +43,7 @@ import type { Curriculum, Section, Skill } from "./types";
 // "Próximamente". Agregar un grado = un archivo en curricula/ + una línea aquí.
 const CURRICULA: Record<string, Partial<Record<GradeKey, Curriculum>>> = {
   matematicas: { i5: MATEMATICAS_I5, p1: MATEMATICAS_P1, p2: MATEMATICAS_P2, p3: MATEMATICAS_P3, p4: MATEMATICAS_P4, p5: MATEMATICAS_P5, p6: MATEMATICAS_P6, s1: MATEMATICAS_S1, s2: MATEMATICAS_S2, s3: MATEMATICAS_S3, s4: MATEMATICAS_S4, s5: MATEMATICAS_S5 },
-  comunicacion: { i5: COMUNICACION_I5, p1: COMUNICACION_P1, p2: COMUNICACION_P2, p3: COMUNICACION_P3, p4: COMUNICACION_P4, p5: COMUNICACION_P5, p6: COMUNICACION_P6, s1: COMUNICACION_S1, s2: COMUNICACION_S2, s3: COMUNICACION_S3 },
+  comunicacion: { i5: COMUNICACION_I5, p1: COMUNICACION_P1, p2: COMUNICACION_P2, p3: COMUNICACION_P3, p4: COMUNICACION_P4, p5: COMUNICACION_P5, p6: COMUNICACION_P6, s1: COMUNICACION_S1, s2: COMUNICACION_S2, s3: COMUNICACION_S3, s4: COMUNICACION_S4, s5: COMUNICACION_S5 },
   // Computación: cada grado suma los apartados Programación y software,
   // Scratch e IA, y juega partidas de 15 preguntas.
   computacion: {
