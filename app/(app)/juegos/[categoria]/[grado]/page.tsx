@@ -3,7 +3,10 @@ import { notFound } from "next/navigation";
 import { ArrowLeftIcon } from "lucide-react";
 import { requireAppContext } from "@/lib/auth/context";
 import { createClient } from "@/lib/supabase/server";
-import { getCurriculum, skillHref, skillUid } from "@/lib/games/catalog";
+import { curriculumFor, getCurriculum, isExtended, skillHref, skillUid } from "@/lib/games/catalog";
+import { getGameMode } from "@/lib/games/mode-server";
+import { modeLabel } from "@/lib/games/modes";
+import { ModeSwitch } from "@/components/games/mode-switch";
 import { getGrade } from "@/lib/games/grades";
 import { getTopic, type Competency } from "@/lib/games/topics";
 import type { Section } from "@/lib/games/types";
@@ -14,8 +17,10 @@ export default async function GradoPage(props: PageProps<"/juegos/[categoria]/[g
   const { categoria, grado } = await props.params;
   const ctx = await requireAppContext();
   const grade = getGrade(grado);
-  const curriculum = getCurriculum(categoria, grado);
-  if (!grade || !curriculum) notFound();
+  const mode = await getGameMode();
+  const full = getCurriculum(categoria, grado);
+  const curriculum = curriculumFor(categoria, grado, mode);
+  if (!grade || !full || !curriculum) notFound();
 
   const supabase = await createClient();
   const { data: category } = await supabase
@@ -63,6 +68,8 @@ export default async function GradoPage(props: PageProps<"/juegos/[categoria]/[g
         <p className="text-sm text-muted-foreground">{curriculum.skills.length} juegos</p>
       </div>
 
+      <ModeSwitch mode={mode} />
+
       {groups.map((group) => (
         <div key={group.key} className="flex flex-col gap-6">
           {group.competency && (
@@ -93,7 +100,12 @@ export default async function GradoPage(props: PageProps<"/juegos/[categoria]/[g
                     href={skillHref(uid)}
                     className="flex scroll-mt-24 items-start justify-between gap-2 rounded-xl border border-border p-3 transition-colors hover:bg-accent"
                   >
-                    <span className="text-sm">{skill.title}</span>
+                    <span className="flex flex-col gap-1">
+                      <span className="text-sm">{skill.title}</span>
+                      {isExtended(full, skill) && (
+                        <span className="w-fit rounded-md bg-sky-500/10 px-1.5 py-0.5 text-xs text-sky-600 dark:text-sky-400">{modeLabel("extendido")}</span>
+                      )}
+                    </span>
                     {st && (
                       <span
                         className={cn(

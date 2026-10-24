@@ -199,12 +199,15 @@ export type Skill = {
   section: string;
   title: string;
   icon: string;
+  extended?: boolean;
   generate: (r: import("./rng").Rng) => Question;
 };
 
 // `topic`: tema de la vista «por temas» (lib/games/topics.ts). Solo lo tienen
 // los grados ya organizados según el CNEB.
-export type Section = { id: string; name: string; icon: string; topic?: string };
+// `extended`: la sección solo aparece en el modo extendido (lib/games/modes.ts);
+// en el modo CNEB se oculta. Lo mismo `Skill.extended` para un juego suelto.
+export type Section = { id: string; name: string; icon: string; topic?: string; extended?: boolean };
 
 // Juegos de una categoría (matemáticas, comunicación...) para un grado.
 // `sessionLength`: si se define, cada partida termina tras esa cantidad de

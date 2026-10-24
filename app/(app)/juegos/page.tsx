@@ -6,6 +6,8 @@ import { GRADES } from "@/lib/games/grades";
 import { skillCount } from "@/lib/games/catalog";
 import { Button } from "@/components/ui/button";
 import { FreeModeSwitch } from "@/components/games/free-mode";
+import { ModeSwitch } from "@/components/games/mode-switch";
+import { getGameMode } from "@/lib/games/mode-server";
 
 const STAFF_ROLES = ["admin", "administrativo", "docente"];
 
@@ -14,6 +16,7 @@ export default async function JuegosPage() {
   const isStudent = ctx.role === "alumno";
   const canManage = ctx.role === "admin" || ctx.role === "administrativo";
 
+  const mode = await getGameMode();
   const supabase = await createClient();
   const { data: categories } = await supabase
     .from("game_categories")
@@ -48,6 +51,8 @@ export default async function JuegosPage() {
         </div>
       </div>
 
+      <ModeSwitch mode={mode} />
+
       {(categories ?? []).length === 0 ? (
         <p className="rounded-2xl border border-border p-6 text-sm text-muted-foreground">
           No hay categorías activas.{canManage && " Créalas en Categorías."}
@@ -55,8 +60,8 @@ export default async function JuegosPage() {
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {(categories ?? []).map((c) => {
-            const total = GRADES.reduce((n, g) => n + skillCount(c.slug, g.key), 0);
-            const grades = GRADES.filter((g) => skillCount(c.slug, g.key) > 0).length;
+            const total = GRADES.reduce((n, g) => n + skillCount(c.slug, g.key, mode), 0);
+            const grades = GRADES.filter((g) => skillCount(c.slug, g.key, mode) > 0).length;
             return (
               <Link
                 key={c.id}

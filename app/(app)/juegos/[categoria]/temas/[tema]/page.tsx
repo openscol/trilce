@@ -5,8 +5,15 @@ import { requireAppContext } from "@/lib/auth/context";
 import { createClient } from "@/lib/supabase/server";
 import { skillHref, skillUid, topicBlocks } from "@/lib/games/catalog";
 import { getTopic } from "@/lib/games/topics";
+import { getGameMode } from "@/lib/games/mode-server";
+import { modeLabel } from "@/lib/games/modes";
+import { getCurriculum, isExtended } from "@/lib/games/catalog";
 import { aggregate, MIN_ATTEMPTS, WEAK_ACCURACY, type SkillStat } from "@/lib/games/stats";
 import { cn } from "@/lib/utils";
+
+function ExtendedBadge() {
+  return <span className="w-fit rounded-md bg-sky-500/10 px-1.5 py-0.5 text-xs text-sky-600 dark:text-sky-400">{modeLabel("extendido")}</span>;
+}
 
 // Un tema (p. ej. «Suma y resta») con sus juegos de todos los grados.
 export default async function TemaPage(props: PageProps<"/juegos/[categoria]/temas/[tema]">) {
@@ -14,7 +21,8 @@ export default async function TemaPage(props: PageProps<"/juegos/[categoria]/tem
   const ctx = await requireAppContext();
   const found = getTopic(categoria, tema);
   if (!found) notFound();
-  const blocks = topicBlocks(categoria, tema);
+  const mode = await getGameMode();
+  const blocks = topicBlocks(categoria, tema, mode);
 
   const supabase = await createClient();
   const { data: category } = await supabase
@@ -52,7 +60,7 @@ export default async function TemaPage(props: PageProps<"/juegos/[categoria]/tem
           {found.topic.icon} {found.topic.name}
         </h1>
         <p className="text-sm text-muted-foreground">
-          {found.competency.name} · {total} juegos
+          {found.competency.name} · {total} juegos · Modo {modeLabel(mode)}
         </p>
       </div>
 
@@ -74,7 +82,10 @@ export default async function TemaPage(props: PageProps<"/juegos/[categoria]/tem
                   href={skillHref(uid)}
                   className="flex items-start justify-between gap-2 rounded-xl border border-border p-3 transition-colors hover:bg-accent"
                 >
-                  <span className="text-sm">{skill.title}</span>
+                  <span className="flex flex-col gap-1">
+                    <span className="text-sm">{skill.title}</span>
+                    {isExtended(getCurriculum(categoria, block.grade)!, skill) && <ExtendedBadge />}
+                  </span>
                   {st && (
                     <span
                       className={cn(

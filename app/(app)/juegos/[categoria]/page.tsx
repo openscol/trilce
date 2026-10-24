@@ -6,12 +6,15 @@ import { createClient } from "@/lib/supabase/server";
 import { GRADES, LEVELS, gradeKeyFor } from "@/lib/games/grades";
 import { skillCount, topicCount } from "@/lib/games/catalog";
 import { getCompetencies } from "@/lib/games/topics";
+import { getGameMode } from "@/lib/games/mode-server";
+import { ModeSwitch } from "@/components/games/mode-switch";
 import { cn } from "@/lib/utils";
 
 export default async function CategoriaPage(props: PageProps<"/juegos/[categoria]">) {
   const { categoria } = await props.params;
   const { vista } = await props.searchParams;
   const ctx = await requireAppContext();
+  const mode = await getGameMode();
   const supabase = await createClient();
 
   const { data: category } = await supabase
@@ -46,6 +49,8 @@ export default async function CategoriaPage(props: PageProps<"/juegos/[categoria
         <p className="text-sm text-muted-foreground">{byTopic ? "Elige el tema." : "Elige el grado."}</p>
       </div>
 
+      <div className="flex flex-wrap items-center gap-3">
+      <ModeSwitch mode={mode} />
       {competencies.length > 0 && (
         <div className="flex w-fit rounded-lg border border-border p-0.5 text-sm">
           {[
@@ -65,6 +70,7 @@ export default async function CategoriaPage(props: PageProps<"/juegos/[categoria
           ))}
         </div>
       )}
+      </div>
 
       {byTopic &&
         competencies.map((c) => (
@@ -77,7 +83,7 @@ export default async function CategoriaPage(props: PageProps<"/juegos/[categoria
             </div>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {c.topics.map((t) => {
-                const count = topicCount(category.slug, t.id);
+                const count = topicCount(category.slug, t.id, mode);
                 const body = (
                   <>
                     <span className="text-sm">
@@ -101,12 +107,12 @@ export default async function CategoriaPage(props: PageProps<"/juegos/[categoria
           </section>
         ))}
 
-      {!byTopic && LEVELS.filter((l) => !("extra" in l) || GRADES.some((g) => g.level === l.key && skillCount(category.slug, g.key) > 0)).map(({ key: level, name }) => (
+      {!byTopic && LEVELS.filter((l) => !("extra" in l) || GRADES.some((g) => g.level === l.key && skillCount(category.slug, g.key, mode) > 0)).map(({ key: level, name }) => (
         <section key={level} className="flex flex-col gap-3">
           <h2 className="text-sm font-medium uppercase text-muted-foreground">{name}</h2>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
             {GRADES.filter((g) => g.level === level).map((g) => {
-              const count = skillCount(category.slug, g.key);
+              const count = skillCount(category.slug, g.key, mode);
               const own = g.key === ownGrade;
               const body = (
                 <>

@@ -7,8 +7,8 @@ import type { Curriculum, Section, Skill } from "../../types";
 // competencias de matemática y, dentro de cada una, los temas que piden los
 // desempeños de 2.° grado (números hasta 100, problemas de agregar, quitar,
 // juntar, separar, comparar e igualar, doble y mitad, patrones, cuerpos que
-// ruedan, tablas de conteo, posible e imposible...). Las secciones marcadas
-// «para ir más allá» amplían lo que pide el CNEB para este grado.
+// ruedan, tablas de conteo, posible e imposible...). Lo marcado `extended`
+// amplía lo que pide el CNEB para este grado y solo sale en el modo extendido.
 //
 // Cada juego mezcla varias formas de preguntar la misma idea (`mix`): son
 // menos juegos que antes, pero cada uno más completo.
@@ -19,11 +19,11 @@ const mix = (...gens: Gen[]): Gen => (r) => r.pick(gens)(r);
 const SECTIONS: Section[] = [
   // Resuelve problemas de cantidad
   { id: "numeros", name: "Números hasta 100", icon: "🔢", topic: "numeros" },
-  { id: "numeros-1000", name: "Números hasta 1 000 (para ir más allá)", icon: "🔢", topic: "numeros" },
+  { id: "numeros-1000", name: "Números hasta 1 000", icon: "🔢", topic: "numeros", extended: true },
   { id: "suma-resta", name: "Sumar y restar", icon: "➕", topic: "suma-resta" },
   { id: "problemas", name: "Problemas de suma y resta", icon: "🧠", topic: "suma-resta" },
-  { id: "multiplicar", name: "Primeros pasos para multiplicar (para ir más allá)", icon: "✖️", topic: "multiplicacion-division" },
-  { id: "mitades", name: "Fracciones (para ir más allá)", icon: "🍕", topic: "fracciones" },
+  { id: "multiplicar", name: "Primeros pasos para multiplicar", icon: "✖️", topic: "multiplicacion-division", extended: true },
+  { id: "mitades", name: "Fracciones", icon: "🍕", topic: "fracciones", extended: true },
   { id: "dinero", name: "Soles y compras", icon: "💰", topic: "dinero" },
   { id: "tiempo-masa", name: "El tiempo y el peso", icon: "⏱️", topic: "tiempo-masa" },
   // Resuelve problemas de regularidad, equivalencia y cambio
@@ -39,7 +39,7 @@ const SECTIONS: Section[] = [
   { id: "azar", name: "¿Puede pasar?", icon: "🎲", topic: "probabilidad" },
 ];
 
-type Row = [id: string, section: string, title: string, generate: Gen];
+type Row = [id: string, section: string, title: string, generate: Gen, extended?: "extendido"];
 
 const ROWS: Row[] = [
   ["contar-100", "numeros", "Cuenta hacia adelante y hacia atrás", (r) => G.countUpDown(r, 100)],
@@ -67,7 +67,7 @@ const ROWS: Row[] = [
   ["restas-dos-cifras", "suma-resta", "Restas con números de dos cifras", mix((r) => G.subTwoDigitOne(r, false), (r) => G.subTwoDigitOne(r, true), (r) => G.subTwoTwo(r, false), (r) => G.subTwoTwo(r, true))],
   ["sumar-o-restar", "suma-resta", "¿Sumo o resto?", G.addSubTwoDigit],
   ["aproximar", "suma-resta", "Calcula más o menos cuánto da", mix((r) => G.estimateTwoDigit(r, "+"), (r) => G.estimateTwoDigit(r, "−"))],
-  ["centenas-suma-resta", "suma-resta", "Sumas y restas con centenas (para ir más allá)", mix(G.addHundreds, G.subHundreds, G.addThreeDigit, G.subThreeDigit, G.addSubThreeDigit)],
+  ["centenas-suma-resta", "suma-resta", "Sumas y restas con centenas", mix(G.addHundreds, G.subHundreds, G.addThreeDigit, G.subThreeDigit, G.addSubThreeDigit), "extendido"],
 
   ["agregar-quitar", "problemas", "Problemas de agregar y quitar", (r) => C.paev(r, ["agregar", "quitar"])],
   ["juntar-separar", "problemas", "Problemas de juntar y separar", (r) => C.paev(r, ["juntar", "separar"])],
@@ -119,14 +119,15 @@ const ROWS: Row[] = [
   ["barras", "datos", "Gráficos de barras", (r) => G.interpretBarGraph(r, 1)],
 
   ["posible-imposible", "azar", "¿Posible o imposible?", C.possibleImpossible],
-  ["mas-probable", "azar", "¿Qué es más probable? (para ir más allá)", mix(G.moreLikely, G.certainOrImpossible)],
+  ["mas-probable", "azar", "¿Qué es más probable?", mix(G.moreLikely, G.certainOrImpossible), "extendido"],
 ];
 
-const SKILLS: Skill[] = ROWS.map(([id, section, title, generate]) => ({
+const SKILLS: Skill[] = ROWS.map(([id, section, title, generate, extended]) => ({
   id,
   section,
   title,
   icon: SECTIONS.find((s) => s.id === section)!.icon,
+  extended: !!extended,
   generate,
 }));
 

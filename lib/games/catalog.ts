@@ -34,6 +34,7 @@ import { COMPUTACION_S3 } from "./curricula/computacion/secundaria/s3";
 import { COMPUTACION_S4 } from "./curricula/computacion/secundaria/s4";
 import { COMPUTACION_S5 } from "./curricula/computacion/secundaria/s5";
 import { GRADES, getGrade, type GradeKey } from "./grades";
+import type { GameMode } from "./modes";
 import type { Curriculum, Section, Skill } from "./types";
 
 // Registro de contenido: categoría (slug de game_categories) → grado → juegos.
@@ -64,8 +65,24 @@ export function getCurriculum(category: string, grade: string): Curriculum | und
   return CURRICULA[category]?.[grade as GradeKey];
 }
 
-export function skillCount(category: string, grade: string) {
-  return getCurriculum(category, grade)?.skills.length ?? 0;
+// El currículo tal como se ve en un modo: en el modo CNEB se quitan las
+// secciones y los juegos marcados `extended`. Los grados que aún no se han
+// organizado según el CNEB no tienen marcas y se ven completos en todo modo.
+export function curriculumFor(category: string, grade: string, mode: GameMode): Curriculum | undefined {
+  const curriculum = getCurriculum(category, grade);
+  if (!curriculum || mode !== "cneb") return curriculum;
+  const sections = curriculum.sections.filter((s) => !s.extended);
+  const ids = new Set(sections.map((s) => s.id));
+  return { ...curriculum, sections, skills: curriculum.skills.filter((s) => !s.extended && ids.has(s.section)) };
+}
+
+export function skillCount(category: string, grade: string, mode: GameMode) {
+  return curriculumFor(category, grade, mode)?.skills.length ?? 0;
+}
+
+// Un juego es del modo extendido si él o su sección lo están.
+export function isExtended(curriculum: Curriculum, skill: Skill) {
+  return !!skill.extended || !!curriculum.sections.find((s) => s.id === skill.section)?.extended;
 }
 
 export function hasContent(category: string) {
@@ -117,10 +134,10 @@ export function getSkill(uid: string): ResolvedSkill | undefined {
 // el CNEB (los que marcan `Section.topic`).
 export type TopicBlock = { grade: GradeKey; gradeLabel: string; section: Section; skills: Skill[] };
 
-export function topicBlocks(category: string, topicId: string): TopicBlock[] {
+export function topicBlocks(category: string, topicId: string, mode: GameMode): TopicBlock[] {
   const blocks: TopicBlock[] = [];
   for (const g of GRADES) {
-    const curriculum = getCurriculum(category, g.key);
+    const curriculum = curriculumFor(category, g.key, mode);
     if (!curriculum) continue;
     for (const section of curriculum.sections) {
       if (section.topic !== topicId) continue;
@@ -131,6 +148,6 @@ export function topicBlocks(category: string, topicId: string): TopicBlock[] {
   return blocks;
 }
 
-export function topicCount(category: string, topicId: string) {
-  return topicBlocks(category, topicId).reduce((n, b) => n + b.skills.length, 0);
+export function topicCount(category: string, topicId: string, mode: GameMode) {
+  return topicBlocks(category, topicId, mode).reduce((n, b) => n + b.skills.length, 0);
 }
