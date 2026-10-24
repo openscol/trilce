@@ -25,7 +25,7 @@ const proper = (r: Rng, dens = DENS): Frac => {
   return [r.int(1, d - 1), d];
 };
 
-// 4.° T.1: fracciones de un todo, con problemas.
+// Fracciones de un todo, con problemas.
 export function fractionWholeProblem(r: Rng): Question {
   const d = r.pick([3, 4, 5, 6, 8, 10]);
   const n = r.int(1, d - 1);
@@ -41,7 +41,7 @@ export function fractionWholeProblem(r: Rng): Question {
   return fracChoice(r, `${text} ¿Qué fracción ${rest ? "queda" : "es esa"}?`, answer, `De ${d} partes iguales, ${rest ? `quedan ${d - n}` : `son ${n}`}: ${fr(answer)}.`, { kind: "fraction", shape, parts: d, shaded: n }, rest ? "lo-que-queda" : "parte", [[rest ? n : d - n, d]]);
 }
 
-// 4.° T.2: fracciones de un grupo, con problemas.
+// Fracciones de un grupo, con problemas.
 export function fractionGroupProblem(r: Rng): Question {
   const d = r.int(4, 12);
   const n = r.int(1, d - 1);
@@ -66,14 +66,14 @@ function equivalentPair(r: Rng, maxDen = 12, maxK = 6): [Frac, Frac, number] {
   }
 }
 
-// 4.° T.6: hallar fracciones equivalentes multiplicando o dividiendo.
+// Hallar fracciones equivalentes multiplicando o dividiendo.
 export function equivalentByMultDiv(r: Rng): Question {
   const [small, big, k] = equivalentPair(r, 10, 5);
   if (r.chance(0.5)) return fracChoice(r, `Multiplica el numerador y el denominador de ${fr(small)} por ${k}. ¿Qué fracción equivalente obtienes?`, big, `${small[0]} × ${k} = ${big[0]} y ${small[1]} × ${k} = ${big[1]}: ${fr(small)} = ${fr(big)}.`, undefined, "multiplicar", [[small[0] + k, small[1] + k], [big[0], small[1]], [small[0], big[1]]]);
   return fracChoice(r, `Divide el numerador y el denominador de ${fr(big)} entre ${k}. ¿Qué fracción equivalente obtienes?`, small, `${big[0]} ÷ ${k} = ${small[0]} y ${big[1]} ÷ ${k} = ${small[1]}: ${fr(big)} = ${fr(small)}.`, undefined, "dividir", [[Math.max(1, big[0] - k), Math.max(2, big[1] - k)], [big[0], small[1]], [small[0], big[1]]]);
 }
 
-// 4.° T.7: identificar fracciones equivalentes.
+// Identificar fracciones equivalentes.
 export function identifyEquivalent(r: Rng): Question {
   const [small, big] = equivalentPair(r, 8, 5);
   if (r.chance(0.5)) {
@@ -88,7 +88,7 @@ export function identifyEquivalent(r: Rng): Question {
   return multiQ(`Selecciona todas las fracciones equivalentes a ${fr(small)}.`, [...new Set(options)], [...new Set(good.map(fr))], `Son equivalentes las que salen de multiplicar el numerador y el denominador de ${fr(small)} por un mismo número.`, undefined, "seleccionar");
 }
 
-// 4.° T.8: fracciones equivalentes, hallar el numerador o el denominador que falta.
+// Fracciones equivalentes, hallar el numerador o el denominador que falta.
 export function equivalentMissing(r: Rng): Question {
   const [small, big, k] = equivalentPair(r, 12, 9);
   const form = r.int(0, 3);
@@ -99,7 +99,7 @@ export function equivalentMissing(r: Rng): Question {
   return numQ(small[1], "¿Qué número falta?", `${fr(big)} = ${small[0]}/?`, why, "denominador");
 }
 
-// 4.° T.10: fracciones con denominadores 10 y 100.
+// Fracciones con denominadores 10 y 100.
 export function tenthsHundredths(r: Rng): Question {
   const t = r.int(1, 9);
   const form = r.int(0, 2);
@@ -118,7 +118,7 @@ function mixedNumber(r: Rng, dens = [2, 3, 4, 5, 6, 8], maxWhole = 4): Frac {
 }
 const bars = ([n, d]: Frac): Visual => ({ kind: "fractionPair", hideLabels: true, items: Array.from({ length: Math.ceil(n / d) }, (_, i) => ({ parts: d, shaded: Math.min(d, n - i * d) })) });
 
-// 4.° U.1: identificar números mixtos.
+// Identificar números mixtos.
 export function identifyMixed(r: Rng): Question {
   const f = mixedNumber(r, [2, 3, 4, 5, 6, 8], 3);
   const [n, d] = f;
@@ -127,7 +127,7 @@ export function identifyMixed(r: Rng): Question {
   return choiceQ(r, "Cada barra es un entero. ¿Qué número mixto está sombreado?", m(f), [`${w + 1} ${rest}/${d}`, `${w} ${d - rest}/${d}`, `${rest} ${w}/${d}`, `${w} ${rest}/${d + 1}`, `${w - 1 || w + 2} ${rest}/${d}`].filter((x) => x !== m(f)), `Hay ${w} ${w === 1 ? "barra completa" : "barras completas"} y ${rest}/${d} de otra: ${m(f)}.`, bars(f));
 }
 
-// 4.° U.2: fracciones y números mixtos con denominadores 10 y 100.
+// Fracciones y números mixtos con denominadores 10 y 100.
 export function mixedTenHundred(r: Rng): Question {
   const d = r.pick([10, 100]);
   const w = r.int(1, 9);
@@ -137,7 +137,7 @@ export function mixedTenHundred(r: Rng): Question {
   return choiceQ(r, `¿Qué número mixto es igual a ${n}/${d}?`, `${w} ${rest}/${d}`, [`${rest} ${w}/${d}`, `${w + 1} ${rest}/${d}`, `${w} ${rest}/${d === 10 ? 100 : 10}`, `${w * 10} ${rest}/${d}`], `${n} ÷ ${d} = ${w} y sobran ${rest}: ${w} ${rest}/${d}.`, undefined, "a-mixto");
 }
 
-// 4.° U.3 – U.5: convertir entre números mixtos y fracciones impropias.
+// Convertir entre números mixtos y fracciones impropias.
 export function convertMixed(r: Rng, direction: "toImproper" | "toMixed" | "both"): Question {
   const dir = direction === "both" ? r.pick(["toImproper", "toMixed"] as const) : direction;
   const f = mixedNumber(r, [2, 3, 4, 5, 6, 8, 10], 6);
@@ -161,14 +161,14 @@ function likePair(r: Rng): [Frac, Frac, string] {
   return [[n, d1], [n, d2], "Con el mismo numerador, es mayor la de partes más grandes (denominador menor)"];
 }
 
-// 4.° V.1: comparar fracciones con numeradores o denominadores iguales, usando modelos.
+// Comparar fracciones con numeradores o denominadores iguales, usando modelos.
 export function compareLikeModels(r: Rng): Question {
   const [a, b, why] = likePair(r);
   const s = sym(fcmp(a, b), 0);
   return fixedQ(`Mira las barras y elige el símbolo: ${fr(a)} ? ${fr(b)}`, SYMBOLS, s, `${why}: ${fr(a)} ${s} ${fr(b)}.`, { kind: "fractionPair", items: [{ parts: a[1], shaded: a[0] }, { parts: b[1], shaded: b[0] }], showAll: true }, s);
 }
 
-// 4.° V.5: fracciones de referencia (0, 1/2 y 1).
+// Fracciones de referencia (0, 1/2 y 1).
 export function benchmarkFraction(r: Rng): Question {
   for (;;) {
     const d = r.pick([6, 8, 10, 12, 16, 20]);
@@ -182,7 +182,7 @@ export function benchmarkFraction(r: Rng): Question {
   }
 }
 
-// 4.° V.7 / V.9: hallar el numerador o el denominador que hace verdadera la comparación.
+// Hallar el numerador o el denominador que hace verdadera la comparación.
 export function compareMissing(r: Rng, benchmark: boolean): Question {
   for (;;) {
     const d = r.pick([4, 6, 8, 10, 12]);
@@ -207,7 +207,7 @@ const RECIPE_ITEMS = ["azúcar", "harina", "leche", "avena", "aceite", "arroz"];
 // Unidad con la que se mide cada ingrediente (además de la taza).
 const RECIPE_UNIT: Record<string, string> = { azúcar: "kilo", harina: "kilo", leche: "litro", avena: "taza", aceite: "litro", arroz: "kilo" };
 
-// 4.° V.10: comparar fracciones en recetas.
+// Comparar fracciones en recetas.
 export function compareRecipes(r: Rng): Question {
   for (;;) {
     const a = proper(r, [2, 3, 4, 8]);
@@ -220,7 +220,7 @@ export function compareRecipes(r: Rng): Question {
   }
 }
 
-// 4.° V.11: hallar fracciones menores o mayores.
+// Hallar fracciones menores o mayores.
 export function findSmallerLarger(r: Rng): Question {
   for (;;) {
     const ref = proper(r);
@@ -233,7 +233,7 @@ export function findSmallerLarger(r: Rng): Question {
   }
 }
 
-// 4.° V.15: comparar números mixtos.
+// Comparar números mixtos.
 export function compareMixed(r: Rng): Question {
   const a = mixedNumber(r);
   const b: Frac = r.chance(0.5) ? [Math.floor(a[0] / a[1]) * a[1] + r.int(1, a[1] - 1), a[1]] : mixedNumber(r);
@@ -244,7 +244,7 @@ export function compareMixed(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Descomponer
 
-// 4.° W.1 / W.2: descomponer en fracciones unitarias.
+// Descomponer en fracciones unitarias.
 export function decomposeUnit(r: Rng, withModel: boolean): Question {
   const d = r.pick([3, 4, 5, 6, 8]);
   const n = r.int(2, d - 1);
@@ -254,7 +254,7 @@ export function decomposeUnit(r: Rng, withModel: boolean): Question {
   return choiceQ(r, `¿Cómo se descompone ${n}/${d} en fracciones unitarias?`, unit(n, d), [unit(n + 1, d), unit(n - 1, d), unit(d, n), unit(n, d + 1)].filter((x) => x !== "" && x !== unit(n, d)), `Se suma ${n} veces la fracción 1/${d}.`, undefined, "elegir");
 }
 
-// 4.° W.3: descomponer fracciones.
+// Descomponer fracciones.
 export function decompose(r: Rng): Question {
   const d = r.pick([4, 5, 6, 8, 10, 12]);
   const n = r.int(3, d - 1);
@@ -265,7 +265,7 @@ export function decompose(r: Rng): Question {
   return numQ(c, "¿Qué numerador falta?", `${n}/${d} = ${a}/${d} + ${b}/${d} + ?/${d}`, `${a} + ${b} + ${c} = ${n}.`, "tres-partes");
 }
 
-// 4.° W.4: descomponer fracciones de varias formas.
+// Descomponer fracciones de varias formas.
 export function decomposeWays(r: Rng): Question {
   const d = r.pick([5, 6, 8, 10]);
   const n = r.int(4, d - 1);
@@ -297,7 +297,7 @@ function likeOperands(r: Rng, op: "+" | "−", dens = [3, 4, 5, 6, 8, 10, 12]): 
 }
 const pickOp = (r: Rng, op: "+" | "−" | "mixed") => (op === "mixed" ? r.pick(["+", "−"] as const) : op);
 
-// 4.° W.5 / W.6 / W.8 / W.9: sumar y restar con modelos de área o de tiras.
+// Sumar y restar con modelos de área o de tiras.
 export function addSubModel(r: Rng, op: "+" | "−", model: "area" | "strip"): Question {
   const [a, b, c] = likeOperands(r, op, model === "area" ? [4, 6, 8] : [3, 4, 5, 6, 8, 10]);
   const visual: Visual = model === "strip" ? { kind: "fractionPair", items: [{ parts: a[1], shaded: a[0] }, { parts: b[1], shaded: b[0] }], showAll: true } : { kind: "fraction", shape: "area", parts: a[1], shaded: a[0] };
@@ -322,14 +322,14 @@ function fracStory(r: Rng, op: "+" | "−", a: string, b: string, ctx: Ctx): str
     : r.pick([`${name} tenía ${a} m de cinta y usó ${b} m. ¿Cuántos metros le quedan?`, `Una botella tenía ${a} litros de agua y ${name} tomó ${b} litros. ¿Cuántos litros quedan?`, `${name} debe recorrer ${a} km y ya recorrió ${b} km. ¿Cuántos kilómetros le faltan?`]);
 }
 
-// 4.° X.4 / X.5: problemas de suma y resta con el mismo denominador.
+// Problemas de suma y resta con el mismo denominador.
 export function likeFractionProblem(r: Rng, ctx: Ctx): Question {
   const op = r.pick(["+", "−"] as const);
   const [a, b, c] = likeOperands(r, op, ctx === "recipe" ? [3, 4, 8] : undefined);
   return fracChoice(r, fracStory(r, op, fr(a), fr(b), ctx), c, `${fr(a)} ${op} ${fr(b)} = ${fr(c)}.`, undefined, op === "+" ? "suma" : "resta", [[op === "+" ? a[0] + b[0] : a[0] - b[0], a[1] * 2], op === "+" ? [Math.abs(a[0] - b[0]) || 1, a[1]] : [a[0] + b[0], a[1]]]);
 }
 
-// 4.° X.6: sumar tres o más fracciones con el mismo denominador.
+// Sumar tres o más fracciones con el mismo denominador.
 export function addSeveralFractions(r: Rng): Question {
   const d = r.pick([6, 8, 10, 12]);
   const count = r.int(3, 4);
@@ -338,7 +338,7 @@ export function addSeveralFractions(r: Rng): Question {
   return fracChoice(r, "Resuelve la suma.", [total, d], `${xs.join(" + ")} = ${total}; el denominador no cambia: ${total}/${d}${total > d ? ` = ${mixed(total, d)}` : ""}.`, `${xs.map((x) => `${x}/${d}`).join(" + ")} = ?`, `${count}-sumandos`, [[total, d * count]]);
 }
 
-// 4.° X.7: problemas de varios pasos con el mismo denominador.
+// Problemas de varios pasos con el mismo denominador.
 export function likeMultiStep(r: Rng): Question {
   const d = r.pick([6, 8, 10, 12]);
   const name = r.pick(NAMES);
@@ -353,7 +353,7 @@ export function likeMultiStep(r: Rng): Question {
   return fracChoice(r, `Un tanque tenía ${start}/${d} de su capacidad. Se usaron ${a}/${d} para regar y ${b}/${d} para lavar. ¿Qué fracción queda?`, [left, d], `${start}/${d} − ${a}/${d} − ${b}/${d} = ${left}/${d}.`, undefined, "queda", [[start - a, d], [a + b, d]]);
 }
 
-// 4.° X.8: comparar sumas y restas de fracciones con el mismo denominador.
+// Comparar sumas y restas de fracciones con el mismo denominador.
 export function compareSumsDiffs(r: Rng): Question {
   const d = r.pick([5, 6, 8, 10, 12]);
   const side = (): [string, number] => {
@@ -368,7 +368,7 @@ export function compareSumsDiffs(r: Rng): Question {
   return fixedQ("Elige el símbolo correcto.", SYMBOLS, s, `${left} = ${lv}/${d}${right.includes(" ") ? ` y ${right} = ${rvFinal}/${d}` : ""}.`, `${left}  ?  ${right}`, s);
 }
 
-// 4.° X.9 – X.15: sumar y restar números mixtos con el mismo denominador.
+// Sumar y restar números mixtos con el mismo denominador.
 // `regroup`: false = sin reagrupar; true = puede necesitar reagrupar.
 export function mixedAddSub(r: Rng, op: "+" | "−" | "mixed", regroup: boolean, ctx: Ctx = "plain"): Question {
   for (;;) {
@@ -394,7 +394,7 @@ export function mixedAddSub(r: Rng, op: "+" | "−" | "mixed", regroup: boolean,
   }
 }
 
-// 4.° X.15: varios pasos con fracciones y números mixtos.
+// Varios pasos con fracciones y números mixtos.
 export function mixedMultiStep(r: Rng): Question {
   const d = r.pick([4, 5, 6, 8]);
   const name = r.pick(NAMES);
@@ -408,7 +408,7 @@ export function mixedMultiStep(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Sumar y restar con distinto denominador
 
-// 4.° Y.1: sumar fracciones con denominadores 10 y 100.
+// Sumar fracciones con denominadores 10 y 100.
 export function addTenHundred(r: Rng): Question {
   const t = r.int(1, 8);
   const h = r.int(1, 99 - t * 10);
@@ -416,7 +416,7 @@ export function addTenHundred(r: Rng): Question {
   return fracChoice(r, "Resuelve la suma.", [t * 10 + h, 100], `${t}/10 = ${t * 10}/100; ${t * 10}/100 + ${h}/100 = ${t * 10 + h}/100.`, `${x} + ${y} = ?`, undefined, [[t + h, 100], [t + h, 110], [t * 10 + h, 10], [t + h * 10 > 0 ? t + h : 1, 10]]);
 }
 
-// 4.° Y.2: identificar la expresión con una suma dada (denominadores 10 y 100).
+// Identificar la expresión con una suma dada (denominadores 10 y 100).
 export function sumTenHundredExpression(r: Rng): Question {
   const t = r.int(1, 8);
   const h = r.int(1, 9);
@@ -443,7 +443,7 @@ function unlikeOperands(r: Rng, op: "+" | "−", nested: boolean): [Frac, Frac, 
   }
 }
 
-// 4.° Y.3 – Y.7: sumar y restar fracciones con distinto denominador.
+// Sumar y restar fracciones con distinto denominador.
 export function unlikeAddSub(r: Rng, op: "+" | "−" | "mixed", mode: "model" | "plain" | "word"): Question {
   const o = pickOp(r, op);
   const [a, b, c] = unlikeOperands(r, o, mode === "model");
@@ -464,7 +464,7 @@ export type MultMode = "model" | "line" | "equation" | "missing" | "sort" | "pla
 
 const SORT = ["Menor que 1", "Igual a 1", "Mayor que 1"];
 
-// 4.° Z y AA.1 – AA.7: k × n/d. `unit`: solo fracciones unitarias (n = 1).
+// k × n/d. `unit`: solo fracciones unitarias (n = 1).
 export function multFraction(r: Rng, unit: boolean, mode: MultMode): Question {
   const dens = mode === "model" ? [2, 3, 4, 5, 6] : mode === "line" ? [2, 3, 4, 5] : mode === "recipe" ? [2, 3, 4, 8] : [2, 3, 4, 5, 6, 8, 10];
   const d = r.pick(unit ? dens : dens.filter((x) => x > 2));
@@ -507,7 +507,7 @@ export function multFraction(r: Rng, unit: boolean, mode: MultMode): Question {
   return fracChoice(r, "Resuelve la multiplicación.", p, why, `${k} × ${f} = ?`, tag, extra);
 }
 
-// 4.° AA.8 – AA.11: multiplicar números mixtos por naturales.
+// Multiplicar números mixtos por naturales.
 export function multMixed(r: Rng, mode: "plain" | "word" | "recipe" | "multiStep"): Question {
   const d = r.pick(mode === "recipe" ? [2, 3, 4] : [2, 3, 4, 5, 6]);
   const w = r.int(1, 4);
@@ -526,7 +526,7 @@ export function multMixed(r: Rng, mode: "plain" | "word" | "recipe" | "multiStep
   return fracChoice(r, `${name} compró ${k} bolsas de ${m(a)} kg de arroz y ya usó ${mixed(used, d)} kg. ¿Cuántos kilos le quedan?`, left, `${k} × ${m(a)} = ${m(p)}; ${m(p)} − ${mixed(used, d)} = ${m(left)}.`, undefined, undefined, [p, [p[0] + used, d]], m);
 }
 
-// 4.° AA.12 – AA.14: fracción de un número.
+// Fracción de un número.
 export function fractionOfNumber(r: Rng, mode: "model" | "plain" | "word"): Question {
   const d = r.pick(mode === "model" ? [2, 3, 4, 5] : [2, 3, 4, 5, 6, 8, 10]);
   const n = r.int(1, d - 1);

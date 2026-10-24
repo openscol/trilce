@@ -1,41 +1,14 @@
 import * as P from "../../../generators/lengua/phonics";
 import * as P2 from "../../../generators/lengua/phonics2";
 import { choose, mix, pickAll, readPassage, type ChoiceItem, type Passage } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import type { Row } from "./row";
 
-// Fundamentos de lectura (IXL 2nd grade ELA, A-T), adaptados al castellano
-// igual que en 1.°: lo que en inglés es fonética propia de ese idioma pasa a
-// su equivalente en nuestra lectoescritura.
-//   dígrafos y trígrafos (ch, sh, -dge...) → ch, ll, rr, qu, gu, gue/gui
-//   silent e → h muda            vowel teams → diptongos
-//   short/long vowels → vocal sola o en diptongo
-//   long vowel patterns → c/qu, g/gu, c/z, g/j, r/rr
-//   r-controlled → r suave y fuerte   diphthongs oi/ou → ai, au, ei, eu, oi
-//   variant vowels → gue, gui, güe, güi   consonant-l-e → bl, cl, gl, pl
+// 2.° de Primaria · banco de lectoescritura: rimas y sílabas, dígrafos y letras
+// mudas, trabadas, diptongos (ie, ue, ai, au, ei, eu, oi), vocal sola o en
+// diptongo, gue/gui/güe/güi, c y g suaves o fuertes, sílabas abiertas y
+// cerradas, bl/cl/gl/pl, prefijos y sufijos, palabras frecuentes y cuentos con
+// cada patrón.
 
-export const SECTIONS: Section[] = [
-  { id: "A", name: "Rima", icon: "🎵" },
-  { id: "B", name: "Sílabas", icon: "👏" },
-  { id: "C", name: "Cambiar y quitar sonidos", icon: "🔄" },
-  { id: "D", name: "Dígrafos y letras mudas", icon: "🔗" },
-  { id: "E", name: "Dígrafos y trabadas", icon: "🧱" },
-  { id: "F", name: "Vocales", icon: "🔠" },
-  { id: "G", name: "La h muda", icon: "🤫" },
-  { id: "H", name: "Diptongos", icon: "👯" },
-  { id: "I", name: "Vocal sola o en diptongo", icon: "🎯" },
-  { id: "J", name: "Patrones ortográficos", icon: "✍️" },
-  { id: "K", name: "La r: suave y fuerte", icon: "🐯" },
-  { id: "L", name: "Diptongos: ai, au, ei, eu, oi", icon: "👑" },
-  { id: "M", name: "Gue, gui, güe y güi", icon: "🐧" },
-  { id: "N", name: "C y g: sonido suave y fuerte", icon: "🦓" },
-  { id: "O", name: "Sílabas abiertas y cerradas", icon: "🚪" },
-  { id: "P", name: "Sílabas avanzadas", icon: "🧗" },
-  { id: "Q", name: "Palabras de varias sílabas", icon: "✌️" },
-  { id: "R", name: "Palabras con prefijos y sufijos", icon: "🧩" },
-  { id: "S", name: "Palabras frecuentes", icon: "⭐" },
-  { id: "T", name: "Cuentos para leer", icon: "📚" },
-];
 
 // Oración que corresponde a un dibujo; los distractores son las demás.
 function sentencesFor(list: [string, string][]): ChoiceItem[] {
@@ -44,7 +17,7 @@ function sentencesFor(list: [string, string][]): ChoiceItem[] {
 
 const partsOf = (list: string, re: RegExp) => list.split(" ").map((w) => ({ w, part: (w.match(re) ?? [""])[0] }));
 
-// --- A. Rima -------------------------------------------------------------------
+// --- Rima -------------------------------------------------------------------
 
 const COUPLETS: ChoiceItem[] = [
   { t: "El gato Renato\nperdió su ___.", a: "zapato", d: ["sombrero", "pelota", "camisa"] },
@@ -79,7 +52,7 @@ const RIDDLES: { clue: string; w: string }[] = [
   { clue: "Rima con «sol»\ny lleva su casa a cuestas.", w: "caracol" },
 ];
 
-// --- D. Dígrafos y letras mudas ---------------------------------------------------
+// --- Dígrafos y letras mudas ---------------------------------------------------
 
 const DIGRAPH_READ = "coche leche llave pollo silla perro gorro zorro queso llama cuchara chocolate guitarra águila paquete mosquito";
 const DIGRAPHS = partsOf("chocolate llave lluvia queso coche leche cuchara pollo silla caballo galleta estrella gallina perro zorro gorro guitarra paquete raqueta mosquito águila juguete", /ch|ll|rr|qu|gu/);
@@ -97,7 +70,7 @@ const SILENT: ChoiceItem[] = [
   { pic: "🦉", t: "bú_o", a: "h", d: ["j", "g", "y"] },
 ];
 
-// --- E. Trabadas ---------------------------------------------------------------------
+// --- Trabadas ---------------------------------------------------------------------
 
 // Palabras cuya terminación solo admite una de las sílabas de las opciones
 // (no «tronco»: también valdrían «blanco», «brinco» y «fresco»).
@@ -119,7 +92,7 @@ const BLEND_SENTENCES: ChoiceItem[] = [
   { t: "El vaso es de ___ y se puede romper.", a: "cristal", d: ["cresta", "crema", "costal"] },
 ];
 
-// --- G. La h muda ----------------------------------------------------------------------
+// --- La h muda ----------------------------------------------------------------------
 
 const H_WORDS = "helado hoja huevo hormiga hilo hada hielo hueso búho zanahoria huella hamburguesa";
 
@@ -146,7 +119,7 @@ const SENT_H: [string, string][] = [
   ["🍔", "Helena pidió una hamburguesa."],
 ];
 
-// --- H. Diptongos -----------------------------------------------------------------------
+// --- Diptongos -----------------------------------------------------------------------
 
 const DIPH = /ia|ie|io|ua|ue|ei|ai|au|eu|oi|iu|ui/;
 const DIPH_WORDS = "piano agua huevo hueso puerta nieve hielo fuego lluvia serpiente cuaderno guante reina dinosaurio zanahoria ciervo pueblo niebla puente ciudad";
@@ -162,12 +135,12 @@ const SENT_DIPH: [string, string][] = [
   ["🌧️", "La lluvia moja la ciudad."],
 ];
 
-// --- I. Vocal sola o en diptongo ---------------------------------------------------------
+// --- Vocal sola o en diptongo ---------------------------------------------------------
 
 const WITH_DIPH = ["piano", "agua", "huevo", "puerta", "nieve", "fuego", "lluvia", "reina", "pueblo", "ciudad", "viaje", "cielo", "fiesta", "abuela", "cuento"];
 const NO_DIPH = ["casa", "pato", "luna", "mesa", "perro", "libro", "tomate", "camisa", "pelota", "ventana", "conejo", "zapato"];
 
-// --- J. Patrones ortográficos ---------------------------------------------------------------
+// --- Patrones ortográficos ---------------------------------------------------------------
 
 const QU = { yes: ["queso", "paquete", "raqueta", "mosquito", "bosque", "máquina", "esquina", "quince"], no: ["casa", "conejo", "cuchara", "coche", "foca", "vaca", "boca", "corona"] };
 const GU = { yes: ["guitarra", "águila", "juguete", "hamburguesa", "manguera", "guiso", "guerra"], no: ["gato", "gorro", "gallina", "gorila", "tortuga", "lago", "gota"] };
@@ -188,7 +161,7 @@ const WELL_WRITTEN: ChoiceItem[] = [
   { t: "La ___ tiene rayas blancas y negras.", a: "cebra", d: ["zebra", "sebra", "cevra"] },
 ];
 
-// --- K. La r ---------------------------------------------------------------------------------
+// --- La r ---------------------------------------------------------------------------------
 
 const R_WORDS = "ratón rosa rana reloj regalo rey reina perro zorro gorro pera loro corona tijera oreja robot regla arroz";
 const R_VOWEL = [
@@ -214,7 +187,7 @@ const SENT_R: [string, string][] = [
   ["🍚", "Ramiro come arroz con pollo."],
 ];
 
-// --- L. Diptongos con i y u ---------------------------------------------------------------------
+// --- Diptongos con i y u ---------------------------------------------------------------------
 
 const IU_DIPH = partsOf("reina astronauta baile seis dinosaurio peine jaula aire boina neutro deuda oigo flauta veinte aceite pausa", /ai|au|ei|eu|oi/);
 
@@ -228,7 +201,7 @@ const SENT_IU: [string, string][] = [
   ["6️⃣", "Tengo seis lápices de colores."],
 ];
 
-// --- M. Gue, gui, güe, güi ---------------------------------------------------------------------
+// --- Gue, gui, güe, güi ---------------------------------------------------------------------
 
 const GUE_GUI = partsOf("guitarra águila juguete hamburguesa guepardo pingüino cigüeña vergüenza manguera guiso bilingüe paragüitas hoguera guinda", /güe|güi|gue|gui/);
 
@@ -243,7 +216,7 @@ const U_SOUNDS: ChoiceItem[] = [
   { p: "¿En cuál de estas palabras NO suena la u?", a: "queso", d: ["cuatro", "cuento", "escuela"] },
 ];
 
-// --- N. C y g suaves y fuertes ------------------------------------------------------------------
+// --- C y g suaves y fuertes ------------------------------------------------------------------
 
 const SOFT_C = ["cebra", "cereza", "cine", "cielo", "cisne", "cerdo", "ciudad", "cena"];
 const HARD_C = ["casa", "coche", "cuchara", "conejo", "foca", "vaca", "boca", "cuna"];
@@ -306,7 +279,7 @@ const TWO_SYL_HARD: ChoiceItem[] = [
   { t: "El ___ camina y habla como una persona.", a: "robot", d: ["rabo", "robo", "bote"] },
 ];
 
-// --- R. Prefijos y sufijos ---------------------------------------------------------------------
+// --- Prefijos y sufijos ---------------------------------------------------------------------
 
 const AFFIX_SEGMENT: ChoiceItem[] = [
   { p: "¿Cómo se separa la palabra en sus partes?", t: "deshacer", a: "des + hacer", d: ["de + shacer", "desha + cer", "d + eshacer"] },
@@ -331,7 +304,7 @@ const AFFIX_SENTENCES: ChoiceItem[] = [
   { t: "El nudo está muy apretado; no lo puedo ___.", a: "desatar", d: ["atar", "atado", "reatar"] },
 ];
 
-// --- S. Palabras frecuentes ------------------------------------------------------------------------
+// --- Palabras frecuentes ------------------------------------------------------------------------
 
 const SIGHT = "también entonces después siempre nunca porque aunque mientras todavía además bastante durante hacia hasta desde";
 const SIGHT_SPELL = "nunca hasta desde hacia antes luego cerca lejos mucho poco";
@@ -348,7 +321,7 @@ const SIGHT_SENTENCES: ChoiceItem[] = [
   { t: "No hables ___ la película.", a: "durante", d: ["también", "además", "entonces"] },
 ];
 
-// --- T. Cuentos ---------------------------------------------------------------------------------------
+// --- Cuentos ---------------------------------------------------------------------------------------
 
 const STORIES: Record<string, Passage[]> = {
   simple: [
@@ -559,136 +532,136 @@ const STORIES: Record<string, Passage[]> = {
 const sortPattern = (pattern: string, set: { yes: string[]; no: string[] }) => (r: Parameters<typeof P.sortSpelling>[0]) => P.sortSpelling(r, pattern, set.yes, set.no);
 
 export const ROWS: Row[] = [
-  ["A.1", "Elegir el dibujo que rima con la palabra", P.rhymePicture],
-  ["A.2", "¿Qué palabra no rima?", P.notRhyme],
-  ["A.3", "Completar la rima", (r) => choose(r, "Completa la rima.", COUPLETS)],
-  ["A.4", "Completar el poema con una palabra que rime", (r) => choose(r, "Completa el poema con una palabra que rime.", POEMS)],
-  ["A.5", "Escribir palabras que riman para responder adivinanzas", (r) => P2.spellFromClue(r, RIDDLES)],
-  ["A.6", "Formar un grupo de palabras que riman", P.rhymeSet],
+  ["rimas-1", P.rhymePicture],
+  ["rimas-2", P.notRhyme],
+  ["rimas-3", (r) => choose(r, "Completa la rima.", COUPLETS)],
+  ["rimas-4", (r) => choose(r, "Completa el poema con una palabra que rime.", POEMS)],
+  ["rimas-5", (r) => P2.spellFromClue(r, RIDDLES)],
+  ["rimas-6", P.rhymeSet],
 
-  ["B.1", "¿Cuántas sílabas tiene la palabra?", P.countSyllables],
-  ["B.2", "Clasificar por número de sílabas", P.sortBySyllables],
+  ["silabas-1", P.countSyllables],
+  ["silabas-2", P.sortBySyllables],
 
-  ["C.1", "Cambiar un sonido de la palabra", (r) =>
+  ["cambiar-sonidos-1", (r) =>
     mix(r, [
       (q) => P.changeSound(q, P.FIRST_SOUND_PAIRS, "el primer sonido"),
       (q) => P.changeSound(q, P.LAST_SOUND_PAIRS, "el último sonido"),
       (q) => P.changeSound(q, P.VOWEL_PAIRS, "la vocal"),
     ])],
-  ["C.2", "Quitar un sonido de la palabra", P2.deleteSound],
+  ["cambiar-sonidos-2", P2.deleteSound],
 
-  ["D.1", "Leer palabras con dígrafos", (r) => P.wordForPicture(r, DIGRAPH_READ)],
-  ["D.2", "Completar la palabra con el dígrafo correcto: ch, ll, rr, qu, gu", (r) => P.completePart(r, DIGRAPHS, ["ch", "ll", "rr", "qu", "gu"], "¿Qué letras faltan?")],
-  ["D.3", "Escribir la palabra con dígrafo: ch, ll, rr, qu", (r) => P.spellWord(r, "coche leche llave pollo silla perro gorro zorro queso", "ch ll rr qu a e i o u")],
-  ["D.4", "Escribir palabras con qu y x", (r) => P.spellWord(r, "queso taxi paquete raqueta mosquito bosque", "qu x c s a e i o u")],
-  ["D.5", "Escribir palabras con ch, ll, rr, qu, ñ y x", (r) => P.spellWord(r, "coche llave perro queso taxi piña araña zorro pollo leche", "ch ll rr qu ñ x a e i o")],
-  ["D.6", "Escribir palabras con gue, gui y güi", (r) => P.spellWord(r, "águila juguete guitarra guepardo pingüino", "g u ü e i a o j")],
-  ["D.7", "Completar las palabras con letras mudas", (r) => choose(r, "¿Qué letra muda falta?", SILENT)],
+  ["digrafos-1", (r) => P.wordForPicture(r, DIGRAPH_READ)],
+  ["digrafos-2", (r) => P.completePart(r, DIGRAPHS, ["ch", "ll", "rr", "qu", "gu"], "¿Qué letras faltan?")],
+  ["digrafos-3", (r) => P.spellWord(r, "coche leche llave pollo silla perro gorro zorro queso", "ch ll rr qu a e i o u")],
+  ["digrafos-4", (r) => P.spellWord(r, "queso taxi paquete raqueta mosquito bosque", "qu x c s a e i o u")],
+  ["digrafos-5", (r) => P.spellWord(r, "coche llave perro queso taxi piña araña zorro pollo leche", "ch ll rr qu ñ x a e i o")],
+  ["digrafos-6", (r) => P.spellWord(r, "águila juguete guitarra guepardo pingüino", "g u ü e i a o j")],
+  ["digrafos-7", (r) => choose(r, "¿Qué letra muda falta?", SILENT)],
 
-  ["E.1", "Clasificar por trabada o dígrafo inicial", P.sortBlend],
-  ["E.2", "Leer palabras con trabadas", P.fillBlend],
-  ["E.3", "Completar la palabra con la trabada inicial correcta", (r) => P.completeBlend(r, "start")],
-  ["E.4", "Completar la palabra con la trabada de en medio", (r) => P.completeBlend(r, "middle")],
-  ["E.5", "Escribir palabras con mp y mb", (r) => P.spellWord(r, "tambor campana bombero trompeta sombrero", "m n b p a e o r t")],
-  ["E.6", "Escribir la palabra con una trabada", (r) => P.spellWord(r, "plato globo flor tren fresa libro tigre cabra cebra playa", "a e i o u l r p b t")],
-  ["E.7", "Completar la palabra con una sílaba trabada", (r) => P.completePart(r, BLEND_SYLLABLES, BLEND_CHOICES, "¿Qué sílaba falta?")],
-  ["E.8", "Completar la oración con una palabra con trabada", (r) => choose(r, "Completa la oración.", BLEND_SENTENCES)],
+  ["trabadas-1", P.sortBlend],
+  ["trabadas-2", P.fillBlend],
+  ["trabadas-3", (r) => P.completeBlend(r, "start")],
+  ["trabadas-4", (r) => P.completeBlend(r, "middle")],
+  ["mp-mb", (r) => P.spellWord(r, "tambor campana bombero trompeta sombrero", "m n b p a e o r t")],
+  ["trabadas-5", (r) => P.spellWord(r, "plato globo flor tren fresa libro tigre cabra cebra playa", "a e i o u l r p b t")],
+  ["trabadas-6", (r) => P.completePart(r, BLEND_SYLLABLES, BLEND_CHOICES, "¿Qué sílaba falta?")],
+  ["trabadas-7", (r) => choose(r, "Completa la oración.", BLEND_SENTENCES)],
 
-  ["F.1", "Completar la palabra con la vocal correcta", (r) => P.completeVowel(r, "sol pan mar pez tren flor uva oso luna mano pato rana lobo nido foca sopa nube coco foco vela")],
-  ["F.2", "Cambiar una letra para formar otra palabra", (r) => P.changeOneLetter(r, P.ONE_LETTER_PAIRS)],
-  ["F.3", "Escribir la palabra con a", (r) => P.spellWord(r, "casa rana papa cama taza mapa sal pan mar")],
-  ["F.4", "Escribir la palabra con e", (r) => P.spellWord(r, "pez tren leche pera bebé vela", "a e i o u ch l p s t r n")],
-  ["F.5", "Escribir la palabra con i", (r) => P.spellWord(r, "piña silla hilo nido kiwi", "a e i o u ñ ll h k")],
-  ["F.6", "Escribir la palabra con o", (r) => P.spellWord(r, "oso sol ojo loro lobo mono coco foco")],
-  ["F.7", "Escribir la palabra con u", (r) => P.spellWord(r, "uva luna nube pulpo búho", "a e i o u ú b v l n")],
+  ["vocales-1", (r) => P.completeVowel(r, "sol pan mar pez tren flor uva oso luna mano pato rana lobo nido foca sopa nube coco foco vela")],
+  ["vocales-2", (r) => P.changeOneLetter(r, P.ONE_LETTER_PAIRS)],
+  ["vocales-3", (r) => P.spellWord(r, "casa rana papa cama taza mapa sal pan mar")],
+  ["vocales-4", (r) => P.spellWord(r, "pez tren leche pera bebé vela", "a e i o u ch l p s t r n")],
+  ["vocales-5", (r) => P.spellWord(r, "piña silla hilo nido kiwi", "a e i o u ñ ll h k")],
+  ["vocales-6", (r) => P.spellWord(r, "oso sol ojo loro lobo mono coco foco")],
+  ["vocales-7", (r) => P.spellWord(r, "uva luna nube pulpo búho", "a e i o u ú b v l n")],
 
-  ["G.1", "Elegir la palabra con h que corresponde al dibujo", (r) => P.wordForPicture(r, H_WORDS)],
-  ["G.2", "Completar las palabras con h", (r) => choose(r, "¿Qué letras faltan?", H_COMPLETE)],
-  ["G.3", "Escribir la palabra con h", (r) => P.spellWord(r, "hoja hilo hada hielo hueso huevo búho huella", "h a e i o u l j s")],
-  ["G.4", "Elegir la oración con h que corresponde al dibujo", (r) => choose(r, "¿Qué oración corresponde al dibujo?", sentencesFor(SENT_H))],
+  ["h-muda-1", (r) => P.wordForPicture(r, H_WORDS)],
+  ["h-muda-2", (r) => choose(r, "¿Qué letras faltan?", H_COMPLETE)],
+  ["h-muda-3", (r) => P.spellWord(r, "hoja hilo hada hielo hueso huevo búho huella", "h a e i o u l j s")],
+  ["h-muda-4", (r) => choose(r, "¿Qué oración corresponde al dibujo?", sentencesFor(SENT_H))],
 
-  ["H.1", "Elegir el dibujo de la palabra con diptongo", (r) => P.pictureForWord(r, DIPH_WORDS)],
-  ["H.2", "Completar las palabras con diptongo: ie, ue", (r) => P.completePart(r, partsOf("huevo hueso puerta nieve hielo fuego serpiente ciervo pueblo niebla puente", /ie|ue/), ["ue", "ie", "ua", "ia"], "¿Qué diptongo falta?")],
-  ["H.3", "Completar la palabra con el diptongo correcto", (r) => P.completePart(r, partsOf(DIPH_WORDS, DIPH), ["ia", "ie", "io", "ua", "ue", "ei", "au", "iu"], "¿Qué diptongo falta?")],
-  ["H.4", "Elegir la oración con diptongo que corresponde al dibujo", (r) => choose(r, "¿Qué oración corresponde al dibujo?", sentencesFor(SENT_DIPH))],
+  ["diptongos-1", (r) => P.pictureForWord(r, DIPH_WORDS)],
+  ["diptongos-2", (r) => P.completePart(r, partsOf("huevo hueso puerta nieve hielo fuego serpiente ciervo pueblo niebla puente", /ie|ue/), ["ue", "ie", "ua", "ia"], "¿Qué diptongo falta?")],
+  ["diptongos-3", (r) => P.completePart(r, partsOf(DIPH_WORDS, DIPH), ["ia", "ie", "io", "ua", "ue", "ei", "au", "iu"], "¿Qué diptongo falta?")],
+  ["diptongos-4", (r) => choose(r, "¿Qué oración corresponde al dibujo?", sentencesFor(SENT_DIPH))],
 
-  ["I.1", "Clasificar palabras con diptongo y sin diptongo", (r) => pickAll(r, "Selecciona las palabras que tienen diptongo (dos vocales juntas en la misma sílaba).", WITH_DIPH, NO_DIPH)],
-  ["I.2", "Relacionar palabras con a (sola o en diptongo) con su dibujo", (r) => P.wordForPicture(r, "casa rana mapa agua piano guante paraguas lluvia baile")],
-  ["I.3", "Relacionar palabras con e (sola o en diptongo) con su dibujo", (r) => P.wordForPicture(r, "pera leche tren nieve hielo huevo puerta reina ciervo puente")],
-  ["I.4", "Elegir la palabra con i (sola o en diptongo) que corresponde al dibujo", (r) => P.wordForPicture(r, "piña silla nido pie piano hielo nieve ciudad lluvia")],
-  ["I.5", "Elegir la palabra con o (sola o en diptongo) que corresponde al dibujo", (r) => P.wordForPicture(r, "oso lobo mono coco avión camión león piano trofeo")],
-  ["I.6", "Elegir la palabra con u (sola o en diptongo) que corresponde al dibujo", (r) => P.wordForPicture(r, "uva luna nube huevo fuego cuaderno guante pueblo buey")],
-  ["I.7", "Usar las letras para clasificar palabras con diptongo", (r) =>
+  ["vocal-diptongo-1", (r) => pickAll(r, "Selecciona las palabras que tienen diptongo (dos vocales juntas en la misma sílaba).", WITH_DIPH, NO_DIPH)],
+  ["vocal-diptongo-2", (r) => P.wordForPicture(r, "casa rana mapa agua piano guante paraguas lluvia baile")],
+  ["vocal-diptongo-3", (r) => P.wordForPicture(r, "pera leche tren nieve hielo huevo puerta reina ciervo puente")],
+  ["vocal-diptongo-4", (r) => P.wordForPicture(r, "piña silla nido pie piano hielo nieve ciudad lluvia")],
+  ["vocal-diptongo-5", (r) => P.wordForPicture(r, "oso lobo mono coco avión camión león piano trofeo")],
+  ["vocal-diptongo-6", (r) => P.wordForPicture(r, "uva luna nube huevo fuego cuaderno guante pueblo buey")],
+  ["vocal-diptongo-7", (r) =>
     mix(r, [
       (q) => P.sortSpelling(q, "ue", ["huevo", "fuego", "puerta", "pueblo", "puente", "abuela", "cuento"], ["nieve", "piano", "agua", "reina", "ciudad", "viaje", "lluvia"]),
       (q) => P.sortSpelling(q, "ie", ["nieve", "hielo", "cielo", "fiesta", "ciervo", "niebla", "pie"], ["huevo", "piano", "agua", "reina", "fuego", "viaje", "guante"]),
       (q) => P.sortSpelling(q, "ia", ["piano", "lluvia", "viaje", "familia", "historia", "zanahoria"], ["huevo", "nieve", "agua", "reina", "fuego", "cielo", "pueblo"]),
     ])],
 
-  ["J.1", "Elegir las palabras con el patrón indicado", (r) => mix(r, [sortPattern("qu", QU), sortPattern("gu", GU), sortPattern("z", Z), sortPattern("j", J), sortPattern("rr", RR)])],
-  ["J.2", "Escribir la palabra con c o qu", (r) => P.spellWord(r, "casa coche cama queso paquete raqueta mosquito bosque", "c qu k s a e i o")],
-  ["J.3", "Escribir la palabra con g o gu", (r) => P.spellWord(r, "gato gorro gusano guitarra águila juguete guepardo", "g u j a e i o")],
-  ["J.4", "Escribir la palabra con c o z", (r) => P.spellWord(r, "cebra cereza cerdo cisne zapato zorro taza pez", "c z s a e i o")],
-  ["J.5", "Escribir la palabra con g o j", (r) => P.spellWord(r, "jirafa ojo hoja conejo tijera oveja abeja girasol gema genio", "g j a e i o")],
-  ["J.6", "Escribir la palabra con r o rr", (r) => P.spellWord(r, "perro zorro gorro pera loro ratón rosa rana arroz", "r rr a e o")],
-  ["J.7", "Completar la oración con la palabra bien escrita", (r) => choose(r, "Completa la oración con la palabra bien escrita.", WELL_WRITTEN)],
+  ["patrones-1", (r) => mix(r, [sortPattern("qu", QU), sortPattern("gu", GU), sortPattern("z", Z), sortPattern("j", J), sortPattern("rr", RR)])],
+  ["patrones-2", (r) => P.spellWord(r, "casa coche cama queso paquete raqueta mosquito bosque", "c qu k s a e i o")],
+  ["patrones-3", (r) => P.spellWord(r, "gato gorro gusano guitarra águila juguete guepardo", "g u j a e i o")],
+  ["patrones-4", (r) => P.spellWord(r, "cebra cereza cerdo cisne zapato zorro taza pez", "c z s a e i o")],
+  ["patrones-5", (r) => P.spellWord(r, "jirafa ojo hoja conejo tijera oveja abeja girasol gema genio", "g j a e i o")],
+  ["r-rr-1", (r) => P.spellWord(r, "perro zorro gorro pera loro ratón rosa rana arroz", "r rr a e o")],
+  ["patrones-6", (r) => choose(r, "Completa la oración con la palabra bien escrita.", WELL_WRITTEN)],
 
-  ["K.1", "Elegir la palabra con r que corresponde al dibujo", (r) => P.wordForPicture(r, R_WORDS)],
-  ["K.2", "Completar la palabra con ar, er, ir, or, ur", (r) => P.completePart(r, R_VOWEL, ["ar", "er", "ir", "or", "ur"], "¿Qué letras faltan?")],
-  ["K.3", "Completar la palabra con r o rr", (r) => choose(r, "¿Va «r» o «rr»? Toca 🔊 para escuchar la palabra.", R_OR_RR)],
-  ["K.4", "Elegir la oración con r que corresponde al dibujo", (r) => choose(r, "¿Qué oración corresponde al dibujo?", sentencesFor(SENT_R))],
+  ["r-rr-2", (r) => P.wordForPicture(r, R_WORDS)],
+  ["r-rr-3", (r) => P.completePart(r, R_VOWEL, ["ar", "er", "ir", "or", "ur"], "¿Qué letras faltan?")],
+  ["r-rr-4", (r) => choose(r, "¿Va «r» o «rr»? Toca 🔊 para escuchar la palabra.", R_OR_RR)],
+  ["r-rr-5", (r) => choose(r, "¿Qué oración corresponde al dibujo?", sentencesFor(SENT_R))],
 
-  ["L.1", "Elegir el dibujo de la palabra con diptongo: ai, au, ei, ey, uy", (r) => P.pictureForWord(r, "reina rey astronauta baile seis dinosaurio buey paraguas")],
-  ["L.2", "Completar la palabra con el diptongo correcto: ai, au, ei, eu, oi", (r) => P.completePart(r, IU_DIPH, ["ai", "au", "ei", "eu", "oi"], "¿Qué diptongo falta?")],
-  ["L.3", "Elegir la oración con diptongo que corresponde al dibujo", (r) => choose(r, "¿Qué oración corresponde al dibujo?", sentencesFor(SENT_IU))],
+  ["diptongos-ai-au-1", (r) => P.pictureForWord(r, "reina rey astronauta baile seis dinosaurio buey paraguas")],
+  ["diptongos-ai-au-2", (r) => P.completePart(r, IU_DIPH, ["ai", "au", "ei", "eu", "oi"], "¿Qué diptongo falta?")],
+  ["diptongos-ai-au-3", (r) => choose(r, "¿Qué oración corresponde al dibujo?", sentencesFor(SENT_IU))],
 
-  ["M.1", "Completar palabras con gue, gui, güe y güi", (r) => P.completePart(r, GUE_GUI, ["gue", "gui", "güe", "güi"], "¿Qué letras faltan?")],
-  ["M.2", "¿En qué palabra suena distinto?", (r) => choose(r, "", U_SOUNDS)],
+  ["gue-gui-1", (r) => P.completePart(r, GUE_GUI, ["gue", "gui", "güe", "güi"], "¿Qué letras faltan?")],
+  ["gue-gui-2", (r) => choose(r, "", U_SOUNDS)],
 
-  ["N.1", "Clasificar palabras con c y g: sonido suave y fuerte", (r) =>
+  ["c-g-suave-1", (r) =>
     mix(r, [
       (q) => pickAll(q, "Selecciona las palabras donde la c suena suave (como en «cine»).", SOFT_C, HARD_C),
       (q) => pickAll(q, "Selecciona las palabras donde la g suena suave (como en «gente»).", SOFT_G, HARD_G),
       (q) => pickAll(q, "Selecciona las palabras donde la c suena fuerte (como en «casa»).", HARD_C, SOFT_C),
       (q) => pickAll(q, "Selecciona las palabras donde la g suena fuerte (como en «gato»).", HARD_G, SOFT_G),
     ])],
-  ["N.2", "Elegir la palabra con c o g suave que corresponde al dibujo", (r) => P.wordForPicture(r, SOFT_PICS)],
-  ["N.3", "Elegir la oración con c o g suave que corresponde al dibujo", (r) => choose(r, "¿Qué oración corresponde al dibujo?", sentencesFor(SENT_SOFT))],
-  ["N.4", "Escribir la palabra con c o g suave", (r) => P.spellWord(r, "cebra cerdo cisne gema genio cereza girasol", "c g s j z a e i o")],
+  ["c-g-suave-2", (r) => P.wordForPicture(r, SOFT_PICS)],
+  ["c-g-suave-3", (r) => choose(r, "¿Qué oración corresponde al dibujo?", sentencesFor(SENT_SOFT))],
+  ["c-g-suave-4", (r) => P.spellWord(r, "cebra cerdo cisne gema genio cereza girasol", "c g s j z a e i o")],
 
-  ["O.1", "¿La sílaba es abierta o cerrada?", (r) => P2.openClosed(r, OPEN_CLOSED)],
-  ["O.2", "Separar palabras de dos sílabas: abiertas y cerradas", (r) => P2.segmentList(r, TWO_OPEN_CLOSED)],
-  ["O.3", "Leer palabras de dos sílabas: abiertas y cerradas", (r) => P.wordForPicture(r, "pato luna barco pulpo cerdo tambor pastel robot volcán delfín jabón cactus bosque")],
-  ["O.4", "Escribir palabras con sílabas abiertas", (r) => P.spellWord(r, "pato luna mano rana nido foca sopa casa gato vela coco foco")],
-  ["O.5", "Escribir palabras con sílabas abiertas y cerradas", (r) => P.spellWord(r, "barco pulpo cerdo tambor pastel robot jabón cactus", "a e i o u b c r s t l n")],
+  ["abiertas-cerradas-1", (r) => P2.openClosed(r, OPEN_CLOSED)],
+  ["abiertas-cerradas-2", (r) => P2.segmentList(r, TWO_OPEN_CLOSED)],
+  ["abiertas-cerradas-3", (r) => P.wordForPicture(r, "pato luna barco pulpo cerdo tambor pastel robot volcán delfín jabón cactus bosque")],
+  ["abiertas-cerradas-4", (r) => P.spellWord(r, "pato luna mano rana nido foca sopa casa gato vela coco foco")],
+  ["abiertas-cerradas-5", (r) => P.spellWord(r, "barco pulpo cerdo tambor pastel robot jabón cactus", "a e i o u b c r s t l n")],
 
-  ["P.1", "Separar palabras de dos sílabas con diptongo", (r) => P2.segmentList(r, DIPH_SEGMENT)],
-  ["P.2", "Leer palabras de dos sílabas con diptongo", (r) => P.wordForPicture(r, DIPH_SEGMENT.replace(/-/g, ""))],
-  ["P.3", "Separar palabras con bl, cl, gl y pl", (r) => P2.segmentList(r, CONS_L)],
-  ["P.4", "Leer palabras con bl, cl, gl y pl", (r) => P2.listenChoose(r, CONS_L_WORDS)],
-  ["P.5", "Completar las palabras con bl, cl, gl y pl", (r) => P.completePart(r, CONS_L_PARTS, ["bla", "ble", "blo", "cla", "cle", "gla", "glo", "plo", "ple"], "¿Qué sílaba falta?")],
-  ["P.6", "Elegir la palabra con bl, cl, gl o pl bien escrita", (r) => choose(r, "¿Cuál está bien escrita?", CONS_L_SPELLING)],
-  ["P.7", "Escribir la palabra con bl, cl, gl o pl", (r) => P2.spellHeard(r, "tabla cable doble regla ancla siglo roble tecla soplo", "b c g p l a e i o")],
+  ["diptongos-ai-au-4", (r) => P2.segmentList(r, DIPH_SEGMENT)],
+  ["diptongos-ai-au-5", (r) => P.wordForPicture(r, DIPH_SEGMENT.replace(/-/g, ""))],
+  ["bl-cl-gl-pl-1", (r) => P2.segmentList(r, CONS_L)],
+  ["bl-cl-gl-pl-2", (r) => P2.listenChoose(r, CONS_L_WORDS)],
+  ["bl-cl-gl-pl-3", (r) => P.completePart(r, CONS_L_PARTS, ["bla", "ble", "blo", "cla", "cle", "gla", "glo", "plo", "ple"], "¿Qué sílaba falta?")],
+  ["bl-cl-gl-pl-4", (r) => choose(r, "¿Cuál está bien escrita?", CONS_L_SPELLING)],
+  ["bl-cl-gl-pl-5", (r) => P2.spellHeard(r, "tabla cable doble regla ancla siglo roble tecla soplo", "b c g p l a e i o")],
 
-  ["Q.1", "Leer palabras de dos sílabas", (r) => P.wordForPicture(r, TWO_SYL)],
-  ["Q.2", "Completar palabras de dos sílabas", P.completeSecondSyllable],
-  ["Q.3", "Unir dos sílabas para formar una palabra: fácil", (r) => P.joinSyllables(r, false)],
-  ["Q.4", "Unir dos sílabas para formar una palabra: difícil", (r) => P.joinSyllables(r, true)],
-  ["Q.5", "Completar la oración con una palabra de dos sílabas: fácil", (r) => choose(r, "Completa la oración.", TWO_SYL_EASY)],
-  ["Q.6", "Completar la oración con una palabra de dos sílabas: difícil", (r) => choose(r, "Completa la oración.", TWO_SYL_HARD)],
+  ["varias-silabas-1", (r) => P.wordForPicture(r, TWO_SYL)],
+  ["varias-silabas-2", P.completeSecondSyllable],
+  ["varias-silabas-3", (r) => P.joinSyllables(r, false)],
+  ["varias-silabas-4", (r) => P.joinSyllables(r, true)],
+  ["varias-silabas-5", (r) => choose(r, "Completa la oración.", TWO_SYL_EASY)],
+  ["varias-silabas-6", (r) => choose(r, "Completa la oración.", TWO_SYL_HARD)],
 
-  ["R.1", "Separar y leer palabras con prefijos o sufijos", (r) => choose(r, "", AFFIX_SEGMENT)],
-  ["R.2", "Completar la oración con la palabra con prefijo o sufijo", (r) => choose(r, "Completa la oración.", AFFIX_SENTENCES)],
+  ["prefijos-lectura-1", (r) => choose(r, "", AFFIX_SEGMENT)],
+  ["prefijos-lectura-2", (r) => choose(r, "Completa la oración.", AFFIX_SENTENCES)],
 
-  ["S.1", "Leer palabras frecuentes", (r) => P2.listenChoose(r, SIGHT)],
-  ["S.2", "Completar la oración con la palabra frecuente correcta", (r) => choose(r, "Completa la oración.", SIGHT_SENTENCES)],
-  ["S.3", "Escribir la palabra frecuente", (r) => P2.spellHeard(r, SIGHT_SPELL, "a e i o u c h l n r s t")],
+  ["frecuentes-1", (r) => P2.listenChoose(r, SIGHT)],
+  ["frecuentes-2", (r) => choose(r, "Completa la oración.", SIGHT_SENTENCES)],
+  ["frecuentes-3", (r) => P2.spellHeard(r, SIGHT_SPELL, "a e i o u c h l n r s t")],
 
-  ["T.1", "Leer cuentos con palabras sencillas", (r) => readPassage(r, STORIES.simple, false)],
-  ["T.2", "Leer cuentos con h", (r) => readPassage(r, STORIES.h, false)],
-  ["T.3", "Leer cuentos con c, qu, g y gu", (r) => readPassage(r, STORIES.cq, false)],
-  ["T.4", "Leer cuentos con c, z, g y j", (r) => readPassage(r, STORIES.czgj, false)],
-  ["T.5", "Leer cuentos con patrones ortográficos", (r) => readPassage(r, STORIES.patterns, false)],
-  ["T.6", "Leer cuentos con r y rr", (r) => readPassage(r, STORIES.r, false)],
-  ["T.7", "Leer cuentos con diptongos y con ü", (r) => readPassage(r, STORIES.diph, false)],
+  ["cuentos-sencillos-1", (r) => readPassage(r, STORIES.simple, false)],
+  ["cuentos-sencillos-2", (r) => readPassage(r, STORIES.h, false)],
+  ["cuentos-patrones-1", (r) => readPassage(r, STORIES.cq, false)],
+  ["cuentos-patrones-2", (r) => readPassage(r, STORIES.czgj, false)],
+  ["cuentos-patrones-3", (r) => readPassage(r, STORIES.patterns, false)],
+  ["cuentos-patrones-4", (r) => readPassage(r, STORIES.r, false)],
+  ["cuentos-patrones-5", (r) => readPassage(r, STORIES.diph, false)],
 ];

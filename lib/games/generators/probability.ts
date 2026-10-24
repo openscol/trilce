@@ -7,7 +7,6 @@ const COLOR_NAME: Record<string, string> = { "🔴": "roja", "🔵": "azul", "�
 const take = (c: string) => `Sacar ficha ${COLOR_NAME[c]} ${c}`;
 const SAME = "Igual de probable ⚖️";
 
-// O.1
 export function moreLikely(r: Rng): Question {
   const [c1, c2] = r.shuffle(COLORS);
   const equal = r.chance(0.25);
@@ -39,7 +38,6 @@ export function moreLikely(r: Rng): Question {
   };
 }
 
-// O.2
 export function certainOrImpossible(r: Rng): Question {
   const [red, other] = r.shuffle(COLORS);
   const kind = r.int(0, 3);

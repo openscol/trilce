@@ -10,7 +10,7 @@ const money = (r: Rng, answer: number, prompt: string, explanation: string, visu
 const price = (r: Rng, maxSoles: number) => r.int(1, maxSoles - 1) * 100 + r.pick([0, 10, 20, 50, 50, 80, 90]);
 const THINGS = ["cuadernos", "entradas al cine", "pasajes", "helados", "revistas", "llaveros", "jugos"];
 
-// 5.° HH.4 / HH.5: multiplicar cantidades de dinero.
+// Multiplicar cantidades de dinero.
 export function multiplyMoney(r: Rng, word: boolean): Question {
   const k = r.int(2, 12);
   const unit = price(r, word ? 15 : 40);
@@ -19,7 +19,7 @@ export function multiplyMoney(r: Rng, word: boolean): Question {
   return money(r, unit * k, "Resuelve.", why, { kind: "text", text: `${k} × ${soles(unit)} = ?` });
 }
 
-// 5.° HH.6: problemas de varios pasos con multiplicación de dinero.
+// Problemas de varios pasos con multiplicación de dinero.
 export function multiplyMoneyMultiStep(r: Rng): Question {
   const n = r.pick(NAMES);
   const k = r.int(2, 8);
@@ -35,7 +35,7 @@ export function multiplyMoneyMultiStep(r: Rng): Question {
   return money(r, k * a + j * b, `${n} compra ${k} cuadernos a ${soles(a)} cada uno y ${j} libros a ${soles(b)} cada uno. ¿Cuánto paga en total?`, `${k} × ${soles(a)} = ${soles(k * a)}; ${j} × ${soles(b)} = ${soles(j * b)}; total ${soles(k * a + j * b)}.`, undefined, "dos-productos");
 }
 
-// 5.° HH.7 / HH.8: dividir cantidades de dinero.
+// Dividir cantidades de dinero.
 export function divideMoney(r: Rng, word: boolean): Question {
   const k = r.int(2, 9);
   const unit = price(r, word ? 9 : 30);
@@ -45,7 +45,7 @@ export function divideMoney(r: Rng, word: boolean): Question {
   return money(r, unit, "Resuelve.", why, { kind: "text", text: `${soles(total)} ÷ ${k} = ?` });
 }
 
-// 5.° HH.10: precios por unidad.
+// Precios por unidad.
 export function unitPrices(r: Rng): Question {
   const item = r.pick(["jugos", "lápices", "yogures", "panes", "plumones", "galletas"]);
   if (r.chance(0.5)) {
@@ -63,7 +63,7 @@ export function unitPrices(r: Rng): Question {
   }
 }
 
-// 5.° HH.11: hallar cuántas monedas hay de cada tipo.
+// Hallar cuántas monedas hay de cada tipo.
 export function coinsOfEachType(r: Rng): Question {
   const [low, high] = r.pick([[1, 2], [1, 5], [2, 5]]);
   const a = r.int(1, 8);
@@ -85,7 +85,7 @@ function payStub(r: Rng): Stub {
 const stubTable = (s: Stub, hide?: keyof Stub) =>
   table(["Concepto", "Monto (S/)"], [["Sueldo bruto", hide === "gross" ? "?" : fmt(s.gross)], ["Aporte a la pensión", hide === "pension" ? "?" : fmt(s.pension)], ["Impuesto a la renta", hide === "tax" ? "?" : fmt(s.tax)], ["Sueldo neto", hide === "net" ? "?" : fmt(s.net)]], "Boleta de pago");
 
-// 5.° VV.1: comprender una boleta de pago (impuestos y aportes).
+// Comprender una boleta de pago (impuestos y aportes).
 export function payStubReading(r: Rng): Question {
   const s = payStub(r);
   const form = r.int(0, 3);
@@ -95,7 +95,7 @@ export function payStubReading(r: Rng): Question {
   return numQ(s.pension, "Mira la boleta. ¿Cuánto fue el aporte a la pensión?", stubTable(s, "pension"), `${fmt(s.gross)} − ${fmt(s.tax)} − ${fmt(s.net)} = ${fmt(s.pension)} soles.`, "pension");
 }
 
-// 5.° VV.2: problemas con impuesto a la renta y aportes.
+// Problemas con impuesto a la renta y aportes.
 export function payrollProblem(r: Rng): Question {
   const s = payStub(r);
   const n = r.pick(NAMES);
@@ -109,7 +109,7 @@ export function payrollProblem(r: Rng): Question {
   return numQ((s.pension + s.tax) * 12, `A ${n} le descuentan cada mes ${fmt(s.pension)} soles de pensión y ${fmt(s.tax)} soles de impuesto. ¿Cuántos soles le descuentan en un año?`, undefined, `${fmt(s.pension)} + ${fmt(s.tax)} = ${fmt(s.pension + s.tax)}; × 12 = ${fmt((s.pension + s.tax) * 12)} soles.`, "anual");
 }
 
-// 5.° VV.3: problemas con impuesto a las ventas (IGV) e impuesto predial.
+// Problemas con impuesto a las ventas (IGV) e impuesto predial.
 export function salesPropertyTax(r: Rng): Question {
   const n = r.pick(NAMES);
   const form = r.int(0, 3);
@@ -146,7 +146,7 @@ const TAXES: [string, string][] = [
 ];
 const TAX_NAMES = ["Impuesto a la renta", "Impuesto a las ventas (IGV)", "Impuesto predial", "Aporte a la pensión"];
 
-// 5.° VV.4: identificar tipos de impuestos.
+// Identificar tipos de impuestos.
 export function taxTypes(r: Rng): Question {
   const [text, answer] = r.pick(TAXES);
   return fixedQ("¿De qué impuesto o aporte se trata?", TAX_NAMES, answer, `Es el ${answer[0].toLowerCase()}${answer.slice(1)}.`, text, answer.toLowerCase());
@@ -171,13 +171,13 @@ const GROSS_NET: [string, string][] = [
   ["Es lo que realmente se puede gastar o ahorrar en el mes.", "Ingreso neto"],
 ];
 
-// 5.° VV.5: comprender el ingreso bruto y el ingreso neto.
+// Comprender el ingreso bruto y el ingreso neto.
 export function grossNetConcept(r: Rng): Question {
   const [text, answer] = r.pick(GROSS_NET);
   return fixedQ("¿Se describe el ingreso bruto o el ingreso neto?", ["Ingreso bruto", "Ingreso neto"], answer, "Ingreso neto = ingreso bruto − descuentos (impuestos y aportes).", text, answer.toLowerCase());
 }
 
-// 5.° VV.6: calcular el ingreso bruto y el ingreso neto.
+// Calcular el ingreso bruto y el ingreso neto.
 export function grossNetCalc(r: Rng): Question {
   const s = payStub(r);
   const n = r.pick(NAMES);
@@ -204,7 +204,7 @@ const METHOD_FACTS: [string, string][] = [
   ["Si te quedas sin batería o sin señal, no puedes pagar.", "Billetera digital"],
 ];
 
-// 5.° VV.7: ventajas y desventajas de los medios de pago.
+// Ventajas y desventajas de los medios de pago.
 export function paymentMethodFacts(r: Rng): Question {
   const [text, answer] = r.pick(METHOD_FACTS);
   return fixedQ("¿A qué medio de pago corresponde esta ventaja o desventaja?", METHODS, answer, `Corresponde a: ${answer.toLowerCase()}.`, text, answer.toLowerCase());
@@ -225,7 +225,7 @@ const METHOD_CASES: [string, string, string][] = [
   ["Divide la cuenta del almuerzo y cada uno envía su parte por el celular.", "Billetera digital", "Enviar dinero entre celulares es rápido y sin vuelto."],
 ];
 
-// 5.° VV.8: evaluar medios de pago.
+// Evaluar medios de pago.
 export function chooseMethod(r: Rng): Question {
   const [text, answer, why] = r.pick(METHOD_CASES);
   return fixedQ(`${r.pick(NAMES)}: «${text}» ¿Qué medio de pago le conviene?`, METHODS, answer, why, undefined, answer.toLowerCase());
@@ -254,7 +254,7 @@ function ledger(r: Rng) {
 }
 const LEDGER_HEAD = ["Detalle", "Ingreso", "Gasto", "Saldo"];
 
-// 5.° VV.9: leer registros financieros.
+// Leer registros financieros.
 export function readLedger(r: Rng): Question {
   const l = ledger(r);
   const visual = table(LEDGER_HEAD, l.rows, "Registro de ingresos y gastos (S/)");
@@ -268,7 +268,7 @@ export function readLedger(r: Rng): Question {
   return numQ(Math.abs(e.amount), `¿De cuántos soles fue el movimiento «${e.detail}»?`, visual, `«${e.detail}»: ${Math.abs(e.amount)} soles de ${e.amount > 0 ? "ingreso" : "gasto"}.`, "leer");
 }
 
-// 5.° VV.10: llevar registros financieros (completar el saldo).
+// Llevar registros financieros (completar el saldo).
 export function keepLedger(r: Rng): Question {
   const l = ledger(r);
   const at = r.int(1, 4);
@@ -285,7 +285,7 @@ function budget(r: Rng) {
   return { items, amounts, spent, visual: (income: number) => table(["Concepto", "Monto (S/)"], [["Ingresos", fmt(income)], ...items.map((it, i) => [`Gasto: ${it}`, fmt(amounts[i])])], "Presupuesto del mes") };
 }
 
-// 5.° VV.11: equilibrar un presupuesto.
+// Equilibrar un presupuesto.
 export function balanceBudget(r: Rng): Question {
   const b = budget(r);
   const diff = r.int(1, 15) * 10;
@@ -297,7 +297,7 @@ export function balanceBudget(r: Rng): Question {
   return numQ(diff, surplus ? "¿Cuántos soles sobran (y se pueden ahorrar)?" : "¿Cuántos soles faltan para cubrir los gastos?", b.visual(income), `Gastos: ${fmt(b.spent)}; ingresos: ${fmt(income)}; diferencia: ${fmt(diff)} soles.`, surplus ? "sobra" : "falta");
 }
 
-// 5.° VV.12: ajustar un presupuesto.
+// Ajustar un presupuesto.
 export function adjustBudget(r: Rng): Question {
   const b = budget(r);
   const i = r.int(0, 3);

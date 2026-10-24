@@ -9,7 +9,7 @@ import { type P, type SF, absGcd, lin, nz, plane, plane1, pt, sfQ, sfshow } from
 // ---------------------------------------------------------------------------
 // Proporciones
 
-// L.11: ¿las razones forman una proporción? (en una situación)
+// ¿las razones forman una proporción? (en una situación)
 export function proportionWord(r: Rng): Question {
   const a = r.int(2, 6), b = r.int(2, 7), k = r.int(2, 6);
   const yes = r.chance(0.5);
@@ -23,7 +23,7 @@ export function proportionWord(r: Rng): Question {
   return yesNo(r.pick(cases), yes, `${a}/${b} y ${c}/${d}: los productos cruzados son ${a * d} y ${b * c}; ${yes ? "son iguales, forman una proporción" : "no son iguales"}.`);
 }
 
-// L.13: resolver proporciones en problemas.
+// Resolver proporciones en problemas.
 export function proportionProblem(r: Rng): Question {
   const a = r.int(2, 9), b = r.int(2, 12), k = r.int(2, 9);
   const cases: [string, string][] = [
@@ -36,7 +36,7 @@ export function proportionProblem(r: Rng): Question {
   return numQ(b * k, text, undefined, `${a}/${b} = ${a * k}/x. Como ${a} × ${k} = ${a * k}, también ${b} × ${k} = ${b * k} ${unit}.`);
 }
 
-// L.14: estimar el tamaño de una población con proporciones (captura y recaptura).
+// Estimar el tamaño de una población con proporciones (captura y recaptura).
 export function populationEstimate(r: Rng): Question {
   const m = r.int(2, 8), a = r.int(3, 12), n = r.int(4, 12) * 5;
   const marked = m * a; // marcados al inicio
@@ -76,7 +76,7 @@ export function proportional(r: Rng, mode: PropMode): Question {
 
 const CHANGES = [5, 10, 15, 20, 25, 30, 40, 50, 60, 75];
 
-// O.10 – O.12: porcentaje de cambio (`original`: hallar la cantidad inicial).
+// Porcentaje de cambio (`original`: hallar la cantidad inicial).
 export function percentChange(r: Rng, mode: "plain" | "word" | "original"): Question {
   const pct = r.pick(CHANGES);
   const up = r.chance(0.5);
@@ -93,7 +93,7 @@ export function percentChange(r: Rng, mode: "plain" | "word" | "original"): Ques
   return numQ(pct, text, undefined, `Cambio ÷ cantidad inicial: ${Math.abs(now - old)} ÷ ${old} = ${d2(pct)} → ${pct} %.`, up ? "aumento" : "disminucion");
 }
 
-// O.13: error porcentual.
+// Error porcentual.
 export function percentError(r: Rng): Question {
   const actual = r.pick([20, 25, 40, 50, 80, 100, 200, 250]);
   const pct = r.pick([4, 5, 8, 10, 12, 20, 25].filter((p) => (actual * p) % 100 === 0));
@@ -103,14 +103,14 @@ export function percentError(r: Rng): Question {
   return numQ(pct, `${name} estimó ${what} en ${estimate} ${unit}, pero el valor real era ${actual} ${unit}. ¿Cuál fue el error porcentual?`, undefined, `Error ÷ valor real: ${Math.abs(estimate - actual)} ÷ ${actual} = ${d2(pct)} → ${pct} %.`);
 }
 
-// P.5: precios por unidad: hallar el precio total.
+// Precios por unidad: hallar el precio total.
 export function unitPriceTotal(r: Rng): Question {
   const unit = r.int(2, 12), a = r.int(2, 6), b = r.int(7, 15);
   const [thing, one] = r.pick([["kilos de arroz", "kilo"], ["cuadernos", "cuaderno"], ["litros de leche", "litro"], ["metros de tela", "metro"]]);
   return numQ(unit * b, `Por ${a} ${thing} se pagan ${unit * a} soles. ¿Cuántos soles se pagan por ${b} ${thing}?`, undefined, `Cada ${one} cuesta ${unit * a} ÷ ${a} = ${unit} soles. Por ${b}: ${unit} × ${b} = ${unit * b} soles.`);
 }
 
-// P.8: hallar el porcentaje: impuesto, descuento y más.
+// Hallar el porcentaje: impuesto, descuento y más.
 export function findPercentOfPrice(r: Rng): Question {
   const price = r.pick([20, 40, 50, 80, 100, 200, 250, 400]);
   const pct = r.pick([5, 10, 15, 20, 25, 30, 40].filter((p) => (price * p) % 100 === 0));
@@ -124,7 +124,7 @@ export function findPercentOfPrice(r: Rng): Question {
   return numQ(pct, r.pick(cases), undefined, `${part} ÷ ${price} = ${d2(pct)} → ${pct} %.`);
 }
 
-// P.10: problemas de varios pasos con porcentajes.
+// Problemas de varios pasos con porcentajes.
 export function multiStepPercent(r: Rng): Question {
   const price = r.pick([200, 400, 600, 800, 1000]);
   const off = r.pick([10, 20, 25, 50]), extra = r.pick([10, 20]);
@@ -133,7 +133,7 @@ export function multiStepPercent(r: Rng): Question {
   return numQ(total, `Un televisor cuesta ${fmt(price)} soles. Tiene ${off} % de descuento y, sobre el precio rebajado, se cobra ${extra} % por envío e instalación. ¿Cuánto se paga en total, en soles?`, undefined, `Con descuento: ${fmt(price)} − ${fmt(price - sale)} = ${fmt(sale)}. Recargo: ${extra} % de ${fmt(sale)} = ${fmt(total - sale)}. Total: ${fmt(total)} soles.`);
 }
 
-// P.11: estimar propinas.
+// Estimar propinas.
 export function estimateTip(r: Rng): Question {
   const tens = r.int(3, 18), pct = r.pick([10, 15, 20]);
   const bill = tens * 1000 + r.int(-380, 380);
@@ -142,7 +142,7 @@ export function estimateTip(r: Rng): Question {
   return choiceQ(r, `La cuenta de un restaurante es ${soles(bill)}. ¿Cuál es la mejor estimación de una propina del ${pct} %?`, show(tip), [show(tip / 2), show(tip * 2), show(tip + tens), show(tip * 3)].filter((x) => x !== show(tip)), `${soles(bill)} es casi S/ ${tens * 10}; el ${pct} % de ${tens * 10} es ${d2(tip * 100)} soles.`);
 }
 
-// P.13: interés compuesto.
+// Interés compuesto.
 export function compoundInterest(r: Rng): Question {
   const rate = r.pick([10, 20]);
   const years = r.pick([2, 2, 3]);
@@ -155,13 +155,13 @@ export function compoundInterest(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Expresiones
 
-// R.4: evaluar expresiones lineales (con enteros).
+// Evaluar expresiones lineales (con enteros).
 export function evaluateLinear(r: Rng): Question {
   const a = nz(r, 9), b = nz(r, 15), x = nz(r, 9);
   return intQ(r, `Calcula el valor de la expresión cuando x = ${sg(x)}.`, a * x + b, `${sg(a)} × ${par(x)} ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${sg(a * x)} ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${sg(a * x + b)}.`, lin(a, b));
 }
 
-// R.6: evaluar expresiones con valor absoluto.
+// Evaluar expresiones con valor absoluto.
 export function evaluateAbsolute(r: Rng): Question {
   const x = nz(r, 12), a = r.int(1, 12), b = r.int(1, 9);
   const forms: [string, number, string][] = [
@@ -174,7 +174,7 @@ export function evaluateAbsolute(r: Rng): Question {
   return intQ(r, `Calcula el valor de la expresión cuando x = ${sg(x)}.`, value, why, text);
 }
 
-// R.7: evaluar expresiones no lineales.
+// Evaluar expresiones no lineales.
 export function evaluateNonlinear(r: Rng): Question {
   const x = nz(r, 6), a = r.int(2, 5), b = r.int(1, 9);
   const forms: [string, number, string][] = [
@@ -188,7 +188,7 @@ export function evaluateNonlinear(r: Rng): Question {
   return intQ(r, `Calcula el valor de la expresión cuando x = ${sg(x)}.`, value, why, text);
 }
 
-// S.2 / S.3: reducir términos semejantes (`tiles`: con fichas de álgebra).
+// Reducir términos semejantes (`tiles`: con fichas de álgebra).
 export function combineLikeTerms(r: Rng, tiles: boolean): Question {
   if (tiles) {
     const [a, b, c, d] = [r.int(1, 4), r.int(1, 5), r.int(1, 3), r.int(1, 4)];
@@ -203,7 +203,7 @@ export function combineLikeTerms(r: Rng, tiles: boolean): Question {
   return choiceQ(r, "Reduce los términos semejantes.", good, [lin(a - c, b + d), lin(a + c, b - d), lin(a + c + b + d, 0), lin(a + b, c + d)].filter((x) => x !== good), `Se juntan las x: ${lin(a + c, 0)}; y los números: ${sg(b + d)}.`, text, "simbolos");
 }
 
-// S.7: sumar y restar expresiones lineales.
+// Sumar y restar expresiones lineales.
 export function addSubLinear(r: Rng): Question {
   const [a, c] = [r.int(1, 9), r.int(1, 9)], [b, d] = [nz(r, 12), nz(r, 12)];
   const minus = r.chance(0.5);
@@ -212,7 +212,7 @@ export function addSubLinear(r: Rng): Question {
   return choiceQ(r, minus ? "Resta las expresiones." : "Suma las expresiones.", good, wrong.filter((x) => x !== good), minus ? `Al restar se cambia el signo de cada término del segundo paréntesis: ${good}.` : `Se suman las x y se suman los números: ${good}.`, `(${lin(a, b)}) ${minus ? "−" : "+"} (${lin(c, d)})`, minus ? "resta" : "suma");
 }
 
-// S.8: sumar y restar términos semejantes con exponentes.
+// Sumar y restar términos semejantes con exponentes.
 export function likeTermsExponents(r: Rng): Question {
   const [a, c] = [r.int(2, 9), nz(r, 7)], [b, d] = [r.int(2, 9), nz(r, 7)];
   const sq = (k: number) => (k === 1 ? "x²" : k === -1 ? "−x²" : `${sg(k)}x²`);
@@ -223,7 +223,7 @@ export function likeTermsExponents(r: Rng): Question {
   return choiceQ(r, "Reduce los términos semejantes.", good, [join(a + b, c + d), join(a - c, b + d), join(a + c, b - d), lin(a + b + c + d || 1, 0).replace("x", "x³")].filter((x) => x !== good), `Solo se juntan términos con la misma potencia: los de x² dan ${sq(a + c)} y los de x dan ${lin(b + d, 0)}.`, text);
 }
 
-// S.14: expresiones lineales equivalentes en problemas.
+// Expresiones lineales equivalentes en problemas.
 export function equivalentWord(r: Rng): Question {
   const k = r.int(2, 6), n = r.int(1, 9);
   const name = r.pick(NAMES);
@@ -310,7 +310,7 @@ const OPS: IneqOp[] = ["<", ">", "≤", "≥"];
 const ineq = (op: IneqOp, n: number) => `x ${op} ${sg(n)}`;
 const ray = (op: IneqOp, n: number): Visual => ({ kind: "numberLine", min: -10, max: 10, step: 1, labelEvery: 5, marked: n, ray: { closed: op === "≥" || op === "≤", dir: op === ">" || op === "≥" ? "right" : "left" } });
 
-// U.7 / U.8: resolver inecuaciones de dos pasos (`graph`: comprobar el gráfico).
+// Resolver inecuaciones de dos pasos (`graph`: comprobar el gráfico).
 export function twoStepInequality(r: Rng, graph = false): Question {
   const a = nz(r, 6);
   const k = Math.abs(a) === 1 ? a * 2 : a;
@@ -340,7 +340,7 @@ function geometric(r: Rng) {
 }
 const list = (xs: number[]) => xs.map(sg).join(", ");
 
-// V.1: identificar sucesiones aritméticas y geométricas.
+// Identificar sucesiones aritméticas y geométricas.
 export function identifySequence(r: Rng): Question {
   const kind = r.int(0, 2);
   const options = ["Aritmética", "Geométrica", "Ninguna de las dos"];
@@ -357,7 +357,7 @@ export function identifySequence(r: Rng): Question {
   return fixedQ("¿Qué tipo de sucesión es?", options, options[2], "No se suma siempre lo mismo ni se multiplica siempre por lo mismo.", `${list(terms)}, …`, "ninguna");
 }
 
-// V.2 – V.4: hallar el término que sigue.
+// Hallar el término que sigue.
 export function nextTerm(r: Rng, kind: "arithmetic" | "geometric" | "mixed"): Question {
   const k = kind === "mixed" ? r.pick(["arithmetic", "geometric"] as const) : kind;
   if (k === "arithmetic") {
@@ -369,7 +369,7 @@ export function nextTerm(r: Rng, kind: "arithmetic" | "geometric" | "mixed"): Qu
   return intQ(r, "¿Qué número sigue en la sucesión?", next, `Se multiplica por ${sg(s.ratio)} cada vez: ${sg(s.terms[3])} × ${par(s.ratio)} = ${sg(next)}.`, `${list(s.terms)}, ?`, "geometrica", [s.terms[3] + (s.terms[3] - s.terms[2])]);
 }
 
-// V.5: sucesiones en problemas.
+// Sucesiones en problemas.
 export function sequenceProblem(r: Rng): Question {
   const name = r.pick(NAMES);
   if (r.chance(0.6)) {
@@ -382,13 +382,13 @@ export function sequenceProblem(r: Rng): Question {
   return numQ(first * 100 * ratio ** (n - 1), story, undefined, `Se multiplica por ${ratio} un total de ${n - 1} veces: ${first * 100} × ${ratio ** (n - 1)} = ${fmt(first * 100 * ratio ** (n - 1))}.`, "geometrica");
 }
 
-// V.6: evaluar expresiones con variables para sucesiones.
+// Evaluar expresiones con variables para sucesiones.
 export function sequenceExpression(r: Rng): Question {
   const a = nz(r, 9), b = nz(r, 15), n = r.int(5, 30);
   return intQ(r, `El término de posición n de una sucesión es ${lin(a, b, "n")}. ¿Cuál es el término de posición ${n}?`, a * n + b, `Se reemplaza n por ${n}: ${sg(a)} × ${n} ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${sg(a * n + b)}.`);
 }
 
-// V.7: escribir expresiones con variables para sucesiones aritméticas.
+// Escribir expresiones con variables para sucesiones aritméticas.
 export function writeSequenceExpression(r: Rng): Question {
   const d = r.int(2, 9) * r.pick([1, 1, -1]), first = r.int(-5, 20);
   const terms = Array.from({ length: 4 }, (_, i) => first + i * d);
@@ -407,14 +407,14 @@ function twoPoints(r: Rng): [P, P, SF] {
   return [A, B, [B.y - A.y, run]];
 }
 
-// W.1 / W.2: hallar la pendiente (en un gráfico o con dos puntos).
+// Hallar la pendiente (en un gráfico o con dos puntos).
 export function slope(r: Rng, graph: boolean): Question {
   const [A, B, m] = twoPoints(r);
   const why = `Pendiente = cambio en y ÷ cambio en x = (${sg(B.y)} − ${par(A.y)}) ÷ (${sg(B.x)} − ${par(A.x)}) = ${sg(m[0])}/${m[1]} = ${sfshow(m)}.`;
   return sfQ(r, graph ? "¿Cuál es la pendiente de la recta que pasa por A y B?" : `¿Cuál es la pendiente de la recta que pasa por ${pt(A)} y ${pt(B)}?`, m, why, graph ? plane([{ ...A, emoji: "A" }, { ...B, emoji: "B" }], "open") : undefined, m[0] > 0 ? "positiva" : m[0] < 0 ? "negativa" : "cero", [[m[1], m[0] || 1]]);
 }
 
-// W.3: hallar una coordenada que falta usando la pendiente.
+// Hallar una coordenada que falta usando la pendiente.
 export function missingCoordinate(r: Rng): Question {
   const m = nz(r, 4), run = r.int(1, 4);
   const A = { x: r.int(-5, 2), y: r.int(-6, 6) };
@@ -422,7 +422,7 @@ export function missingCoordinate(r: Rng): Question {
   return intQ(r, `Una recta tiene pendiente ${sg(m)} y pasa por ${pt(A)} y por (${sg(B.x)}, y). ¿Cuánto vale y?`, B.y, `x aumenta ${run}; y cambia ${sg(m)} × ${run} = ${sg(m * run)}: ${sg(A.y)} + ${par(m * run)} = ${sg(B.y)}.`, undefined, undefined, [A.y - m * run, A.y + m]);
 }
 
-// W.4: graficar una recta usando la pendiente (¿qué otro punto está en la recta?).
+// Graficar una recta usando la pendiente (¿qué otro punto está en la recta?).
 export function lineFromSlope(r: Rng): Question {
   const rise = nz(r, 3), run = r.int(1, 3);
   const g = absGcd(rise, run);
@@ -434,7 +434,7 @@ export function lineFromSlope(r: Rng): Question {
 }
 
 type RateMode = "constTable" | "constGraph" | "table" | "graph";
-// W.5 – W.8: tasa de cambio en tablas y gráficos.
+// Tasa de cambio en tablas y gráficos.
 export function rateOfChange(r: Rng, mode: RateMode): Question {
   const [xName, yName, per] = r.pick([["Hora", "Kilómetros", "kilómetros por hora"], ["Día", "Soles ahorrados", "soles por día"], ["Minuto", "Litros en el tanque", "litros por minuto"], ["Semana", "Altura (cm)", "centímetros por semana"]]);
   if (mode === "constTable" || mode === "constGraph") {
@@ -462,7 +462,7 @@ export function rateOfChange(r: Rng, mode: RateMode): Question {
   return intQ(r, `¿Cuál fue la tasa de cambio promedio entre ${article} ${xName.toLowerCase()} ${i + 1} y ${article} ${xName.toLowerCase()} ${j + 1}?`, rate, `Cambio en y ÷ cambio en x: (${values[j]} − ${values[i]}) ÷ (${j + 1} − ${i + 1}) = ${sg(rate)}.`, visual, rate > 0 ? "aumenta" : rate < 0 ? "disminuye" : "igual");
 }
 
-// X.10: escribir la ecuación de una recta a partir de su gráfico.
+// Escribir la ecuación de una recta a partir de su gráfico.
 export function linearFromGraph(r: Rng): Question {
   const m = r.int(1, 3), b = r.int(1, 5);
   const pts = [0, 1, 2, 3].map((x) => ({ x, y: m * x + b })).filter((p) => p.y <= 12);

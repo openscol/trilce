@@ -1,18 +1,12 @@
 import * as P2 from "../../../generators/lengua/phonics2";
 import { choose, mix, type ChoiceItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { f, sorter, w } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Fundamentos de lectura (IXL 5th grade ELA, A-C), adaptados al castellano:
-//   tipos de sílaba → agudas, graves, esdrújulas y sobresdrújulas, con su regla de tilde
-//   sight words → palabras frecuentes de escritura difícil (tildes, h, b/v, x, cc)
+// 5.° de Primaria · banco de lectoescritura: agudas, graves, esdrújulas y
+// sobresdrújulas con su regla de tilde, palabras de varias sílabas, prefijos y
+// sufijos, y palabras frecuentes de escritura difícil (tildes, h, b/v, x, cc).
 
-export const SECTIONS: Section[] = [
-  { id: "A", name: "Palabras de varias sílabas", icon: "👏" },
-  { id: "B", name: "Palabras con prefijos y sufijos", icon: "🧩" },
-  { id: "C", name: "Palabras frecuentes y de escritura difícil", icon: "⭐" },
-];
 
 const STRESS = sorter(["Aguda", "Grave o llana", "Esdrújula", "Sobresdrújula"], "¿Qué tipo de palabra es, según su sílaba tónica?");
 const STRESS_TYPES: ChoiceItem[] = [
@@ -70,15 +64,15 @@ const SIGHT_SENTENCES: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["A.1", "Identificar palabras agudas, graves, esdrújulas y sobresdrújulas", (r) => mix(r, [(q) => choose(q, "", STRESS_TYPES), (q) => choose(q, "", STRESS_TYPES), (q) => choose(q, "", TILDE)])],
-  ["A.2", "Separar en sílabas palabras de varias sílabas", (r) => P2.segmentList(r, LONG_WORDS)],
-  ["A.3", "Leer palabras de varias sílabas", (r) => P2.listenChoose(r, LONG_READ)],
-  ["A.4", "Completar la oración con la palabra de varias sílabas", (r) => choose(r, "Completa la oración.", LONG_SENTENCES)],
-  ["A.5", "Escribir palabras de varias sílabas", (r) => P2.spellHeard(r, "laboratorio veterinario enciclopedia imaginación independencia matemática fotosíntesis arqueología construcción bibliotecaria", "a e i o u ó í l n r s t c")],
+  ["agudas-esdrujulas", (r) => mix(r, [(q) => choose(q, "", STRESS_TYPES), (q) => choose(q, "", STRESS_TYPES), (q) => choose(q, "", TILDE)])],
+  ["varias-silabas-1", (r) => P2.segmentList(r, LONG_WORDS)],
+  ["varias-silabas-2", (r) => P2.listenChoose(r, LONG_READ)],
+  ["varias-silabas-3", (r) => choose(r, "Completa la oración.", LONG_SENTENCES)],
+  ["varias-silabas-4", (r) => P2.spellHeard(r, "laboratorio veterinario enciclopedia imaginación independencia matemática fotosíntesis arqueología construcción bibliotecaria", "a e i o u ó í l n r s t c")],
 
-  ["B.1", "Separar y leer palabras con prefijos o sufijos", (r) => choose(r, "", AFFIX_SPLIT)],
-  ["B.2", "Completar la oración con la palabra con prefijo o sufijo", (r) => choose(r, "Completa la oración.", AFFIX_SENTENCES)],
+  ["prefijos-lectura-1", (r) => choose(r, "", AFFIX_SPLIT)],
+  ["prefijos-lectura-2", (r) => choose(r, "Completa la oración.", AFFIX_SENTENCES)],
 
-  ["C.1", "Leer y escribir palabras frecuentes", (r) => mix(r, [(q) => P2.listenChoose(q, SIGHT), (q) => P2.spellHeard(q, SIGHT_SPELL, "a e i o u á í x c s z h b v ll")])],
-  ["C.2", "Completar la oración con la palabra frecuente correcta", (r) => choose(r, "Completa la oración.", SIGHT_SENTENCES)],
+  ["frecuentes-1", (r) => mix(r, [(q) => P2.listenChoose(q, SIGHT), (q) => P2.spellHeard(q, SIGHT_SPELL, "a e i o u á í x c s z h b v ll")])],
+  ["frecuentes-2", (r) => choose(r, "Completa la oración.", SIGHT_SENTENCES)],
 ];

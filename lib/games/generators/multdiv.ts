@@ -10,7 +10,7 @@ function num(answer: number, prompt: string, text: string, explanation: string, 
   return { kind: "number", prompt, visual: { kind: "text", text }, answer, explanation, tag };
 }
 
-// 3.° I.2 / I.4 / I.6: hallar el factor que falta. Un factor sale de `factors`.
+// Hallar el factor que falta. Un factor sale de `factors`.
 export function multMissing(r: Rng, factors: number[], otherMax = 10): Question {
   const a = r.pick(factors.filter((f) => f > 0));
   const b = r.int(1, otherMax);
@@ -18,7 +18,7 @@ export function multMissing(r: Rng, factors: number[], otherMax = 10): Question 
   return num(b, "¿Qué número falta?", text, `${a} × ${b} = ${a * b}, así que falta el ${b}.`, `tabla-${a}`);
 }
 
-// 3.° I.7: una cifra por un múltiplo de diez.
+// Una cifra por un múltiplo de diez.
 export function multByTens(r: Rng): Question {
   const a = r.int(2, 9);
   const m = r.int(1, 9);
@@ -26,7 +26,7 @@ export function multByTens(r: Rng): Question {
   return num(a * m * 10, "Resuelve la multiplicación.", `${x} × ${y} = ?`, `${a} × ${m} = ${a * m}; agregamos un cero: ${a * m * 10}.`);
 }
 
-// 3.° I.8: factores que terminan en ceros.
+// Factores que terminan en ceros.
 export function multZeros(r: Rng): Question {
   const a = r.int(2, 9);
   const b = r.int(2, 9);
@@ -37,7 +37,7 @@ export function multZeros(r: Rng): Question {
   return num(x * y, "Resuelve la multiplicación.", `${fmt(x)} × ${fmt(y)} = ?`, `${a} × ${b} = ${a * b}; luego agregamos ${i + j} ${i + j === 1 ? "cero" : "ceros"}: ${fmt(x * y)}.`, `${i + j}-ceros`);
 }
 
-// 3.° I.9 / I.10: una cifra por un número de `digits` cifras.
+// Una cifra por un número de `digits` cifras.
 export function multDigits(r: Rng, digits: 2 | 3): Question {
   const a = r.int(2, 9);
   const b = r.int(10 ** (digits - 1) + 1, 10 ** digits - 1);
@@ -45,7 +45,7 @@ export function multDigits(r: Rng, digits: 2 | 3): Question {
   return num(a * b, "Resuelve la multiplicación.", `${b} × ${a} = ?`, `Multiplicamos por partes: ${parts.map((p) => `${p} × ${a} = ${p * a}`).join("; ")}. Total: ${a * b}.`);
 }
 
-// 3.° I.11: conmutativa, asociativa, neutro, cero y distributiva.
+// Conmutativa, asociativa, neutro, cero y distributiva.
 export function multProperties(r: Rng): Question {
   const a = r.int(2, 9);
   const b = r.int(2, 9);
@@ -74,7 +74,7 @@ export function multProperties(r: Rng): Question {
   };
 }
 
-// 3.° J.1: repartir en grupos iguales.
+// Repartir en grupos iguales.
 export function divGroups(r: Rng): Question {
   const groups = r.int(2, 5);
   const each = r.int(2, 5);
@@ -85,7 +85,7 @@ export function divGroups(r: Rng): Question {
     : { kind: "number", prompt: `Hay ${total} en grupos de ${each}. ¿Cuántos grupos hay?`, visual, answer: groups, explanation: `${total} ÷ ${each} = ${groups}.`, tag: "agrupar" };
 }
 
-// 3.° J.2 / J.4: relacionar × y ÷ con grupos iguales o matrices.
+// Relacionar × y ÷ con grupos iguales o matrices.
 export function relateMultDivPicture(r: Rng, kind: "groups" | "array"): Question {
   const a = r.int(2, 5);
   let b = r.int(2, 6);
@@ -116,7 +116,7 @@ export function relateMultDivPicture(r: Rng, kind: "groups" | "array"): Question
   };
 }
 
-// 3.° J.5: usar una multiplicación para resolver una división (y al revés).
+// Usar una multiplicación para resolver una división (y al revés).
 export function relateMultDiv(r: Rng): Question {
   const a = r.int(2, 10);
   const b = r.int(2, 10);
@@ -126,7 +126,7 @@ export function relateMultDiv(r: Rng): Question {
     : num(p, "Usa la primera operación para resolver la segunda.", `${p} ÷ ${a} = ${b}\n${a} × ${b} = ?`, `Si ${p} ÷ ${a} = ${b}, entonces ${a} × ${b} = ${p}.`, "div-a-mult");
 }
 
-// 3.° L.2 / L.5: completar una división. El divisor sale de `divisors`.
+// Completar una división. El divisor sale de `divisors`.
 export function divMissing(r: Rng, divisors: number[]): Question {
   const d = r.pick(divisors);
   const q = r.int(1, 10);
@@ -136,7 +136,7 @@ export function divMissing(r: Rng, divisors: number[]): Question {
     : num(d * q, "¿Qué número falta?", `? ÷ ${d} = ${q}`, `${d} × ${q} = ${d * q}, así que ${d * q} ÷ ${d} = ${q}.`, `entre-${d}`);
 }
 
-// 3.° L.6 - L.9: divisiones exactas con números más grandes.
+// Divisiones exactas con números más grandes.
 export type LongDivision = "twoDigitDivisor" | "largeByTwoDigit" | "threeDigitDivisor" | "largeByOneDigit";
 
 export function divLong(r: Rng, kind: LongDivision): Question {
@@ -151,7 +151,7 @@ export function divLong(r: Rng, kind: LongDivision): Question {
   return num(q, "Resuelve la división.", `${fmt(d * q)} ÷ ${d} = ?`, `${fmt(d * q)} ÷ ${d} = ${q}, porque ${d} × ${q} = ${fmt(d * q)}.`);
 }
 
-// 3.° M.2: operaciones básicas de las cuatro operaciones.
+// Operaciones básicas de las cuatro operaciones.
 export function mixedFourFacts(r: Rng): Question {
   const op = r.pick(["+", "−", "×", "÷"]);
   if (op === "+") {
@@ -171,7 +171,7 @@ export function mixedFourFacts(r: Rng): Question {
     : num(b, "Resuelve.", `${a * b} ÷ ${a} = ?`, `${a * b} ÷ ${a} = ${b}.`, "division");
 }
 
-// 3.° M.3: las cuatro operaciones con números más grandes.
+// Las cuatro operaciones con números más grandes.
 export function mixedFour(r: Rng): Question {
   const op = r.pick(["+", "−", "×", "÷"]);
   if (op === "+") {

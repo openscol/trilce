@@ -6,7 +6,6 @@ function num(answer: number, prompt: string, text: string, explanation: string, 
   return { kind: "number", prompt, visual: { kind: "text", text }, answer, explanation, tag };
 }
 
-// B.1
 export function addPictureEquation(r: Rng): Question {
   const a = r.int(1, 9);
   const b = r.int(1, Math.min(10 - a, 9));
@@ -25,7 +24,6 @@ export function addPictureEquation(r: Rng): Question {
   };
 }
 
-// B.2 / B.5
 export function addFacts(r: Rng, max: number): Question {
   const big = max > 10 && r.chance(0.75);
   const sum = big ? r.int(11, max) : r.int(2, Math.min(max, 10));
@@ -34,7 +32,7 @@ export function addFacts(r: Rng, max: number): Question {
   return num(sum, "Resuelve la suma.", `${a} + ${b} = ?`, `${a} + ${b} = ${sum}.`, big ? "pasa-de-10" : "hasta-10");
 }
 
-// B.3 / B.6 y E.3 / E.6 (op = "+" o "−")
+// (op = "+" o "−")
 export function makeTargetNumber(r: Rng, max: number, op: "+" | "−"): Question {
   // Hasta 20 (1.° y 2.°) se mantiene el rango original; con 99 se usan
   // números de dos cifras.
@@ -70,7 +68,6 @@ export function makeTargetNumber(r: Rng, max: number, op: "+" | "−"): Question
   };
 }
 
-// B.4
 export function addMissing(r: Rng, max: number): Question {
   const c = r.int(3, max);
   const a = r.int(1, c - 1);
@@ -80,7 +77,6 @@ export function addMissing(r: Rng, max: number): Question {
     : num(a, "¿Qué número falta?", `? + ${b} = ${c}`, `${a} + ${b} = ${c}.`);
 }
 
-// B.7
 export function relatedAdd(r: Rng, max: number): Question {
   const c = r.int(4, max);
   const a = r.int(1, c - 1);
@@ -93,7 +89,6 @@ export function relatedAdd(r: Rng, max: number): Question {
   );
 }
 
-// B.8 / B.9
 export function addTwoDigitOne(r: Rng, regroup: boolean): Question {
   for (;;) {
     const tens = r.int(1, 9);
@@ -112,7 +107,6 @@ export function addTwoDigitOne(r: Rng, regroup: boolean): Question {
   }
 }
 
-// B.10 / B.11
 export function addTwoTwo(r: Rng, regroup: boolean): Question {
   for (;;) {
     const a = r.int(10, 89);
@@ -131,7 +125,6 @@ export function addTwoTwo(r: Rng, regroup: boolean): Question {
   }
 }
 
-// B.12 y E.12
 export function estimateTwoDigit(r: Rng, op: "+" | "−"): Question {
   const fix = (n: number) => (n % 10 === 5 ? n + 1 : n);
   const roundTen = (n: number) => Math.round(n / 10) * 10;
@@ -152,13 +145,11 @@ export function estimateTwoDigit(r: Rng, op: "+" | "−"): Question {
   }
 }
 
-// C.1
 export function doubles(r: Rng): Question {
   const a = r.int(1, 10);
   return num(a + a, "Suma los dobles.", `${a} + ${a} = ?`, `${a} + ${a} = ${a * 2}.`);
 }
 
-// C.2 / C.3
 export function doublesNear(r: Rng, delta: 1 | -1): Question {
   const a = r.int(2, 9);
   const b = a + delta;
@@ -167,20 +158,17 @@ export function doublesNear(r: Rng, delta: 1 | -1): Question {
   return num(a + b, delta === 1 ? "Usa dobles más uno." : "Usa dobles menos uno.", `${x} + ${y} = ?`, `${hint}.`);
 }
 
-// C.4
 export function makeTen(r: Rng): Question {
   const a = r.int(1, 9);
   return num(10 - a, "¿Cuánto falta para llegar a 10?", `${a} + ? = 10`, `${a} + ${10 - a} = 10.`);
 }
 
-// C.5
 export function addTens(r: Rng): Question {
   const a = r.int(1, 8) * 10;
   const b = r.int(1, (100 - a) / 10) * 10;
   return num(a + b, "Suma los múltiplos de 10.", `${a} + ${b} = ?`, `${a / 10} decenas + ${b / 10} decenas = ${(a + b) / 10} decenas: ${a + b}.`);
 }
 
-// C.6
 export function addMultipleOfTen(r: Rng): Question {
   for (;;) {
     const n = r.int(11, 89);
@@ -192,14 +180,13 @@ export function addMultipleOfTen(r: Rng): Question {
   }
 }
 
-// D.1 - D.10
 export function addK(r: Rng, k: number): Question {
   const n = r.int(0, k === 0 ? 20 : 10);
   const [x, y] = r.chance(0.5) ? [n, k] : [k, n];
   return num(n + k, `Suma ${k}.`, `${x} + ${y} = ?`, `${n} + ${k} = ${n + k}.`);
 }
 
-// 2.° D.13: conmutativa, elemento neutro y asociativa.
+// Conmutativa, elemento neutro y asociativa.
 export function additionProperties(r: Rng): Question {
   const form = r.int(0, 2);
   if (form === 0) {
@@ -219,7 +206,7 @@ export function additionProperties(r: Rng): Question {
   return num(b, "¿Qué número falta?", `(${a} + ${b}) + ${c} = ${a} + (? + ${c})`, `Agrupar los sumandos de otra forma no cambia la suma: falta el ${b}.`, "asociativa");
 }
 
-// 2.° D.14 / D.15: suma repetida por filas de una matriz.
+// Suma repetida por filas de una matriz.
 export function arrayRepeatedAddition(r: Rng, maxTotal: number): Question {
   let rows: number;
   let cols: number;
@@ -243,7 +230,7 @@ export function arrayRepeatedAddition(r: Rng, maxTotal: number): Question {
   };
 }
 
-// 2.° E.7: completar una suma de dos cifras.
+// Completar una suma de dos cifras.
 export function addMissingTwoDigit(r: Rng): Question {
   const c = r.int(30, 99);
   const a = r.int(10, c - 10);
@@ -253,14 +240,12 @@ export function addMissingTwoDigit(r: Rng): Question {
     : num(a, "¿Qué número falta?", `? + ${b} = ${c}`, `${c} − ${b} = ${a}, así que ${a} + ${b} = ${c}.`);
 }
 
-// 2.° E.8
 export function addHundreds(r: Rng): Question {
   const a = r.int(1, 8) * 100;
   const b = r.int(1, (1000 - a) / 100) * 100;
   return num(a + b, "Suma los múltiplos de 100.", `${a} + ${b} = ?`, `${a / 100} centenas + ${b / 100} centenas = ${(a + b) / 100} centenas: ${a + b}.`);
 }
 
-// 2.° E.9
 export function addThreeDigit(r: Rng): Question {
   const a = r.int(100, 899);
   const b = r.chance(0.5) ? r.int(10, 99) : r.int(100, 999 - a);

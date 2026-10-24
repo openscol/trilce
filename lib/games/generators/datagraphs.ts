@@ -62,20 +62,20 @@ function ask(r: Rng, d: Data, visual: Visual, level: 1 | 2 | 3): Question {
   return r.pick(forms)();
 }
 
-// 4.° O.1: leer una tabla.
+// Leer una tabla.
 export function readTable(r: Rng): Question {
   const d = categories(r, 4, 1, 60);
   return ask(r, d, asTable(d), r.pick([1, 2]));
 }
 
-// 4.° O.9 / O.10: interpretar gráficos de barras (`level` 3 = varios pasos).
+// Interpretar gráficos de barras (`level` 3 = varios pasos).
 export function interpretBarGraph(r: Rng, level: 1 | 2 | 3): Question {
   const step = r.pick([2, 5, 10]);
   const d = categories(r, r.int(4, 5), step, 8);
   return ask(r, d, chart(d, step), level === 1 ? r.pick([1, 2]) : level);
 }
 
-// 4.° O.7: interpretar gráficos de líneas.
+// Interpretar gráficos de líneas.
 export function interpretLineGraph(r: Rng): Question {
   const step = r.pick([2, 5, 10]);
   const d = trend(r, step, 8);
@@ -88,7 +88,7 @@ export function interpretLineGraph(r: Rng): Question {
   return ask(r, d, visual, r.pick([1, 2]));
 }
 
-// 4.° O.6 / O.8: crear gráficos de líneas o de barras (¿hasta dónde llega cada dato?).
+// Crear gráficos de líneas o de barras (¿hasta dónde llega cada dato?).
 export function createGraph(r: Rng, line: boolean): Question {
   const step = r.pick([2, 5, 10]);
   const d = line ? trend(r, step, 8) : categories(r, 4, step, 8);
@@ -115,7 +115,7 @@ function plot(r: Rng) {
   return { ...t, labels, counts };
 }
 
-// 4.° O.2: interpretar diagramas de puntos.
+// Interpretar diagramas de puntos.
 export function interpretLinePlot(r: Rng): Question {
   const p = plot(r);
   const visual: Visual = { kind: "linePlot", title: p.title, labels: p.labels.map(String), counts: p.counts };
@@ -152,7 +152,7 @@ const gcd4 = (q: number) => (q % 4 === 0 ? 4 : q % 2 === 0 ? 2 : 1);
 const q4 = (q: number) => mixed(q / gcd4(q), 4 / gcd4(q));
 const fracOptions = (r: Rng, answer: number) => distinct(r, 5, Math.max(1, answer - 4), answer + 4, (x) => x !== answer).map(q4);
 
-// 4.° O.3: crear diagramas de puntos con fracciones (¿cuántas X van?).
+// Crear diagramas de puntos con fracciones (¿cuántas X van?).
 export function createFractionPlot(r: Rng): Question {
   const p = fractionPlot(r);
   const data = r.shuffle(p.quarters.flatMap((q, i) => Array.from({ length: p.counts[i] }, () => q4(q))));
@@ -160,7 +160,7 @@ export function createFractionPlot(r: Rng): Question {
   return numQ(p.counts[i], `Vas a hacer un diagrama de puntos con estos datos. ¿Cuántas X van sobre ${p.labels[i]}?`, `${p.title}\n${data.join("   ")}`, `El dato ${p.labels[i]} aparece ${p.counts[i]} ${p.counts[i] === 1 ? "vez" : "veces"}.`);
 }
 
-// 4.° O.4 / O.5: interpretar diagramas de puntos con fracciones.
+// Interpretar diagramas de puntos con fracciones.
 export function interpretFractionPlot(r: Rng, multiStep: boolean): Question {
   const p = fractionPlot(r);
   const visual: Visual = { kind: "linePlot", title: p.title, labels: p.labels, counts: p.counts };
@@ -188,7 +188,7 @@ export function interpretFractionPlot(r: Rng, multiStep: boolean): Question {
   return numQ(n, `¿Cuántos datos son de ${p.labels[cut]} ${p.unit} o más?`, visual, `Sumamos las X desde ${p.labels[cut]} hacia la derecha: ${n}.`, "o-mas");
 }
 
-// 4.° O.11 – O.14: tablas de frecuencias (con categorías o con números).
+// Tablas de frecuencias (con categorías o con números).
 export function frequencyTable(r: Rng, numeric: boolean, create: boolean): Question {
   const start = r.pick([8, 10, 12, 14]);
   const labels = numeric ? Array.from({ length: 5 }, (_, i) => String(start + i)) : r.shuffle(r.pick(THEMES).labels).slice(0, 4);
@@ -221,7 +221,7 @@ function stemData(r: Rng, count = 9) {
   return { stems, data, leaves, visual: table(["Tallo", "Hojas"], stems.map((s) => [String(s), leaves(s) || "—"]), "Clave: 3 | 2 = 32") };
 }
 
-// 4.° O.15: crear diagramas de tallo y hojas.
+// Crear diagramas de tallo y hojas.
 export function createStemLeaf(r: Rng): Question {
   for (;;) {
     const s = stemData(r);
@@ -233,7 +233,7 @@ export function createStemLeaf(r: Rng): Question {
   }
 }
 
-// 4.° O.16: interpretar diagramas de tallo y hojas.
+// Interpretar diagramas de tallo y hojas.
 export function interpretStemLeaf(r: Rng): Question {
   const s = stemData(r);
   const form = r.int(0, 3);
@@ -265,7 +265,7 @@ const STAT_HELP: Record<Stat, string> = {
   rango: "El rango es la diferencia entre el dato mayor y el menor",
 };
 
-// 4.° EE: moda, mediana o rango de datos mostrados de distintas formas.
+// Moda, mediana o rango de datos mostrados de distintas formas.
 export function statistic(r: Rng, which: Stat | "any", display: StatDisplay = "list"): Question {
   const stat = which === "any" ? r.pick<Stat>(["moda", "mediana", "rango"]) : which;
   const small = display === "linePlot" || display === "freq";

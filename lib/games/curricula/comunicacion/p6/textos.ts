@@ -1,24 +1,14 @@
 import { readPassage } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { read } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Lecturas (IXL 6th grade ELA: I, K y L).
-// K. «Novel study»: IXL trabaja con tres novelas en inglés con derechos vigentes
-// (The Lightning Thief, Roll of Thunder Hear My Cry, Esperanza Rising). Aquí se
-// reemplazan por tres obras clásicas en castellano, de dominio público y muy
-// leídas en la escuela: «El caballero Carmelo» (Abraham Valdelomar), «Paco
-// Yunque» (César Vallejo) y «Cuentos de la selva» (Horacio Quiroga). Los pasajes
-// son adaptaciones resumidas, no citas textuales.
-// L. «Nonfiction book study»: se conservan los tres temas de IXL (Harriet
-// Tubman, Malala Yousafzai y el gran incendio de Chicago), con textos
-// informativos propios en lugar de pasajes de los libros.
+// 6.° de Primaria · banco de lecturas largas: textos informativos propios y el
+// estudio de tres obras en castellano de dominio público, muy leídas en la
+// escuela: «El caballero Carmelo» (Abraham Valdelomar), «Paco Yunque» (César
+// Vallejo) y «Cuentos de la selva» (Horacio Quiroga). Los pasajes son
+// adaptaciones resumidas, no citas textuales. Los textos de no ficción (Harriet
+// Tubman, Malala Yousafzai y el gran incendio de Chicago) son propios.
 
-export const SECTIONS: Section[] = [
-  { id: "I", name: "Analizar textos informativos", icon: "📰" },
-  { id: "K", name: "Estudio de obras narrativas", icon: "📚" },
-  { id: "L", name: "Estudio de obras de no ficción", icon: "📓" },
-];
 
 const INFO = {
   animals: [
@@ -212,23 +202,23 @@ const CHICAGO = [
 ];
 
 export const ROWS: Row[] = [
-  ["I.1", "Leer sobre animales", (r) => readPassage(r, INFO.animals, false)],
-  ["I.2", "Leer sobre lugares famosos", (r) => readPassage(r, INFO.places, false)],
-  ["I.3", "Leer sobre negocios y tecnología", (r) => readPassage(r, INFO.business, false)],
-  ["I.4", "Leer sobre ciencia y naturaleza", (r) => readPassage(r, INFO.science, false)],
-  ["I.5", "Leer sobre historia", (r) => readPassage(r, INFO.history, false)],
+  ["informativos-1", (r) => readPassage(r, INFO.animals, false)],
+  ["informativos-2", (r) => readPassage(r, INFO.places, false)],
+  ["informativos-3", (r) => readPassage(r, INFO.business, false)],
+  ["informativos-4", (r) => readPassage(r, INFO.science, false)],
+  ["informativos-5", (r) => readPassage(r, INFO.history, false)],
 
-  ["K.1", "Analizar pasajes de «El caballero Carmelo»: parte 1", (r) => readPassage(r, CARMELO[0], false)],
-  ["K.2", "Analizar pasajes de «El caballero Carmelo»: parte 2", (r) => readPassage(r, CARMELO[1], false)],
-  ["K.3", "Analizar pasajes de «Paco Yunque»: parte 1", (r) => readPassage(r, YUNQUE[0], false)],
-  ["K.4", "Analizar pasajes de «Paco Yunque»: parte 2", (r) => readPassage(r, YUNQUE[1], false)],
-  ["K.5", "Analizar pasajes de «Cuentos de la selva»: parte 1", (r) => readPassage(r, SELVA[0], false)],
-  ["K.6", "Analizar pasajes de «Cuentos de la selva»: parte 2", (r) => readPassage(r, SELVA[1], false)],
+  ["caballero-carmelo-1", (r) => readPassage(r, CARMELO[0], false)],
+  ["caballero-carmelo-2", (r) => readPassage(r, CARMELO[1], false)],
+  ["paco-yunque-1", (r) => readPassage(r, YUNQUE[0], false)],
+  ["paco-yunque-2", (r) => readPassage(r, YUNQUE[1], false)],
+  ["cuentos-selva-1", (r) => readPassage(r, SELVA[0], false)],
+  ["cuentos-selva-2", (r) => readPassage(r, SELVA[1], false)],
 
-  ["L.1", "Analizar textos sobre Harriet Tubman: parte 1", (r) => readPassage(r, TUBMAN[0], false)],
-  ["L.2", "Analizar textos sobre Harriet Tubman: parte 2", (r) => readPassage(r, TUBMAN[1], false)],
-  ["L.3", "Analizar textos sobre Malala Yousafzai: parte 1", (r) => readPassage(r, MALALA[0], false)],
-  ["L.4", "Analizar textos sobre Malala Yousafzai: parte 2", (r) => readPassage(r, MALALA[1], false)],
-  ["L.5", "Analizar textos sobre el gran incendio de Chicago: parte 1", (r) => readPassage(r, CHICAGO[0], false)],
-  ["L.6", "Analizar textos sobre el gran incendio de Chicago: parte 2", (r) => readPassage(r, CHICAGO[1], false)],
+  ["tubman-1", (r) => readPassage(r, TUBMAN[0], false)],
+  ["tubman-2", (r) => readPassage(r, TUBMAN[1], false)],
+  ["malala-1", (r) => readPassage(r, MALALA[0], false)],
+  ["malala-2", (r) => readPassage(r, MALALA[1], false)],
+  ["chicago-1", (r) => readPassage(r, CHICAGO[0], false)],
+  ["chicago-2", (r) => readPassage(r, CHICAGO[1], false)],
 ];

@@ -1,28 +1,14 @@
 import * as P from "../../../generators/lengua/phonics";
 import * as P2 from "../../../generators/lengua/phonics2";
 import { choose, mix, pickAll, readPassage, type ChoiceItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { f, read, w } from "./helpers";
 import type { Row } from "./row";
 
-// Fundamentos de lectura (IXL 3rd grade ELA, A-G), adaptados al castellano:
-//   vocales cortas y largas → diptongos e hiatos (por vocal)
-//   blends de tres letras → grupos de tres consonantes (mbr, ntr, str...)
-//   dígrafos sh/th/ph/wh → ch, ll, rr, qu, gu       mb, kn, dge, tch → la h muda
-//   -ng, -nk → mp, mb y nv       r-controlled → r y rr
-//   variant vowels → gue, gui, güe, güi
-//   tipos de sílaba → sílaba tónica       consonant-l-e → bl, cl, fl, gl, pl
-//   letras de un sonido → letras que representan el mismo sonido (c/qu/k, g/j, b/v...)
+// 3.° de Primaria · banco de lectoescritura: diptongos e hiatos por vocal,
+// grupos de tres consonantes (mbr, ntr, str...), dígrafos, h muda, mp/mb/nv,
+// r y rr, gue/gui/güe/güi, la sílaba tónica, bl/cl/fl/gl/pl, prefijos y
+// sufijos, y letras que representan el mismo sonido (c/qu/k, g/j, b/v...).
 
-export const SECTIONS: Section[] = [
-  { id: "A", name: "Diptongos e hiatos", icon: "👯" },
-  { id: "B", name: "Grupos consonánticos y dígrafos", icon: "🔗" },
-  { id: "C", name: "La r, los diptongos y la ü", icon: "🐯" },
-  { id: "D", name: "Palabras de varias sílabas", icon: "👏" },
-  { id: "E", name: "Palabras con prefijos y sufijos", icon: "🧩" },
-  { id: "F", name: "Palabras frecuentes y de escritura difícil", icon: "⭐" },
-  { id: "G", name: "Cuentos para leer", icon: "📚" },
-];
 
 const DIPHTHONG = ["aire", "peine", "cuento", "ciudad", "viaje", "puerta", "reina", "piano", "jaula", "cuidado", "nieve", "fuego"];
 const HIATUS = ["río", "poeta", "maíz", "baúl", "teatro", "país", "día", "leer", "caer", "búho", "océano", "tío"];
@@ -134,49 +120,49 @@ const SIGHT_SENTENCES: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["A.1", "Usar las vocales para clasificar palabras con diptongo y con hiato", (r) =>
+  ["diptongos-hiatos-1", (r) =>
     mix(r, [
       (q) => pickAll(q, "Selecciona las palabras con diptongo (dos vocales juntas en la misma sílaba).", DIPHTHONG, HIATUS, "diptongo"),
       (q) => pickAll(q, "Selecciona las palabras con hiato (dos vocales juntas en sílabas distintas).", HIATUS, DIPHTHONG, "hiato"),
     ])],
-  ["A.2", "Escribir palabras que riman para responder adivinanzas", (r) => P2.spellFromClue(r, RIDDLES)],
-  ["A.3", "Escribir la palabra con a: ai, au, ia, ua, aí, aú", (r) => P2.spellHeard(r, "baile aula piano agua maíz baúl paisaje guante jaula viaje", "a e i o u í ú l n s")],
-  ["A.4", "Escribir la palabra con e: ei, eu, ie, ue, eo, ee", (r) => P2.spellHeard(r, "reina peine nieve huevo fuego deuda leer poeta cielo teatro", "a e i o u l n r s t")],
-  ["A.5", "Escribir la palabra con i: ia, ie, io, iu, ía, ío", (r) => P2.spellHeard(r, "ciudad viuda radio familia río día frío tío sandía fiesta", "a e i o u í d r s t")],
-  ["A.6", "Escribir la palabra con o: oi, io, uo, oí, oe, oa", (r) => P2.spellHeard(r, "boina camión cuota oído héroe canoa poema estoy antiguo", "a e i o u í é n r s")],
-  ["A.7", "Escribir la palabra con u: ua, ue, ui, uo, úa, úo", (r) => P2.spellHeard(r, "cuatro cuento ruido cuidado búho grúa dúo suave fuerte juicio", "a e i o u ú r s t c")],
+  ["rimas", (r) => P2.spellFromClue(r, RIDDLES)],
+  ["diptongos-hiatos-2", (r) => P2.spellHeard(r, "baile aula piano agua maíz baúl paisaje guante jaula viaje", "a e i o u í ú l n s")],
+  ["diptongos-hiatos-3", (r) => P2.spellHeard(r, "reina peine nieve huevo fuego deuda leer poeta cielo teatro", "a e i o u l n r s t")],
+  ["diptongos-hiatos-4", (r) => P2.spellHeard(r, "ciudad viuda radio familia río día frío tío sandía fiesta", "a e i o u í d r s t")],
+  ["diptongos-hiatos-5", (r) => P2.spellHeard(r, "boina camión cuota oído héroe canoa poema estoy antiguo", "a e i o u í é n r s")],
+  ["diptongos-hiatos-6", (r) => P2.spellHeard(r, "cuatro cuento ruido cuidado búho grúa dúo suave fuerte juicio", "a e i o u ú r s t c")],
 
-  ["B.1", "Completar la palabra con un grupo de tres consonantes", (r) => P.completePart(r, THREE_CONS, ["mbr", "mpr", "ntr", "str", "ngl", "mpl", "zcl"], "¿Qué consonantes faltan?")],
-  ["B.2", "Escribir la palabra con dígrafo: ch, ll, rr, qu", (r) => P2.spellHeard(r, "mochila cuchillo carretera paquete ballena barranco chaqueta mantequilla orquesta", "ch ll rr qu a e i o")],
-  ["B.3", "Escribir la palabra con h muda: h, hie, hue, h intercalada", (r) => P2.spellHeard(r, "almohada zanahoria búho ahora hielo hueso hierba cohete huella ahorro", "h a e i o u l r")],
-  ["B.4", "Escribir palabras con mp, mb y nv", (r) => P2.spellHeard(r, "campo tiempo bombero sombra invierno enviar invitar cambio trompo también", "m n b p v a e i")],
-  ["B.5", "Escribir palabras con qu y x", (r) => P2.spellHeard(r, "taxi examen éxito texto máquina esquina parque quince exacto explicar", "qu x c s k a e i")],
-  ["B.6", "Escribir palabras con grupos consonánticos y dígrafos: repaso", (r) => P2.spellHeard(r, "mochila carretera almohada bombero invierno examen esquina hombre siempre nuestro", "ch ll rr qu h m n x")],
+  ["grupos-consonanticos-1", (r) => P.completePart(r, THREE_CONS, ["mbr", "mpr", "ntr", "str", "ngl", "mpl", "zcl"], "¿Qué consonantes faltan?")],
+  ["grupos-consonanticos-2", (r) => P2.spellHeard(r, "mochila cuchillo carretera paquete ballena barranco chaqueta mantequilla orquesta", "ch ll rr qu a e i o")],
+  ["grupos-consonanticos-3", (r) => P2.spellHeard(r, "almohada zanahoria búho ahora hielo hueso hierba cohete huella ahorro", "h a e i o u l r")],
+  ["grupos-consonanticos-4", (r) => P2.spellHeard(r, "campo tiempo bombero sombra invierno enviar invitar cambio trompo también", "m n b p v a e i")],
+  ["grupos-consonanticos-5", (r) => P2.spellHeard(r, "taxi examen éxito texto máquina esquina parque quince exacto explicar", "qu x c s k a e i")],
+  ["grupos-consonanticos-6", (r) => P2.spellHeard(r, "mochila carretera almohada bombero invierno examen esquina hombre siempre nuestro", "ch ll rr qu h m n x")],
 
-  ["C.1", "Escribir palabras con r y rr", (r) => P2.spellHeard(r, "carretera ratón enredo honrado sonrisa torre arroz pera alrededor ferrocarril", "r rr a e i o l n")],
-  ["C.2", "Escribir palabras con diptongo", (r) => P2.spellHeard(r, "cuaderno viaje puente ciudad aceite jaula nieve fuego guante peine", "a e i o u r s t")],
-  ["C.3", "Escribir palabras con gue, gui, güe y güi", (r) => P2.spellHeard(r, "juguete guitarra pingüino cigüeña águila vergüenza hoguera guiso", "g u ü e i a o j")],
+  ["r-diptongos-u-1", (r) => P2.spellHeard(r, "carretera ratón enredo honrado sonrisa torre arroz pera alrededor ferrocarril", "r rr a e i o l n")],
+  ["r-diptongos-u-2", (r) => P2.spellHeard(r, "cuaderno viaje puente ciudad aceite jaula nieve fuego guante peine", "a e i o u r s t")],
+  ["r-diptongos-u-3", (r) => P2.spellHeard(r, "juguete guitarra pingüino cigüeña águila vergüenza hoguera guiso", "g u ü e i a o j")],
 
-  ["D.1", "Identificar la sílaba tónica", (r) => choose(r, "", STRESS)],
-  ["D.2", "Separar en sílabas palabras de varias sílabas", (r) => P2.segmentList(r, LONG_WORDS)],
-  ["D.3", "Leer palabras de varias sílabas", (r) => P2.listenChoose(r, LONG_READ)],
-  ["D.4", "Completar la oración con la palabra de varias sílabas", (r) => choose(r, "Completa la oración.", LONG_SENTENCES)],
-  ["D.5", "Escribir palabras con sílabas abiertas y cerradas", (r) => P2.spellHeard(r, "camino pelota tomate ventana pintura mercado partido doctor jardín", "a e i o u d l n r s")],
-  ["D.6", "Escribir palabras con bl, cl, fl, gl y pl", (r) => P2.spellHeard(r, "tabla cable bicicleta chancleta flauta regla iglesia plaza pluma amable", "b c f g p l a e")],
-  ["D.7", "Escribir palabras de varias sílabas", (r) => P2.spellHeard(r, "mariposa elefante escalera hospital calendario semáforo camiseta película", "a e i o u l n r s t")],
+  ["silaba-tonica", (r) => choose(r, "", STRESS)],
+  ["varias-silabas-1", (r) => P2.segmentList(r, LONG_WORDS)],
+  ["varias-silabas-2", (r) => P2.listenChoose(r, LONG_READ)],
+  ["varias-silabas-3", (r) => choose(r, "Completa la oración.", LONG_SENTENCES)],
+  ["varias-silabas-4", (r) => P2.spellHeard(r, "camino pelota tomate ventana pintura mercado partido doctor jardín", "a e i o u d l n r s")],
+  ["varias-silabas-5", (r) => P2.spellHeard(r, "tabla cable bicicleta chancleta flauta regla iglesia plaza pluma amable", "b c f g p l a e")],
+  ["varias-silabas-6", (r) => P2.spellHeard(r, "mariposa elefante escalera hospital calendario semáforo camiseta película", "a e i o u l n r s t")],
 
-  ["E.1", "Separar y leer palabras con prefijos o sufijos", (r) => choose(r, "", AFFIX_SPLIT)],
-  ["E.2", "Completar la oración con la palabra con prefijo o sufijo", (r) => choose(r, "Completa la oración.", AFFIX_SENTENCES)],
+  ["prefijos-lectura-1", (r) => choose(r, "", AFFIX_SPLIT)],
+  ["prefijos-lectura-2", (r) => choose(r, "Completa la oración.", AFFIX_SENTENCES)],
 
-  ["F.1", "Seleccionar las letras que representan un sonido", (r) => choose(r, "", SOUND_LETTERS)],
-  ["F.2", "Leer palabras frecuentes", (r) => P2.listenChoose(r, SIGHT)],
-  ["F.3", "Completar la oración con la palabra frecuente correcta", (r) => choose(r, "Completa la oración.", SIGHT_SENTENCES)],
-  ["F.4", "Escribir la palabra frecuente: más fáciles", (r) => P2.spellHeard(r, "siempre nunca porque aunque ahora hoy ayer hacia hasta desde", "a e i o u c h n r s")],
-  ["F.5", "Escribir la palabra frecuente: más difíciles", (r) => P2.spellHeard(r, "también entonces después todavía mientras además durante alrededor través quizás", "a e i o u é í n s v")],
+  ["frecuentes-1", (r) => choose(r, "", SOUND_LETTERS)],
+  ["frecuentes-2", (r) => P2.listenChoose(r, SIGHT)],
+  ["frecuentes-3", (r) => choose(r, "Completa la oración.", SIGHT_SENTENCES)],
+  ["frecuentes-4", (r) => P2.spellHeard(r, "siempre nunca porque aunque ahora hoy ayer hacia hasta desde", "a e i o u c h n r s")],
+  ["frecuentes-5", (r) => P2.spellHeard(r, "también entonces después todavía mientras además durante alrededor través quizás", "a e i o u é í n s v")],
 
-  ["G.1", "Leer cuentos con diptongos e hiatos", (r) => readPassage(r, STORIES.vowels, false)],
-  ["G.2", "Leer cuentos con r y rr", (r) => readPassage(r, STORIES.r, false)],
-  ["G.3", "Leer cuentos con gue, gui, güe, güi y diptongos", (r) => readPassage(r, STORIES.gu, false)],
+  ["cuentos-sonidos-1", (r) => readPassage(r, STORIES.vowels, false)],
+  ["cuentos-sonidos-2", (r) => readPassage(r, STORIES.r, false)],
+  ["cuentos-sonidos-3", (r) => readPassage(r, STORIES.gu, false)],
 ];
 
 const STORIES = {

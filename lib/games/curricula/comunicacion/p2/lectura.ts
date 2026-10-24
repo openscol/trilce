@@ -1,27 +1,12 @@
 import { choose, order, readPassage, type ChoiceItem, type OrderItem, type Passage } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import type { Row } from "./row";
 
-// Estrategias de lectura (IXL 2nd grade ELA, U-GG). Lecturas propias, con
-// temas cercanos a los alumnos (Perú y Latinoamérica).
+// 2.° de Primaria · banco de comprensión con lecturas propias, cercanas a los
+// alumnos (Perú y Latinoamérica): idea principal, inferencias, propósito,
+// personajes, secuencia, causa y efecto y comparación.
 
-export const SECTIONS: Section[] = [
-  { id: "U", name: "Idea principal", icon: "💡" },
-  { id: "V", name: "Inferencias y enseñanza", icon: "🕵️" },
-  { id: "W", name: "Propósito del autor", icon: "✍️" },
-  { id: "X", name: "Escenario y personajes", icon: "🎭" },
-  { id: "Y", name: "Secuencia", icon: "🔢" },
-  { id: "Z", name: "Trama", icon: "📖" },
-  { id: "AA", name: "Causa y efecto", icon: "➡️" },
-  { id: "BB", name: "Comparar y contrastar", icon: "⚖️" },
-  { id: "CC", name: "Partes del texto", icon: "📰" },
-  { id: "DD", name: "Lecturas literarias en voz alta", icon: "🔊" },
-  { id: "EE", name: "Lecturas literarias", icon: "📚" },
-  { id: "FF", name: "Textos informativos en voz alta", icon: "🔊" },
-  { id: "GG", name: "Textos informativos", icon: "🌎" },
-];
 
-// --- U. Idea principal -----------------------------------------------------------
+// --- Idea principal -----------------------------------------------------------
 
 const TOPIC_PURPOSE: Passage[] = [
   {
@@ -80,7 +65,7 @@ const MAIN_DETAIL: Passage[] = [
   },
 ];
 
-// --- V. Inferencias y enseñanza -----------------------------------------------------
+// --- Inferencias y enseñanza -----------------------------------------------------
 
 const BOOK_TITLES: ChoiceItem[] = [
   { pic: "🐉🏰", a: "El dragón del castillo", d: ["Recetas con verduras", "Cómo cuidar tu bicicleta", "Los planetas"] },
@@ -147,7 +132,7 @@ const FABLES: Passage[] = [
   },
 ];
 
-// --- W. Propósito del autor ------------------------------------------------------------
+// --- Propósito del autor ------------------------------------------------------------
 
 const INFORM = "Para informar";
 const ENTERTAIN = "Para entretener";
@@ -196,7 +181,7 @@ const PERSUASIVE: Passage[] = [
   },
 ];
 
-// --- X. Escenario y personajes ------------------------------------------------------------
+// --- Escenario y personajes ------------------------------------------------------------
 
 const DESCRIBED: ChoiceItem[] = [
   { t: "Tiene el pelaje anaranjado con rayas negras y unos colmillos enormes.", a: "🐯", d: ["🦁", "🐱", "🦓"] },
@@ -231,7 +216,7 @@ const TRAITS: ChoiceItem[] = [
   { p: "¿Cómo es Rita?", t: "Rita ordenó sus lápices por colores y forró todos sus cuadernos antes del primer día de clases.", a: "Ordenada", d: ["Descuidada", "Tímida", "Glotona"] },
 ];
 
-// --- Y. Secuencia ----------------------------------------------------------------------
+// --- Secuencia ----------------------------------------------------------------------
 
 const STORY_ORDER: OrderItem[] = [
   { read: { title: "El diente de Nico", text: "A Nico se le movía un diente. Mordió una manzana y el diente se cayó. Lo puso debajo de su almohada. Por la mañana encontró una moneda." }, seq: ["Se le mueve un diente", "Muerde una manzana", "Pone el diente bajo la almohada", "Encuentra una moneda"] },
@@ -247,7 +232,7 @@ const INFO_ORDER: OrderItem[] = [
   { read: { title: "Cómo crece una planta", text: "Se pone una semilla en la tierra. Con agua, la semilla echa raíces. Después sale un tallo con hojas. Con el tiempo, la planta da flores." }, seq: ["Se siembra la semilla", "Salen las raíces", "Sale el tallo con hojas", "La planta da flores"] },
 ];
 
-// --- Z. Trama -----------------------------------------------------------------------------
+// --- Trama -----------------------------------------------------------------------------
 
 const PLOT: Passage[] = [
   {
@@ -281,7 +266,7 @@ const PLOT: Passage[] = [
   },
 ];
 
-// --- AA. Causa y efecto ------------------------------------------------------------------
+// --- Causa y efecto ------------------------------------------------------------------
 
 const EFFECT_TO_CAUSE: ChoiceItem[] = [
   { p: "¿Cuál es la causa?", t: "Efecto: El piso de la cocina está mojado.", a: "Se derramó un vaso de agua.", d: ["La mesa es de madera.", "El gato duerme.", "Es lunes."] },
@@ -305,7 +290,7 @@ const CAUSE_TO_EFFECT: ChoiceItem[] = [
   { p: "¿Cuál es el efecto?", t: "Causa: Sembramos semillas y las regamos.", a: "Crecieron unas plantitas.", d: ["Se secó el río.", "Cayó nieve.", "Se rompió la pala del jardín."] },
 ];
 
-// --- BB. Comparar y contrastar -------------------------------------------------------------
+// --- Comparar y contrastar -------------------------------------------------------------
 
 const COMPARE: Passage[] = [
   {
@@ -337,7 +322,7 @@ const COMPARE: Passage[] = [
   },
 ];
 
-// --- CC. Partes del texto ------------------------------------------------------------------
+// --- Partes del texto ------------------------------------------------------------------
 
 const TEXT_FEATURES: ChoiceItem[] = [
   { p: "¿Dónde buscas en qué página empieza cada capítulo?", a: "En el índice", d: ["En la portada", "En el glosario", "En un pie de foto"] },
@@ -350,7 +335,7 @@ const TEXT_FEATURES: ChoiceItem[] = [
   { p: "¿Qué te ayuda a ver dónde queda un lugar?", a: "Un mapa", d: ["Un índice", "Una negrita", "Un título"] },
 ];
 
-// --- DD. Lecturas literarias en voz alta ------------------------------------------------------
+// --- Lecturas literarias en voz alta ------------------------------------------------------
 
 const LIT_ALOUD: Record<string, Passage[]> = {
   realista: [
@@ -442,7 +427,7 @@ const LIT_ALOUD: Record<string, Passage[]> = {
   ],
 };
 
-// --- EE. Lecturas literarias ----------------------------------------------------------------
+// --- Lecturas literarias ----------------------------------------------------------------
 
 const LIT_ALONE: Record<string, Passage[]> = {
   animales: [
@@ -534,7 +519,7 @@ const LIT_ALONE: Record<string, Passage[]> = {
   ],
 };
 
-// --- FF. Textos informativos en voz alta ------------------------------------------------------
+// --- Textos informativos en voz alta ------------------------------------------------------
 
 const INFO_ALOUD: Record<string, Passage[]> = {
   ciencia: [
@@ -655,7 +640,7 @@ const INFO_ALOUD: Record<string, Passage[]> = {
   ],
 };
 
-// --- GG. Textos informativos --------------------------------------------------------------------
+// --- Textos informativos --------------------------------------------------------------------
 
 const INFO_ALONE: Record<string, Passage[]> = {
   animales: [
@@ -777,47 +762,47 @@ const INFO_ALONE: Record<string, Passage[]> = {
 };
 
 export const ROWS: Row[] = [
-  ["U.1", "Determinar el tema y el propósito de textos informativos", (r) => readPassage(r, TOPIC_PURPOSE, false)],
-  ["U.2", "Identificar la idea principal y un detalle de apoyo", (r) => readPassage(r, MAIN_DETAIL, false)],
+  ["idea-principal-1", (r) => readPassage(r, TOPIC_PURPOSE, false)],
+  ["idea-principal-2", (r) => readPassage(r, MAIN_DETAIL, false)],
 
-  ["V.1", "¿Qué título de libro corresponde al dibujo?", (r) => choose(r, "¿Qué título de libro corresponde al dibujo?", BOOK_TITLES)],
-  ["V.2", "Hacer inferencias a partir de un texto", (r) => readPassage(r, INFERENCES, false)],
-  ["V.3", "Determinar la enseñanza de mitos, fábulas y leyendas", (r) => readPassage(r, FABLES, false)],
+  ["inferencias-1", (r) => choose(r, "¿Qué título de libro corresponde al dibujo?", BOOK_TITLES)],
+  ["inferencias-2", (r) => readPassage(r, INFERENCES, false)],
+  ["ensenanza", (r) => readPassage(r, FABLES, false)],
 
-  ["W.1", "Identificar el propósito de un texto", (r) => choose(r, "¿Para qué se escribió este texto?", PURPOSE)],
-  ["W.2", "Analizar textos que buscan convencer", (r) => readPassage(r, PERSUASIVE, false)],
+  ["proposito-1", (r) => choose(r, "¿Para qué se escribió este texto?", PURPOSE)],
+  ["proposito-2", (r) => readPassage(r, PERSUASIVE, false)],
 
-  ["X.1", "Elegir el dibujo que corresponde a la oración descriptiva", (r) => choose(r, "¿Qué dibujo corresponde a la descripción?", DESCRIBED)],
-  ["X.2", "Elegir el dibujo que corresponde al escenario o al personaje", (r) => choose(r, "Lee y responde.", SETTING_CHARACTER)],
-  ["X.3", "Usar acciones y diálogos para entender a los personajes", (r) => choose(r, "Lee y responde.", TRAITS)],
+  ["personajes-1", (r) => choose(r, "¿Qué dibujo corresponde a la descripción?", DESCRIBED)],
+  ["personajes-2", (r) => choose(r, "Lee y responde.", SETTING_CHARACTER)],
+  ["personajes-3", (r) => choose(r, "Lee y responde.", TRAITS)],
 
-  ["Y.1", "Ordenar los hechos de un cuento", (r) => order(r, "Lee el cuento y ordena lo que pasa.", STORY_ORDER)],
-  ["Y.2", "Determinar el orden de los hechos en textos informativos", (r) => order(r, "Lee el texto y ordena los pasos.", INFO_ORDER)],
+  ["secuencia-1", (r) => order(r, "Lee el cuento y ordena lo que pasa.", STORY_ORDER)],
+  ["secuencia-2", (r) => order(r, "Lee el texto y ordena los pasos.", INFO_ORDER)],
 
-  ["Z.1", "Leer e identificar los elementos del cuento", (r) => readPassage(r, PLOT, false)],
+  ["secuencia-3", (r) => readPassage(r, PLOT, false)],
 
-  ["AA.1", "Relacionar cada efecto con su causa", (r) => choose(r, "", EFFECT_TO_CAUSE)],
-  ["AA.2", "Relacionar cada causa con su efecto", (r) => choose(r, "", CAUSE_TO_EFFECT)],
+  ["causa-efecto-1", (r) => choose(r, "", EFFECT_TO_CAUSE)],
+  ["causa-efecto-2", (r) => choose(r, "", CAUSE_TO_EFFECT)],
 
-  ["BB.1", "Comparar y contrastar en textos informativos", (r) => readPassage(r, COMPARE, false)],
+  ["comparar", (r) => readPassage(r, COMPARE, false)],
 
-  ["CC.1", "Usar las partes de un texto", (r) => choose(r, "", TEXT_FEATURES)],
+  ["partes-texto", (r) => choose(r, "", TEXT_FEATURES)],
 
-  ["DD.1", "Escuchar cuentos realistas", (r) => readPassage(r, LIT_ALOUD.realista, true)],
-  ["DD.2", "Escuchar cuentos de fantasía", (r) => readPassage(r, LIT_ALOUD.fantasia, true)],
-  ["DD.3", "Escuchar cuentos de ficción histórica", (r) => readPassage(r, LIT_ALOUD.historica, true)],
+  ["cuentos-oidos-1", (r) => readPassage(r, LIT_ALOUD.realista, true)],
+  ["cuentos-oidos-2", (r) => readPassage(r, LIT_ALOUD.fantasia, true)],
+  ["cuentos-oidos-3", (r) => readPassage(r, LIT_ALOUD.historica, true)],
 
-  ["EE.1", "Leer fantasías de animales", (r) => readPassage(r, LIT_ALONE.animales, false)],
-  ["EE.2", "Leer cuentos realistas", (r) => readPassage(r, LIT_ALONE.realista, false)],
-  ["EE.3", "Leer ciencia ficción", (r) => readPassage(r, LIT_ALONE.ficcion, false)],
+  ["cuentos-1", (r) => readPassage(r, LIT_ALONE.animales, false)],
+  ["cuentos-2", (r) => readPassage(r, LIT_ALONE.realista, false)],
+  ["cuentos-3", (r) => readPassage(r, LIT_ALONE.ficcion, false)],
 
-  ["FF.1", "Escuchar textos de ciencia y naturaleza", (r) => readPassage(r, INFO_ALOUD.ciencia, true)],
-  ["FF.2", "Escuchar textos sobre personajes famosos", (r) => readPassage(r, INFO_ALOUD.famosos, true)],
-  ["FF.3", "Escuchar textos sobre arte, música y tradiciones", (r) => readPassage(r, INFO_ALOUD.arte, true)],
-  ["FF.4", "Escuchar textos sobre negocios y tecnología", (r) => readPassage(r, INFO_ALOUD.negocios, true)],
+  ["textos-oidos-1", (r) => readPassage(r, INFO_ALOUD.ciencia, true)],
+  ["textos-oidos-2", (r) => readPassage(r, INFO_ALOUD.famosos, true)],
+  ["textos-oidos-3", (r) => readPassage(r, INFO_ALOUD.arte, true)],
+  ["textos-oidos-4", (r) => readPassage(r, INFO_ALOUD.negocios, true)],
 
-  ["GG.1", "Leer sobre animales", (r) => readPassage(r, INFO_ALONE.animales, false)],
-  ["GG.2", "Leer sobre deportes y pasatiempos", (r) => readPassage(r, INFO_ALONE.deportes, false)],
-  ["GG.3", "Leer sobre lugares famosos", (r) => readPassage(r, INFO_ALONE.lugares, false)],
-  ["GG.4", "Leer sobre personajes famosos", (r) => readPassage(r, INFO_ALONE.famosos, false)],
+  ["informativos-1", (r) => readPassage(r, INFO_ALONE.animales, false)],
+  ["informativos-2", (r) => readPassage(r, INFO_ALONE.deportes, false)],
+  ["informativos-3", (r) => readPassage(r, INFO_ALONE.lugares, false)],
+  ["informativos-4", (r) => readPassage(r, INFO_ALONE.famosos, false)],
 ];

@@ -1,27 +1,16 @@
 import { choose, type ChoiceItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { f, pool, pt, w } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Vocabulario (IXL 9th grade ELA, Z-GG). Los afijos del inglés pasan a los del
-// castellano, como en 1.° y 2.°. «Foreign words and expressions» pasa a
-// latinismos, galicismos, anglicismos y préstamos del quechua; «new or contested
-// usages», a lo que dicen la RAE y la Fundéu sobre usos nuevos o discutidos.
+// 3.° de Secundaria · banco de vocabulario: prefijos y sufijos del castellano,
+// raíces griegas y latinas, homófonos, latinismos, galicismos, anglicismos y
+// préstamos del quechua, precisión y connotación, usos nuevos o discutidos
+// según la RAE y la Fundéu, analogías, contexto y diccionario.
 
-export const SECTIONS: Section[] = [
-  { id: "Z", name: "Prefijos y sufijos", icon: "🧩" },
-  { id: "AA", name: "Raíces griegas y latinas", icon: "🏛️" },
-  { id: "BB", name: "Homófonos", icon: "👂" },
-  { id: "CC", name: "Palabras y expresiones de otras lenguas", icon: "🌍" },
-  { id: "DD", name: "Elección y uso de las palabras", icon: "🌈" },
-  { id: "EE", name: "Analogías", icon: "🔁" },
-  { id: "FF", name: "Claves de contexto", icon: "🔎" },
-  { id: "GG", name: "Uso del diccionario", icon: "📖" },
-];
 
 const means = (word: string, a: string, ...d: string[]) => w(`¿Qué significa «${word}»?`, a, ...d);
 
-// --- Z. Prefijos y sufijos ---------------------------------------------------
+// --- Prefijos y sufijos ---------------------------------------------------
 
 const PATTERN_ANALOGY: ChoiceItem[] = [
   f("Leal es a desleal como honesto es a ___.", "deshonesto", "honestidad", "honestamente"), f("Posible es a imposible como legal es a ___.", "ilegal", "legalizar", "legalidad"),
@@ -68,7 +57,7 @@ const ABLE: ChoiceItem[] = [
   f("Las pruebas eran ___.", "irrefutables", "refutadas por el juez", "refutación"), f("El desarrollo debe ser ___.", "sostenible", "sostenido en el tiempo", "sostén"),
 ];
 
-// --- AA. Raíces griegas y latinas -----------------------------------------------
+// --- Raíces griegas y latinas -----------------------------------------------
 
 const SORT_ROOTS: ChoiceItem[] = [
   w("¿Qué palabra comparte raíz con «biología» y «biografía»?", "biodiversidad", "bicicleta", "biblioteca municipal de Lima"), w("¿Qué palabra comparte raíz con «teléfono» y «televisión»?", "telescopio", "tela", "telar de cintura andino"),
@@ -100,7 +89,7 @@ const ROOT_WORDS: ChoiceItem[] = [
   means("ateo", "Que no cree en Dios", "Que es muy religioso", "Teatral"), means("bibliofilia", "Afición a los libros", "Miedo a las bibliotecas", "Biología"),
 ];
 
-// --- BB. Homófonos ----------------------------------------------------------------
+// --- Homófonos ----------------------------------------------------------------
 
 const HOMOPHONE_USE: ChoiceItem[] = [
   f("Los jóvenes decidieron ___ contra la injusticia.", "rebelarse", "revelarse", "rebelár"), f("El periodista va a ___ la verdad.", "revelar", "rebelar", "rebelár"),
@@ -116,7 +105,7 @@ const HOMOPHONE_FIX: ChoiceItem[] = [
   w("¿Qué oración está bien escrita?", "Se cayó cuando todos se callaron.", "Se calló cuando todos se cayeron.", "Se cayó cuando todos se cayaron."), w("¿Qué oración está bien escrita?", "La savia nutre al árbol, dijo la sabia maestra.", "La sabia nutre al árbol, dijo la savia maestra.", "La savia nutre al árbol, dijo la savia maestra."),
 ];
 
-// --- CC. Palabras de otras lenguas ------------------------------------------------
+// --- Palabras de otras lenguas ------------------------------------------------
 
 const ETYMOLOGY: ChoiceItem[] = [
   pt("Según su etimología, ¿qué significa «chacra»?", "«chacra» viene del quechua «chakra», terreno de cultivo.", "Terreno de cultivo", "Vivienda en la ciudad", "Fiesta"),
@@ -144,7 +133,7 @@ const FOREIGN_USE: ChoiceItem[] = [
   f("Su obra es ___: no se parece a nada.", "sui géneris", "per cápita, por persona", "statu quo"), f("La ONG trabaja ___ para ayudar a los niños.", "ad honórem", "in situ", "a priori, antes de saberlo"),
 ];
 
-// --- DD. Elección y uso de las palabras -------------------------------------------
+// --- Elección y uso de las palabras -------------------------------------------
 
 const CONNOT = "¿Qué palabra se ajusta mejor a la oración por su significado y su connotación?";
 const CONNOTATION: ChoiceItem[] = [
@@ -173,7 +162,7 @@ const USAGE: ChoiceItem[] = [
   w("¿Está en el diccionario de la RAE la palabra «selfi»?", "Sí, adaptada al castellano", "No, solo se admite «selfie» en inglés", "Solo como verbo"), w("¿Cuál es la forma correcta?", "grosso modo", "a grosso modo", "groso modo"),
 ];
 
-// --- EE. Analogías ------------------------------------------------------------------
+// --- Analogías ------------------------------------------------------------------
 
 const ANALOGY: ChoiceItem[] = [
   f("Novelista es a novela como ensayista es a ___.", "ensayo", "poema", "partitura"), f("Juez es a tribunal como congresista es a ___.", "Congreso", "hospital", "teatro"),
@@ -188,7 +177,7 @@ const ANALOGY_HARD: ChoiceItem[] = [
   f("Anacronismo es a tiempo como incongruencia es a ___.", "lógica", "espacio", "color"), f("Apología es a defensa como diatriba es a ___.", "ataque", "elogio", "pregunta"),
 ];
 
-// --- FF. Claves de contexto ----------------------------------------------------------
+// --- Claves de contexto ----------------------------------------------------------
 
 const SYN_CLUE: ChoiceItem[] = [
   pt("¿Qué significa «inexorable»? (Busca un sinónimo en la oración).", "El paso del tiempo es inexorable, implacable.", "Implacable", "Reversible", "Lento"),
@@ -215,7 +204,7 @@ const CONTEXT: ChoiceItem[] = [
   pt("¿Qué significa «cáustico»?", "Su humor cáustico ofendió a varios invitados.", "Mordaz, hiriente", "Dulce", "Aburrido y sin gracia alguna"),
 ];
 
-// --- GG. Uso del diccionario -------------------------------------------------------
+// --- Uso del diccionario -------------------------------------------------------
 
 const ENTRY = "ingente adj. Muy grande: un ingente esfuerzo. Sin. enorme, colosal. Ant. pequeño, ínfimo.";
 const ENTRY2 = "consistir intr. 1. Estar formado por algo: El plan consiste en tres etapas. 2. Tener algo su fundamento en otra cosa: Su éxito consiste en la constancia. ◆ Se construye con la preposición «en».";
@@ -245,44 +234,44 @@ const THESAURUS: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["Z.1", "Analogías con patrones de palabras", (r) => choose(r, "Completa la analogía.", PATTERN_ANALOGY)],
-  ["Z.2", "Oraciones con patrones de palabras", (r) => choose(r, "Completa la oración.", PATTERN_SENTENCE)],
-  ["Z.3", "Palabras con pre-", (r) => choose(r, "Completa la oración.", PRE)],
-  ["Z.4", "Palabras con re-", (r) => choose(r, "Completa la oración.", RE)],
-  ["Z.5", "Palabras con sub-", (r) => choose(r, "Completa la oración.", SUB)],
-  ["Z.6", "Palabras con mal-", (r) => choose(r, "Completa la oración.", MAL)],
-  ["Z.7", "Palabras con des-, in-, im-, i- y no", (r) => choose(r, "Completa la oración.", NEG)],
-  ["Z.8", "Palabras con -oso y -osa", (r) => choose(r, "Completa la oración.", OSO)],
-  ["Z.9", "Palabras con a-, an- y sin-", (r) => choose(r, "Completa la oración.", SIN)],
-  ["Z.10", "Palabras con -able e -ible", (r) => choose(r, "Completa la oración.", ABLE)],
+  ["analogias-3", (r) => choose(r, "Completa la analogía.", PATTERN_ANALOGY)],
+  ["analogias-4", (r) => choose(r, "Completa la oración.", PATTERN_SENTENCE)],
+  ["prefijos-1", (r) => choose(r, "Completa la oración.", PRE)],
+  ["prefijos-2", (r) => choose(r, "Completa la oración.", RE)],
+  ["prefijos-3", (r) => choose(r, "Completa la oración.", SUB)],
+  ["prefijos-4", (r) => choose(r, "Completa la oración.", MAL)],
+  ["prefijos-5", (r) => choose(r, "Completa la oración.", NEG)],
+  ["sufijos-1", (r) => choose(r, "Completa la oración.", OSO)],
+  ["prefijos-6", (r) => choose(r, "Completa la oración.", SIN)],
+  ["sufijos-2", (r) => choose(r, "Completa la oración.", ABLE)],
 
-  ["AA.1", "Agrupar palabras por raíces griegas o latinas comunes", (r) => choose(r, "", SORT_ROOTS)],
-  ["AA.2", "Usar raíces griegas y latinas como pistas del significado de las palabras", (r) => choose(r, "", ROOT_CLUES)],
-  ["AA.3", "Usar palabras como pistas del significado de raíces griegas y latinas", (r) => choose(r, "", WORDS_TO_ROOT)],
-  ["AA.4", "Determinar el significado de raíces griegas y latinas", (r) => choose(r, "", ROOT_MEANING)],
-  ["AA.5", "Determinar el significado de palabras con raíces griegas y latinas", (r) => choose(r, "", ROOT_WORDS)],
+  ["griegas-latinas-1", (r) => choose(r, "", SORT_ROOTS)],
+  ["griegas-latinas-2", (r) => choose(r, "", ROOT_CLUES)],
+  ["griegas-latinas-3", (r) => choose(r, "", WORDS_TO_ROOT)],
+  ["griegas-latinas-4", (r) => choose(r, "", ROOT_MEANING)],
+  ["griegas-latinas-5", (r) => choose(r, "", ROOT_WORDS)],
 
-  ["BB.1", "Usar el homófono correcto", (r) => choose(r, "Completa la oración.", HOMOPHONE_USE)],
-  ["BB.2", "Identificar y corregir errores con homófonos", (r) => choose(r, "", HOMOPHONE_FIX)],
+  ["homofonos-1", (r) => choose(r, "Completa la oración.", HOMOPHONE_USE)],
+  ["homofonos-2", (r) => choose(r, "", HOMOPHONE_FIX)],
 
-  ["CC.1", "Usar la etimología para determinar el significado de las palabras", (r) => choose(r, "", ETYMOLOGY)],
-  ["CC.2", "Usar el contexto para entender expresiones de otras lenguas", (r) => choose(r, "", FOREIGN_CONTEXT)],
-  ["CC.3", "Usar la expresión latina o extranjera correcta", (r) => choose(r, "Completa la oración.", FOREIGN_USE)],
+  ["otras-lenguas-1", (r) => choose(r, "", ETYMOLOGY)],
+  ["otras-lenguas-2", (r) => choose(r, "", FOREIGN_CONTEXT)],
+  ["otras-lenguas-3", (r) => choose(r, "Completa la oración.", FOREIGN_USE)],
 
-  ["DD.1", "Elegir la palabra cuyo significado y connotación se ajustan a la oración", (r) => choose(r, "", CONNOTATION)],
-  ["DD.2", "Usar las palabras con exactitud y precisión", (r) => choose(r, "", PRECISE_WORDS)],
-  ["DD.3", "Reemplazar palabras con ayuda del diccionario de sinónimos", (r) => choose(r, "", REPLACE)],
-  ["DD.4", "Explorar palabras con usos nuevos o discutidos", (r) => choose(r, "", USAGE)],
+  ["precision-1", (r) => choose(r, "", CONNOTATION)],
+  ["precision-2", (r) => choose(r, "", PRECISE_WORDS)],
+  ["precision-3", (r) => choose(r, "", REPLACE)],
+  ["precision-4", (r) => choose(r, "", USAGE)],
 
-  ["EE.1", "Analogías", (r) => choose(r, "Completa la analogía.", ANALOGY)],
-  ["EE.2", "Analogías: desafío", (r) => choose(r, "Completa la analogía.", ANALOGY_HARD)],
+  ["analogias-1", (r) => choose(r, "Completa la analogía.", ANALOGY)],
+  ["analogias-2", (r) => choose(r, "Completa la analogía.", ANALOGY_HARD)],
 
-  ["FF.1", "Determinar el significado de palabras usando sinónimos en contexto", (r) => choose(r, "", SYN_CLUE)],
-  ["FF.2", "Determinar el significado de palabras usando antónimos en contexto", (r) => choose(r, "", ANT_CLUE)],
-  ["FF.3", "Usar el contexto para identificar el significado de una palabra", (r) => choose(r, "", CONTEXT)],
+  ["contexto-1", (r) => choose(r, "", SYN_CLUE)],
+  ["contexto-2", (r) => choose(r, "", ANT_CLUE)],
+  ["contexto-3", (r) => choose(r, "", CONTEXT)],
 
-  ["GG.1", "Usar las entradas del diccionario", (r) => choose(r, "", DICTIONARY)],
-  ["GG.2", "Usar las definiciones del diccionario", (r) => choose(r, "", DEFINITIONS)],
-  ["GG.3", "Usar las entradas del diccionario para determinar el uso correcto", (r) => choose(r, "", CORRECT_USE)],
-  ["GG.4", "Usar las entradas del diccionario de sinónimos", (r) => choose(r, "", THESAURUS)],
+  ["diccionario-1", (r) => choose(r, "", DICTIONARY)],
+  ["diccionario-2", (r) => choose(r, "", DEFINITIONS)],
+  ["diccionario-3", (r) => choose(r, "", CORRECT_USE)],
+  ["diccionario-4", (r) => choose(r, "", THESAURUS)],
 ];

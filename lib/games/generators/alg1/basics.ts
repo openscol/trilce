@@ -11,7 +11,7 @@ import { coef, line10, valQ, xMinus } from "./util";
 // ---------------------------------------------------------------------------
 // Números
 
-// A.6: simplificar fracciones complejas.
+// Simplificar fracciones complejas.
 export function complexFraction(r: Rng): Question {
   const a: SF = [nz(r, 7), r.int(2, 9)], b: SF = [r.int(1, 7), r.int(2, 9)];
   if (r.chance(0.3)) {
@@ -23,7 +23,7 @@ export function complexFraction(r: Rng): Question {
 
 const IRR = ["√2", "√3", "√5", "√7", "√10", "π", "0,1010010001…", "√15", "2π", "√20"];
 const RAT = ["√16", "√49", "0,75", "−3", "5/8", "0,333…", "√(1/4)", "1,2", "0", "√100", "−7/2"];
-// A.10: clasificar números en racionales e irracionales.
+// Clasificar números en racionales e irracionales.
 export function sortIrrational(r: Rng): Question {
   const irr = r.shuffle(IRR).slice(0, r.int(1, 3));
   const rat = r.shuffle(RAT).slice(0, 5 - irr.length);
@@ -41,7 +41,7 @@ const CLOSURE: [string, number, string][] = [
   ["la suma de dos números irracionales", 2, "√2 + √2 = 2√2 es irracional, pero √2 + (−√2) = 0 es racional."],
   ["el producto de dos números irracionales", 2, "√2 × √3 = √6 es irracional, pero √2 × √2 = 2 es racional."],
 ];
-// A.12: propiedades de las operaciones con racionales e irracionales.
+// Propiedades de las operaciones con racionales e irracionales.
 export function rationalClosure(r: Rng): Question {
   if (r.chance(0.4)) {
     const cases: [string, boolean, string][] = [["√2 + 3", false, "racional + irracional = irracional"], ["√9 + 1/2", true, "√9 = 3; 3 + 1/2 = 7/2"], ["√5 × √5", true, "√5 × √5 = 5"], ["2π", false, "racional (≠ 0) × irracional = irracional"], ["√8 ÷ √2", true, "√8 ÷ √2 = √4 = 2"], ["√3 + √3", false, "√3 + √3 = 2√3"], ["0,25 × 4", true, "0,25 × 4 = 1"], ["π − π", true, "π − π = 0"]];
@@ -55,7 +55,7 @@ export function rationalClosure(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Expresiones
 
-// B.3: evaluar expresiones con valores racionales.
+// Evaluar expresiones con valores racionales.
 export function evaluateRationalVar(r: Rng): Question {
   const x: SF = r.pick([[1, 2], [-1, 2], [1, 3], [-2, 3], [3, 4], [-3, 4], [5, 2]] as SF[]);
   const a = nz(r, 6), b = nz(r, 9);
@@ -66,7 +66,7 @@ export function evaluateRationalVar(r: Rng): Question {
   return valQ(r, `Calcula el valor de la expresión cuando x = ${dec(xd)}.`, v, [-v, v + 1, a * xd - b, v - 0.5], `${sg(a)} × ${xd < 0 ? `(${dec(xd)})` : dec(xd)} ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${dec(v)}.`, lin(a, b), "decimal");
 }
 
-// B.9: simplificar con términos semejantes y la propiedad distributiva.
+// Simplificar con términos semejantes y la propiedad distributiva.
 export function simplifyDistribute(r: Rng): Question {
   const k1 = nz(r, 5), b1 = nz(r, 6), k2 = nz(r, 5), b2 = nz(r, 6);
   const A = k1 + k2, B = k1 * b1 + k2 * b2;
@@ -80,7 +80,7 @@ export function simplifyDistribute(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Ecuaciones lineales
 
-// C.11: problemas de enteros consecutivos.
+// Problemas de enteros consecutivos.
 export function consecutiveIntegers(r: Rng): Question {
   const n = r.int(-20, 60), count = r.pick([2, 3, 3, 4]);
   const kind = r.pick(["", "pares", "impares"] as const);
@@ -104,7 +104,7 @@ const REARRANGE: [string, string, string, string[], string][] = [
   ["F = (9/5)C + 32", "C", "C = (5/9)(F − 32)", ["C = (9/5)(F − 32)", "C = (5/9)F − 32", "C = (5/9)(F + 32)"], "Se resta 32 y se multiplica por 5/9."],
   ["A = (1/2)bh", "b", "b = 2A/h", ["b = A/(2h)", "b = 2Ah", "b = Ah/2"], "Se multiplica por 2 y se divide entre h."],
 ];
-// C.18: despejar una variable en ecuaciones con varias variables.
+// Despejar una variable en ecuaciones con varias variables.
 export function rearrange(r: Rng): Question {
   const [eq, v, good, wrong, why] = r.pick(REARRANGE);
   return choiceQ(r, `Despeja ${v} en la fórmula ${eq}.`, good, wrong, why, undefined, "despejar");
@@ -114,7 +114,7 @@ export function rearrange(r: Rng): Question {
 // Medición
 
 const PREC: [string, string, string][] = [["4,3", "0,1", "décimo"], ["12", "1", "unidad"], ["7,25", "0,01", "centésimo"], ["30,0", "0,1", "décimo"], ["2,50", "0,01", "centésimo"], ["8,125", "0,001", "milésimo"]];
-// D.4: precisión.
+// Precisión.
 export function precision(r: Rng): Question {
   if (r.chance(0.5)) {
     const [m, unit, name] = r.pick(PREC);
@@ -126,7 +126,7 @@ export function precision(r: Rng): Question {
   return choiceQ(r, `¿Qué medida es ${most ? "más" : "menos"} precisa?`, most ? opts[3] : opts[0], most ? opts.slice(0, 3) : opts.slice(1), `La medida más precisa es la que tiene la unidad más pequeña (más cifras decimales).`, undefined, most ? "mas" : "menos");
 }
 
-// D.5: mayor error posible.
+// Mayor error posible.
 export function greatestError(r: Rng): Question {
   const [m, unit] = r.pick(PREC);
   const err = Number(unit.replace(",", ".")) / 2;
@@ -134,7 +134,7 @@ export function greatestError(r: Rng): Question {
   return valQ(r, `Una longitud se midió como ${m} m. ¿Cuál es el mayor error posible, en metros?`, err, wrong, `La medida es precisa a ${unit} m; el mayor error posible es la mitad: ${dec(err)} m.`, undefined, "error");
 }
 
-// D.6: área y volumen mínimos y máximos.
+// Área y volumen mínimos y máximos.
 export function minMaxArea(r: Rng): Question {
   const l = r.int(4, 15), w = r.int(3, 12), max = r.chance(0.5);
   const L = max ? l + 0.5 : l - 0.5, W = max ? w + 0.5 : w - 0.5;
@@ -142,7 +142,7 @@ export function minMaxArea(r: Rng): Question {
   return valQ(r, `Un rectángulo mide ${l} cm por ${w} cm, medidos al centímetro más cercano. ¿Cuál es su área ${max ? "máxima" : "mínima"} posible, en cm²?`, area, [l * w, (l + (max ? -0.5 : 0.5)) * (w + (max ? -0.5 : 0.5)), area + 1, area - 0.5], `Cada lado puede variar 0,5 cm: ${dec(L)} × ${dec(W)} = ${dec(area)}.`, undefined, max ? "maxima" : "minima");
 }
 
-// D.8: error porcentual de áreas y volúmenes.
+// Error porcentual de áreas y volúmenes.
 export function percentErrorArea(r: Rng): Question {
   const real = r.pick([10, 20, 25, 40, 50]), off = r.pick([1, 2, 5].filter((o) => o < real / 2));
   const measured = real + off;
@@ -155,7 +155,7 @@ export function percentErrorArea(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Problemas con unidades
 
-// E.5: conversiones de varios pasos.
+// Conversiones de varios pasos.
 export function multiStepConversion(r: Rng): Question {
   const form = r.int(0, 2);
   if (form === 0) {
@@ -170,7 +170,7 @@ export function multiStepConversion(r: Rng): Question {
   return numQ(m * 10000, `Un terreno rectangular tiene ${m} hectáreas. Una hectárea es un cuadrado de 100 m de lado. ¿Cuántos m² tiene?`, undefined, `1 ha = 100 m × 100 m = 10 000 m²; ${m} × 10 000 = ${fmt(m * 10000)} m².`, "area");
 }
 
-// E.6: velocidad, distancia y tiempo.
+// Velocidad, distancia y tiempo.
 export function travelRate(r: Rng): Question {
   const name = r.pick(NAMES), v = r.pick([40, 45, 50, 60, 75, 80, 90]), t = r.pick([2, 3, 4, 1.5, 2.5]);
   const d = v * t;
@@ -182,7 +182,7 @@ export function travelRate(r: Rng): Question {
   return numQ(t2 * (v + v2), `Dos autos salen del mismo lugar a la misma hora en sentidos opuestos, a ${v} km/h y ${v2} km/h. ¿A qué distancia están después de ${t2} horas, en km?`, undefined, `Se alejan ${v} + ${v2} = ${v + v2} km cada hora: ${v + v2} × ${t2} = ${t2 * (v + v2)} km.`, "opuestos");
 }
 
-// E.7: promedios ponderados.
+// Promedios ponderados.
 export function weightedAverage(r: Rng): Question {
   if (r.chance(0.5)) {
     const w = r.pick([[30, 30, 40], [20, 30, 50], [25, 25, 50], [40, 40, 20]]);
@@ -207,7 +207,7 @@ function randomComp(r: Rng): Comp {
 }
 const variants = (c: Comp): Comp[] => [{ ...c, ca: !c.ca }, { ...c, cb: !c.cb }, { ...c, kind: c.kind === "and" ? "or" : "and" }, { ...c, ca: !c.ca, cb: !c.cb }];
 
-// F.13 / F.14: graficar inecuaciones compuestas / escribirlas a partir del gráfico.
+// Graficar inecuaciones compuestas / escribirlas a partir del gráfico.
 export function compoundGraph(r: Rng, write: boolean): Question {
   const c = randomComp(r);
   const why = c.kind === "and" ? `Los números entre ${sg(c.a)} y ${sg(c.b)}; círculo lleno si el extremo se incluye (≤), vacío si no (<).` : `Dos partes: hacia la izquierda de ${sg(c.a)} y hacia la derecha de ${sg(c.b)}.`;
@@ -216,7 +216,7 @@ export function compoundGraph(r: Rng, write: boolean): Question {
   return yesNo(`¿La recta numérica muestra ${compText(c)}?`, yes, why, compLine(yes ? c : r.pick(variants(c))), c.kind === "and" ? "y" : "o");
 }
 
-// F.15 / F.16: resolver inecuaciones compuestas (y graficar sus soluciones).
+// Resolver inecuaciones compuestas (y graficar sus soluciones).
 export function solveCompound(r: Rng, graph: boolean): Question {
   const c = randomComp(r);
   const k = r.pick([2, 3, 4]), b = nz(r, 6);
@@ -236,7 +236,7 @@ export function solveCompound(r: Rng, graph: boolean): Question {
 // Conjuntos
 
 const setText = (xs: number[]) => (xs.length ? `{${[...xs].sort((a, b) => a - b).map(sg).join(", ")}}` : "∅");
-// G.1: conjuntos, subconjuntos y complementos.
+// Conjuntos, subconjuntos y complementos.
 export function subsetsComplement(r: Rng): Question {
   const U = Array.from({ length: 8 }, (_, i) => i + 1);
   const A = r.shuffle(U).slice(0, r.int(3, 5)).sort((a, b) => a - b);
@@ -249,7 +249,7 @@ export function subsetsComplement(r: Rng): Question {
   return yesNo(`Si A = ${setText(A)}, ¿B = ${setText(B)} es subconjunto de A?`, yes, yes ? "Todos los elementos de B están en A." : `${U.find((x) => !A.includes(x))} está en B pero no en A.`, undefined, "subconjunto");
 }
 
-// G.2: notación por comprensión (set-builder).
+// Notación por comprensión (set-builder).
 export function setBuilder(r: Rng): Question {
   const a = r.int(-5, 3), b = r.int(a + 2, a + 5);
   const forms: [string, number[]][] = [
@@ -262,7 +262,7 @@ export function setBuilder(r: Rng): Question {
   return choiceQ(r, `¿Qué conjunto describe ${text}?`, setText(xs), wrong, "Se listan los elementos que cumplen la condición, revisando si los extremos se incluyen (≤) o no (<).", undefined, "comprension");
 }
 
-// G.3: notación de intervalos.
+// Notación de intervalos.
 export function intervalNotation(r: Rng): Question {
   const a = r.int(-8, 3), b = r.int(a + 1, 9);
   const ca = r.chance(0.5), cb = r.chance(0.5);
@@ -275,7 +275,7 @@ export function intervalNotation(r: Rng): Question {
   return choiceQ(r, `¿Cómo se escribe ${ineqText} en notación de intervalos?`, good, wrong, "Corchete [ ] si el extremo se incluye; paréntesis ( ) si no se incluye o si es ∞.", undefined, "intervalo");
 }
 
-// G.4: unión e intersección de conjuntos.
+// Unión e intersección de conjuntos.
 export function unionIntersection(r: Rng): Question {
   const U = Array.from({ length: 10 }, (_, i) => i + 1);
   const A = r.shuffle(U).slice(0, r.int(3, 5)), B = r.shuffle(U).slice(0, r.int(3, 5));
@@ -288,7 +288,7 @@ export function unionIntersection(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Valor absoluto
 
-// H.1-H.3: ecuaciones con valor absoluto (resolver, graficar, escribir).
+// Ecuaciones con valor absoluto (resolver, graficar, escribir).
 export function absEquation(r: Rng, mode: "solve" | "graph" | "write"): Question {
   const c = r.int(-5, 5), d = r.int(1, 5);
   const [x1, x2] = [c - d, c + d];
@@ -312,7 +312,7 @@ export function absEquation(r: Rng, mode: "solve" | "graph" | "write"): Question
   return choiceQ(r, "Resuelve la ecuación.", sol, [`x = ${sg(x2)}`, `x = ${sg(-x1)} o x = ${sg(-x2)}`, `x = ${sg(c - d - 1)} o x = ${sg(c + d + 1)}`], why, eq, "resolver");
 }
 
-// H.4-H.5: inecuaciones con valor absoluto.
+// Inecuaciones con valor absoluto.
 export function absInequality(r: Rng, graph: boolean): Question {
   const c = r.int(-4, 4), d = r.int(1, 5);
   const less = r.chance(0.5), closed = r.chance(0.5);
@@ -330,7 +330,7 @@ export function absInequality(r: Rng, graph: boolean): Question {
 // ---------------------------------------------------------------------------
 // Plano: punto medio y distancia
 
-// I.2-I.5: punto medio y distancia entre dos puntos.
+// Punto medio y distancia entre dos puntos.
 export function midpointDistance(r: Rng, mode: "midpoint" | "endpoint" | "distance" | "mixed"): Question {
   const m = mode === "mixed" ? r.pick(["midpoint", "endpoint", "distance"] as const) : mode;
   if (m === "distance") {
@@ -357,7 +357,7 @@ export function midpointDistance(r: Rng, mode: "midpoint" | "endpoint" | "distan
 // ---------------------------------------------------------------------------
 // Variación inversa
 
-// J.4-J.6: variación directa e inversa.
+// Variación directa e inversa.
 export function inverseVariation(r: Rng, mode: "identify" | "write" | "solve"): Question {
   const k = r.pick([6, 12, 18, 24, 30, 36, 48, 60]);
   const xs = [1, 2, 3, 4, 6].filter((x) => k % x === 0);

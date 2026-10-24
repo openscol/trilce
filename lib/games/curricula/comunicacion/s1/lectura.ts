@@ -1,28 +1,12 @@
 import { choose, readPassage, type ChoiceItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { pool, pt, read, sorter, w } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Estrategias de lectura (IXL 7th grade ELA: A-H, J, M y N). Lecturas propias,
-// con temas e historias del Perú. «Determine multiple main ideas of a passage»
-// (nuevo en IXL) es A.2 y lo que sigue se corre un número. En H, «Analyze
-// poetry» figura como «Coming soon» y se omite.
+// 1.° de Secundaria · banco de comprensión con lecturas propias, con temas e
+// historias del Perú.
 
-export const SECTIONS: Section[] = [
-  { id: "A", name: "Idea principal", icon: "💡" },
-  { id: "B", name: "Tema", icon: "🧭" },
-  { id: "C", name: "Propósito y punto de vista del autor", icon: "✍️" },
-  { id: "D", name: "Tono", icon: "🎚️" },
-  { id: "E", name: "Estructura del texto", icon: "🧱" },
-  { id: "F", name: "Recursos literarios", icon: "✨" },
-  { id: "G", name: "Analizar literatura", icon: "📖" },
-  { id: "H", name: "Analizar poesía", icon: "🎶" },
-  { id: "J", name: "Analizar argumentos", icon: "⚖️" },
-  { id: "M", name: "Comparar textos", icon: "🔀" },
-  { id: "N", name: "Elementos visuales", icon: "🖼️" },
-];
 
-// --- A. Idea principal -------------------------------------------------------
+// --- Idea principal -------------------------------------------------------
 
 const MAIN_PASSAGES = [
   read("Los andenes", "⛰️", "Quien recorre el valle del Colca ve laderas convertidas en escaleras gigantes. Son los andenes, terrazas de cultivo construidas hace más de mil años. No son solo un adorno del paisaje: cada muro de piedra guarda el calor del día y lo devuelve de noche, lo que protege las plantas de las heladas. Además, los canales que los recorren reparten el agua sin que la lluvia arrastre la tierra. Hoy, ingenieros de varios países los estudian como un modelo de agricultura adaptada a la montaña.",
@@ -60,7 +44,7 @@ const TWO_MAIN: ChoiceItem[] = [
   pt(TWO, "Texto 1: Chabuca Granda compuso valses que retratan la Lima antigua.\nTexto 2: Sus canciones se cantan hoy en escuelas, peñas y concursos de todo el país.", "La obra de Chabuca Granda sigue viva como parte de la identidad peruana.", "Chabuca Granda solo compuso música para películas extranjeras.", "El vals se baila."),
 ];
 
-// --- B. Tema -----------------------------------------------------------------
+// --- Tema -----------------------------------------------------------------
 
 const QUOTE_THEMES = pool([
   ["«Aprendió a leer a los sesenta años y lloró con la primera carta de su nieto».", "Nunca es tarde para aprender"], ["«Todos callaron, pero ella levantó la mano y contó lo que había visto».", "El valor de decir la verdad"],
@@ -92,7 +76,7 @@ const MULTI_THEMES = [
     ["¿Qué sugiere la frase final de doña Nieves?", "Que ganó algo más valioso que el puesto", "Que no le gustan los trámites ni los formularios municipales", "Que no sabe leer"]),
 ];
 
-// --- C. Propósito y punto de vista -------------------------------------------
+// --- Propósito y punto de vista -------------------------------------------
 
 const PURPOSE = sorter(["Informar", "Persuadir", "Entretener", "Explicar cómo se hace algo"], "¿Cuál es el propósito principal del autor?");
 const AUTHOR_PURPOSE: ChoiceItem[] = [
@@ -112,7 +96,7 @@ const AUTHOR_POV: ChoiceItem[] = [
   pt(POV, "«Las cámaras en las calles nos hacen sentir seguros. Conviene preguntarse, también, quién mira las imágenes y para qué».", "Pide reflexionar sobre la vigilancia.", "Exige instalar más cámaras en todas las calles sin hacer preguntas.", "Le gustan las cámaras."),
 ];
 
-// --- D. Tono -----------------------------------------------------------------
+// --- Tono -----------------------------------------------------------------
 
 const FORMAL = "¿Qué oración es más formal?";
 const FORMALITY: ChoiceItem[] = [
@@ -131,7 +115,7 @@ const TONE_COMPARE: ChoiceItem[] = [
   pt(TONE, "Texto A: «Nadie sabe qué hay en el fondo de la laguna. Los pescadores no se acercan de noche».\nTexto B: «La laguna tiene 40 metros de profundidad y aguas frías».", "A es misterioso; B es objetivo.", "A es objetivo; B es misterioso y sombrío.", "Los dos son humorísticos."),
 ];
 
-// --- E. Estructura del texto -------------------------------------------------
+// --- Estructura del texto -------------------------------------------------
 
 const COMPARE = [
   read("Costa y selva", "🌴", "La costa y la selva peruanas ocupan regiones muy distintas, pero ambas dependen de los Andes: de sus cumbres bajan los ríos que riegan los valles costeños y forman el Amazonas. Ahí terminan las semejanzas. La costa es un desierto donde casi nunca llueve y la vida se concentra junto a los ríos. La selva, en cambio, recibe lluvias casi todo el año y alberga la mayor diversidad de especies del país. Mientras en la costa vive más de la mitad de la población, la selva, que ocupa más territorio, es la región menos poblada.",
@@ -167,7 +151,7 @@ const STRUCTURES: ChoiceItem[] = [
   ...["La vicuña es esbelta, de cuello largo y pelaje color canela, muy fino y suave.", "El retablo ayacuchano es una caja de madera con puertas pintadas y figuras de pasta en su interior."].map((x) => STRUCT(x, 4)),
 ];
 
-// --- F. Recursos literarios --------------------------------------------------
+// --- Recursos literarios --------------------------------------------------
 
 const SENSORY: ChoiceItem[] = [
   pt("¿Qué palabras del texto son detalles sensoriales?", "El mercado olía a culantro y a pescado fresco; los vendedores gritaban precios.", "«olía a culantro» y «gritaban»", "«el mercado» y «los vendedores»", "«precios» y «fresco»"),
@@ -229,7 +213,7 @@ const FIGURE_EFFECT: ChoiceItem[] = [
   pt(EFFECT, "«El mar, celoso, devolvía cada barco a la orilla».", "Da al mar una voluntad propia, casi caprichosa.", "Explica con datos científicos cómo funcionan las mareas.", "Habla de barcos."),
 ];
 
-// --- G. Analizar literatura --------------------------------------------------
+// --- Analizar literatura --------------------------------------------------
 
 const NARR = sorter(["Primera persona", "Tercera persona omnisciente", "Tercera persona limitada"], "¿Qué punto de vista tiene el narrador?");
 const NARRATOR: ChoiceItem[] = [
@@ -258,7 +242,7 @@ const SHORT_STORIES = [
     ["¿Qué significado tiene apuntar la cometa al hospital?", "Es un gesto simbólico de cercanía con su padre.", "Quiere que los médicos vean lo bien que vuela su cometa.", "Se equivocó de dirección."]),
 ];
 
-// --- H. Analizar poesía ------------------------------------------------------
+// --- Analizar poesía ------------------------------------------------------
 
 const RHYME = "¿Cuál es el esquema de rima de la estrofa?";
 const RHYME_SCHEMES: ChoiceItem[] = [
@@ -272,7 +256,7 @@ const RHYME_SCHEMES: ChoiceItem[] = [
   pt(RHYME, "Tengo un perro que se llama Coco,\nque come mucho y duerme otro poco;\nladra a la luna cuando está llena,\nluego se duerme sin ninguna pena.", "AABB", "ABAB", "ABBA"),
 ];
 
-// --- J. Analizar argumentos --------------------------------------------------
+// --- Analizar argumentos --------------------------------------------------
 
 const ARGUMENTS = [
   read("Más parques, menos rejas", "🌳", "Muchos distritos de Lima han enrejado sus parques para «protegerlos». Sostengo que esa medida produce el efecto contrario. Primero, un parque cerrado es un parque vacío, y un espacio vacío es más inseguro, no menos. Segundo, las rejas excluyen a quienes viven en otros barrios y convierten un bien público en un club privado. Hay quien dirá que sin rejas los parques se deterioran. Pero el cuidado no depende de los candados, sino de que los vecinos sientan el parque como suyo. Abramos las puertas y organicemos la vigilancia comunitaria.",
@@ -285,7 +269,7 @@ const ARGUMENTS = [
     ["¿Qué solución propone?", "Reglas claras sobre cuándo usar el celular", "Que cada alumno decida libremente cuándo usar el celular", "Comprar más cuadernos"]),
 ];
 
-// --- M. Comparar textos ------------------------------------------------------
+// --- Comparar textos ------------------------------------------------------
 
 const TWO_TEXTS: ChoiceItem[] = [
   pt("¿En qué coinciden los dos textos?", "Texto 1: El cebiche peruano fue declarado Patrimonio Cultural Inmaterial por la Unesco en 2023.\nTexto 2: En cualquier mercado del Perú, el cebiche une a pescadores, cocineros y comensales en una misma tradición.", "Ambos destacan el cebiche como parte de la cultura peruana.", "Ambos explican paso a paso cómo se prepara un buen cebiche con pescado fresco, limón y ají.", "Ninguno habla de cebiche."),
@@ -305,7 +289,7 @@ const GENRES: ChoiceItem[] = [
   pt(GENRE, "Texto 1 (carta): «Querida abuela: te extraño. Aquí en Lima todo es ruido».\nTexto 2 (informe): «El 80 % de los migrantes internos se concentra en Lima Metropolitana».", "La carta es personal y afectiva; el informe es impersonal y estadístico.", "El informe es afectivo y personal; la carta presenta estadísticas sobre la migración en el país.", "Los dos son informes."),
 ];
 
-// --- N. Elementos visuales ---------------------------------------------------
+// --- Elementos visuales ---------------------------------------------------
 
 const ILLUSTRATIONS: ChoiceItem[] = [
   pt("¿Qué muestran ambas ilustraciones de la batalla de Ayacucho?", "Ilustración 1: un cuadro de 1890 con soldados heroicos, bandera en alto y cielo luminoso.\nIlustración 2: un grabado de la época con soldados cansados, heridos y barro.", "La 1 idealiza la batalla; la 2 muestra su dureza.", "La 2 idealiza la batalla; la 1 muestra su dureza.", "Son idénticas."),
@@ -324,43 +308,43 @@ const ORGANIZERS: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["A.1", "Determinar la idea principal de un texto", (r) => readPassage(r, MAIN_PASSAGES, false)],
-  ["A.2", "Determinar varias ideas principales de un texto", (r) => readPassage(r, MULTI_MAIN, false)],
-  ["A.3", "Combinar las ideas principales de dos textos", (r) => choose(r, "", TWO_MAIN)],
+  ["ideas-principales-1", (r) => readPassage(r, MAIN_PASSAGES, false)],
+  ["ideas-principales-2", (r) => readPassage(r, MULTI_MAIN, false)],
+  ["ideas-principales-3", (r) => choose(r, "", TWO_MAIN)],
 
-  ["B.1", "Relacionar las citas con sus temas", (r) => choose(r, "¿Qué tema expresa la cita?", QUOTE_THEMES)],
-  ["B.2", "Determinar el tema de cuentos cortos", (r) => readPassage(r, THEMES, false)],
-  ["B.3", "Determinar varios temas en cuentos cortos", (r) => readPassage(r, MULTI_THEMES, false)],
+  ["temas-1", (r) => choose(r, "¿Qué tema expresa la cita?", QUOTE_THEMES)],
+  ["temas-2", (r) => readPassage(r, THEMES, false)],
+  ["temas-3", (r) => readPassage(r, MULTI_THEMES, false)],
 
-  ["C.1", "Identificar el propósito del autor", (r) => choose(r, "", AUTHOR_PURPOSE)],
-  ["C.2", "Determinar el punto de vista del autor", (r) => choose(r, "", AUTHOR_POV)],
+  ["proposito-1", (r) => choose(r, "", AUTHOR_PURPOSE)],
+  ["proposito-2", (r) => choose(r, "", AUTHOR_POV)],
 
-  ["D.1", "¿Qué oración es más formal?", (r) => choose(r, "", FORMALITY)],
-  ["D.2", "Comparar el tono de dos textos", (r) => choose(r, "", TONE_COMPARE)],
+  ["tono-1", (r) => choose(r, "", FORMALITY)],
+  ["tono-2", (r) => choose(r, "", TONE_COMPARE)],
 
-  ["E.1", "Comparar y contrastar en textos informativos", (r) => readPassage(r, COMPARE, false)],
-  ["E.2", "Relacionar causas y efectos en textos informativos", (r) => choose(r, "", CAUSE_INFO)],
-  ["E.3", "Relacionar problemas con sus soluciones", (r) => choose(r, "¿Qué solución corresponde al problema?", PROBLEM_SOLUTION)],
-  ["E.4", "Identificar estructuras de texto", (r) => choose(r, "", STRUCTURES)],
+  ["estructuras-1", (r) => readPassage(r, COMPARE, false)],
+  ["estructuras-2", (r) => choose(r, "", CAUSE_INFO)],
+  ["estructuras-3", (r) => choose(r, "¿Qué solución corresponde al problema?", PROBLEM_SOLUTION)],
+  ["estructuras-4", (r) => choose(r, "", STRUCTURES)],
 
-  ["F.1", "Identificar detalles sensoriales", (r) => choose(r, "", SENSORY)],
-  ["F.2", "Interpretar el significado de una alusión a partir de su fuente", (r) => choose(r, "", ALLUSIONS)],
-  ["F.3", "Recordar la fuente de una alusión", (r) => choose(r, "", ALLUSION_SOURCE)],
-  ["F.4", "Interpretar figuras literarias", (r) => choose(r, "", FIGURE_MEANING)],
-  ["F.5", "Clasificar figuras literarias", (r) => choose(r, "", FIGURE_CLASSIFY)],
-  ["F.6", "Analizar el efecto de las figuras literarias en el significado y el tono", (r) => choose(r, "", FIGURE_EFFECT)],
+  ["sentidos-alusion-1", (r) => choose(r, "", SENSORY)],
+  ["sentidos-alusion-2", (r) => choose(r, "", ALLUSIONS)],
+  ["sentidos-alusion-3", (r) => choose(r, "", ALLUSION_SOURCE)],
+  ["figuras-1", (r) => choose(r, "", FIGURE_MEANING)],
+  ["figuras-2", (r) => choose(r, "", FIGURE_CLASSIFY)],
+  ["figuras-3", (r) => choose(r, "", FIGURE_EFFECT)],
 
-  ["G.1", "Identificar el punto de vista del narrador", (r) => choose(r, "", NARRATOR)],
-  ["G.2", "Hacer inferencias a partir de textos literarios", (r) => readPassage(r, INFER_LIT, false)],
-  ["G.3", "Analizar cuentos cortos", (r) => readPassage(r, SHORT_STORIES, false)],
+  ["literatura-1", (r) => choose(r, "", NARRATOR)],
+  ["literatura-2", (r) => readPassage(r, INFER_LIT, false)],
+  ["literatura-3", (r) => readPassage(r, SHORT_STORIES, false)],
 
-  ["H.1", "Señalar el esquema de rima", (r) => choose(r, "", RHYME_SCHEMES)],
+  ["rima", (r) => choose(r, "", RHYME_SCHEMES)],
 
-  ["J.1", "Seguir el desarrollo de un argumento", (r) => readPassage(r, ARGUMENTS, false)],
+  ["argumento", (r) => readPassage(r, ARGUMENTS, false)],
 
-  ["M.1", "Comparar la información de dos textos", (r) => choose(r, "", TWO_TEXTS)],
-  ["M.2", "Comparar dos textos de géneros distintos", (r) => choose(r, "", GENRES)],
+  ["comparar-textos-1", (r) => choose(r, "", TWO_TEXTS)],
+  ["comparar-textos-2", (r) => choose(r, "", GENRES)],
 
-  ["N.1", "Comparar ilustraciones de temas literarios e históricos", (r) => choose(r, "", ILLUSTRATIONS)],
-  ["N.2", "Leer organizadores gráficos", (r) => choose(r, "", ORGANIZERS)],
+  ["visuales-1", (r) => choose(r, "", ILLUSTRATIONS)],
+  ["visuales-2", (r) => choose(r, "", ORGANIZERS)],
 ];

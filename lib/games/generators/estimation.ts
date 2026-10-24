@@ -16,7 +16,7 @@ function threeDigit(r: Rng, min = 110, max = 889): number {
 const toHundred = (n: number) => Math.round(n / 100) * 100;
 const toTen = (n: number) => Math.round(n / 10) * 10;
 
-// 3.° U.2 / U.3: estimar sumas y restas redondeando a la centena.
+// Estimar sumas y restas redondeando a la centena.
 export function estimateHundreds(r: Rng, op: "+" | "−"): Question {
   let a = threeDigit(r, 110, op === "+" ? 640 : 889);
   let b = threeDigit(r, 110, op === "+" ? 949 - toHundred(a) : 889);
@@ -31,7 +31,7 @@ export function estimateHundreds(r: Rng, op: "+" | "−"): Question {
   );
 }
 
-// 3.° U.4: estimar productos redondeando a la decena.
+// Estimar productos redondeando a la decena.
 export function estimateProduct(r: Rng): Question {
   let b = r.int(11, 98);
   if (b % 10 === 5) b += 1;
@@ -40,7 +40,7 @@ export function estimateProduct(r: Rng): Question {
   return num(answer, "Redondea el número de dos cifras a la decena más cercana y luego multiplica.", `${b} × ${a} ≈ ?`, `${b} ≈ ${toTen(b)}; ${toTen(b)} × ${a} = ${answer}.`);
 }
 
-// 3.° U.5: estimar cocientes con números compatibles.
+// Estimar cocientes con números compatibles.
 export function estimateQuotient(r: Rng): Question {
   const d = r.int(2, 9);
   const q = r.int(2, 9) * 10;

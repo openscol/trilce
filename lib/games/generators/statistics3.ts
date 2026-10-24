@@ -26,7 +26,7 @@ function categorical(r: Rng) {
   }
 }
 
-// 6.° II.1: crear diagramas de puntos (¿cuántas X van?).
+// Crear diagramas de puntos (¿cuántas X van?).
 export function createDotPlot(r: Rng): Question {
   const [title, what] = r.pick([["Goles por partido", "goles"], ["Hermanos por alumno", "hermanos"], ["Libros leídos en el mes", "libros"], ["Horas de sueño", "horas"]]);
   const start = r.int(0, 5);
@@ -38,7 +38,7 @@ export function createDotPlot(r: Rng): Question {
   return numQ(counts[i], `Vas a hacer un diagrama de puntos con estos datos. ¿Cuántos puntos van sobre el ${values[i]}?`, `${title}\n${data.join("   ")}`, `El dato ${values[i]} (${what}) aparece ${counts[i]} ${counts[i] === 1 ? "vez" : "veces"}.`);
 }
 
-// 6.° II.6 / II.8: frecuencias relativas y gráficos de barras de porcentajes.
+// Frecuencias relativas y gráficos de barras de porcentajes.
 export function relativeFrequency(r: Rng, asGraph: boolean): Question {
   const d = categorical(r);
   const i = r.int(0, 3);
@@ -59,7 +59,7 @@ function twoSeries(r: Rng, trend: boolean) {
   return { title, legend, labels, a, b, chart, asTable: table(["", ...legend], labels.map((l, i) => [l, String(a[i]), String(b[i])]), title) };
 }
 
-// 6.° II.10 / II.11 / II.17 / II.18: gráficos dobles de barras y de líneas.
+// Gráficos dobles de barras y de líneas.
 export function doubleGraph(r: Rng, line: boolean, create: boolean): Question {
   const s = twoSeries(r, line);
   const i = r.int(0, 3);
@@ -88,7 +88,7 @@ function grouped(r: Rng) {
   return { bins, counts, data, title, chart };
 }
 
-// 6.° II.12 / II.13: histogramas.
+// Histogramas.
 export function histogram(r: Rng, create: boolean): Question {
   const g = grouped(r);
   const i = r.int(0, 3);
@@ -101,7 +101,7 @@ export function histogram(r: Rng, create: boolean): Question {
   return numQ(sum(g.counts.slice(cut)), `¿Cuántos datos son de ${g.bins[cut].lo} o más?`, g.chart, `${g.counts.slice(cut).join(" + ")} = ${sum(g.counts.slice(cut))}.`, "o-mas");
 }
 
-// 6.° II.14: interpretar gráficos circulares.
+// Interpretar gráficos circulares.
 export function circleGraph(r: Rng): Question {
   const d = categorical(r);
   const percents = d.counts.map((c) => (c * 100) / d.total);
@@ -128,7 +128,7 @@ function fiveNumbers(r: Rng) {
   }
 }
 
-// 6.° II.21: diagramas de caja y bigotes.
+// Diagramas de caja y bigotes.
 export function boxPlots(r: Rng): Question {
   const f = fiveNumbers(r);
   const axisMin = Math.floor(f.min / 5) * 5;
@@ -164,14 +164,14 @@ const STAT_QUESTIONS: [string, boolean][] = [
   ["¿Cuántas páginas tiene este libro?", false],
 ];
 
-// 6.° JJ.1: identificar preguntas estadísticas.
+// Identificar preguntas estadísticas.
 export function statisticalQuestion(r: Rng): Question {
   const [text, yes] = r.pick(STAT_QUESTIONS);
   return yesNo("¿Es una pregunta estadística?", yes, yes ? "Sí: para responderla hay que recoger datos de varias personas, y las respuestas varían." : "No: tiene una sola respuesta; no hay datos que varíen.", text);
 }
 
 const mean = (xs: number[]) => sum(xs) / xs.length;
-// 6.° JJ.5: cambios en la media, la mediana, la moda y el rango.
+// Cambios en la media, la mediana, la moda y el rango.
 export function statChanges(r: Rng): Question {
   for (;;) {
     const data = Array.from({ length: 5 }, () => r.int(4, 30));
@@ -188,7 +188,7 @@ export function statChanges(r: Rng): Question {
   }
 }
 
-// 6.° JJ.6: calcular la desviación media absoluta.
+// Calcular la desviación media absoluta.
 export function meanAbsoluteDeviation(r: Rng): Question {
   for (;;) {
     const n = r.pick([4, 5]);
@@ -202,7 +202,7 @@ export function meanAbsoluteDeviation(r: Rng): Question {
   }
 }
 
-// 6.° JJ.7: calcular cuartiles y rango intercuartílico.
+// Calcular cuartiles y rango intercuartílico.
 export function quartiles(r: Rng): Question {
   const f = fiveNumbers(r);
   const what = r.pick(["Q1", "Q3", "mediana", "RIC"] as const);
@@ -220,7 +220,7 @@ function withOutlier(r: Rng) {
   return { normal, outlier, high: outlier > base, data: r.shuffle([...normal, outlier]) };
 }
 
-// 6.° JJ.8 / JJ.9: identificar un valor atípico (y el efecto de quitarlo).
+// Identificar un valor atípico (y el efecto de quitarlo).
 export function outliers(r: Rng, effect: boolean): Question {
   const o = withOutlier(r);
   if (!effect) return choiceQ(r, "¿Cuál es el valor atípico de estos datos?", String(o.outlier), [...new Set(o.normal)].map(String), `${o.outlier} está muy lejos de los demás datos.`, o.data.join("   "), o.high ? "alto" : "bajo");
@@ -228,7 +228,7 @@ export function outliers(r: Rng, effect: boolean): Question {
   return fixedQ(`El valor atípico es ${o.outlier}. Si se quita, ¿qué pasa con la media de los datos?`, options, o.high ? options[1] : options[0], `Al quitar un dato muy ${o.high ? "alto" : "bajo"}, la media ${o.high ? "baja" : "sube"}.`, o.data.join("   "), o.high ? "alto" : "bajo");
 }
 
-// 6.° JJ.10: interpretar medidas de centro y de variación.
+// Interpretar medidas de centro y de variación.
 export function interpretMeasures(r: Rng): Question {
   const m1 = r.int(10, 30);
   const m2 = m1 + r.pick([-4, -3, -2, 2, 3, 4]);
@@ -238,7 +238,7 @@ export function interpretMeasures(r: Rng): Question {
   return fixedQ("¿Qué equipo tiene puntajes más parecidos entre sí (más regulares)?", ["Equipo A", "Equipo B"], r1 < r2 ? "Equipo A" : "Equipo B", "El rango mide la variación: a menor rango, datos más parecidos.", visual, "variacion");
 }
 
-// 6.° JJ.11: describir distribuciones en diagramas de puntos.
+// Describir distribuciones en diagramas de puntos.
 export function describeDistribution(r: Rng): Question {
   const shape = r.pick(["simetrica", "derecha", "izquierda"] as const);
   const counts = shape === "simetrica" ? [1, 2, 4, 5, 4, 2, 1] : shape === "derecha" ? [5, 4, 3, 2, 1, 1, 0] : [0, 1, 1, 2, 3, 4, 5];
@@ -266,7 +266,7 @@ const MEASURE_CASES: [string, string, string][] = [
   ["Puntajes de un juego donde un jugador sacó diez veces más que el resto.", "La mediana", "Un puntaje extremo arrastra la media: mejor la mediana."],
 ];
 
-// 6.° JJ.12: elegir la medida de centro adecuada.
+// Elegir la medida de centro adecuada.
 export function chooseMeasure(r: Rng): Question {
   const [text, answer, why] = r.pick(MEASURE_CASES);
   return fixedQ("¿Qué medida representa mejor estos datos?", ["La media", "La mediana", "La moda"], answer, why, text, answer.toLowerCase());
@@ -287,7 +287,7 @@ const SAMPLES: [string, string][] = [
   ["Se entrevista a personas de todas las edades, en la misma proporción que en la ciudad.", "Representativa"],
 ];
 
-// 6.° JJ.13: muestras representativas, aleatorias y sesgadas.
+// Muestras representativas, aleatorias y sesgadas.
 export function sampleTypes(r: Rng): Question {
   const [text, answer] = r.pick(SAMPLES);
   return fixedQ("¿Cómo es esta muestra?", ["Representativa", "Aleatoria", "Sesgada"], answer, answer === "Sesgada" ? "Sesgada: deja fuera a parte de la población o favorece una respuesta." : answer === "Aleatoria" ? "Aleatoria: todos tienen la misma posibilidad de ser elegidos." : "Representativa: se parece a toda la población, en pequeño.", text, answer.toLowerCase());
@@ -298,7 +298,7 @@ export function sampleTypes(r: Rng): Question {
 
 const BAG: [string, string][] = [["🔴", "roja"], ["🔵", "azul"], ["🟢", "verde"], ["🟡", "amarilla"]];
 
-// 6.° KK.1: espacios muestrales de sucesos simples.
+// Espacios muestrales de sucesos simples.
 export function sampleSpace(r: Rng): Question {
   const form = r.int(0, 2);
   if (form === 0) return numQ(6, "Se lanza un dado común. ¿Cuántos resultados posibles hay?", undefined, "Puede salir 1, 2, 3, 4, 5 o 6: hay 6 resultados.", "dado");
@@ -311,7 +311,7 @@ export function sampleSpace(r: Rng): Question {
   return numQ(colors.length, "Se saca una bolita sin mirar. ¿Cuántos colores distintos pueden salir?", { kind: "bag", items: colors.map(([emoji], i) => ({ emoji, count: counts[i] })) }, `Pueden salir ${colors.length} colores: ${colors.map(([, n]) => n).join(", ")}.`, "bolsa");
 }
 
-// 6.° KK.2: principio de conteo.
+// Principio de conteo.
 export function countingPrinciple(r: Rng): Question {
   const [a, b, c] = [r.int(2, 6), r.int(2, 6), r.int(2, 4)];
   const cases: [string, number, string][] = [
@@ -331,7 +331,7 @@ function bag(r: Rng) {
   return { colors, counts, total: sum(counts), visual: { kind: "bag", items: colors.map(([emoji], i) => ({ emoji, count: counts[i] })) } as Visual };
 }
 
-// 6.° KK.3 / KK.5: probabilidad de un suceso (y del suceso contrario).
+// Probabilidad de un suceso (y del suceso contrario).
 export function probability(r: Rng, opposite: boolean): Question {
   const b = bag(r);
   const i = r.int(0, 2);
@@ -339,7 +339,7 @@ export function probability(r: Rng, opposite: boolean): Question {
   return fracQ(r, opposite ? `Se saca una bolita sin mirar. ¿Cuál es la probabilidad de que NO sea ${b.colors[i][1]}?` : `Se saca una bolita sin mirar. ¿Cuál es la probabilidad de que sea ${b.colors[i][1]}?`, p, opposite ? `Hay ${b.counts[i]} ${b.colors[i][1]}${b.colors[i][1].endsWith("l") ? "es" : "s"} de ${b.total}; las que no lo son: ${b.total - b.counts[i]} de ${b.total}.` : `Casos favorables entre casos posibles: ${b.counts[i]} de ${b.total}.`, b.visual, opposite ? "contrario" : "simple", [[b.counts[i], b.total - b.counts[i] || 1], [opposite ? b.counts[i] : b.total - b.counts[i], b.total]]);
 }
 
-// 6.° KK.4: hacer predicciones.
+// Hacer predicciones.
 export function predictions(r: Rng): Question {
   const d = r.pick([2, 3, 4, 5, 6, 10]);
   const n = r.int(1, d - 1);

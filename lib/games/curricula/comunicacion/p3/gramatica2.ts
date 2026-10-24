@@ -1,29 +1,14 @@
 import { choose, pickInSentence, type ChoiceItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { f, pool, pt, s, sorter, w } from "./helpers";
 import type { Row } from "./row";
 
-// Gramática y ortografía, segunda parte (IXL 3rd grade ELA, VV-DDD), con las
-// reglas del castellano:
-//   a / an → el / un ante a tónica (el agua, un águila)
-//   contracciones (I'm, don't) → al, del; conmigo, contigo, consigo
-//   mayúsculas: días, meses, gentilicios e idiomas van con minúscula
-//   unidades inglesas → kg, g, l, ml; km, m, cm, mm (símbolos sin punto)
-//   calles y estados → Av., Jr., Ca., Psje. y n.º, dpto., int., s/n
-//   títulos: solo la primera palabra y los nombres propios con mayúscula
-//   diálogos: con raya (—)
+// 3.° de Primaria · banco de gramática y ortografía (segunda parte):
+// artículos (el agua, un águila), adjetivos y adverbios, preposiciones,
+// conjunciones, al, del, conmigo, contigo y consigo, comas, mayúsculas (días,
+// meses, gentilicios e idiomas con minúscula), abreviaturas de unidades del
+// sistema métrico y de direcciones (Av., Jr., Ca., Psje., n.º, dpto., int.,
+// s/n), formato de títulos y diálogos con raya (—).
 
-export const SECTIONS: Section[] = [
-  { id: "VV", name: "Artículos", icon: "📌" },
-  { id: "WW", name: "Adjetivos y adverbios", icon: "🎨" },
-  { id: "XX", name: "Preposiciones", icon: "📦" },
-  { id: "YY", name: "Conjunciones", icon: "🔗" },
-  { id: "ZZ", name: "Contracciones", icon: "✂️" },
-  { id: "AAA", name: "Comas", icon: "❗" },
-  { id: "BBB", name: "Mayúsculas", icon: "🔠" },
-  { id: "CCC", name: "Abreviaturas", icon: "📅" },
-  { id: "DDD", name: "Formato", icon: "📝" },
-];
 
 const EL_UN: ChoiceItem[] = [
   f("___ agua del río está fría.", "El", "La", "Las"), f("Vimos ___ águila en el cielo.", "un", "una", "unas"), f("___ hacha del leñador es pesada.", "El", "La", "Los"),
@@ -229,57 +214,57 @@ const DIALOGUE: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["VV.1", "Usar el artículo correcto: el o la, un o una", (r) => choose(r, "¿Qué artículo va?", EL_UN)],
-  ["VV.2", "Usar el artículo correcto: un, una, unos, unas, el, la, los, las", (r) => choose(r, "¿Qué artículo va?", ARTICLE_USE)],
-  ["VV.3", "Identificar artículos", (r) => pickInSentence(r, "Selecciona los artículos de la oración.", ARTICLES_IN)],
+  ["articulos-1", (r) => choose(r, "¿Qué artículo va?", EL_UN)],
+  ["articulos-2", (r) => choose(r, "¿Qué artículo va?", ARTICLE_USE)],
+  ["articulos-3", (r) => pickInSentence(r, "Selecciona los artículos de la oración.", ARTICLES_IN)],
 
-  ["WW.1", "¿El adjetivo dice cómo es o cuántos hay?", (r) => choose(r, "", KIND_OR_MANY)],
-  ["WW.2", "Identificar el adjetivo que describe al sustantivo", (r) => choose(r, "", ADJ_FOR_NOUN)],
-  ["WW.3", "Identificar adjetivos", (r) => pickInSentence(r, "Selecciona los adjetivos (palabras que dicen cómo es algo).", ADJECTIVES_IN)],
-  ["WW.4", "¿El adverbio dice cómo, cuándo o dónde?", (r) => choose(r, "", ADVERB_KIND)],
-  ["WW.5", "Identificar adverbios", (r) => pickInSentence(r, "Selecciona los adverbios (dicen cómo, cuándo o dónde).", ADVERBS_IN)],
-  ["WW.6", "Elegir entre adjetivos y adverbios", (r) => choose(r, "Completa la oración.", ADJ_OR_ADV_USE)],
-  ["WW.7", "¿La palabra es un adjetivo o un adverbio?", (r) => choose(r, "", ADJ_OR_ADV)],
-  ["WW.8", "Usar adjetivos para comparar", (r) => choose(r, "Completa la comparación.", COMPARE_ADJ)],
-  ["WW.9", "Escribir adjetivos que comparan: -ísimo", (r) => choose(r, "", SUPERLATIVE)],
-  ["WW.10", "Usar adverbios para comparar", (r) => choose(r, "Completa la comparación.", COMPARE_ADV)],
+  ["adjetivos-adverbios-1", (r) => choose(r, "", KIND_OR_MANY)],
+  ["adjetivos-adverbios-2", (r) => choose(r, "", ADJ_FOR_NOUN)],
+  ["adjetivos-adverbios-3", (r) => pickInSentence(r, "Selecciona los adjetivos (palabras que dicen cómo es algo).", ADJECTIVES_IN)],
+  ["adjetivos-adverbios-4", (r) => choose(r, "", ADVERB_KIND)],
+  ["adjetivos-adverbios-5", (r) => pickInSentence(r, "Selecciona los adverbios (dicen cómo, cuándo o dónde).", ADVERBS_IN)],
+  ["adjetivos-adverbios-6", (r) => choose(r, "Completa la oración.", ADJ_OR_ADV_USE)],
+  ["adjetivos-adverbios-7", (r) => choose(r, "", ADJ_OR_ADV)],
+  ["comparar-1", (r) => choose(r, "Completa la comparación.", COMPARE_ADJ)],
+  ["comparar-2", (r) => choose(r, "", SUPERLATIVE)],
+  ["comparar-3", (r) => choose(r, "Completa la comparación.", COMPARE_ADV)],
 
-  ["XX.1", "Identificar preposiciones", (r) => pickInSentence(r, "Selecciona las preposiciones.", PREPS_IN)],
-  ["XX.2", "Identificar las preposiciones y sus términos", (r) => choose(r, "", PREP_OBJECT)],
-  ["XX.3", "Identificar frases con preposición", (r) => choose(r, "", PREP_PHRASE)],
-  ["XX.4", "Preposiciones: repaso", (r) => choose(r, "Completa la oración.", PREP_REVIEW)],
+  ["preposiciones-1", (r) => pickInSentence(r, "Selecciona las preposiciones.", PREPS_IN)],
+  ["preposiciones-2", (r) => choose(r, "", PREP_OBJECT)],
+  ["preposiciones-3", (r) => choose(r, "", PREP_PHRASE)],
+  ["preposiciones-4", (r) => choose(r, "Completa la oración.", PREP_REVIEW)],
 
-  ["YY.1", "Identificar conjunciones coordinantes", (r) => pickInSentence(r, "Selecciona las conjunciones que unen (y, e, o, ni, pero, sino).", COORD_IN)],
-  ["YY.2", "Identificar conjunciones subordinantes", (r) => pickInSentence(r, "Selecciona las palabras que unen una idea con su causa, condición o momento.", SUBORD_IN)],
+  ["conjunciones-1", (r) => pickInSentence(r, "Selecciona las conjunciones que unen (y, e, o, ni, pero, sino).", COORD_IN)],
+  ["conjunciones-2", (r) => pickInSentence(r, "Selecciona las palabras que unen una idea con su causa, condición o momento.", SUBORD_IN)],
 
-  ["ZZ.1", "Contracciones: al y del", (r) => choose(r, "Completa la oración.", AL_DEL)],
-  ["ZZ.2", "Contracciones: conmigo, contigo y consigo", (r) => choose(r, "Completa la oración.", CONMIGO)],
+  ["conjunciones-3", (r) => choose(r, "Completa la oración.", AL_DEL)],
+  ["conjunciones-4", (r) => choose(r, "Completa la oración.", CONMIGO)],
 
-  ["AAA.1", "Comas en una enumeración", (r) => choose(r, "", COMMA_SERIES)],
-  ["AAA.2", "Comas en las fechas", (r) => choose(r, "", COMMA_DATES)],
-  ["AAA.3", "Comas en los nombres de lugares", (r) => choose(r, "", COMMA_PLACES)],
-  ["AAA.4", "Comas con vocativos y después de palabras introductorias", (r) => choose(r, "", COMMA_ADDRESS)],
-  ["AAA.5", "Comas: repaso", (r) => choose(r, "", [...COMMA_SERIES, ...COMMA_DATES, ...COMMA_PLACES, ...COMMA_ADDRESS])],
+  ["comas-1", (r) => choose(r, "", COMMA_SERIES)],
+  ["comas-2", (r) => choose(r, "", COMMA_DATES)],
+  ["comas-3", (r) => choose(r, "", COMMA_PLACES)],
+  ["comas-4", (r) => choose(r, "", COMMA_ADDRESS)],
+  ["comas-5", (r) => choose(r, "", [...COMMA_SERIES, ...COMMA_DATES, ...COMMA_PLACES, ...COMMA_ADDRESS])],
 
-  ["BBB.1", "Mayúscula en los nombres de personas y mascotas, y en los tratamientos", (r) => choose(r, "", CAPS_NAMES)],
-  ["BBB.2", "Días y meses con minúscula; festividades con mayúscula", (r) => choose(r, "", CAPS_DAYS)],
-  ["BBB.3", "Mayúscula en los nombres de lugares y accidentes geográficos", (r) => choose(r, "", CAPS_PLACES)],
-  ["BBB.4", "Gentilicios e idiomas: con minúscula", (r) => choose(r, "", CAPS_NATIONALITY)],
-  ["BBB.5", "Mayúsculas: repaso", (r) => choose(r, "", [...CAPS_NAMES, ...CAPS_DAYS, ...CAPS_PLACES, ...CAPS_NATIONALITY])],
+  ["mayusculas-1", (r) => choose(r, "", CAPS_NAMES)],
+  ["mayusculas-2", (r) => choose(r, "", CAPS_DAYS)],
+  ["mayusculas-3", (r) => choose(r, "", CAPS_PLACES)],
+  ["mayusculas-4", (r) => choose(r, "", CAPS_NATIONALITY)],
+  ["mayusculas-5", (r) => choose(r, "", [...CAPS_NAMES, ...CAPS_DAYS, ...CAPS_PLACES, ...CAPS_NATIONALITY])],
 
-  ["CCC.1", "Abreviar los días de la semana", (r) => choose(r, "", abbr(DAY_ABBR))],
-  ["CCC.2", "Abreviar los meses del año", (r) => choose(r, "", abbr(MONTH_ABBR))],
-  ["CCC.3", "Abreviar los tratamientos de las personas", (r) => choose(r, "", abbr(TITLE_ABBR))],
-  ["CCC.4", "Abreviar unidades de masa y de capacidad", (r) => choose(r, "", abbr(MASS_ABBR))],
-  ["CCC.5", "Abreviar unidades de longitud", (r) => choose(r, "", abbr(LENGTH_ABBR))],
-  ["CCC.6", "Abreviar los nombres de las vías: avenida, jirón, calle", (r) => choose(r, "", abbr(STREET_ABBR))],
-  ["CCC.7", "Abreviar los datos de una dirección: número, departamento, interior", (r) => choose(r, "", abbr(ADDRESS_ABBR))],
-  ["CCC.8", "Abreviar vías y datos de una dirección: repaso", (r) => choose(r, "", abbr([...STREET_ABBR, ...ADDRESS_ABBR]))],
+  ["abreviaturas-1", (r) => choose(r, "", abbr(DAY_ABBR))],
+  ["abreviaturas-2", (r) => choose(r, "", abbr(MONTH_ABBR))],
+  ["abreviaturas-3", (r) => choose(r, "", abbr(TITLE_ABBR))],
+  ["abreviaturas-4", (r) => choose(r, "", abbr(MASS_ABBR))],
+  ["abreviaturas-5", (r) => choose(r, "", abbr(LENGTH_ABBR))],
+  ["abreviaturas-direcciones-1", (r) => choose(r, "", abbr(STREET_ABBR))],
+  ["abreviaturas-direcciones-2", (r) => choose(r, "", abbr(ADDRESS_ABBR))],
+  ["abreviaturas-direcciones-3", (r) => choose(r, "", abbr([...STREET_ABBR, ...ADDRESS_ABBR]))],
 
-  ["DDD.1", "Saludos y despedidas de las cartas", (r) => choose(r, "", LETTERS)],
-  ["DDD.2", "Dar formato a las direcciones", (r) => choose(r, "", ADDRESSES)],
-  ["DDD.3", "Mayúsculas en los títulos", (r) => choose(r, "", CAPS_TITLES)],
-  ["DDD.4", "Dar formato a los títulos", (r) => choose(r, "", FORMAT_TITLES)],
-  ["DDD.5", "Dar formato y poner mayúsculas a los títulos", (r) => choose(r, "", TITLES_BOTH)],
-  ["DDD.6", "Puntuar los diálogos", (r) => choose(r, "", DIALOGUE)],
+  ["formato-1", (r) => choose(r, "", LETTERS)],
+  ["formato-2", (r) => choose(r, "", ADDRESSES)],
+  ["formato-3", (r) => choose(r, "", CAPS_TITLES)],
+  ["formato-4", (r) => choose(r, "", FORMAT_TITLES)],
+  ["formato-5", (r) => choose(r, "", TITLES_BOTH)],
+  ["dialogos", (r) => choose(r, "", DIALOGUE)],
 ];

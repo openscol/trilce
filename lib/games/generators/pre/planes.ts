@@ -18,7 +18,7 @@ const deg = (x: number) => (x * 180) / Math.PI;
 const cplane = (pts: { z: C; label: string }[]): Visual => ({ kind: "coordPlane", min: -8, max: 8, points: pts.map((p) => ({ x: p.z[0], y: p.z[1], emoji: p.label })) });
 const rz = (r: Rng): C => [r.int(-6, 6), nz(r, 6)];
 
-// W.1 / W.2: introducción al plano complejo y graficar números complejos.
+// Introducción al plano complejo y graficar números complejos.
 export function complexPlane(r: Rng, graph: boolean): Question {
   const zs = [rz(r), rz(r), rz(r), rz(r)];
   if (new Set(zs.map((z) => z.join())).size < 4) return complexPlane(r, graph);
@@ -28,7 +28,7 @@ export function complexPlane(r: Rng, graph: boolean): Question {
   return choiceQ(r, `¿Qué número complejo representa el punto ${labels[i]}? (Eje horizontal: parte real; eje vertical: parte imaginaria.)`, cx(zs[i]), [cx([zs[i][1], zs[i][0]]), cx([zs[i][0], -zs[i][1]]), cx([-zs[i][0], zs[i][1]])].filter((w, k, all) => w !== cx(zs[i]) && all.indexOf(w) === k), `El punto está en (${sg(zs[i][0])}, ${sg(zs[i][1])}): ${cx(zs[i])}.`, cplane(zs.map((z, k) => ({ z, label: labels[k] }))), "leer");
 }
 
-// W.3-W.8: suma, resta, conjugado, valor absoluto, punto medio y distancia en el plano complejo.
+// Suma, resta, conjugado, valor absoluto, punto medio y distancia en el plano complejo.
 export function complexPlaneOp(r: Rng, mode: "add" | "sub" | "conj" | "abs" | "mid" | "dist"): Question {
   const p: C = [r.int(-4, 4), nz(r, 4)], q: C = [r.int(-4, 4), nz(r, 4)];
   if (mode === "add" || mode === "sub") {
@@ -51,7 +51,7 @@ export function complexPlaneOp(r: Rng, mode: "add" | "sub" | "conj" | "abs" | "m
   return numQ(c, `¿Cuál es la distancia entre ${cx(p)} y ${cx(q3)} en el plano complejo?`, undefined, `|(${cx(q3)}) − (${cx(p)})| = √(${a}² + ${b}²) = ${c}.`, "distancia");
 }
 
-// X.1-X.4: módulo y argumento; forma polar y rectangular.
+// Módulo y argumento; forma polar y rectangular.
 // [rectangular, conjugado, opuesto, intercambiado, módulo, argumento en grados]
 const NICE: [string, string, string, string, string, number][] = [
   ["1 + i", "1 − i", "−1 − i", "−1 + i", "√2", 45],
@@ -80,7 +80,7 @@ export function polarForm(r: Rng, mode: "modArg" | "toPolar" | "toRect" | "both"
   return choiceQ(r, `¿Cómo se escribe ${polar} en forma rectangular?`, z, [conj, neg, swap].filter((w) => w !== z), `a = r cos θ y b = r sen θ: ${z}.`, undefined, "a-rectangular");
 }
 
-// X.5: relacionar ecuaciones polares con sus gráficos.
+// Relacionar ecuaciones polares con sus gráficos.
 const POLAR: [string, (t: number) => number, string][] = [["r = 4", () => 4, "Circunferencia de radio 4 centrada en el origen."], ["r = 4 cos θ", (t) => 4 * Math.cos(t), "Circunferencia de diámetro 4 a la derecha del origen."], ["r = 4 sen θ", (t) => 4 * Math.sin(t), "Circunferencia de diámetro 4 encima del origen."], ["r = 4 sen(2θ)", (t) => 4 * Math.sin(2 * t), "Rosa de 4 pétalos."], ["r = 4 cos(3θ)", (t) => 4 * Math.cos(3 * t), "Rosa de 3 pétalos."], ["r = 2 + 2 cos θ", (t) => 2 + 2 * Math.cos(t), "Cardioide que se abre hacia la derecha."]];
 export function polarGraph(r: Rng): Question {
   const i = r.int(0, POLAR.length - 1);
@@ -95,7 +95,7 @@ export function polarGraph(r: Rng): Question {
 const vec = (...cs: number[]) => `⟨${cs.map(sg).join(", ")}⟩`;
 const PY: [number, number, number][] = [[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17]];
 
-// Y.3: ángulo de dirección de un vector.
+// Ángulo de dirección de un vector.
 export function directionAngle(r: Rng): Question {
   const x = nz(r, 8), y = nz(r, 8);
   let a = deg(Math.atan2(y, x));
@@ -103,7 +103,7 @@ export function directionAngle(r: Rng): Question {
   return valQ(r, `¿Cuál es el ángulo de dirección (entre 0° y 360°) del vector ${vec(x, y)}? Redondea a la décima.`, r1(a), [r1(360 - a), r1((a + 180) % 360), r1(deg(Math.atan(Math.abs(y / x))))].filter((v) => v !== r1(a)), `tan θ = ${sg(y)}/${sg(x)} y el vector está en el cuadrante ${x > 0 ? (y > 0 ? "I" : "IV") : y > 0 ? "II" : "III"}: θ ≈ ${dec(r1(a))}°.`, undefined, "direccion");
 }
 
-// Y.9: módulo y dirección de una suma de vectores.
+// Módulo y dirección de una suma de vectores.
 export function sumMagnitude(r: Rng): Question {
   const [a, b, c] = r.pick(PY);
   const u = [r.int(-3, 3), r.int(-3, 3)];
@@ -112,7 +112,7 @@ export function sumMagnitude(r: Rng): Question {
   return numQ(c, `¿Cuál es el módulo de u + v si u = ${vec(u[0], u[1])} y v = ${vec(v[0], v[1])}?`, undefined, `u + v = ${vec(s[0], s[1])}; |u + v| = √(${s[0] * s[0]} + ${s[1] * s[1]}) = ${c}.`, "suma");
 }
 
-// Y.10-Y.14: múltiplos escalares, unidades y combinaciones lineales.
+// Múltiplos escalares, unidades y combinaciones lineales.
 export function scalarVector(r: Rng, mode: "multiply" | "magnitude" | "direction" | "unit" | "combo"): Question {
   const [a, b, c] = r.pick(PY);
   const u = [a * r.pick([1, -1]), b * r.pick([1, -1])];
@@ -126,7 +126,7 @@ export function scalarVector(r: Rng, mode: "multiply" | "magnitude" | "direction
   return choiceQ(r, `Si u = ${vec(u[0], u[1])} y v = ${vec(v[0], v[1])}, ¿cuánto es ${k === -1 ? "−" : sg(k)}u ${m < 0 ? "−" : "+"} ${Math.abs(m) === 1 ? "" : Math.abs(m)}v?`, vec(res[0], res[1]), [vec(k * u[0] - m * v[0], k * u[1] - m * v[1]), vec(k * u[0] + v[0], k * u[1] + v[1]), vec(res[1], res[0])].filter((w, i, all) => w !== vec(res[0], res[1]) && all.indexOf(w) === i), "Se multiplica cada vector por su escalar y se suman las componentes.", undefined, "combinacion");
 }
 
-// Z.1-Z.6: vectores en tres dimensiones.
+// Vectores en tres dimensiones.
 const PY3: [number, number, number, number][] = [[1, 2, 2, 3], [2, 3, 6, 7], [1, 4, 8, 9], [2, 6, 9, 11], [4, 4, 7, 9]];
 export function vector3D(r: Rng, mode: "magnitude" | "components" | "addsub" | "scalar" | "unit" | "combo"): Question {
   const [a, b, c, m] = r.pick(PY3);

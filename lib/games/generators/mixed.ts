@@ -8,7 +8,6 @@ function num(answer: number, prompt: string, text: string, explanation: string, 
   return { kind: "number", prompt, visual: { kind: "text", text }, answer, explanation, tag };
 }
 
-// H.1
 export function pictureEquationMixed(r: Rng): Question {
   const emoji = r.pick(COUNTABLES);
   if (r.chance(0.5)) {
@@ -39,7 +38,7 @@ export function pictureEquationMixed(r: Rng): Question {
   };
 }
 
-// H.2 (1.° y 2.°: hasta 20; 2.° H.10: hasta 100)
+// (hasta 20 por defecto; hasta 100 con `max`)
 export function mixedTargets(r: Rng, max = 20): Question {
   const big = max > 20;
   const target = big ? r.int(20, 90) : r.int(4, 18);
@@ -72,7 +71,6 @@ export function mixedTargets(r: Rng, max = 20): Question {
   };
 }
 
-// H.3
 export function doublesMixed(r: Rng): Question {
   const a = r.int(1, 9);
   return r.chance(0.5)
@@ -80,7 +78,6 @@ export function doublesMixed(r: Rng): Question {
     : num(a, "Resta los dobles.", `${a * 2} − ${a} = ?`, `${a * 2} − ${a} = ${a}.`, "resta");
 }
 
-// H.4
 export function factFamily(r: Rng): Question {
   const a = r.int(1, 9);
   let b = r.int(1, Math.min(10, 18 - a));
@@ -99,7 +96,6 @@ export function factFamily(r: Rng): Question {
   return num(answer, "Completa la familia de operaciones.", lines.join("\n"), `Los números de la familia son ${a}, ${b} y ${c}.`);
 }
 
-// H.5
 export function relatedMixed(r: Rng): Question {
   const c = r.int(6, 20);
   const a = r.int(1, c - 1);
@@ -109,7 +105,6 @@ export function relatedMixed(r: Rng): Question {
     : num(a, "Usa la primera operación para resolver la segunda.", `${a} + ${b} = ${c}\n${c} − ${b} = ?`, `Suma y resta están relacionadas: ${c} − ${b} = ${a}.`, "suma-a-resta");
 }
 
-// H.6
 export function mixedFacts(r: Rng): Question {
   if (r.chance(0.5)) {
     const a = r.int(2, 18);
@@ -121,7 +116,6 @@ export function mixedFacts(r: Rng): Question {
   return num(a - b, "Resuelve.", `${a} − ${b} = ?`, `${a} − ${b} = ${a - b}.`, "resta");
 }
 
-// H.7
 export function completeEquation(r: Rng): Question {
   const form = r.int(0, 3);
   if (form < 2) {
@@ -140,7 +134,6 @@ export function completeEquation(r: Rng): Question {
     : num(a, "¿Qué número falta?", `? − ${b} = ${c}`, `${a} − ${b} = ${c}.`, "resta");
 }
 
-// H.8
 export function tenMoreOrLess(r: Rng): Question {
   const more = r.chance(0.5);
   const n = more ? r.int(0, 89) : r.int(10, 99);
@@ -148,7 +141,6 @@ export function tenMoreOrLess(r: Rng): Question {
   return num(answer, `¿Cuánto es 10 ${more ? "más" : "menos"} que ${n}?`, `${n} ${more ? "+" : "−"} 10 = ?`, `Solo cambia la cifra de las decenas: ${answer}.`, more ? "diez-mas" : "diez-menos");
 }
 
-// H.9
 export function addSubMultipleOfTen(r: Rng): Question {
   for (;;) {
     const n = r.int(11, 89);
@@ -163,7 +155,6 @@ export function addSubMultipleOfTen(r: Rng): Question {
   }
 }
 
-// H.10
 export function addSubTens(r: Rng): Question {
   if (r.chance(0.5)) {
     const a = r.int(1, 8) * 10;
@@ -175,18 +166,16 @@ export function addSubTens(r: Rng): Question {
   return num(a - b, "Resuelve.", `${a} − ${b} = ?`, `${a} − ${b} = ${a - b}.`, "resta");
 }
 
-// 2.° H.9: sumas y restas de hasta dos cifras, con o sin reagrupar.
+// Sumas y restas de hasta dos cifras, con o sin reagrupar.
 export function addSubTwoDigit(r: Rng): Question {
   const regroup = r.chance(0.5);
   return r.chance(0.5) ? addTwoTwo(r, regroup) : subTwoTwo(r, regroup);
 }
 
-// 2.° H.11
 export function addSubHundreds(r: Rng): Question {
   return r.chance(0.5) ? addHundreds(r) : subHundreds(r);
 }
 
-// 2.° H.12
 export function addSubThreeDigit(r: Rng): Question {
   return r.chance(0.5) ? addThreeDigit(r) : subThreeDigit(r);
 }

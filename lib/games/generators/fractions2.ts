@@ -40,7 +40,7 @@ function compareExplanation(a: Frac, b: Frac, mode: FractionMode) {
   return `${f(a)} ${s} ${f(b)}.`;
 }
 
-// 3.° O.1: comparar con barras del mismo tamaño.
+// Comparar con barras del mismo tamaño.
 export function compareFractionModels(r: Rng): Question {
   const [a, b] = pair(r, r.pick<FractionMode>(["sameDen", "sameNum", "any"]));
   const answer = symbol(cmp(a, b));
@@ -55,7 +55,7 @@ export function compareFractionModels(r: Rng): Question {
   };
 }
 
-// 3.° O.2: comparar con las referencias 1/2 y 1.
+// Comparar con las referencias 1/2 y 1.
 export function compareBenchmark(r: Rng): Question {
   const d = r.pick([3, 4, 5, 6, 8, 10, 12]);
   const n = r.int(1, d);
@@ -75,7 +75,7 @@ export function compareBenchmark(r: Rng): Question {
   };
 }
 
-// 3.° O.3: comparar fracciones.
+// Comparar fracciones.
 export function compareFractions(r: Rng, mode: FractionMode): Question {
   const [a, b] = pair(r, mode);
   const answer = symbol(cmp(a, b));
@@ -90,7 +90,7 @@ export function compareFractions(r: Rng, mode: FractionMode): Question {
   };
 }
 
-// 3.° O.4 - O.6: comparar dos fracciones dibujadas en rectas numéricas.
+// Comparar dos fracciones dibujadas en rectas numéricas.
 export function compareOnLines(r: Rng, mode: FractionMode): Question {
   const [a, b] = pair(r, mode);
   const answer = symbol(cmp(a, b));
@@ -126,7 +126,7 @@ function trio(r: Rng, mode: FractionMode): Frac[] {
   }
 }
 
-// 3.° O.7 - O.10: ordenar fracciones (con o sin rectas numéricas).
+// Ordenar fracciones (con o sin rectas numéricas).
 export function orderFractions(r: Rng, mode: FractionMode, withLines = false): Question {
   const fr = trio(r, mode);
   const ascending = r.chance(0.6);
@@ -144,7 +144,7 @@ export function orderFractions(r: Rng, mode: FractionMode, withLines = false): Q
   };
 }
 
-// 3.° P.2: ¿las dos rectas muestran fracciones equivalentes?
+// ¿las dos rectas muestran fracciones equivalentes?
 export function equivalentLinesYesNo(r: Rng): Question {
   const d = r.pick([2, 3, 4, 5]);
   const n = r.int(1, d - 1);
@@ -163,7 +163,7 @@ export function equivalentLinesYesNo(r: Rng): Question {
   };
 }
 
-// 3.° P.5: fracciones equivalentes a números naturales.
+// Fracciones equivalentes a números naturales.
 export function wholeNumberFractions(r: Rng): Question {
   const d = r.int(1, 6);
   const k = r.int(1, 6);
@@ -174,7 +174,7 @@ export function wholeNumberFractions(r: Rng): Question {
   return num(d, `${k} = ${k * d}/?`, `${k * d} ÷ ${d} = ${k}.`);
 }
 
-// 3.° P.6: reducir a la mínima expresión.
+// Reducir a la mínima expresión.
 export function simplifyFraction(r: Rng): Question {
   const d = r.pick([2, 3, 4, 5, 6]);
   let n = r.int(1, d - 1);
@@ -190,7 +190,7 @@ export function simplifyFraction(r: Rng): Question {
   };
 }
 
-// 3.° P.7: patrones de fracciones equivalentes.
+// Patrones de fracciones equivalentes.
 export function equivalentPattern(r: Rng): Question {
   const d = r.pick([2, 3, 4, 5]);
   const n = r.int(1, d - 1);
@@ -212,7 +212,7 @@ function fractionChoices(r: Rng, n: number, d: number, extra: string[]) {
   return { answer, options: uniqueOptions(r, answer, cands) };
 }
 
-// 3.° Q.1 / Q.3: sumar o restar avanzando o retrocediendo en la recta.
+// Sumar o restar avanzando o retrocediendo en la recta.
 export function addSubFractionsLine(r: Rng, op: "+" | "−"): Question {
   const d = r.pick([4, 5, 6, 8, 10]);
   const a = op === "+" ? r.int(1, d - 2) : r.int(2, d);
@@ -229,7 +229,7 @@ export function addSubFractionsLine(r: Rng, op: "+" | "−"): Question {
   };
 }
 
-// 3.° Q.2 / Q.4 / Q.5: sumar o restar con el mismo denominador.
+// Sumar o restar con el mismo denominador.
 export function addSubFractions(r: Rng, op: "+" | "−" | "mixed"): Question {
   const o = op === "mixed" ? r.pick<"+" | "−">(["+", "−"]) : op;
   const d = r.pick([3, 4, 5, 6, 7, 8, 9, 10, 12]);

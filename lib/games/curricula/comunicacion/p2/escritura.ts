@@ -1,20 +1,12 @@
 import { choose, order, pickAll, type ChoiceItem, type OrderItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import type { Row } from "./row";
 
-// Estrategias de escritura (IXL 2nd grade ELA, HH-NN).
+// 2.° de Primaria · banco de escritura: ordenar oraciones, la oración
+// temática, conectores, el propósito del escritor, textos de opinión,
+// detalles descriptivos y unir oraciones.
 
-export const SECTIONS: Section[] = [
-  { id: "HH", name: "Organizar la escritura", icon: "🗂️" },
-  { id: "II", name: "Oraciones temáticas", icon: "🎯" },
-  { id: "JJ", name: "Conectores", icon: "🔗" },
-  { id: "KK", name: "Propósito del autor", icon: "✍️" },
-  { id: "LL", name: "Escribir opiniones", icon: "💬" },
-  { id: "MM", name: "Detalles descriptivos", icon: "🎨" },
-  { id: "NN", name: "Variedad de oraciones", icon: "🔀" },
-];
 
-// --- HH. Organizar ------------------------------------------------------------------
+// --- Organizar ------------------------------------------------------------------
 
 const SENTENCE_ORDER: OrderItem[] = [
   { seq: ["Primero, saqué el pan de la bolsa.", "Luego, le puse queso y tomate.", "Después, tapé el sándwich.", "Por último, me lo comí."] },
@@ -26,7 +18,7 @@ const SENTENCE_ORDER: OrderItem[] = [
   { seq: ["Primero, moja el cepillo.", "Luego, ponle pasta dental.", "Después, cepilla tus dientes.", "Al final, enjuágate la boca."] },
 ];
 
-// --- II. Oraciones temáticas ---------------------------------------------------------
+// --- Oraciones temáticas ---------------------------------------------------------
 
 const NOT_SUPPORT: ChoiceItem[] = [
   { p: "¿Qué detalle NO apoya la idea?", t: "Idea: Los perros son buenas mascotas.", a: "Las ballenas viven en el mar.", d: ["Cuidan la casa.", "Juegan con los niños.", "Hacen compañía."] },
@@ -56,7 +48,7 @@ const TOPIC_EXPOSITORY: ChoiceItem[] = [
   { p: "¿Qué oración empieza mejor este párrafo?", t: "___ El papel se puede volver a usar. Las botellas de plástico se convierten en otros objetos. Así hay menos basura.", a: "Reciclar ayuda a cuidar el planeta.", d: ["Las botellas de vidrio guardan agua.", "El papel es blanco.", "La basura huele mal."] },
 ];
 
-// --- JJ. Conectores ---------------------------------------------------------------------
+// --- Conectores ---------------------------------------------------------------------
 
 const CONJ: ChoiceItem[] = [
   { t: "Quiero salir a jugar, ___ está lloviendo.", a: "pero", d: ["y", "o", "porque"] },
@@ -103,7 +95,7 @@ const LINK_PASSAGE: ChoiceItem[] = [
   { p: "¿Qué conector completa el texto?", t: "Corrimos mucho. ___, llegamos tarde.", a: "Sin embargo", d: ["Además", "Por ejemplo", "También"] },
 ];
 
-// --- KK. Propósito ------------------------------------------------------------------------
+// --- Propósito ------------------------------------------------------------------------
 
 const MATCH_PURPOSE: ChoiceItem[] = [
   { p: "Quieres CONVENCER a tu mamá de adoptar un gato. ¿Qué escribes?", a: "Un gato nos haría compañía y yo prometo cuidarlo.", d: ["Los gatos son mamíferos con bigotes y cola larga.", "Había una vez un gato con botas.", "El gato de mi vecina es negro."] },
@@ -114,7 +106,7 @@ const MATCH_PURPOSE: ChoiceItem[] = [
   { p: "Quieres INFORMAR sobre tu ciudad. ¿Qué escribes?", a: "Mi ciudad tiene una plaza y dos mercados.", d: ["¡Visita mi ciudad, es la mejor!", "En mi ciudad vive un dragón.", "Mi ciudad debería tener más parques."] },
 ];
 
-// --- LL. Opiniones --------------------------------------------------------------------------
+// --- Opiniones --------------------------------------------------------------------------
 
 const FACT_OPINION: ChoiceItem[] = [
   { p: "Completa para que sea un HECHO.", t: "Los elefantes ___.", a: "tienen trompa", d: ["son los más bonitos", "son aburridos", "me dan risa"] },
@@ -162,7 +154,7 @@ const OPINION_TABLE: ChoiceItem[] = [
   table("El ajedrez es un gran juego. Te enseña a pensar. «Por ejemplo, planeas tus jugadas.»", EXAMPLE),
 ];
 
-// --- MM. Detalles descriptivos ---------------------------------------------------------------
+// --- Detalles descriptivos ---------------------------------------------------------------
 
 const SENSORY_PIC: ChoiceItem[] = [
   { pic: "🍋", a: "ácido y amarillo", d: ["dulce y rojo", "blando y azul", "caliente y negro"] },
@@ -217,7 +209,7 @@ const DIALOGUE: ChoiceItem[] = [
   { p: "¿Qué diálogo completa mejor el cuento?", t: "Pipo no encontraba sus lentes. ___ ¡Los tenía en la cabeza!", a: "—¿Alguien vio mis lentes? —preguntó.", d: ["—Ya los encontré —dijo.", "—No uso lentes —dijo.", "—Vamos al cine —dijo."] },
 ];
 
-// --- NN. Variedad de oraciones ------------------------------------------------------------------
+// --- Variedad de oraciones ------------------------------------------------------------------
 
 const COMBINE_SUBJECTS: ChoiceItem[] = [
   { p: "Une las dos oraciones en una sola.", t: "Ana juega fútbol. Luis juega fútbol.", a: "Ana y Luis juegan fútbol.", d: ["Ana y Luis juega fútbol.", "Ana juega fútbol y fútbol Luis.", "Ana Luis juegan y fútbol."] },
@@ -255,33 +247,33 @@ const INTRO_ELEMENTS: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["HH.1", "Poner las oraciones en orden", (r) => order(r, "Ordena las oraciones.", SENTENCE_ORDER)],
+  ["ordenar", (r) => order(r, "Ordena las oraciones.", SENTENCE_ORDER)],
 
-  ["II.1", "Seleccionar el detalle que no apoya la oración temática", (r) => choose(r, "", NOT_SUPPORT)],
-  ["II.2", "Elegir oraciones temáticas para párrafos narrativos", (r) => choose(r, "", TOPIC_NARRATIVE)],
-  ["II.3", "Elegir oraciones temáticas para párrafos expositivos", (r) => choose(r, "", TOPIC_EXPOSITORY)],
+  ["oracion-tematica-1", (r) => choose(r, "", NOT_SUPPORT)],
+  ["oracion-tematica-2", (r) => choose(r, "", TOPIC_NARRATIVE)],
+  ["oracion-tematica-3", (r) => choose(r, "", TOPIC_EXPOSITORY)],
 
-  ["JJ.1", "Usar conjunciones", (r) => choose(r, "Completa la oración.", CONJ)],
-  ["JJ.2", "Usar conectores: porque, cuando, si, aunque", (r) => choose(r, "Completa la oración.", SUBORD)],
-  ["JJ.3", "Identificar palabras de orden en el tiempo", (r) => pickAll(r, "Selecciona las palabras que indican orden en el tiempo.", TIME_WORDS, NOT_TIME_WORDS)],
-  ["JJ.4", "Usar palabras de orden en el tiempo", (r) => choose(r, "Completa la oración.", TIME_USE)],
-  ["JJ.5", "Usar conectores para completar un texto", (r) => choose(r, "", LINK_PASSAGE)],
+  ["conectores-1", (r) => choose(r, "Completa la oración.", CONJ)],
+  ["conectores-2", (r) => choose(r, "Completa la oración.", SUBORD)],
+  ["conectores-3", (r) => pickAll(r, "Selecciona las palabras que indican orden en el tiempo.", TIME_WORDS, NOT_TIME_WORDS)],
+  ["conectores-4", (r) => choose(r, "Completa la oración.", TIME_USE)],
+  ["conectores-5", (r) => choose(r, "", LINK_PASSAGE)],
 
-  ["KK.1", "Elegir el texto que corresponde al propósito del escritor", (r) => choose(r, "", MATCH_PURPOSE)],
+  ["proposito-escritor", (r) => choose(r, "", MATCH_PURPOSE)],
 
-  ["LL.1", "Completar oraciones de hecho y de opinión", (r) => choose(r, "", FACT_OPINION)],
-  ["LL.2", "Completar el texto de opinión con un ejemplo", (r) => choose(r, "", OPINION_EXAMPLE)],
-  ["LL.3", "Completar el texto de opinión con una razón", (r) => choose(r, "", OPINION_REASON)],
-  ["LL.4", "Completar el cuadro de opinión, razón y ejemplo", (r) => choose(r, "", OPINION_TABLE)],
+  ["opinion-1", (r) => choose(r, "", FACT_OPINION)],
+  ["opinion-2", (r) => choose(r, "", OPINION_EXAMPLE)],
+  ["opinion-3", (r) => choose(r, "", OPINION_REASON)],
+  ["opinion-4", (r) => choose(r, "", OPINION_TABLE)],
 
-  ["MM.1", "Elegir los detalles sensoriales que corresponden al dibujo", (r) => choose(r, "¿Qué palabras describen el dibujo?", SENSORY_PIC)],
-  ["MM.2", "Usar palabras de los sentidos", (r) => choose(r, "", SENSE_WORDS)],
-  ["MM.3", "Agregar detalles descriptivos a las oraciones", (r) => choose(r, "", DESCRIPTIVE)],
-  ["MM.4", "Mejorar la oración con un verbo más preciso", (r) => choose(r, "", STRONG_VERB)],
-  ["MM.5", "Insertar un diálogo en un cuento", (r) => choose(r, "", DIALOGUE)],
+  ["detalles-1", (r) => choose(r, "¿Qué palabras describen el dibujo?", SENSORY_PIC)],
+  ["detalles-2", (r) => choose(r, "", SENSE_WORDS)],
+  ["detalles-3", (r) => choose(r, "", DESCRIPTIVE)],
+  ["detalles-4", (r) => choose(r, "", STRONG_VERB)],
+  ["detalles-5", (r) => choose(r, "", DIALOGUE)],
 
-  ["NN.1", "Unir oraciones: sujetos", (r) => choose(r, "", COMBINE_SUBJECTS)],
-  ["NN.2", "Unir oraciones: predicados", (r) => choose(r, "", COMBINE_PREDICATES)],
-  ["NN.3", "Unir oraciones: sujetos y predicados", (r) => choose(r, "", COMBINE_BOTH)],
-  ["NN.4", "Reescribir oraciones con un elemento introductorio", (r) => choose(r, "", INTRO_ELEMENTS)],
+  ["unir-oraciones-1", (r) => choose(r, "", COMBINE_SUBJECTS)],
+  ["unir-oraciones-2", (r) => choose(r, "", COMBINE_PREDICATES)],
+  ["unir-oraciones-3", (r) => choose(r, "", COMBINE_BOTH)],
+  ["unir-oraciones-4", (r) => choose(r, "", INTRO_ELEMENTS)],
 ];

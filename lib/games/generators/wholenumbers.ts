@@ -18,7 +18,7 @@ export function roman(n: number) {
   return out;
 }
 
-// 5.° A.6: números romanos (I, V, X, L, C, D, M).
+// Números romanos (I, V, X, L, C, D, M).
 export function romanNumerals(r: Rng, max = 2000): Question {
   const n = r.chance(0.4) ? r.int(1, 99) : r.chance(0.5) ? r.int(100, 999) : r.int(1000, max);
   if (r.chance(0.5)) return numQ(n, "Escribe el número romano con cifras.", roman(n), `${roman(n)} = ${n}. Si una letra menor va antes de una mayor, se resta (IV = 4, XC = 90).`, "a-cifras");
@@ -26,7 +26,7 @@ export function romanNumerals(r: Rng, max = 2000): Question {
   return choiceQ(r, `¿Cómo se escribe ${n} en números romanos?`, roman(n), wrong.map(roman), `${n} = ${roman(n)}.`, undefined, "a-romanos");
 }
 
-// 5.° B.7: sumar usando las propiedades (buscar sumandos que completen decenas o centenas).
+// Sumar usando las propiedades (buscar sumandos que completen decenas o centenas).
 export function addUsingProperties(r: Rng): Question {
   const round = r.pick([100, 100, 1000, 50]);
   const a = r.int(1, round - 1);
@@ -37,7 +37,7 @@ export function addUsingProperties(r: Rng): Question {
   return numQ(total, "Suma. Agrupa primero los números que forman un número redondo.", `${order.map(fmt).join(" + ")} = ?`, `${fmt(a)} + ${fmt(b)} = ${fmt(round)}; ${fmt(round)} + ${fmt(c)} = ${fmt(total)}. Las propiedades conmutativa y asociativa permiten cambiar el orden y agrupar.`);
 }
 
-// 5.° D.16: multiplicar usando las propiedades.
+// Multiplicar usando las propiedades.
 export function multUsingProperties(r: Rng): Question {
   const [a, b] = r.pick([[2, 5], [4, 25], [5, 20], [2, 50], [4, 5], [8, 125], [5, 4], [25, 8]]);
   const c = r.int(3, 49);
@@ -52,7 +52,7 @@ export function multUsingProperties(r: Rng): Question {
   return numQ(a * b * c, "Multiplica. Agrupa primero los factores que dan un número redondo.", `${order.join(" × ")} = ?`, `${a} × ${b} = ${a * b}; ${a * b} × ${c} = ${fmt(a * b * c)}.`, "asociativa");
 }
 
-// 5.° C.1: comprender las potencias de diez.
+// Comprender las potencias de diez.
 export function understandPowers(r: Rng): Question {
   const e = r.int(2, 6);
   const expanded = Array.from({ length: e }, () => "10").join(" × ");
@@ -62,7 +62,7 @@ export function understandPowers(r: Rng): Question {
   return numQ(e, "¿Qué exponente falta?", `${expanded} = 10 elevado a ?`, `El 10 se multiplica ${e} veces: ${pow10(e)}.`, "exponente");
 }
 
-// 5.° C.2: calcular potencias de diez.
+// Calcular potencias de diez.
 export function evaluatePowers(r: Rng): Question {
   const e = r.int(1, 7);
   const form = r.int(0, 2);
@@ -76,14 +76,14 @@ export function evaluatePowers(r: Rng): Question {
   return numQ(10 ** e, "Calcula la potencia de diez.", `${pow10(e)} = ?`, `${pow10(e)} es un 1 seguido de ${e} ${e === 1 ? "cero" : "ceros"}: ${fmt(10 ** e)}.`, `exp-${e}`);
 }
 
-// 5.° C.3: escribir potencias de diez con exponentes.
+// Escribir potencias de diez con exponentes.
 export function writePowers(r: Rng): Question {
   const e = r.int(1, 8);
   if (r.chance(0.4)) return numQ(e, "¿Qué exponente falta?", `${fmt(10 ** e)} = 10 elevado a ?`, `${fmt(10 ** e)} tiene ${e} ${e === 1 ? "cero" : "ceros"}: el exponente es ${e}.`, `exp-${e}`);
   return choiceQ(r, `Escribe ${fmt(10 ** e)} como potencia de diez.`, pow10(e), [pow10(e + 1), pow10(Math.max(1, e - 1) === e ? e + 2 : Math.max(1, e - 1)), pow10(e + 2), `${e}¹⁰`].filter((x) => x !== pow10(e)), `${fmt(10 ** e)} tiene ${e} ${e === 1 ? "cero" : "ceros"}: es ${pow10(e)}.`, undefined, `exp-${e}`);
 }
 
-// 5.° D.4: multiplicar un número natural por una potencia de diez.
+// Multiplicar un número natural por una potencia de diez.
 export function multByPower(r: Rng): Question {
   const e = r.int(1, 5);
   const n = r.int(2, r.pick([9, 99, 999]));
@@ -91,7 +91,7 @@ export function multByPower(r: Rng): Question {
   return numQ(n * 10 ** e, "Resuelve la multiplicación.", `${fmt(n)} × ${pow10(e)} = ?`, `${pow10(e)} = ${fmt(10 ** e)}; agregamos ${e} ${e === 1 ? "cero" : "ceros"}: ${fmt(n * 10 ** e)}.`, `exp-${e}`);
 }
 
-// 5.° E.2: dividir números que terminan en ceros (también con divisores que terminan en ceros).
+// Dividir números que terminan en ceros (también con divisores que terminan en ceros).
 export function divZeros2(r: Rng): Question {
   const d = r.int(2, 9);
   const q = r.int(2, 9);
@@ -115,7 +115,7 @@ function twoDigitDivision(r: Rng, minDigits: number, maxDigits: number) {
   }
 }
 
-// 5.° E.4: estimar cocientes con divisores de dos cifras (números compatibles).
+// Estimar cocientes con divisores de dos cifras (números compatibles).
 export function estimateQuotient2(r: Rng): Question {
   const dTens = r.int(2, 9);
   const qLead = r.int(2, 9);
@@ -125,7 +125,7 @@ export function estimateQuotient2(r: Rng): Question {
   return choiceQ(r, `Estima ${fmt(dividend)} ÷ ${d} con números compatibles.`, fmt(q), [q + (q >= 10 ? 10 : 1), q - (q >= 10 ? 10 : 1) || q + 2, q * 10, q >= 10 ? q / 10 : q + 3].map(fmt), `${d} ≈ ${dTens * 10} y ${fmt(dividend)} ≈ ${fmt(dTens * 10 * q)}; ${fmt(dTens * 10 * q)} ÷ ${dTens * 10} = ${fmt(q)}.`, `${fmt(dividend)} ÷ ${d} ≈ ?`);
 }
 
-// 5.° E.9 / E.16: probar un cociente y ajustarlo.
+// Probar un cociente y ajustarlo.
 export function adjustQuotient(r: Rng, askQuotient: boolean): Question {
   const d = r.int(12, 89);
   const q = r.int(2, 9);
@@ -142,7 +142,7 @@ export function adjustQuotient(r: Rng, askQuotient: boolean): Question {
 
 const parts = (n: number) => [...String(n)].map((d, i, all) => Number(d) * 10 ** (all.length - 1 - i)).filter(Boolean);
 
-// 5.° E.10: dividir entre números de dos cifras usando modelos de área.
+// Dividir entre números de dos cifras usando modelos de área.
 export function divAreaModel2(r: Rng): Question {
   for (;;) {
     const { d, q } = twoDigitDivision(r, 3, 4);
@@ -156,7 +156,7 @@ export function divAreaModel2(r: Rng): Question {
   }
 }
 
-// 5.° E.11: dividir entre números de dos cifras usando cocientes parciales.
+// Dividir entre números de dos cifras usando cocientes parciales.
 export function partialQuotients2(r: Rng): Question {
   for (;;) {
     const { d, q } = twoDigitDivision(r, 3, 4);
@@ -176,7 +176,7 @@ export function partialQuotients2(r: Rng): Question {
   }
 }
 
-// 5.° E.12 / E.14: dividir entre números de dos cifras (exacta, o con cociente y residuo).
+// Dividir entre números de dos cifras (exacta, o con cociente y residuo).
 export function divideBy2(r: Rng, minDigits: number, maxDigits: number, exact = false): Question {
   const { d, q } = twoDigitDivision(r, minDigits, maxDigits);
   const rem = exact || r.chance(0.5) ? 0 : r.int(1, d - 1);
@@ -186,7 +186,7 @@ export function divideBy2(r: Rng, minDigits: number, maxDigits: number, exact = 
   return r.chance(0.5) ? numQ(q, `Divide ${fmt(dividend)} ÷ ${d}. ¿Cuál es el cociente?`, `${fmt(dividend)} ÷ ${d}`, why, "cociente") : numQ(rem, `Divide ${fmt(dividend)} ÷ ${d}. ¿Cuál es el residuo?`, `${fmt(dividend)} ÷ ${d}`, why, "residuo");
 }
 
-// 5.° E.13 / E.15: problemas de división entre números de dos cifras.
+// Problemas de división entre números de dos cifras.
 export function divideBy2Problem(r: Rng, minDigits: number, maxDigits: number): Question {
   const { d, q } = twoDigitDivision(r, minDigits, maxDigits);
   const total = fmt(d * q);
@@ -201,7 +201,7 @@ export function divideBy2Problem(r: Rng, minDigits: number, maxDigits: number): 
   return numQ(q, text, undefined, `${total} ÷ ${d} = ${fmt(q)}.`);
 }
 
-// 5.° E.17: relacionar la multiplicación y la división.
+// Relacionar la multiplicación y la división.
 export function relateMultDivBig(r: Rng): Question {
   const a = r.int(12, 60);
   const b = r.int(12, 60);
@@ -211,7 +211,7 @@ export function relateMultDivBig(r: Rng): Question {
   return numQ(answer, "Usa la multiplicación para completar.", `${a} × ${b} = ${fmt(p)}\n${text}`, `La división es la operación inversa: ${fmt(p)} ÷ ${a} = ${b} y ${fmt(p)} ÷ ${b} = ${a}.`);
 }
 
-// 5.° E.18: completar la división (divisores de dos cifras).
+// Completar la división (divisores de dos cifras).
 export function completeDivision2(r: Rng): Question {
   const { d, q } = twoDigitDivision(r, 3, 4);
   const form = r.int(0, 2);
@@ -229,7 +229,7 @@ function primeFactors(n: number) {
   return out;
 }
 
-// 5.° F.4: descomposición en factores primos.
+// Descomposición en factores primos.
 export function primeFactorization(r: Rng, max = 120): Question {
   for (;;) {
     const n = r.int(12, max);
@@ -253,7 +253,7 @@ export function primeFactorization(r: Rng, max = 120): Question {
   }
 }
 
-// 5.° F.8: mínimo común múltiplo.
+// Mínimo común múltiplo.
 export function leastCommonMultiple(r: Rng, max = 12): Question {
   for (;;) {
     const [a, b] = distinct(r, 2, 2, max);
@@ -264,12 +264,12 @@ export function leastCommonMultiple(r: Rng, max = 12): Question {
   }
 }
 
-// 5.° G.1: sumar, restar, multiplicar y dividir números naturales.
+// Sumar, restar, multiplicar y dividir números naturales.
 export function mixedFourBig(r: Rng): Question {
   return r.pick([() => addLarge(r, 5, 6), () => subMulti(r, 5, 6), () => areaMult(r, 2, 2, 3, "plain"), () => divideBy2(r, 3, 4, true)])();
 }
 
-// 5.° D.18: comparar productos de números naturales (sin calcular todo).
+// Comparar productos de números naturales (sin calcular todo).
 export function compareProducts(r: Rng): Question {
   const a = nDigits(r, 2);
   const b = nDigits(r, 2);

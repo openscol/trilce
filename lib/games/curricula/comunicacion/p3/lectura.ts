@@ -1,29 +1,11 @@
 import { choose, order, readPassage, type ChoiceItem, type OrderItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { pool, pt, read, sorter, w } from "./helpers";
 import type { Row } from "./row";
 
-// Estrategias de lectura (IXL 3rd grade ELA, H-V). Lecturas propias, con
-// temas cercanos a los alumnos (Perú y Latinoamérica). Las ilustraciones de
-// IXL se reemplazan por descripciones y emojis.
+// 3.° de Primaria · banco de comprensión con lecturas propias, cercanas a los
+// alumnos (Perú y Latinoamérica), descritas con texto y emojis en lugar de
+// ilustraciones.
 
-export const SECTIONS: Section[] = [
-  { id: "H", name: "Idea principal", icon: "💡" },
-  { id: "I", name: "Inferencias y enseñanza", icon: "🕵️" },
-  { id: "J", name: "Propósito y punto de vista del autor", icon: "✍️" },
-  { id: "K", name: "Personajes", icon: "🎭" },
-  { id: "L", name: "Elementos del cuento", icon: "📖" },
-  { id: "M", name: "Estructura del texto", icon: "🧱" },
-  { id: "N", name: "Detalles sensoriales", icon: "👃" },
-  { id: "O", name: "Recursos literarios", icon: "✨" },
-  { id: "P", name: "Elementos visuales", icon: "🖼️" },
-  { id: "Q", name: "Partes del texto", icon: "🔖" },
-  { id: "R", name: "Elementos de la poesía", icon: "🎶" },
-  { id: "S", name: "Textos literarios: nivel 1", icon: "📗" },
-  { id: "T", name: "Textos literarios: nivel 2", icon: "📘" },
-  { id: "U", name: "Textos informativos: nivel 1", icon: "📰" },
-  { id: "V", name: "Textos informativos: nivel 2", icon: "🗞️" },
-];
 
 const MAIN = "¿Cuál es la idea principal que unen estos detalles?";
 const KEY_DETAILS: ChoiceItem[] = [
@@ -499,63 +481,63 @@ const INFO2 = {
 };
 
 export const ROWS: Row[] = [
-  ["H.1", "Usar detalles clave para determinar la idea principal", (r) => choose(r, "", KEY_DETAILS)],
-  ["H.2", "Determinar la idea principal de un texto", (r) => readPassage(r, MAIN_PASSAGES, false)],
-  ["H.3", "Identificar y analizar la idea principal de un texto", (r) => readPassage(r, MAIN_ANALYZE, false)],
+  ["idea-principal-1", (r) => choose(r, "", KEY_DETAILS)],
+  ["idea-principal-2", (r) => readPassage(r, MAIN_PASSAGES, false)],
+  ["idea-principal-3", (r) => readPassage(r, MAIN_ANALYZE, false)],
 
-  ["I.1", "¿Qué título de libro corresponde al dibujo?", (r) => choose(r, "¿Qué título de libro corresponde al dibujo?", BOOK_TITLES)],
-  ["I.2", "Hacer inferencias a partir de un texto", (r) => choose(r, "", INFER)],
-  ["I.3", "Hacer inferencias e identificar los detalles que las apoyan", (r) => readPassage(r, INFER_SUPPORT, false)],
-  ["I.4", "Hacer predicciones sobre un cuento", (r) => choose(r, "", PREDICT)],
-  ["I.5", "Determinar la enseñanza de mitos, fábulas y leyendas", (r) => readPassage(r, FABLES, false)],
+  ["inferencias-1", (r) => choose(r, "¿Qué título de libro corresponde al dibujo?", BOOK_TITLES)],
+  ["inferencias-2", (r) => choose(r, "", INFER)],
+  ["inferencias-3", (r) => readPassage(r, INFER_SUPPORT, false)],
+  ["inferencias-4", (r) => choose(r, "", PREDICT)],
+  ["ensenanza", (r) => readPassage(r, FABLES, false)],
 
-  ["J.1", "Identificar el propósito del autor: distintos medios", (r) => choose(r, "", MEDIA)],
-  ["J.2", "Identificar el propósito del autor: textos", (r) => choose(r, "", PASSAGE_PURPOSE)],
-  ["J.3", "Distinguir puntos de vista", (r) => choose(r, "", POINT_OF_VIEW)],
-  ["J.4", "Comparar la información de dos textos informativos", (r) => choose(r, "", TWO_TEXTS)],
-  ["J.5", "Analizar textos que buscan convencer", (r) => readPassage(r, PERSUASIVE, false)],
+  ["proposito-1", (r) => choose(r, "", MEDIA)],
+  ["proposito-2", (r) => choose(r, "", PASSAGE_PURPOSE)],
+  ["proposito-3", (r) => choose(r, "", POINT_OF_VIEW)],
+  ["comparar-textos-1", (r) => choose(r, "", TWO_TEXTS)],
+  ["comparar-textos-2", (r) => readPassage(r, PERSUASIVE, false)],
 
-  ["K.1", "Usar acciones y diálogos para entender a los personajes", (r) => choose(r, "", TRAITS)],
+  ["personajes-1", (r) => choose(r, "", TRAITS)],
 
-  ["L.1", "Identificar los elementos del cuento", (r) => readPassage(r, STORY_ELEMENTS, false)],
+  ["personajes-2", (r) => readPassage(r, STORY_ELEMENTS, false)],
 
-  ["M.1", "Determinar el orden de los hechos en textos informativos", (r) => order(r, "Ordena los pasos.", INFO_ORDER)],
-  ["M.2", "Comparar y contrastar en textos informativos", (r) => readPassage(r, COMPARE, false)],
-  ["M.3", "Relacionar causas con efectos", (r) => choose(r, "¿Qué efecto corresponde a la causa?", CAUSE_EFFECT)],
-  ["M.4", "Relacionar causas y efectos en textos informativos", (r) => choose(r, "", CAUSE_INFO)],
-  ["M.5", "Relacionar problemas con sus soluciones", (r) => choose(r, "¿Qué solución corresponde al problema?", PROBLEM_SOLUTION)],
-  ["M.6", "Identificar y analizar estructuras de texto", (r) => choose(r, "", STRUCTURES)],
+  ["orden-hechos-1", (r) => order(r, "Ordena los pasos.", INFO_ORDER)],
+  ["orden-hechos-2", (r) => readPassage(r, COMPARE, false)],
+  ["causa-efecto-1", (r) => choose(r, "¿Qué efecto corresponde a la causa?", CAUSE_EFFECT)],
+  ["causa-efecto-2", (r) => choose(r, "", CAUSE_INFO)],
+  ["causa-efecto-3", (r) => choose(r, "¿Qué solución corresponde al problema?", PROBLEM_SOLUTION)],
+  ["estructuras", (r) => choose(r, "", STRUCTURES)],
 
-  ["N.1", "Clasificar detalles sensoriales", (r) => choose(r, "", SENSES)],
-  ["N.2", "Identificar detalles sensoriales", (r) => choose(r, "", SENSORY_ID)],
+  ["sentidos-1", (r) => choose(r, "", SENSES)],
+  ["sentidos-2", (r) => choose(r, "", SENSORY_ID)],
 
-  ["O.1", "Símiles con dibujos", (r) => choose(r, "¿Qué símil corresponde al dibujo?", SIMILE_PICS)],
-  ["O.2", "Determinar el significado de los símiles", (r) => choose(r, "", SIMILE_MEANING)],
+  ["simil-1", (r) => choose(r, "¿Qué símil corresponde al dibujo?", SIMILE_PICS)],
+  ["simil-2", (r) => choose(r, "", SIMILE_MEANING)],
 
-  ["P.1", "Comparar ilustraciones de mitos", (r) => choose(r, "", ILLUSTRATIONS)],
+  ["ilustraciones", (r) => choose(r, "", ILLUSTRATIONS)],
 
-  ["Q.1", "Usar las partes de un texto", (r) => choose(r, "", FEATURES)],
+  ["partes-texto", (r) => choose(r, "", FEATURES)],
 
-  ["R.1", "Señalar el esquema de rima", (r) => choose(r, "", RHYME_SCHEMES)],
-  ["R.2", "Identificar tipos de poemas", (r) => choose(r, "", POEM_TYPES)],
+  ["poesia-1", (r) => choose(r, "", RHYME_SCHEMES)],
+  ["poesia-2", (r) => choose(r, "", POEM_TYPES)],
 
-  ["S.1", "Leer fantasía con ilustraciones", (r) => readPassage(r, LIT1.fantasy, false)],
-  ["S.2", "Leer ficción histórica con ilustraciones", (r) => readPassage(r, LIT1.historical, false)],
-  ["S.3", "Leer ciencia ficción con ilustraciones", (r) => readPassage(r, LIT1.scifi, false)],
-  ["S.4", "Leer cuentos realistas con ilustraciones", (r) => readPassage(r, LIT1.realistic, false)],
+  ["ilustrados-1", (r) => readPassage(r, LIT1.fantasy, false)],
+  ["ilustrados-2", (r) => readPassage(r, LIT1.historical, false)],
+  ["ilustrados-3", (r) => readPassage(r, LIT1.scifi, false)],
+  ["ilustrados-4", (r) => readPassage(r, LIT1.realistic, false)],
 
-  ["T.1", "Leer cuentos realistas: grupo 1", (r) => readPassage(r, LIT2.realistic1, false)],
-  ["T.2", "Leer cuentos realistas: grupo 2", (r) => readPassage(r, LIT2.realistic2, false)],
-  ["T.3", "Leer ficción histórica", (r) => readPassage(r, LIT2.historical, false)],
-  ["T.4", "Leer poesía", (r) => readPassage(r, LIT2.poetry, false)],
+  ["realistas-1", (r) => readPassage(r, LIT2.realistic1, false)],
+  ["realistas-2", (r) => readPassage(r, LIT2.realistic2, false)],
+  ["realistas-3", (r) => readPassage(r, LIT2.historical, false)],
+  ["realistas-4", (r) => readPassage(r, LIT2.poetry, false)],
 
-  ["U.1", "Leer sobre animales", (r) => readPassage(r, INFO1.animals, false)],
-  ["U.2", "Leer sobre alimentos", (r) => readPassage(r, INFO1.food, false)],
-  ["U.3", "Leer sobre arte, música y tradiciones", (r) => readPassage(r, INFO1.art, false)],
-  ["U.4", "Leer sobre deportes y pasatiempos", (r) => readPassage(r, INFO1.sports, false)],
+  ["informativos-1-1", (r) => readPassage(r, INFO1.animals, false)],
+  ["informativos-1-2", (r) => readPassage(r, INFO1.food, false)],
+  ["informativos-1-3", (r) => readPassage(r, INFO1.art, false)],
+  ["informativos-1-4", (r) => readPassage(r, INFO1.sports, false)],
 
-  ["V.1", "Leer sobre personajes famosos", (r) => readPassage(r, INFO2.people, false)],
-  ["V.2", "Leer sobre lugares famosos", (r) => readPassage(r, INFO2.places, false)],
-  ["V.3", "Leer sobre negocios y tecnología", (r) => readPassage(r, INFO2.business, false)],
-  ["V.4", "Leer sobre ciencia y naturaleza", (r) => readPassage(r, INFO2.science, false)],
+  ["informativos-2-1", (r) => readPassage(r, INFO2.people, false)],
+  ["informativos-2-2", (r) => readPassage(r, INFO2.places, false)],
+  ["informativos-2-3", (r) => readPassage(r, INFO2.business, false)],
+  ["informativos-2-4", (r) => readPassage(r, INFO2.science, false)],
 ];

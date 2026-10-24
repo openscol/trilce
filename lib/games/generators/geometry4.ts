@@ -38,13 +38,13 @@ const QUAD_FACTS: [string, boolean][] = [
   ["Todo cuadrilátero con cuatro ángulos rectos es un rectángulo.", true],
 ];
 
-// 5.° QQ.10: describir las relaciones entre los cuadriláteros.
+// Describir las relaciones entre los cuadriláteros.
 export function quadRelations(r: Rng): Question {
   const [text, ok] = r.pick(QUAD_FACTS);
   return trueFalse("¿Verdadero o falso?", ok, "Cuadrado: 4 lados iguales y 4 ángulos rectos. Rectángulo: 4 ángulos rectos. Rombo: 4 lados iguales. Paralelogramo: 2 pares de lados paralelos. Trapecio: un solo par.", text);
 }
 
-// 5.° RR.1: ¿es un polígono?
+// ¿es un polígono?
 export function isPolygon(r: Rng): Question {
   const yes = r.chance(0.5);
   if (yes) {
@@ -56,7 +56,7 @@ export function isPolygon(r: Rng): Question {
   return yesNo("¿Esta figura es un polígono?", false, "No: la figura está abierta. Un polígono es una figura cerrada.", { kind: "polygon", points: IRREGULAR[n], open: true }, "abierta");
 }
 
-// 5.° RR.2: número de lados de los polígonos.
+// Número de lados de los polígonos.
 export function polygonSides(r: Rng): Question {
   const n = r.int(3, 10);
   const form = r.int(0, 2);
@@ -68,7 +68,7 @@ export function polygonSides(r: Rng): Question {
   return choiceQ(r, "¿Cómo se llama este polígono? (Cuenta sus lados.)", cap(POLY_NAMES[n]), near.map(cap), `Tiene ${n} lados: es un ${POLY_NAMES[n]}.`, { kind: "polygon", points: regular(n) }, "dibujo");
 }
 
-// 5.° RR.3: polígonos regulares e irregulares.
+// Polígonos regulares e irregulares.
 export function regularIrregular(r: Rng): Question {
   const isRegular = r.chance(0.5);
   const n = isRegular ? r.pick([3, 4, 5, 6, 7, 8, 10]) : r.pick([3, 4, 5, 6, 8]);
@@ -95,7 +95,7 @@ const VENN_ITEMS: [string, boolean, boolean][] = [
 ];
 const ZONES = ["Solo en «Cuadriláteros»", "En el centro (los dos)", "Solo en «Polígonos regulares»", "Fuera de los dos círculos"];
 
-// 5.° RR.4: clasificar polígonos en diagramas de Venn.
+// Clasificar polígonos en diagramas de Venn.
 export function polygonVenn(r: Rng): Question {
   const want = r.int(0, 3);
   const zone = (q: boolean, reg: boolean) => (q && reg ? 1 : q ? 0 : reg ? 2 : 3);
@@ -104,7 +104,7 @@ export function polygonVenn(r: Rng): Question {
   return fixedQ(`¿Dónde va ${name} en el diagrama?`, ZONES, ZONES[want], `${name[0].toUpperCase()}${name.slice(1)} ${q ? "tiene 4 lados" : "no tiene 4 lados"} y ${reg ? "es regular (lados y ángulos iguales)" : "no es regular"}.`, { kind: "venn", left: [], both: [], right: [], leftLabel: "Cuadriláteros", rightLabel: "Polígonos regulares" }, ZONES[want]);
 }
 
-// 5.° RR.5: propiedades de los polígonos.
+// Propiedades de los polígonos.
 export function polygonProperties(r: Rng): Question {
   const n = r.int(3, 10);
   const name = POLY_NAMES[n];
@@ -124,7 +124,7 @@ const RECT: Pt[] = [[2, 22], [98, 22], [98, 78], [2, 78]];
 const rect = (w: string, h: string): Visual => ({ kind: "polygon", points: RECT, sideLabels: [w, h, "", ""], rightAngles: [0, 1, 2, 3] });
 const TEN = 100; // un décimo, en milésimos
 
-// 5.° SS.2 / TT.9: perímetro (y área) de rectángulos con lados decimales.
+// Perímetro (y área) de rectángulos con lados decimales.
 export function decimalRect(r: Rng, what: "perimetro" | "area" | "both"): Question {
   const kind = what === "both" ? r.pick(["perimetro", "area"] as const) : what;
   const u = r.pick(["cm", "m"]);
@@ -135,7 +135,7 @@ export function decimalRect(r: Rng, what: "perimetro" | "area" | "both"): Questi
   return decQ(r, `¿Cuál es el área del rectángulo, en ${u}²?`, (w * h) / 1000, `${d3(w)} × ${d3(h)} = ${d3((w * h) / 1000)} ${u}².`, visual, "area", [2 * (w + h), w + h, (w * h) / 100, (w * h) / 10000].filter(Number.isInteger));
 }
 
-// 5.° SS.3 / TT.8: perímetro (y área) de rectángulos con lados fraccionarios.
+// Perímetro (y área) de rectángulos con lados fraccionarios.
 export function fractionRect(r: Rng, what: "perimetro" | "area" | "both"): Question {
   const kind = what === "both" ? r.pick(["perimetro", "area"] as const) : what;
   const u = r.pick(["m", "km"]);
@@ -166,7 +166,7 @@ function gridFigure(r: Rng): { points: Pt[]; area: number; perim: number } {
   return { points: [P(0, 0), P(W - a, 0), P(W - a, b), P(W, b), P(W, H), P(0, H)], area: W * H - a * b, perim: 2 * (W + H) };
 }
 
-// 5.° SS.4 / TT.6: perímetro y área de figuras en cuadrículas.
+// Perímetro y área de figuras en cuadrículas.
 export function gridMeasure(r: Rng, what: "perimetro" | "area"): Question {
   const f = gridFigure(r);
   const visual: Visual = { kind: "polygon", points: f.points, grid: true };
@@ -174,7 +174,7 @@ export function gridMeasure(r: Rng, what: "perimetro" | "area"): Question {
   return numQ(f.area, "Cada casilla es 1 unidad cuadrada. ¿Cuál es el área de la figura, en unidades cuadradas?", visual, `Contamos las casillas de adentro: ${f.area} unidades cuadradas.`, "area");
 }
 
-// 5.° TT.10: área y perímetro, problemas de varios pasos con conversiones.
+// Área y perímetro, problemas de varios pasos con conversiones.
 export function areaConversionProblem(r: Rng): Question {
   const n = r.pick(NAMES);
   const w = r.int(2, 9);
@@ -208,7 +208,7 @@ function staircase(r: Rng): number[][] {
   return grid;
 }
 
-// 5.° UU.1 / UU.9: volumen de figuras irregulares hechas con cubos unitarios.
+// Volumen de figuras irregulares hechas con cubos unitarios.
 export function cubeFigureVolume(r: Rng, compound = false): Question {
   if (compound) {
     const l = r.int(3, 5);
@@ -224,7 +224,7 @@ export function cubeFigureVolume(r: Rng, compound = false): Question {
   return numQ(total, "Cada cubo mide 1 unidad cúbica; debajo de cada cubo hay otro cubo o el piso. ¿Cuál es el volumen de la figura, en unidades cúbicas?", { kind: "cubes3d", heights }, `Contamos los cubos por columnas: ${heights.map((row) => row.join(" + ")).join(" + ")} = ${total}.`, "irregular");
 }
 
-// 5.° UU.2 / UU.3: volumen de prismas rectangulares hechos con cubos unitarios.
+// Volumen de prismas rectangulares hechos con cubos unitarios.
 export function cubePrismVolume(r: Rng, expression: boolean): Question {
   const l = r.int(2, 5);
   const w = r.int(2, 4);
@@ -235,7 +235,7 @@ export function cubePrismVolume(r: Rng, expression: boolean): Question {
   return numQ(l * w * h, "El prisma está hecho con cubos de 1 cm³. ¿Cuál es su volumen, en cm³?", visual, `Cada capa tiene ${l} × ${w} = ${l * w} cubos y hay ${h} capas: ${l * w} × ${h} = ${l * w * h} cm³.`);
 }
 
-// 5.° UU.4 – UU.8: volumen de cubos y prismas rectangulares (fórmula y problemas).
+// Volumen de cubos y prismas rectangulares (fórmula y problemas).
 export function prismVolume(r: Rng, mode: "cubesWord" | "formula" | "word" | "compare" | "multiStep"): Question {
   const l = r.int(2, 12);
   const w = r.int(2, 10);
@@ -269,7 +269,7 @@ export function prismVolume(r: Rng, mode: "cubesWord" | "formula" | "word" | "co
   return numQ(v / s ** 3, `Una caja mide ${l} cm × ${w} cm × ${h} cm. ¿Cuántos cubos de ${s} cm de arista caben exactamente dentro?`, undefined, `A lo largo caben ${l / s}, a lo ancho ${w / s} y a lo alto ${h / s}: ${l / s} × ${w / s} × ${h / s} = ${fmt(v / s ** 3)}.`, "cubos-que-caben");
 }
 
-// 5.° UU.10: volumen de cubos y prismas con lados decimales.
+// Volumen de cubos y prismas con lados decimales.
 export function decimalVolume(r: Rng): Question {
   const l = r.int(2, 9);
   const w = r.int(2, 9);
@@ -284,7 +284,7 @@ const CUBIC: [string, string][] = [
   ["el volumen de una pecera", "dm³"], ["el volumen de una caja de leche", "dm³"], ["el volumen de un balde", "dm³"],
 ];
 
-// 5.° UU.11: comparar y aplicar las unidades cúbicas.
+// Comparar y aplicar las unidades cúbicas.
 export function cubicUnits(r: Rng): Question {
   const form = r.int(0, 2);
   if (form === 0) {

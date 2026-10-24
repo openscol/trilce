@@ -8,7 +8,7 @@ import { NAMES, type Frac, choiceQ, fixedQ, fmt, fmul, fracQ, fshow, mixed, numQ
 
 type Pt = [number, number];
 
-// 6.° DD.4: nombrar ángulos.
+// Nombrar ángulos.
 export function nameAngles(r: Rng): Question {
   const [a, b, c] = r.pick([["A", "B", "C"], ["P", "Q", "R"], ["M", "N", "O"], ["D", "E", "F"], ["R", "S", "T"], ["X", "Y", "Z"]]);
   const visual: Visual = { kind: "geoFigure", figure: "angulo", labels: [a, b, c], rotation: r.pick([0, 0, 15, -15]) };
@@ -17,7 +17,7 @@ export function nameAngles(r: Rng): Question {
   return choiceQ(r, "¿Cómo se nombra este ángulo?", good, [`∠${b}${a}${c}`, `∠${a}${c}${b}`, `∠${b}${c}${a}`, `∠${c}${a}${b}`], `La letra del vértice (${b}) va siempre en el medio: ${good}.`, visual, "nombre");
 }
 
-// 6.° DD.5: ángulos complementarios y suplementarios.
+// Ángulos complementarios y suplementarios.
 export function complementSupplement(r: Rng): Question {
   const comp = r.chance(0.5);
   const total = comp ? 90 : 180;
@@ -45,13 +45,13 @@ const PAIRS: [string, string, string][] = [
 ];
 const PAIR_NAMES = ["Complementarios", "Suplementarios", "Adyacentes", "Opuestos por el vértice", "Congruentes"];
 
-// 6.° DD.6: identificar pares de ángulos.
+// Identificar pares de ángulos.
 export function identifyAnglePairs(r: Rng): Question {
   const [text, answer, why] = r.pick(PAIRS);
   return fixedQ("¿Cómo se llaman estos ángulos?", PAIR_NAMES, answer, why, text, answer.toLowerCase());
 }
 
-// 6.° DD.7: hallar medidas de ángulos complementarios, suplementarios, opuestos y adyacentes.
+// Hallar medidas de ángulos complementarios, suplementarios, opuestos y adyacentes.
 export function anglePairMeasures(r: Rng): Question {
   const a = r.int(4, 34) * 5 + r.pick([0, 1, 2]);
   const form = r.int(0, 3);
@@ -61,7 +61,7 @@ export function anglePairMeasures(r: Rng): Question {
   return numQ(180 - a, `Dos rectas se cruzan y uno de los ángulos mide ${a}°. ¿Cuánto mide el ángulo adyacente (el vecino)?`, undefined, `Los vecinos forman una línea recta: 180 − ${a} = ${180 - a}°.`, "adyacentes");
 }
 
-// 6.° EE.3: desigualdad triangular.
+// Desigualdad triangular.
 export function triangleInequality(r: Rng): Question {
   const a = r.int(2, 15);
   const b = r.int(2, 15);
@@ -72,7 +72,7 @@ export function triangleInequality(r: Rng): Question {
   return yesNo(`¿Se puede formar un triángulo con lados de ${a} cm, ${b} cm y ${c} cm?`, ok, `Los dos lados menores deben sumar más que el mayor: ${sides[0]} + ${sides[1]} = ${sides[0] + sides[1]}, que ${ok ? "sí" : "no"} es mayor que ${sides[2]}.`);
 }
 
-// 6.° EE.7 / EE.8 / EE.9 / EE.10: ángulos que faltan en triángulos, cuadriláteros y polígonos.
+// Ángulos que faltan en triángulos, cuadriláteros y polígonos.
 export function missingAngle(r: Rng, kind: "triangle" | "special" | "quad" | "polygon"): Question {
   if (kind === "triangle") {
     const a = r.int(4, 22) * 5;
@@ -122,14 +122,14 @@ const SOLIDS: { name: string; poly: boolean; faces: number; edges: number; verti
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 const the = (name: string) => (/^(pirámide|esfera)/.test(name) ? `la ${name}` : `el ${name}`);
 
-// 6.° FF.1: identificar poliedros.
+// Identificar poliedros.
 export function identifyPolyhedra(r: Rng): Question {
   const yes = r.chance(0.5);
   const s = r.pick(SOLIDS.filter((x) => x.poly === yes));
   return yesNo("¿Este cuerpo es un poliedro?", yes, yes ? `Sí: todas las caras de ${the(s.name)} son planas (polígonos).`.replace(" de el ", " del ") : `No: ${the(s.name)} tiene una superficie curva.`, { kind: "solids", names: [s.name] }, s.name);
 }
 
-// 6.° FF.2: ¿qué figura se describe?
+// ¿qué figura se describe?
 export function describedSolid(r: Rng): Question {
   const s = r.pick(SOLIDS);
   const clue = s.poly && r.chance(0.5) ? `Tiene ${s.faces} caras, ${s.edges} aristas y ${s.vertices} vértices${s.name === "cubo" ? ", y todas sus caras son cuadrados" : s.name === "prisma rectangular" ? ", y sus caras son rectángulos" : ""}.` : s.clue;
@@ -137,7 +137,7 @@ export function describedSolid(r: Rng): Question {
   return choiceQ(r, `¿Qué cuerpo geométrico se describe? «${clue}»`, cap(s.name), pool.map((x) => cap(x.name)), `Es ${the(s.name)}.`, undefined, s.name);
 }
 
-// 6.° FF.4: vistas de frente, de lado y desde arriba.
+// Vistas de frente, de lado y desde arriba.
 export function solidViews(r: Rng): Question {
   const rows = r.int(2, 3);
   const cols = r.int(2, 3);
@@ -172,7 +172,7 @@ const RHOMBUS: Visual = { kind: "polygon", points: [[50, 10], [92, 50], [50, 90]
 
 export type AreaShape = "parallelogram" | "triangle" | "trapezoid" | "rhombus";
 
-// 6.° GG.3 – GG.10: áreas de paralelogramos, triángulos, trapecios y rombos.
+// Áreas de paralelogramos, triángulos, trapecios y rombos.
 // `understand`: la pregunta guía el porqué de la fórmula.
 export function shapeArea(r: Rng, shapes: AreaShape[], understand = false): Question {
   const shape = r.pick(shapes);
@@ -200,7 +200,7 @@ export function shapeArea(r: Rng, shapes: AreaShape[], understand = false): Ques
   return numQ((d1 * d2) / 2, `Las diagonales del rombo miden ${d1} ${u} y ${d2} ${u}. ¿Cuál es su área, en ${u}²?`, RHOMBUS, `A = diagonal × diagonal ÷ 2 = ${d1} × ${d2} ÷ 2 = ${(d1 * d2) / 2} ${u}².`, shape);
 }
 
-// 6.° GG.12: área de figuras compuestas con triángulos (un rectángulo con un techo triangular).
+// Área de figuras compuestas con triángulos (un rectángulo con un techo triangular).
 export function compoundWithTriangle(r: Rng): Question {
   const w = r.int(2, 9) * 2;
   const h = r.int(3, 10);
@@ -210,7 +210,7 @@ export function compoundWithTriangle(r: Rng): Question {
   return numQ(area, `La figura es un rectángulo de ${w} m de ancho y ${h} m de alto, con un triángulo encima de ${w} m de base y ${roof} m de altura. ¿Cuál es el área total, en m²?`, visual, `Rectángulo: ${w} × ${h} = ${w * h}; triángulo: ${w} × ${roof} ÷ 2 = ${(w * roof) / 2}; total ${area} m².`);
 }
 
-// 6.° GG.14: área entre dos triángulos.
+// Área entre dos triángulos.
 export function areaBetweenTriangles(r: Rng): Question {
   const B = r.int(5, 12) * 2;
   const H = r.int(4, 12);
@@ -219,7 +219,7 @@ export function areaBetweenTriangles(r: Rng): Question {
   return numQ((B * H) / 2 - (b * h) / 2, `Un triángulo grande tiene ${B} cm de base y ${H} cm de altura. Dentro hay un triángulo pequeño de ${b} cm de base y ${h} cm de altura. ¿Cuál es el área de la parte que queda entre los dos, en cm²?`, undefined, `Grande: ${B} × ${H} ÷ 2 = ${(B * H) / 2}; pequeño: ${b} × ${h} ÷ 2 = ${(b * h) / 2}; diferencia ${(B * H) / 2 - (b * h) / 2} cm².`);
 }
 
-// 6.° GG.17: áreas de cuadriláteros y triángulos en problemas.
+// Áreas de cuadriláteros y triángulos en problemas.
 export function areaWordProblem(r: Rng): Question {
   const name = r.pick(NAMES);
   const b = r.int(2, 12) * 2;
@@ -234,7 +234,7 @@ export function areaWordProblem(r: Rng): Question {
   return numQ(answer, text, undefined, `${why} = ${answer}.`);
 }
 
-// 6.° GG (checkpoint): área de polígonos.
+// Área de polígonos.
 export function polygonAreaReview(r: Rng): Question {
   return r.pick([() => shapeArea(r, ["parallelogram", "triangle", "trapezoid", "rhombus"]), () => compoundWithTriangle(r), () => areaWordProblem(r), () => areaBetweenTriangles(r)])();
 }
@@ -242,7 +242,7 @@ export function polygonAreaReview(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Área de superficie y volumen
 
-// 6.° HH.2: volumen de cubos y prismas con lados fraccionarios.
+// Volumen de cubos y prismas con lados fraccionarios.
 export function fractionVolume(r: Rng): Question {
   const d = r.pick([2, 3, 4]);
   const a: Frac = r.chance(0.5) ? [r.int(1, 2) * d + r.int(1, d - 1), d] : [r.int(1, d - 1), d];
@@ -253,7 +253,7 @@ export function fractionVolume(r: Rng): Question {
   return fracQ(r, `Un prisma rectangular mide ${l} m de largo, ${w} m de ancho y ${text} m de altura. ¿Cuál es su volumen, en m³?`, v, `${l} × ${w} = ${l * w}; ${l * w} × ${text} = ${fshow(v)} m³.`, undefined, undefined, [fmul(a, [l + w, 1]), [l * w + a[0], a[1]]]);
 }
 
-// 6.° HH.4: área de superficie de cubos y prismas rectangulares.
+// Área de superficie de cubos y prismas rectangulares.
 export function surfaceAreaPrism(r: Rng): Question {
   if (r.chance(0.3)) {
     const s = r.int(2, 12);
@@ -266,7 +266,7 @@ export function surfaceAreaPrism(r: Rng): Question {
 
 const TRIPLES: [number, number, number][] = [[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15], [8, 15, 17]];
 
-// 6.° HH.5 / HH.6: volumen y área de superficie de prismas triangulares (base: triángulo rectángulo).
+// Volumen y área de superficie de prismas triangulares (base: triángulo rectángulo).
 export function triangularPrism(r: Rng, what: "volumen" | "superficie"): Question {
   const [a, b, c] = r.pick(TRIPLES);
   const len = r.int(3, 12);
@@ -276,7 +276,7 @@ export function triangularPrism(r: Rng, what: "volumen" | "superficie"): Questio
   return numQ(area, `Un prisma triangular tiene como base un triángulo rectángulo de lados ${a} cm, ${b} cm y ${c} cm, y mide ${len} cm de largo. ¿Cuál es su área de superficie, en cm²?`, { kind: "solids", names: ["prisma triangular"] }, `Dos bases: 2 × (${a} × ${b} ÷ 2) = ${2 * base}; tres rectángulos: (${a} + ${b} + ${c}) × ${len} = ${(a + b + c) * len}; total ${fmt(area)} cm².`);
 }
 
-// 6.° HH.7: área de superficie de pirámides (base cuadrada).
+// Área de superficie de pirámides (base cuadrada).
 export function surfaceAreaPyramid(r: Rng): Question {
   const s = r.int(2, 12);
   const slant = r.int(3, 15);
@@ -284,7 +284,7 @@ export function surfaceAreaPyramid(r: Rng): Question {
   return numQ(area, `Una pirámide tiene una base cuadrada de ${s} cm de lado. Cada cara triangular tiene ${s} cm de base y ${slant} cm de altura. ¿Cuál es su área de superficie, en cm²?`, { kind: "solids", names: ["pirámide cuadrada"] }, `Base: ${s} × ${s} = ${s * s}; cuatro triángulos: 4 × (${s} × ${slant} ÷ 2) = ${2 * s * slant}; total ${fmt(area)} cm².`);
 }
 
-// 6.° HH.8: relacionar volumen y área de superficie.
+// Relacionar volumen y área de superficie.
 export function volumeSurfaceRelation(r: Rng): Question {
   const s = r.int(2, 9);
   const form = r.int(0, 2);

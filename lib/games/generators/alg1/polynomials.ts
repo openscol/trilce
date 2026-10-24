@@ -27,7 +27,7 @@ function polyOptions(r: Rng, prompt: string, good: number[], why: string, visual
 // Vocabulario y fichas
 
 const NAMES_BY_TERMS = ["", "Monomio", "Binomio", "Trinomio"];
-// W.1: vocabulario de polinomios.
+// Vocabulario de polinomios.
 export function polyVocabulary(r: Rng): Question {
   const deg = r.int(1, 5);
   const terms = r.int(1, 3);
@@ -53,7 +53,7 @@ const tiles = (c: number[]): Visual => ({
   ].filter((row) => row.count > 0),
 });
 
-// W.2 / W.3: representar polinomios con fichas (y sumarlos o restarlos).
+// Representar polinomios con fichas (y sumarlos o restarlos).
 export function polyTiles(r: Rng, operate: boolean): Question {
   const a: number[] = [r.int(-3, 3), r.int(-4, 4), r.int(-5, 5)];
   if (a[0] === 0) a[0] = 2;
@@ -64,7 +64,7 @@ export function polyTiles(r: Rng, operate: boolean): Question {
   return polyOptions(r, `Las fichas de arriba muestran A = ${poly(a)}. ¿Cuánto es A ${minus ? "−" : "+"} (${poly(b)})?`, res, `Se juntan las fichas del mismo tipo${minus ? " (restar es sumar el opuesto)" : ""}; un par positivo-negativo se anula: ${poly(res)}.`, tiles(a), minus ? "restar" : "sumar");
 }
 
-// W.4 / W.5: sumar y restar polinomios (también para hallar perímetros).
+// Sumar y restar polinomios (también para hallar perímetros).
 export function addSubPoly(r: Rng, perimeter = false): Question {
   if (perimeter) {
     const sides = [rand(r, 1, 6), rand(r, 1, 6), rand(r, 1, 6)].map((s) => [Math.abs(s[0]), Math.abs(s[1]) + 1]);
@@ -80,7 +80,7 @@ export function addSubPoly(r: Rng, perimeter = false): Question {
 // ---------------------------------------------------------------------------
 // Multiplicación
 
-// W.6: multiplicar un polinomio por un monomio.
+// Multiplicar un polinomio por un monomio.
 export function monomialTimesPoly(r: Rng): Question {
   const k = nz(r, 6), e = r.int(1, 2);
   const p = rand(r, 2, 7);
@@ -89,7 +89,7 @@ export function monomialTimesPoly(r: Rng): Question {
   return polyOptions(r, "Multiplica.", res, `Se multiplica ${poly(mono)} por cada término: se multiplican los coeficientes y se suman los exponentes.`, `${poly(mono)}(${poly(p)})`, "monomio", [polyMul([k], p)]);
 }
 
-// W.7 / W.8 / W.10: multiplicar dos binomios (también con fichas o modelo de área).
+// Multiplicar dos binomios (también con fichas o modelo de área).
 export function multiplyBinomials(r: Rng, model: "none" | "tiles" | "area"): Question {
   const a = model === "tiles" ? 1 : r.pick([1, 1, 2, 3]), b = nz(r, 7), c = model === "tiles" ? 1 : r.pick([1, 2, 3]), d = nz(r, 7);
   const res = polyMul([a, b], [c, d]);
@@ -98,7 +98,7 @@ export function multiplyBinomials(r: Rng, model: "none" | "tiles" | "area"): Que
   return polyOptions(r, model === "none" ? "Multiplica." : `El modelo muestra el producto ${binom(a, b)}${binom(c, d)}. ¿Cuál es el resultado?`, res, `Se multiplica cada término por cada término: ${[poly([a * c, 0, 0]), poly([a * d, 0]), poly([b * c, 0]), sg(b * d)].map((t) => (t.startsWith("−") ? `(${t})` : t)).join(" + ")} = ${poly(res)}.`, visual, model, [[a * c, a * d + b * c, -b * d], [a * c, 0, b * d]]);
 }
 
-// W.9: productos notables.
+// Productos notables.
 export function specialProducts(r: Rng): Question {
   const a = r.pick([1, 1, 2, 3]), b = r.int(1, 9);
   const kind = r.int(0, 2);
@@ -109,7 +109,7 @@ export function specialProducts(r: Rng): Question {
   return polyOptions(r, "Multiplica.", res, `${why}: ${poly(res)}.`, shown, ["cuadrado-suma", "cuadrado-resta", "suma-por-diferencia"][kind], [[a * a, 0, b * b], [a * a, 0, -b * b], [a * a, a * b, b * b]]);
 }
 
-// W.11 / W.12: multiplicar polinomios (también para hallar áreas).
+// Multiplicar polinomios (también para hallar áreas).
 export function multiplyPolys(r: Rng, area = false): Question {
   if (area) {
     const l = [r.int(1, 3), r.int(1, 8)], w = [r.int(1, 3), r.int(-3, 6) || 2];
@@ -121,7 +121,7 @@ export function multiplyPolys(r: Rng, area = false): Question {
   return polyOptions(r, "Multiplica.", res, "Se multiplica cada término del binomio por cada término del trinomio y se juntan los términos semejantes.", `${binom(p[0], p[1])}(${poly(q)})`, "trinomio");
 }
 
-// W.13: sumar, restar y multiplicar polinomios.
+// Sumar, restar y multiplicar polinomios.
 export function polyMixed(r: Rng): Question {
   const k = r.int(0, 2);
   if (k === 0) return addSubPoly(r);
@@ -129,7 +129,7 @@ export function polyMixed(r: Rng): Question {
   return monomialTimesPoly(r);
 }
 
-// W.14: dividir polinomios entre monomios.
+// Dividir polinomios entre monomios.
 export function dividePolyMonomial(r: Rng): Question {
   const k = r.pick([2, 3, 4, 5, -2, -3]), e = r.int(1, 2);
   const q = rand(r, 2, 6);
@@ -138,7 +138,7 @@ export function dividePolyMonomial(r: Rng): Question {
   return polyOptions(r, "Divide.", q, `Se divide cada término entre ${poly(mono)}: se dividen los coeficientes y se restan los exponentes.`, `(${poly(dividend)}) ÷ ${k < 0 ? `(${poly(mono)})` : poly(mono)}`, "monomio");
 }
 
-// W.15: división larga de polinomios (entre x − a).
+// División larga de polinomios (entre x − a).
 export function polyLongDivision(r: Rng): Question {
   const a = nz(r, 5), q = rand(r, 1, 6).map((x, i) => (i === 0 ? Math.abs(x) : x));
   const rem = r.chance(0.4) ? nz(r, 5) : 0;
@@ -154,7 +154,7 @@ export function polyLongDivision(r: Rng): Question {
 // Monomio con dos variables: 12x³y².
 const mono = (c: number, ex: number, ey: number) => `${c === 1 ? "" : c === -1 ? "−" : sg(c)}${ex ? `x${ex > 1 ? sup(ex) : ""}` : ""}${ey ? `y${ey > 1 ? sup(ey) : ""}` : ""}` || "1";
 
-// X.1 / X.2: M. C. D. y m. c. m. de monomios.
+// M. C. D. y m. c. m. de monomios.
 export function monomialGcfLcm(r: Rng, lcmMode: boolean): Question {
   const g = r.int(2, 6), a = g * r.int(1, 5), b = g * r.int(1, 5);
   const [ax, bx, ay, by] = [r.int(1, 4), r.int(1, 4), r.int(0, 3), r.int(0, 3)];
@@ -165,7 +165,7 @@ export function monomialGcfLcm(r: Rng, lcmMode: boolean): Question {
   return choiceQ(r, `¿Cuál es el ${lcmMode ? "mínimo común múltiplo" : "máximo común divisor"} de ${mono(a, ax, ay)} y ${mono(b, bx, by)}?`, good, [...new Set(wrong)].filter((w) => w !== good), lcmMode ? "m. c. m. de los coeficientes y cada variable con su mayor exponente." : "M. C. D. de los coeficientes y cada variable común con su menor exponente.", undefined, lcmMode ? "mcm" : "mcd");
 }
 
-// X.3: sacar un monomio como factor común.
+// Sacar un monomio como factor común.
 export function factorMonomial(r: Rng): Question {
   const k = r.int(2, 6), e = r.int(0, 2);
   const inner = rand(r, 2, 5);
@@ -182,7 +182,7 @@ const fac = (a: number, b: number, c: number, d: number) => {
   const f1 = binom(a, b), f2 = binom(c, d);
   return f1 === f2 ? `${f1}²` : `${f1}${f2}`;
 };
-// X.4 / X.5 / X.6: factorizar trinomios (coeficiente principal 1 u otro).
+// Factorizar trinomios (coeficiente principal 1 u otro).
 export function factorQuadratic(r: Rng, lead: "one" | "other" | "tiles"): Question {
   const a = lead === "other" ? r.pick([2, 3, 5]) : 1;
   const b = nz(r, 8), d = nz(r, 8);
@@ -194,7 +194,7 @@ export function factorQuadratic(r: Rng, lead: "one" | "other" | "tiles"): Questi
   return choiceQ(r, "Factoriza.", good, [...new Set(wrong)], a === 1 ? `Se buscan dos números que multiplicados den ${sg(b * d)} y sumados den ${sg(b + d)}: ${sg(b)} y ${sg(d)}.` : `Se prueban factores de ${a} y de ${sg(b * d)} hasta obtener el término del medio ${poly([res[1], 0])}: ${good}.`, lead === "tiles" ? tiles(res) : poly(res), lead);
 }
 
-// X.7: casos especiales (trinomio cuadrado perfecto, diferencia de cuadrados).
+// Casos especiales (trinomio cuadrado perfecto, diferencia de cuadrados).
 export function factorSpecial(r: Rng): Question {
   const a = r.pick([1, 1, 2, 3]), b = r.int(1, 9);
   if (gcd(a, b) !== 1) return factorSpecial(r);
@@ -205,7 +205,7 @@ export function factorSpecial(r: Rng): Question {
   return choiceQ(r, "Factoriza.", good, [...new Set(wrong)].filter((w) => w !== good), kind === 2 ? `Diferencia de cuadrados: a² − b² = (a + b)(a − b), con a = ${poly([a, 0])} y b = ${b}.` : `Trinomio cuadrado perfecto: el término del medio es 2 × ${poly([a, 0])} × ${b}.`, poly(p), ["tcp-suma", "tcp-resta", "diferencia-cuadrados"][kind]);
 }
 
-// X.8: factorizar por agrupación.
+// Factorizar por agrupación.
 export function factorGrouping(r: Rng): Question {
   const a = nz(r, 6), b = nz(r, 6);
   // (x² + a)(x + b) = x³ + bx² + ax + ab
@@ -215,7 +215,7 @@ export function factorGrouping(r: Rng): Question {
   return choiceQ(r, "Factoriza por agrupación.", good, [...new Set(wrong)].filter((w) => w !== good), `Se agrupa: x²(x ${b < 0 ? "−" : "+"} ${Math.abs(b)}) ${a < 0 ? "−" : "+"} ${Math.abs(a)}(x ${b < 0 ? "−" : "+"} ${Math.abs(b)}) = ${good}.`, poly(p), "agrupacion");
 }
 
-// X.9: factorizar usando un patrón cuadrático (x⁴ + bx² + c).
+// Factorizar usando un patrón cuadrático (x⁴ + bx² + c).
 export function factorPattern(r: Rng): Question {
   const b = nz(r, 7), d = nz(r, 7);
   if (b + d === 0) return factorPattern(r);
@@ -226,7 +226,7 @@ export function factorPattern(r: Rng): Question {
   return choiceQ(r, "Factoriza. (Piensa en x⁴ como (x²)².)", good, [...new Set(wrong)].filter((w) => w !== good && w !== `${t(d)}${t(b)}`), `Con u = x² queda u² ${b + d < 0 ? "−" : "+"} ${Math.abs(b + d)}u ${b * d < 0 ? "−" : "+"} ${Math.abs(b * d)} = (u ${b < 0 ? "−" : "+"} ${Math.abs(b)})(u ${d < 0 ? "−" : "+"} ${Math.abs(d)}).`, poly(p), "patron");
 }
 
-// X.10: factorizar completamente.
+// Factorizar completamente.
 export function factorCompletely(r: Rng): Question {
   const k = r.int(2, 5), b = r.int(1, 7);
   const diff = r.chance(0.5);

@@ -1,25 +1,16 @@
 import { choose, order, type ChoiceItem, type OrderItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { f, pt, sorter, w } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Estrategias de escritura (IXL 7th grade ELA, O-U), con estas adaptaciones:
-//   conjunctive adverbs → conectores (sin embargo, por lo tanto, además, en cambio, es decir)
-//   frequently confused words → porque / por qué / porqué, sino / si no, asimismo / a sí mismo, etc.
-//   errors in everyday use → errores frecuentes del castellano (hubieron, haiga, dijistes, más mejor)
-//   Works Cited y citas en el texto (MLA) → referencias y citas en formato APA, el más usado en el Perú
+// 1.° de Secundaria · banco de escritura: organizar las ideas, tesis y
+// evidencias, contraargumentos, apelaciones y falacias, estilo, conectores
+// (sin embargo, por lo tanto, además, en cambio, es decir), paralelismo,
+// corrección (porque / por qué / porqué, sino / si no, asimismo / a sí mismo;
+// «hubieron», «haiga», «dijistes», «más mejor») e investigación con
+// referencias y citas en formato APA, el más usado en el Perú.
 
-export const SECTIONS: Section[] = [
-  { id: "O", name: "Organizar la escritura", icon: "🗂️" },
-  { id: "P", name: "Desarrollar y apoyar argumentos", icon: "💬" },
-  { id: "Q", name: "Estilo", icon: "🎨" },
-  { id: "R", name: "Identificar evidencias en el texto", icon: "🔎" },
-  { id: "S", name: "Escribir con claridad y concisión", icon: "🧹" },
-  { id: "T", name: "Corregir y revisar", icon: "🔍" },
-  { id: "U", name: "Habilidades de investigación", icon: "📚" },
-];
 
-// --- O. Organizar la escritura -----------------------------------------------
+// --- Organizar la escritura -----------------------------------------------
 
 const BROAD_NARROW: OrderItem[] = [
   { seq: ["seres vivos", "animales", "mamíferos", "camélidos sudamericanos", "la vicuña"] }, { seq: ["literatura", "literatura peruana", "poesía peruana", "poesía de César Vallejo", "«Los heraldos negros»"] },
@@ -54,7 +45,7 @@ const TOPIC_SENTENCE: ChoiceItem[] = [
   pt(TOPIC, "___ En la costa se bebe chicha morada; en la sierra, el emoliente caliente; en la selva, el refrescante aguaje.", "Cada región del Perú tiene sus bebidas tradicionales.", "La chicha morada se prepara con maíz morado, piña y canela.", "Hay bebidas."),
 ];
 
-// --- P. Argumentos -----------------------------------------------------------
+// --- Argumentos -----------------------------------------------------------
 
 const FO = sorter(["Hecho (se puede comprobar)", "Opinión (juicio personal)"], "¿Es un hecho o una opinión?");
 const FACT_OPINION: ChoiceItem[] = [
@@ -101,7 +92,7 @@ const FALLACIES: ChoiceItem[] = [
   ...["Todos mis amigos tienen esa aplicación; debe ser buena.", "Millones de personas compran este jarabe: seguro que funciona."].map((x) => FALLACY(x, 3)),
 ];
 
-// --- Q. Estilo -----------------------------------------------------------------
+// --- Estilo -----------------------------------------------------------------
 
 const PERSON = "¿Qué oración usa la personificación?";
 const PERSONIFICATION: ChoiceItem[] = [
@@ -126,7 +117,7 @@ const STRONG_VERB: ChoiceItem[] = [
   pt(STRONG, "El edificio se cayó de golpe.", "se derrumbó", "se movió", "se fue cayendo"), pt(STRONG, "Puso las ropas sin orden en la maleta.", "amontonó", "dejó", "tuvo"),
 ];
 
-// --- R. Evidencias -------------------------------------------------------------
+// --- Evidencias -------------------------------------------------------------
 
 const SUPPORT_INFO: ChoiceItem[] = [
   pt("¿Qué detalle apoya la idea principal?", "Idea: La quinua es un alimento muy nutritivo.", "Contiene todos los aminoácidos esenciales.", "Se cultiva en Puno y en Bolivia desde hace milenios.", "Es pequeña."),
@@ -145,7 +136,7 @@ const SUPPORT_LIT: ChoiceItem[] = [
   pt("¿Qué detalle muestra que Elena está decidida?", "Elena apretó los puños, respiró hondo y subió al escenario sin mirar atrás.", "Subió sin mirar atrás.", "Respiró.", "El escenario estaba iluminado por tres reflectores grandes."),
 ];
 
-// --- S. Claridad y concisión -----------------------------------------------------
+// --- Claridad y concisión -----------------------------------------------------
 
 const CONJ_ADV: ChoiceItem[] = [
   f("Estudió toda la semana; ___, no aprobó el examen.", "sin embargo", "por lo tanto", "es decir"), f("Llovió toda la noche; ___, el partido se suspendió.", "por lo tanto", "sin embargo", "en cambio"),
@@ -172,7 +163,7 @@ const REDUNDANCY: ChoiceItem[] = [
   pt(REDUNDANT, "Los dos gemelos se parecen mucho.", "Los gemelos se parecen mucho.", "Los dos gemelos son dos y se parecen mucho entre ellos.", "Gemelos."),
 ];
 
-// --- T. Corregir y revisar -------------------------------------------------------
+// --- Corregir y revisar -------------------------------------------------------
 
 const CONFUSED_USE: ChoiceItem[] = [
   f("No sé ___ llegó tarde.", "por qué", "porque", "porqué"), f("Llegó tarde ___ perdió el bus.", "porque", "por qué", "porqué"),
@@ -220,7 +211,7 @@ const REVISIONS: ChoiceItem[] = [
   pt(REVISE, "«Ella le dijo a su hermana que su examen había salido mal».", "Aclarar de quién es el examen: «Ella le dijo a su hermana: “Mi examen salió mal”».", "Agregar la nota exacta que sacó en el examen de matemáticas y el nombre del profesor que lo calificó.", "Quitar «su»."),
 ];
 
-// --- U. Investigación ------------------------------------------------------------
+// --- Investigación ------------------------------------------------------------
 
 const RELEVANT: ChoiceItem[] = [
   pt("¿Qué fuente es más pertinente?", "Tema: La contaminación del lago Titicaca.", "Un informe de la Autoridad Nacional del Agua sobre la calidad del lago", "Un blog de viajes con muchas fotos de los uros y de sus islas flotantes de totora", "Una receta de trucha"),
@@ -258,38 +249,38 @@ const PLAGIARISM: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["O.1", "Ordenar temas del más amplio al más específico", (r) => order(r, "Ordena los temas del más amplio al más específico.", BROAD_NARROW)],
-  ["O.2", "Organizar la información por tema", (r) => choose(r, "", BY_TOPIC)],
-  ["O.3", "Quitar la oración que no pertenece", (r) => choose(r, "", NOT_BELONG)],
-  ["O.4", "Elegir la oración temática que mejor recoge la idea principal", (r) => choose(r, "", TOPIC_SENTENCE)],
+  ["organizar-1", (r) => order(r, "Ordena los temas del más amplio al más específico.", BROAD_NARROW)],
+  ["organizar-2", (r) => choose(r, "", BY_TOPIC)],
+  ["organizar-3", (r) => choose(r, "", NOT_BELONG)],
+  ["organizar-4", (r) => choose(r, "", TOPIC_SENTENCE)],
 
-  ["P.1", "Distinguir hechos de opiniones", (r) => choose(r, "", FACT_OPINION)],
-  ["P.2", "Identificar la tesis", (r) => choose(r, "", THESES)],
-  ["P.3", "Elegir evidencias que apoyen una afirmación", (r) => choose(r, "", EVIDENCE)],
-  ["P.4", "Identificar contraargumentos", (r) => choose(r, "", COUNTERCLAIMS)],
-  ["P.5", "Identificar apelaciones al ethos, al pathos y al logos en los anuncios", (r) => choose(r, "", APPEALS)],
-  ["P.6", "Clasificar falacias lógicas", (r) => choose(r, "", FALLACIES)],
+  ["tesis-1", (r) => choose(r, "", FACT_OPINION)],
+  ["tesis-2", (r) => choose(r, "", THESES)],
+  ["tesis-3", (r) => choose(r, "", EVIDENCE)],
+  ["contraargumentos", (r) => choose(r, "", COUNTERCLAIMS)],
+  ["apelaciones", (r) => choose(r, "", APPEALS)],
+  ["falacias", (r) => choose(r, "", FALLACIES)],
 
-  ["Q.1", "Usar la personificación", (r) => choose(r, "", PERSONIFICATION)],
-  ["Q.2", "Crear oraciones variadas a partir de modelos", (r) => choose(r, "", VARIED)],
-  ["Q.3", "Mejorar la oración con un verbo más preciso", (r) => choose(r, "", STRONG_VERB)],
+  ["personificacion", (r) => choose(r, "", PERSONIFICATION)],
+  ["estilo-1", (r) => choose(r, "", VARIED)],
+  ["estilo-2", (r) => choose(r, "", STRONG_VERB)],
 
-  ["R.1", "Identificar detalles de apoyo en textos informativos", (r) => choose(r, "", SUPPORT_INFO)],
-  ["R.2", "Identificar detalles de apoyo en textos literarios", (r) => choose(r, "", SUPPORT_LIT)],
+  ["tesis-4", (r) => choose(r, "", SUPPORT_INFO)],
+  ["tesis-5", (r) => choose(r, "", SUPPORT_LIT)],
 
-  ["S.1", "Conectar ideas con conectores: sin embargo, por lo tanto, en cambio, es decir", (r) => choose(r, "Completa con el mejor conector.", CONJ_ADV)],
-  ["S.2", "Usar estructuras paralelas", (r) => choose(r, "", PARALLEL)],
-  ["S.3", "Eliminar palabras o frases redundantes", (r) => choose(r, "", REDUNDANCY)],
+  ["claridad-1", (r) => choose(r, "Completa con el mejor conector.", CONJ_ADV)],
+  ["claridad-2", (r) => choose(r, "", PARALLEL)],
+  ["claridad-3", (r) => choose(r, "", REDUNDANCY)],
 
-  ["T.1", "Usar la palabra correcta entre las que se confunden", (r) => choose(r, "Completa la oración.", CONFUSED_USE)],
-  ["T.2", "Corregir errores con palabras que se confunden", (r) => choose(r, "", CONFUSED_FIX)],
-  ["T.3", "Corregir errores en carteles", (r) => choose(r, "", SIGNS)],
-  ["T.4", "Corregir errores del habla cotidiana", (r) => choose(r, "", EVERYDAY)],
-  ["T.5", "Proponer revisiones adecuadas", (r) => choose(r, "", REVISIONS)],
+  ["confundidas-1", (r) => choose(r, "Completa la oración.", CONFUSED_USE)],
+  ["confundidas-2", (r) => choose(r, "", CONFUSED_FIX)],
+  ["corregir-1", (r) => choose(r, "", SIGNS)],
+  ["corregir-2", (r) => choose(r, "", EVERYDAY)],
+  ["corregir-3", (r) => choose(r, "", REVISIONS)],
 
-  ["U.1", "Identificar fuentes pertinentes", (r) => choose(r, "", RELEVANT)],
-  ["U.2", "Evaluar si un titular periodístico es sesgado", (r) => choose(r, "", HEADLINES)],
-  ["U.3", "Reconocer las partes de una referencia bibliográfica (formato APA)", (r) => choose(r, "", WORKS_CITED)],
-  ["U.4", "Usar citas dentro del texto (formato APA)", (r) => choose(r, "", IN_TEXT)],
-  ["U.5", "Identificar el plagio", (r) => choose(r, "", PLAGIARISM)],
+  ["fuentes-1", (r) => choose(r, "", RELEVANT)],
+  ["fuentes-2", (r) => choose(r, "", HEADLINES)],
+  ["apa-1", (r) => choose(r, "", WORKS_CITED)],
+  ["apa-2", (r) => choose(r, "", IN_TEXT)],
+  ["fuentes-3", (r) => choose(r, "", PLAGIARISM)],
 ];

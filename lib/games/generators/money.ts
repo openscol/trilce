@@ -19,7 +19,7 @@ function purse(r: Rng, maxBill: number) {
 }
 const describe = (p: { kinds: number[]; counts: number[] }) => p.kinds.map((k, i) => `${p.counts[i]} ${NAME[k][p.counts[i] === 1 ? 0 : 1]}`).join(", ").replace(/, ([^,]*)$/, " y $1");
 
-// 4.° Q.1 / Q.2: contar billetes y monedas (`words`: como problema, sin dibujo).
+// Contar billetes y monedas (`words`: como problema, sin dibujo).
 export function countMoney(r: Rng, maxBill: number, words: boolean): Question {
   const p = purse(r, maxBill);
   const why = `${p.kinds.map((k, i) => `${p.counts[i]} × ${soles(k)}`).join(" + ")} = ${soles(p.total)}.`;
@@ -27,7 +27,7 @@ export function countMoney(r: Rng, maxBill: number, words: boolean): Question {
   return money(r, p.total, "¿Cuánto dinero hay en total?", why, { kind: "coins", coins: p.items });
 }
 
-// 4.° Q.3: comparar cantidades de dinero.
+// Comparar cantidades de dinero.
 export function compareMoney(r: Rng): Question {
   const a = r.int(2, 99) * 100 + r.pick([0, 5, 10, 20, 50, 90]);
   const b = r.chance(0.15) ? a : r.chance(0.5) ? Math.floor(a / 100) * 100 + r.pick([5, 50, 80, 95]) : a + r.pick([-1, 1]) * r.pick([100, 1000]);
@@ -37,7 +37,7 @@ export function compareMoney(r: Rng): Question {
 
 const price = (r: Rng, maxSoles: number) => r.int(1, maxSoles - 1) * 100 + r.pick([0, 10, 20, 50, 50, 80, 90]);
 
-// 4.° Q.4: sumar y restar cantidades de dinero.
+// Sumar y restar cantidades de dinero.
 export function addSubMoney(r: Rng, maxSoles = 50): Question {
   let a = price(r, maxSoles);
   let b = price(r, maxSoles);
@@ -51,7 +51,7 @@ export function addSubMoney(r: Rng, maxSoles = 50): Question {
 const ITEMS = ["un cuaderno", "una pelota", "un libro", "una mochila", "un juego de mesa", "una lonchera", "un polo", "una gorra"];
 const BILLS = [1000, 2000, 5000, 10000];
 
-// 4.° Q.5: hallar el vuelto, el precio o lo que se pagó.
+// Hallar el vuelto, el precio o lo que se pagó.
 export function changeProblem(r: Rng): Question {
   const n = r.pick(NAMES);
   const item = r.pick(ITEMS);
@@ -77,7 +77,7 @@ function priceList(r: Rng) {
   return { names, prices, visual: table(["Producto", "Precio"], names.map((n, i) => [n, soles(prices[i])]), shop) };
 }
 
-// 4.° Q.6: listas de precios con sumas y restas.
+// Listas de precios con sumas y restas.
 export function priceListProblem(r: Rng): Question {
   const { names, prices, visual } = priceList(r);
   const [i, j] = r.shuffle([0, 1, 2, 3]);
@@ -89,7 +89,7 @@ export function priceListProblem(r: Rng): Question {
   return money(r, paid - total, `Compras «${names[i]}» y «${names[j]}» y pagas con ${soles(paid)}. ¿Cuánto es tu vuelto?`, `${soles(prices[i])} + ${soles(prices[j])} = ${soles(total)}; ${soles(paid)} − ${soles(total)} = ${soles(paid - total)}.`, visual, "vuelto");
 }
 
-// 4.° Q.7: problemas de suma y resta con dinero.
+// Problemas de suma y resta con dinero.
 export function moneyProblem(r: Rng): Question {
   const n = r.pick(NAMES);
   const a = price(r, 60);
@@ -100,7 +100,7 @@ export function moneyProblem(r: Rng): Question {
   return money(r, b, `${n} quiere comprar un juego de ${soles(a + b)} y ya ahorró ${soles(a)}. ¿Cuánto le falta?`, `${soles(a + b)} − ${soles(a)} = ${soles(b)}.`, undefined, "falta");
 }
 
-// 4.° Q.8: sumar, restar, multiplicar y dividir cantidades de dinero.
+// Sumar, restar, multiplicar y dividir cantidades de dinero.
 export function fourOpsMoney(r: Rng): Question {
   const form = r.int(0, 3);
   if (form <= 1) return addSubMoney(r, 30);
@@ -110,7 +110,7 @@ export function fourOpsMoney(r: Rng): Question {
   return money(r, unit, "Resuelve.", `${soles(unit * k)} ÷ ${k} = ${soles(unit)}, porque ${k} × ${soles(unit)} = ${soles(unit * k)}.`, { kind: "text", text: `${soles(unit * k)} ÷ ${k} = ?` }, "division");
 }
 
-// 4.° Q.9 / Q.10: problemas de varios pasos con dinero (`allOps`: también × y ÷).
+// Problemas de varios pasos con dinero (`allOps`: también × y ÷).
 export function moneyMultiStep(r: Rng, allOps: boolean): Question {
   const n = r.pick(NAMES);
   const { prices } = priceList(r);
@@ -158,13 +158,13 @@ const EXPENSES: [string, "Gasto fijo" | "Gasto variable"][] = [
   ["La reparación de una llanta pinchada", "Gasto variable"],
 ];
 
-// 4.° RR.1: gastos fijos y variables.
+// Gastos fijos y variables.
 export function fixedVariable(r: Rng): Question {
   const [text, answer] = r.pick(EXPENSES);
   return fixedQ(`¿Es un gasto fijo o un gasto variable?`, ["Gasto fijo", "Gasto variable"], answer, answer === "Gasto fijo" ? "Un gasto fijo se paga cada cierto tiempo y casi siempre por el mismo monto." : "Un gasto variable cambia de monto o no se paga siempre.", text, answer === "Gasto fijo" ? "fijo" : "variable");
 }
 
-// 4.° RR.2: calcular la ganancia.
+// Calcular la ganancia.
 export function profitProblem(r: Rng): Question {
   const n = r.pick(NAMES);
   const cost = r.int(8, 120);
@@ -179,7 +179,7 @@ export function profitProblem(r: Rng): Question {
   return numQ(k * each - spent, `${n} vendió ${k} ${thing === "limonada" ? "vasos de limonada" : thing} a ${each} soles la unidad. Había gastado ${spent} soles. ¿Cuántos soles ganó?`, undefined, `${k} × ${each} = ${k * each} soles de ingresos; ${k * each} − ${spent} = ${k * each - spent} soles de ganancia.`, "dos-pasos");
 }
 
-// 4.° RR.3: comparar opciones de ahorro.
+// Comparar opciones de ahorro.
 export function compareSavings(r: Rng): Question {
   const weeks = r.int(4, 12);
   const a = r.int(3, 12);
@@ -193,7 +193,7 @@ export function compareSavings(r: Rng): Question {
   return fixedQ(`¿Con qué plan se junta ${more ? "más" : "menos"} dinero?`, ["Plan A", "Plan B"], answer, `Plan A: ${a} × ${weeks} = ${totalA} soles. Plan B: ${b} × ${weeksB} = ${totalB} soles.`, `Plan A: ahorrar ${a} soles cada semana durante ${weeks} semanas.\nPlan B: ahorrar ${b} soles cada semana durante ${weeksB} semanas.`, more ? "mas" : "menos");
 }
 
-// 4.° RR.4: presupuesto de la propina semanal.
+// Presupuesto de la propina semanal.
 export function allowanceBudget(r: Rng): Question {
   const n = r.pick(NAMES);
   const a = r.int(2, 9);
@@ -228,7 +228,7 @@ const VOCAB: [string, string, string[]][] = [
   ["¿Cómo se llama el papel que la tienda entrega como prueba de una compra?", "Boleta de venta", ["Cuenta bancaria", "Presupuesto", "Tarjeta de débito"]],
 ];
 
-// 4.° RR.5: vocabulario de las instituciones financieras.
+// Vocabulario de las instituciones financieras.
 export function financeVocabulary(r: Rng): Question {
   const [prompt, answer, wrong] = r.pick(VOCAB);
   return choiceQ(r, prompt, answer, wrong, `Se llama ${answer.toLowerCase()}.`);

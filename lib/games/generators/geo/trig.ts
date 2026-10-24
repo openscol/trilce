@@ -16,7 +16,7 @@ const RIGHT: [number, number][] = [[12, 88], [88, 88], [12, 22]];
 const rightVisual = (ac: string, bc: string, ab: string): Visual => ({ kind: "polygon", points: RIGHT, rightAngles: [0], sideLabels: [ac, ab, bc] });
 const DESC = "En el triángulo ABC, el ángulo C es recto; A está en el extremo del lado de abajo y B arriba.";
 
-// P.4: desigualdades de Pitágoras (acutángulo, rectángulo u obtusángulo).
+// Desigualdades de Pitágoras (acutángulo, rectángulo u obtusángulo).
 const KIND3 = ["Acutángulo", "Rectángulo", "Obtusángulo"];
 export function pythagoreanInequality(r: Rng): Question {
   const [a, b, c0] = r.pick(TRIPLES);
@@ -31,7 +31,7 @@ type Ratio = "sen" | "cos" | "tan" | "csc" | "sec" | "cot";
 const ratioOf = (f: Ratio, opp: string, adj: string, hyp: string) => ({ sen: `${opp}/${hyp}`, cos: `${adj}/${hyp}`, tan: `${opp}/${adj}`, csc: `${hyp}/${opp}`, sec: `${hyp}/${adj}`, cot: `${adj}/${opp}` })[f];
 const RATIO_DEF: Record<Ratio, string> = { sen: "opuesto ÷ hipotenusa", cos: "adyacente ÷ hipotenusa", tan: "opuesto ÷ adyacente", csc: "hipotenusa ÷ opuesto", sec: "hipotenusa ÷ adyacente", cot: "adyacente ÷ opuesto" };
 
-// Q.1 / Q.3 / Q.4: razones trigonométricas (sen, cos, tan; csc, sec, cot; triángulos semejantes).
+// Razones trigonométricas (sen, cos, tan; csc, sec, cot; triángulos semejantes).
 export function trigRatio(r: Rng, set: "basic" | "reciprocal" | "similar"): Question {
   const [a, b, c] = r.pick(TRIPLES);
   const f = r.pick<Ratio>(set === "reciprocal" ? ["csc", "sec", "cot"] : ["sen", "cos", "tan"]);
@@ -50,7 +50,7 @@ export function trigRatio(r: Rng, set: "basic" | "reciprocal" | "similar"): Ques
   return choiceQ(r, `${DESC} ¿Cuánto vale ${f} ${angle}?`, good, wrong, `${f} ${angle} = ${RATIO_DEF[f]} = ${ratioOf(f, String(opp), String(adj), String(c))}${good !== ratioOf(f, String(opp), String(adj), String(c)) ? ` = ${good}` : ""}.`, rightVisual(String(b), String(a), String(c)), f);
 }
 
-// Q.2: razones trigonométricas con radicales.
+// Razones trigonométricas con radicales.
 export function trigRadical(r: Rng): Question {
   const [a, b] = r.pick([[1, 2], [1, 3], [2, 3], [1, 1], [2, 5], [3, 5]]);
   const h2 = a * a + b * b;
@@ -68,7 +68,7 @@ export function trigRadical(r: Rng): Question {
   return choiceQ(r, `${DESC} BC = ${a} y AC = ${b}. ¿Cuánto vale ${f} A? (Racionaliza el denominador.)`, good, wrong, `La hipotenusa es √(${a}² + ${b}²) = √${h2}. ${f} A = ${RATIO_DEF[f]}${f === "tan" ? "" : `; se multiplica arriba y abajo por √${h2}`}: ${good}.`, rightVisual(String(b), String(a), `√${h2}`), f);
 }
 
-// Q.5 / Q.7: triángulos rectángulos especiales (45°-45°-90° y 30°-60°-90°).
+// Triángulos rectángulos especiales (45°-45°-90° y 30°-60°-90°).
 export function specialRight(r: Rng, solve: boolean): Question {
   const k = r.int(2, 9);
   const t45 = r.chance(0.5);
@@ -87,7 +87,7 @@ const SPECIAL: [Ratio, number, string][] = [
   ["sen", 30, "1/2"], ["sen", 45, "√2/2"], ["sen", 60, "√3/2"], ["cos", 30, "√3/2"], ["cos", 45, "√2/2"], ["cos", 60, "1/2"], ["tan", 30, "√3/3"], ["tan", 45, "1"], ["tan", 60, "√3"],
 ];
 const VALUES = ["1/2", "√2/2", "√3/2", "√3/3", "1", "√3"];
-// Q.6 / Q.10: funciones trigonométricas de ángulos especiales (y sus inversas).
+// Funciones trigonométricas de ángulos especiales (y sus inversas).
 export function specialAngles(r: Rng, inverse: boolean): Question {
   const [f, a, v] = r.pick(SPECIAL);
   if (inverse) {
@@ -99,7 +99,7 @@ export function specialAngles(r: Rng, inverse: boolean): Question {
 }
 
 const fn = (f: Ratio, d: number) => (f === "sen" ? Math.sin(rad(d)) : f === "cos" ? Math.cos(rad(d)) : Math.tan(rad(d)));
-// Q.8 / Q.11: funciones trigonométricas (e inversas) con calculadora.
+// Funciones trigonométricas (e inversas) con calculadora.
 export function trigCalculator(r: Rng, inverse: boolean): Question {
   const f = r.pick<Ratio>(["sen", "cos", "tan"]);
   const d = r.int(5, 85);
@@ -113,7 +113,7 @@ export function trigCalculator(r: Rng, inverse: boolean): Question {
   return valQ(r, `Usa una calculadora (en grados). ¿Cuánto vale ${f} ${d}°? Redondea a la diezmilésima.`, v, [other, r4(v + 0.01), r4(fn(f, d + 1))], `${f} ${d}° ≈ ${dec(v)}.`, undefined, f);
 }
 
-// Q.9: seno y coseno de ángulos complementarios.
+// Seno y coseno de ángulos complementarios.
 export function complementaryTrig(r: Rng): Question {
   const d = r.int(10, 80);
   const v = r4(Math.sin(rad(d)));
@@ -121,7 +121,7 @@ export function complementaryTrig(r: Rng): Question {
   return choiceQ(r, `¿Qué expresión es igual a sen ${d}°?`, `cos ${90 - d}°`, [`cos ${d}°`, `sen ${90 - d}°`, `cos ${180 - d}°`, `tan ${90 - d}°`], `El seno de un ángulo es igual al coseno de su complemento: sen ${d}° = cos ${90 - d}°.`, undefined, "complementarios");
 }
 
-// Q.12-Q.15: hallar lados y ángulos en triángulos rectángulos (y problemas).
+// Hallar lados y ángulos en triángulos rectángulos (y problemas).
 export function solveRight(r: Rng, mode: "side" | "angle" | "solve" | "word"): Question {
   const m = mode === "solve" ? r.pick(["side", "angle"] as const) : mode;
   const A = r.int(20, 70), hyp = r.int(5, 30);
@@ -154,7 +154,7 @@ export function solveRight(r: Rng, mode: "side" | "angle" | "solve" | "word"): Q
 // ---------------------------------------------------------------------------
 // Ley de senos y de cosenos
 
-// R.1-R.5: ley de senos, ley de cosenos, resolver un triángulo y áreas.
+// Ley de senos, ley de cosenos, resolver un triángulo y áreas.
 export function lawsTriangle(r: Rng, mode: "sines" | "cosines" | "solve" | "area" | "areaSines"): Question {
   const A = r.int(30, 80), B = r.int(30, 80), C = 180 - A - B;
   const a = r.int(5, 20);

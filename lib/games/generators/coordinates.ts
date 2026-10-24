@@ -24,7 +24,7 @@ const VOCAB: [string, string, string[]][] = [
   ["¿Cómo se llaman los dos números que ubican un punto, como (3, 5)?", "Par ordenado", ["Origen", "Eje y", "Cuadrícula"]],
 ];
 
-// 5.° LL.1: describir el plano de coordenadas.
+// Describir el plano de coordenadas.
 export function describePlane(r: Rng): Question {
   const p = { x: r.int(1, 8), y: r.int(0, 8) };
   if (p.x === p.y) p.y = (p.y + 3) % 9;
@@ -58,7 +58,7 @@ function lettered(r: Rng, count: number, max = 8) {
   return out;
 }
 
-// 5.° LL.3: ubicar puntos en el plano de coordenadas.
+// Ubicar puntos en el plano de coordenadas.
 export function graphPoints(r: Rng): Question {
   const points = lettered(r, 4);
   const t = r.pick(points);
@@ -66,7 +66,7 @@ export function graphPoints(r: Rng): Question {
   return { kind: "choice", prompt: `¿Qué punto está en ${pt(t)}?`, visual: plane(points), options: points.map((p) => p.emoji), answer: t.emoji, explanation: `${t.x} a la derecha y ${t.y} hacia arriba: es el punto ${t.emoji}.`, tag: "ubicar" };
 }
 
-// 5.° LL.4: graficar triángulos y cuadriláteros.
+// Graficar triángulos y cuadriláteros.
 export function graphShapes(r: Rng): Question {
   const x = r.int(1, 3);
   const y = r.int(1, 3);
@@ -97,14 +97,14 @@ function rulePoints(r: Rng, max: number): { rule: Rule2; ps: P[] } {
 }
 const xyTable = (ps: P[], hide?: number, title?: string) => table(["x", "y"], ps.map((p, i) => [String(p.x), i === hide ? "?" : String(p.y)]), title);
 
-// 5.° LL.5 / MM.9: graficar los puntos de una tabla.
+// Graficar los puntos de una tabla.
 export function pointsFromTable(r: Rng): Question {
   const { ps } = rulePoints(r, 10);
   const i = r.int(0, ps.length - 1);
   return pointChoice(r, `Vas a graficar los puntos de la tabla. ¿Qué par ordenado corresponde a la fila de x = ${ps[i].x}?`, ps[i], `En esa fila x = ${ps[i].x} e y = ${ps[i].y}: el punto es ${pt(ps[i])}.`, xyTable(ps), undefined, 10);
 }
 
-// 5.° LL.6 / MM.8: usar una regla para completar una tabla y un gráfico.
+// Usar una regla para completar una tabla y un gráfico.
 export function ruleTableGraph(r: Rng): Question {
   const { rule, ps } = rulePoints(r, 10);
   const i = r.int(1, ps.length - 1);
@@ -112,7 +112,7 @@ export function ruleTableGraph(r: Rng): Question {
   return pointChoice(r, `Regla: ${ruleEq(rule)}. ¿Qué punto se grafica cuando x = ${ps[i].x}?`, ps[i], `${ruleEq(rule).replace("x", String(ps[i].x))} = ${ps[i].y}: el punto es ${pt(ps[i])}.`, plane(dots(ps.filter((_, k) => k !== i)), 10), "grafico", 10);
 }
 
-// 5.° LL.7 / MM.7: analizar relaciones graficadas (leer el gráfico).
+// Analizar relaciones graficadas (leer el gráfico).
 export function analyzeGraph(r: Rng, asTable = false): Question {
   const { rule, ps } = rulePoints(r, 10);
   const visual = plane(dots(ps), 10, "open");
@@ -127,7 +127,7 @@ export function analyzeGraph(r: Rng, asTable = false): Question {
 
 const PLACES: [string, string][] = [["🏫", "el colegio"], ["🏥", "el hospital"], ["🏪", "la tienda"], ["⛪", "la iglesia"], ["🏠", "la casa"], ["🌳", "el parque"], ["📚", "la biblioteca"], ["⚽", "la cancha"]];
 
-// 5.° LL.8: planos de coordenadas como mapas.
+// Planos de coordenadas como mapas.
 export function coordinateMap(r: Rng): Question {
   const chosen = r.shuffle(PLACES).slice(0, 4);
   const row = r.int(1, 7);
@@ -143,7 +143,7 @@ export function coordinateMap(r: Rng): Question {
   return numQ(Math.abs(xs[0] - xs[1]), `Cada cuadra del mapa mide 1 unidad. ¿Cuántas cuadras hay de ${chosen[0][1]} (${chosen[0][0]}) a ${chosen[1][1]} (${chosen[1][0]})?`, visual, `Están en la misma fila (y = ${row}): |${xs[0]} − ${xs[1]}| = ${Math.abs(xs[0] - xs[1])} cuadras.`, "distancia");
 }
 
-// 5.° LL.9: seguir indicaciones en el plano de coordenadas.
+// Seguir indicaciones en el plano de coordenadas.
 export function followDirections(r: Rng): Question {
   const start = { x: r.int(1, 5), y: r.int(1, 5) };
   const dx = r.int(1, 3) * (r.chance(0.7) || start.x < 2 ? 1 : -1);
@@ -174,7 +174,7 @@ function scatter(r: Rng, trend: Trend): P[] {
   }
 }
 
-// 5.° NN.16: crear diagramas de dispersión (¿qué punto corresponde a cada fila?).
+// Crear diagramas de dispersión (¿qué punto corresponde a cada fila?).
 export function createScatter(r: Rng): Question {
   const [xName, yName, title, trend] = r.pick(SCATTER);
   const ps = scatter(r, trend).slice(0, 4);
@@ -183,7 +183,7 @@ export function createScatter(r: Rng): Question {
   return pointChoice(r, `Vas a hacer un diagrama de dispersión con la tabla. ¿Qué punto corresponde a la fila ${i + 1}?`, ps[i], `Primero va «${xName}» (${ps[i].x}) y luego «${yName}» (${ps[i].y}): ${pt(ps[i])}.`, table([cap(xName), cap(yName)], ps.map((p) => [String(p.x), String(p.y)]), title), undefined, 10);
 }
 
-// 5.° NN.17: interpretar diagramas de dispersión.
+// Interpretar diagramas de dispersión.
 export function interpretScatter(r: Rng): Question {
   const [xName, yName, , trend] = r.pick(SCATTER);
   const ps = scatter(r, trend);
@@ -201,7 +201,7 @@ export function interpretScatter(r: Rng): Question {
 
 const TREND_OPTIONS = ["Cuando x aumenta, y también aumenta", "Cuando x aumenta, y disminuye", "No se ve ninguna relación"];
 
-// 5.° NN.18: predicciones y tendencias en diagramas de dispersión.
+// Predicciones y tendencias en diagramas de dispersión.
 export function scatterTrends(r: Rng): Question {
   const [xName, yName, , trend] = r.pick(SCATTER);
   const ps = scatter(r, trend);
@@ -225,7 +225,7 @@ function pointChoice4(r: Rng, prompt: string, answer: P, explanation: string, vi
   return choiceQ(r, prompt, pt4(answer), wrong.filter((p) => pt4(p) !== pt4(answer)).map(pt4), explanation, visual, tag);
 }
 
-// 6.° R.3: ubicar puntos en el plano de coordenadas (cuatro cuadrantes).
+// Ubicar puntos en el plano de coordenadas (cuatro cuadrantes).
 export function graphPoints4(r: Rng): Question {
   const used = new Set<string>();
   const points = ["A", "B", "C", "D"].map((emoji) => {
@@ -244,7 +244,7 @@ export function graphPoints4(r: Rng): Question {
 const QUADRANTS = ["Cuadrante I", "Cuadrante II", "Cuadrante III", "Cuadrante IV"];
 const quadrantOf = (p: P) => (p.x > 0 && p.y > 0 ? 0 : p.x < 0 && p.y > 0 ? 1 : p.x < 0 && p.y < 0 ? 2 : 3);
 
-// 6.° R.4: cuadrantes.
+// Cuadrantes.
 export function quadrants(r: Rng): Question {
   if (r.chance(0.25)) {
     const onX = r.chance(0.5);
@@ -256,7 +256,7 @@ export function quadrants(r: Rng): Question {
   return fixedQ(`¿En qué cuadrante está el punto ${pt4(p)}?`, QUADRANTS, QUADRANTS[q], `x es ${p.x > 0 ? "positivo" : "negativo"} e y es ${p.y > 0 ? "positivo" : "negativo"}: ${QUADRANTS[q].replace("Cuadrante", "cuadrante")}. (I: +,+ · II: −,+ · III: −,− · IV: +,−)`, r.chance(0.5) ? plane4([{ ...p, emoji: "•" }]) : undefined, QUADRANTS[q]);
 }
 
-// 6.° R.5: reflejar un punto respecto de un eje.
+// Reflejar un punto respecto de un eje.
 export function reflectPoint(r: Rng): Question {
   const p = { x: nz(r), y: nz(r) };
   const overX = r.chance(0.5);
@@ -264,7 +264,7 @@ export function reflectPoint(r: Rng): Question {
   return pointChoice4(r, `El punto A está en ${pt4(p)}. ¿Dónde queda su reflejo respecto del eje ${overX ? "x" : "y"}?`, image, `Al reflejar sobre el eje ${overX ? "x cambia el signo de y" : "y cambia el signo de x"}: ${pt4(image)}.`, plane4([{ ...p, emoji: "A" }]), overX ? "eje-x" : "eje-y");
 }
 
-// 6.° R.7: distancia entre dos puntos (en la misma horizontal o vertical).
+// Distancia entre dos puntos (en la misma horizontal o vertical).
 export function distancePoints(r: Rng): Question {
   const horizontal = r.chance(0.5);
   const fixed = r.int(-6, 6);
@@ -274,7 +274,7 @@ export function distancePoints(r: Rng): Question {
   return numQ(Math.abs(a - b), `¿Cuántas unidades hay entre los puntos ${pt4(A)} y ${pt4(B)}?`, plane4([{ ...A, emoji: "A" }, { ...B, emoji: "B" }]), `Tienen la misma coordenada ${horizontal ? "y" : "x"}; se restan las otras: |${sgn(a)} − ${b < 0 ? `(${sgn(b)})` : sgn(b)}| = ${Math.abs(a - b)}.`, horizontal ? "horizontal" : "vertical");
 }
 
-// 6.° R.9: área y perímetro de cuadrados y rectángulos en el plano.
+// Área y perímetro de cuadrados y rectángulos en el plano.
 export function rectangleOnPlane(r: Rng): Question {
   const x = r.int(-6, 2);
   const y = r.int(-6, 2);

@@ -21,7 +21,6 @@ const SOLIDS: { name: string; faces: number; edges: number; vertices: number }[]
 
 export const SOLID_NAMES_DRAWN = ["cubo", "prisma rectangular", "cilindro", "cono", "esfera", "pirámide cuadrada"];
 
-// M.1
 export function compareSidesVertices(r: Rng): Question {
   const polys = SHAPES_2D.filter((s) => s.sides >= 3);
   const mode = r.int(0, 2);
@@ -53,7 +52,6 @@ export function compareSidesVertices(r: Rng): Question {
   };
 }
 
-// M.2
 export function identifyShape2d(r: Rng): Question {
   const s = r.pick(SHAPES_2D);
   return {
@@ -67,7 +65,6 @@ export function identifyShape2d(r: Rng): Question {
   };
 }
 
-// M.3
 export function compareSolidParts(r: Rng): Question {
   const what = r.pick(["faces", "edges", "vertices"] as const);
   const wordPlural = { faces: "caras", edges: "aristas", vertices: "vértices" }[what];
@@ -98,7 +95,6 @@ export function compareSolidParts(r: Rng): Question {
   };
 }
 
-// M.4
 export function identifySolid(r: Rng): Question {
   const name = r.pick(SOLID_NAMES_DRAWN);
   return {
@@ -122,7 +118,6 @@ const EVERYDAY: { emoji: string; solid: string; label: string }[] = [
   { emoji: "📦", solid: "prisma rectangular", label: "una caja" },
 ];
 
-// M.5
 export function everydayObjects(r: Rng): Question {
   const o = r.pick(EVERYDAY);
   return {
@@ -145,7 +140,6 @@ const TRACED: { solid: string; face: string; avoid: string[] }[] = [
   { solid: "pirámide cuadrada", face: "cuadrado", avoid: ["rectángulo"] },
 ];
 
-// M.6
 export function tracedShapes(r: Rng): Question {
   const t = r.pick(TRACED);
   const pool = SHAPES_2D.map((s) => s.name).filter((n) => n !== t.face && !t.avoid.includes(n));
@@ -169,7 +163,6 @@ const FACES: Record<string, string> = {
   cono: "Un círculo y una superficie curva",
 };
 
-// M.7
 export function solidFaces(r: Rng): Question {
   const solid = r.pick(Object.keys(FACES));
   return {
@@ -223,19 +216,17 @@ function selectAll(r: Rng, pool: string[], kind: "shapes" | "solids"): Question 
   };
 }
 
-// 2.° J.1
 export function selectShapes2d(r: Rng): Question {
   return selectAll(r, SHAPES_2D.map((s) => s.name), "shapes");
 }
 
-// 2.° J.3
 export function selectSolids(r: Rng): Question {
   return selectAll(r, SOLID_NAMES_DRAWN, "solids");
 }
 
 export const NET_SOLIDS = ["cubo", "prisma rectangular", "pirámide cuadrada", "prisma triangular", "cilindro", "cono"];
 
-// 2.° J.8: ¿qué cuerpo se arma con este desarrollo?
+// ¿qué cuerpo se arma con este desarrollo?
 export function netOfSolid(r: Rng): Question {
   const name = r.pick(NET_SOLIDS);
   return {

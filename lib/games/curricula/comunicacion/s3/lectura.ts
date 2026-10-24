@@ -1,25 +1,12 @@
 import { choose, readPassage, type ChoiceItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { pool, pt, read, sorter, w } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Estrategias de lectura (IXL 9th grade ELA: A-I). Lecturas propias, con temas
-// e historias del Perú. Los ítems «New!» de IXL (A.2 y C.2) se numeran en su
-// lugar; «Analyze poetry» figura como «Coming soon» y se omite.
+// 3.° de Secundaria · banco de comprensión y lectura atenta con lecturas
+// propias, con temas e historias del Perú.
 
-export const SECTIONS: Section[] = [
-  { id: "A", name: "Idea principal", icon: "💡" },
-  { id: "B", name: "Tema", icon: "🧭" },
-  { id: "C", name: "Propósito y perspectiva del autor", icon: "✍️" },
-  { id: "D", name: "Tono", icon: "🎚️" },
-  { id: "E", name: "Recursos literarios", icon: "✨" },
-  { id: "F", name: "Lectura atenta: textos literarios", icon: "📖" },
-  { id: "G", name: "Lectura atenta: textos informativos", icon: "🔬" },
-  { id: "H", name: "Analizar literatura", icon: "📚" },
-  { id: "I", name: "Analizar poesía", icon: "🎶" },
-];
 
-// --- A. Idea principal -------------------------------------------------------
+// --- Idea principal -------------------------------------------------------
 
 const MAIN_PASSAGES = [
   read("La economía informal", "🛒", "Siete de cada diez trabajadores peruanos laboran en la informalidad: venden en la calle, manejan mototaxis o trabajan en talleres sin contrato. La informalidad ofrece una salida rápida a quienes no encuentran empleo formal, y muchas veces es la única. Pero tiene un costo alto: estos trabajadores no tienen seguro de salud ni aportan para una pensión, y el Estado recauda menos impuestos para servicios públicos. Reducirla no pasa solo por fiscalizar, sino por hacer que formalizarse sea más simple y barato que no hacerlo.",
@@ -42,7 +29,7 @@ const MULTI_MAIN = [
     ["¿Qué función cumple «en suma»?", "Introduce una síntesis final.", "Presenta un nuevo ejemplo de restaurante famoso.", "Cambia de tema."]),
 ];
 
-// --- B. Tema -----------------------------------------------------------------
+// --- Tema -----------------------------------------------------------------
 
 const QUOTE_THEMES = pool([
   ["«Callar ante la injusticia también es elegir un bando».", "La complicidad del silencio"], ["«La ciudad le dio un título y le quitó el nombre de su pueblo».", "El precio del desarraigo"],
@@ -62,7 +49,7 @@ const THEME_DEV = [
     ["¿Qué simboliza la llamada a su madre?", "La reconciliación con sus raíces", "Que su madre estaba enferma y necesitaba ayuda", "Que quería dinero"]),
 ];
 
-// --- C. Propósito y perspectiva -----------------------------------------------
+// --- Propósito y perspectiva -----------------------------------------------
 
 const AUDIENCE = "¿A quién se dirige el texto y con qué propósito?";
 const AUDIENCE_PURPOSE: ChoiceItem[] = [
@@ -83,7 +70,7 @@ const AUTHOR_PERSPECTIVE: ChoiceItem[] = [
   pt(PERSPECTIVE, "«Los exámenes estandarizados nos dicen mucho de lo que se mide y casi nada de lo que importa».", "Duda de que esos exámenes capten lo esencial del aprendizaje.", "Considera que los exámenes estandarizados miden todo lo importante.", "Prefiere los exámenes."),
 ];
 
-// --- D. Tono -----------------------------------------------------------------
+// --- Tono -----------------------------------------------------------------
 
 const FORMAL = "¿Qué texto es más formal?";
 const FORMALITY: ChoiceItem[] = [
@@ -106,7 +93,7 @@ const TONE_COMPARE: ChoiceItem[] = [
   pt(TONE, "Texto A: «Si no actuamos hoy, mañana no habrá agua que defender».\nTexto B: «El caudal del río disminuyó un 15 %».", "A es alarmista y urgente; B es informativo.", "A es informativo; B es alarmista y urgente.", "Ambos son informativos."),
 ];
 
-// --- E. Recursos literarios --------------------------------------------------
+// --- Recursos literarios --------------------------------------------------
 
 const ALLUSIONS: ChoiceItem[] = [
   pt("¿Qué significa la alusión a Caín y Abel?", "Fuente: Caín, por envidia, mató a su hermano Abel.\nOración: «La guerra entre los dos hermanos por la herencia fue una historia de Caín y Abel».", "Una rivalidad entre hermanos que termina en violencia", "Una relación fraternal llena de cariño y ayuda mutua", "Una herencia grande"),
@@ -162,7 +149,7 @@ const FIGURE_EFFECT: ChoiceItem[] = [
   pt(EFFECT, "«Era una calma tensa, a punto de estallar».", "El oxímoron crea suspenso.", "El oxímoron transmite tranquilidad completa y segura.", "Describe el clima."),
 ];
 
-// --- F. Lectura atenta: literatura ---------------------------------------------
+// --- Lectura atenta: literatura ---------------------------------------------
 
 const NARR = sorter(["Primera persona", "Segunda persona", "Tercera persona omnisciente", "Tercera persona limitada"], "¿Qué punto de vista tiene el narrador?");
 const NARRATOR: ChoiceItem[] = [
@@ -192,7 +179,7 @@ const CRAFT_LIT = [
     ["¿Qué sugiere la última oración?", "Que el recuerdo de aquel amor sigue vivo", "Que la abuela odia al joven que se fue a Lima", "Que perdió la carta"]),
 ];
 
-// --- G. Lectura atenta: textos informativos ---------------------------------------
+// --- Lectura atenta: textos informativos ---------------------------------------
 
 const WORD_CHOICE: ChoiceItem[] = [
   pt("¿Qué efecto tiene la palabra «invasores» en lugar de «pobladores»?", "«Los invasores ocuparon el cerro».", "Presenta a las personas de forma negativa, como ilegítimas.", "Las presenta como vecinos respetados que fundaron un barrio con esfuerzo.", "Es neutra."),
@@ -213,7 +200,7 @@ const CRAFT_INFO = [
     ["¿Qué aclara el autor en la última oración?", "Su propósito real", "Su opinión sobre las marcas de celulares", "El precio del celular"]),
 ];
 
-// --- H. Cuentos ------------------------------------------------------------------
+// --- Cuentos ------------------------------------------------------------------
 
 const STORIES_1 = [
   read("El guardián del faro", "🗼", "Durante cuarenta años, don Celestino encendió cada noche el faro de la isla. Cuando llegó la luz automática, le dijeron que ya no era necesario. Se mudó al puerto. Las primeras noches no pudo dormir: se levantaba a las seis de la tarde, por costumbre, y miraba hacia la isla. Una noche de tormenta se fue la electricidad en toda la costa. El faro quedó apagado. Don Celestino tomó un bote, cruzó el mar embravecido y lo encendió a mano. A la mañana siguiente, nadie supo quién había sido.",
@@ -236,7 +223,7 @@ const STORIES_2 = [
     ["¿Qué muestra el final?", "Que la escuela se volvió un espacio de toda la comunidad", "Que Elvira se fue del pueblo cansada y cerró la escuela para siempre", "Nada"]),
 ];
 
-// --- I. Poesía ---------------------------------------------------------------------
+// --- Poesía ---------------------------------------------------------------------
 
 const POETRY: ChoiceItem[] = [
   w("¿Qué es un verso?", "Cada una de las líneas de un poema", "Un grupo de líneas separado por un espacio", "La idea principal del poema"), w("¿Qué es una estrofa?", "Un grupo de versos separado por un espacio", "Cada una de las líneas que forman un poema, desde la primera hasta la última", "El título del poema"),
@@ -247,35 +234,35 @@ const POETRY: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["A.1", "Determinar la idea principal de un texto", (r) => readPassage(r, MAIN_PASSAGES, false)],
-  ["A.2", "Determinar varias ideas principales de un texto", (r) => readPassage(r, MULTI_MAIN, false)],
+  ["ideas-principales-1", (r) => readPassage(r, MAIN_PASSAGES, false)],
+  ["ideas-principales-2", (r) => readPassage(r, MULTI_MAIN, false)],
 
-  ["B.1", "Relacionar las citas con sus temas", (r) => choose(r, "¿Qué tema expresa la cita?", QUOTE_THEMES)],
-  ["B.2", "Analizar el desarrollo de los temas", (r) => readPassage(r, THEME_DEV, false)],
+  ["temas-1", (r) => choose(r, "¿Qué tema expresa la cita?", QUOTE_THEMES)],
+  ["temas-2", (r) => readPassage(r, THEME_DEV, false)],
 
-  ["C.1", "Identificar el destinatario y el propósito", (r) => choose(r, "", AUDIENCE_PURPOSE)],
-  ["C.2", "Determinar la perspectiva del autor", (r) => choose(r, "", AUTHOR_PERSPECTIVE)],
+  ["proposito-1", (r) => choose(r, "", AUDIENCE_PURPOSE)],
+  ["proposito-2", (r) => choose(r, "", AUTHOR_PERSPECTIVE)],
 
-  ["D.1", "¿Qué texto es más formal?", (r) => choose(r, "", FORMALITY)],
-  ["D.2", "Comparar textos según su tono objetivo o subjetivo", (r) => choose(r, "", SUBJ_OBJ)],
-  ["D.3", "Comparar el tono de dos textos", (r) => choose(r, "", TONE_COMPARE)],
+  ["tono-1", (r) => choose(r, "", FORMALITY)],
+  ["tono-2", (r) => choose(r, "", SUBJ_OBJ)],
+  ["tono-3", (r) => choose(r, "", TONE_COMPARE)],
 
-  ["E.1", "Interpretar el significado de una alusión a partir de su fuente", (r) => choose(r, "", ALLUSIONS)],
-  ["E.2", "Recordar la fuente de una alusión", (r) => choose(r, "", ALLUSION_SOURCE)],
-  ["E.3", "Interpretar figuras literarias", (r) => choose(r, "", FIGURE_MEANING)],
-  ["E.4", "Clasificar figuras literarias: eufemismo, hipérbole, oxímoron, paradoja", (r) => choose(r, "", FIGURE_FOUR)],
-  ["E.5", "Clasificar figuras literarias: repaso", (r) => choose(r, "", FIGURE_REVIEW)],
-  ["E.6", "Analizar el efecto de las figuras literarias en el significado y el tono", (r) => choose(r, "", FIGURE_EFFECT)],
+  ["alusiones-1", (r) => choose(r, "", ALLUSIONS)],
+  ["alusiones-2", (r) => choose(r, "", ALLUSION_SOURCE)],
+  ["figuras-1", (r) => choose(r, "", FIGURE_MEANING)],
+  ["figuras-2", (r) => choose(r, "", FIGURE_FOUR)],
+  ["figuras-3", (r) => choose(r, "", FIGURE_REVIEW)],
+  ["figuras-4", (r) => choose(r, "", FIGURE_EFFECT)],
 
-  ["F.1", "Identificar el punto de vista del narrador", (r) => choose(r, "", NARRATOR)],
-  ["F.2", "Analizar la evolución de los personajes", (r) => readPassage(r, CHARACTER, false)],
-  ["F.3", "Analizar la forma y la estructura de textos literarios", (r) => readPassage(r, CRAFT_LIT, false)],
+  ["literarios-1", (r) => choose(r, "", NARRATOR)],
+  ["literarios-2", (r) => readPassage(r, CHARACTER, false)],
+  ["literarios-3", (r) => readPassage(r, CRAFT_LIT, false)],
 
-  ["G.1", "Analizar el efecto de la elección de palabras en el significado y el tono", (r) => choose(r, "", WORD_CHOICE)],
-  ["G.2", "Analizar la forma y la estructura de textos informativos", (r) => readPassage(r, CRAFT_INFO, false)],
+  ["informativos-atenta-1", (r) => choose(r, "", WORD_CHOICE)],
+  ["informativos-atenta-2", (r) => readPassage(r, CRAFT_INFO, false)],
 
-  ["H.1", "Analizar cuentos cortos: grupo 1", (r) => readPassage(r, STORIES_1, false)],
-  ["H.2", "Analizar cuentos cortos: grupo 2", (r) => readPassage(r, STORIES_2, false)],
+  ["cuentos-1", (r) => readPassage(r, STORIES_1, false)],
+  ["cuentos-2", (r) => readPassage(r, STORIES_2, false)],
 
-  ["I.1", "Identificar los elementos de la poesía", (r) => choose(r, "", POETRY)],
+  ["poesia", (r) => choose(r, "", POETRY)],
 ];

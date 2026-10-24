@@ -14,7 +14,7 @@ const term = (k: number, v: string) => (k === 1 ? v : `${k}${v}`);
 // kx + c con c ≥ 0
 const lin = (k: number, v: string, c: number) => (c === 0 ? term(k, v) : `${term(k, v)} + ${c}`);
 
-// 6.° Y.2: escribir expresiones con variables de dos operaciones.
+// Escribir expresiones con variables de dos operaciones.
 export function writeVariableExpression2(r: Rng): Question {
   const v = r.pick(VARS);
   const k = r.int(2, 9);
@@ -31,7 +31,7 @@ export function writeVariableExpression2(r: Rng): Question {
   return choiceQ(r, `¿Qué expresión representa «${text}»?`, answer, wrong, `«${text}» se escribe ${answer}.`);
 }
 
-// 6.° Y.5: evaluar expresiones con varias variables.
+// Evaluar expresiones con varias variables.
 export function evaluateMultiVariable(r: Rng): Question {
   const [a, b] = [r.int(2, 9), r.int(2, 9)];
   const [x, y] = [r.int(1, 10), r.int(1, 10)];
@@ -46,7 +46,7 @@ export function evaluateMultiVariable(r: Rng): Question {
   return numQ(value, `Calcula el valor de la expresión cuando x = ${x} e y = ${y}.`, text, `${sub} = ${fmt(value)}.`);
 }
 
-// 6.° Y.6: evaluar expresiones con decimales, fracciones y números mixtos.
+// Evaluar expresiones con decimales, fracciones y números mixtos.
 export function evaluateWithDecimals(r: Rng): Question {
   const v = r.pick(VARS);
   if (r.chance(0.5)) {
@@ -63,7 +63,7 @@ export function evaluateWithDecimals(r: Rng): Question {
   return fracQ(r, `Calcula el valor de la expresión cuando ${v} = ${fshow(x)}.`, value, `${k} × ${fshow(x)} + ${c[0]}/${d} = ${fshow([k * x[0], d])} + ${c[0]}/${d} = ${fshow(value)}.`, `${k}${v} + ${c[0]}/${d}`, "fracciones");
 }
 
-// 6.° Y.7: evaluar expresiones con variables en problemas.
+// Evaluar expresiones con variables en problemas.
 export function evaluateVariableProblem(r: Rng): Question {
   const k = r.int(2, 15);
   const c = r.int(5, 60);
@@ -80,7 +80,7 @@ export function evaluateVariableProblem(r: Rng): Question {
   return numQ(value, text, undefined, isRect ? `2 × ${x * k} + ${2 * c} = ${value}.` : `${k} × ${x} + ${c} = ${value}.`);
 }
 
-// 6.° Y.8: identificar términos y coeficientes.
+// Identificar términos y coeficientes.
 export function termsCoefficients(r: Rng): Question {
   const [v, w] = r.shuffle(VARS).slice(0, 2);
   const [a, b, c] = [r.int(2, 12), r.int(2, 12), r.int(1, 20)];
@@ -92,7 +92,7 @@ export function termsCoefficients(r: Rng): Question {
   return choiceQ(r, `En la expresión ${expr}, ¿cuál de estos es un término?`, `${b}${w}`, [`${a}`, `${w}`, `${v} + ${b}`, `${a}${v} + ${b}`], `Los términos son ${a}${v}, ${b}${w} y ${c}.`, expr, "identificar-termino");
 }
 
-// 6.° Y.9: identificar los factores de una expresión con variables.
+// Identificar los factores de una expresión con variables.
 export function factorsOfVariableExpression(r: Rng): Question {
   const v = r.pick(VARS);
   const [a, c] = distinct(r, 2, 2, 9);
@@ -104,7 +104,7 @@ export function factorsOfVariableExpression(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Expresiones equivalentes
 
-// 6.° Z.1 / AA.7: una tira con partes x y un número → la expresión (o ecuación) que representa.
+// Una tira con partes x y un número → la expresión (o ecuación) que representa.
 export function stripExpression(r: Rng, asEquation = false, solveOnly = false): Question {
   const v = "x";
   const k = r.int(1, 4);
@@ -130,7 +130,7 @@ const PROPERTIES: [(a: string, b: string, c: string) => string, string][] = [
   [(a) => `${a} × 0 = 0`, "Propiedad del cero"],
 ];
 
-// 6.° Z.2 / Z.3: propiedades de la suma y de la multiplicación (con variables).
+// Propiedades de la suma y de la multiplicación (con variables).
 export function namedProperty(r: Rng, of: "suma" | "multiplicacion"): Question {
   const pool = of === "suma" ? PROPERTIES.slice(0, 3) : PROPERTIES.slice(3);
   const [make, name] = r.pick(pool);
@@ -148,7 +148,7 @@ function factored(r: Rng): { k: number; a: number; b: number; v: string } {
   }
 }
 
-// 6.° Z.4 / Z.5: multiplicar usando la propiedad distributiva (`model`: con modelo de área).
+// Multiplicar usando la propiedad distributiva (`model`: con modelo de área).
 export function distribute(r: Rng, model: boolean): Question {
   const { k, a, b, v } = factored(r);
   const inner = lin(a, v, b);
@@ -158,7 +158,7 @@ export function distribute(r: Rng, model: boolean): Question {
   return choiceQ(r, model ? `El modelo de área muestra ${k}(${inner}). ¿Qué expresión es igual?` : `Aplica la propiedad distributiva: ${k}(${inner})`, answer, wrong.filter((w) => w !== answer), `${k} × ${term(a, v)} = ${term(k * a, v)} y ${k} × ${b} = ${k * b}: ${answer}.`, visual, model ? "modelo" : "expresion");
 }
 
-// 6.° Z.6: factorizar expresiones numéricas con la propiedad distributiva.
+// Factorizar expresiones numéricas con la propiedad distributiva.
 export function factorNumeric(r: Rng): Question {
   for (;;) {
     const k = r.int(2, 12);
@@ -169,7 +169,7 @@ export function factorNumeric(r: Rng): Question {
   }
 }
 
-// 6.° Z.7 / Z.8: factorizar expresiones con variables (`model`: con modelo de área).
+// Factorizar expresiones con variables (`model`: con modelo de área).
 export function factorVariable(r: Rng, model: boolean): Question {
   const { k, a, b, v } = factored(r);
   const expanded = `${term(k * a, v)} + ${k * b}`;
@@ -179,7 +179,7 @@ export function factorVariable(r: Rng, model: boolean): Question {
   return choiceQ(r, model ? `El modelo de área tiene un área total de ${expanded}. ¿Qué producto representa (lado × lado)?` : `Factoriza ${expanded} usando el mayor factor común.`, answer, wrong.filter((w) => w !== answer), `El mayor factor común de ${k * a} y ${k * b} es ${k}: ${answer}.`, visual, model ? "modelo" : "expresion");
 }
 
-// 6.° Z.9: hallar el valor de una variable usando las propiedades de la multiplicación.
+// Hallar el valor de una variable usando las propiedades de la multiplicación.
 export function solveWithProperties(r: Rng): Question {
   const [a, b, c] = [r.int(2, 12), r.int(2, 12), r.int(2, 12)];
   const v = r.pick(VARS);
@@ -194,7 +194,7 @@ export function solveWithProperties(r: Rng): Question {
   return numQ(answer, `¿Cuánto vale ${v}?`, text, `${why} ${v} = ${answer}.`);
 }
 
-// 6.° Z.10: escribir expresiones equivalentes usando las propiedades.
+// Escribir expresiones equivalentes usando las propiedades.
 export function equivalentByProperty(r: Rng): Question {
   const { k, a, b, v } = factored(r);
   const c = r.pick([2, 3, 4, 5, 6, 7, 8, 9].filter((n) => n !== a + 1 && n !== b && n !== k));
@@ -208,7 +208,7 @@ export function equivalentByProperty(r: Rng): Question {
   return choiceQ(r, prompt, answer, wrong, `${why} Resultado: ${answer}.`);
 }
 
-// 6.° Z.11: sumar y restar términos semejantes.
+// Sumar y restar términos semejantes.
 export function likeTerms(r: Rng): Question {
   const v = r.pick(VARS);
   const [a, b, c] = [r.int(2, 12), r.int(1, 9), r.int(1, 12)];
@@ -222,7 +222,7 @@ export function likeTerms(r: Rng): Question {
   return choiceQ(r, `Simplifica juntando los términos semejantes: ${expr}`, answer, wrong.filter((w) => w !== answer), `${why}: ${answer}.`);
 }
 
-// 6.° Z.12 / Z.13: identificar expresiones equivalentes.
+// Identificar expresiones equivalentes.
 export function equivalentExpressions(r: Rng, chooseAll: boolean): Question {
   const { k, a, b, v } = factored(r);
   const base = `${k}(${lin(a, v, b)})`;
@@ -257,7 +257,7 @@ function oneStep(r: Rng, ops: string[] = ["+", "−", "×", "÷"], max = 60): Eq
   return { text: `${v} ÷ ${k} = ${x}`, x: x * k, v, steps: `${v} = ${x} × ${k} = ${x * k}`, op };
 }
 
-// 6.° AA.1 / AA.2: ¿x cumple la ecuación? / ¿qué x la cumple?
+// ¿x cumple la ecuación? / ¿qué x la cumple?
 export function satisfiesEquation(r: Rng, choose: boolean): Question {
   const e = oneStep(r);
   if (choose) return choiceQ(r, `¿Qué valor de ${e.v} cumple la ecuación ${e.text}?`, String(e.x), [e.x + 1, e.x - 1, e.x + 2, e.x * 2, Math.max(1, e.x - 3)].filter((n) => n !== e.x && n > 0).map(String), `${e.steps}.`, e.text, e.op);
@@ -266,7 +266,7 @@ export function satisfiesEquation(r: Rng, choose: boolean): Question {
   return yesNo(`¿${e.v} = ${value} cumple la ecuación ${e.text}?`, yes, yes ? `Sí: al reemplazar ${e.v} por ${value}, los dos lados son iguales.` : `No: la solución es ${e.v} = ${e.x}.`, e.text, e.op);
 }
 
-// 6.° AA.3: escribir una ecuación a partir de una frase.
+// Escribir una ecuación a partir de una frase.
 export function equationFromWords(r: Rng): Question {
   const v = r.pick(VARS);
   const [k, t] = [r.int(2, 12), r.int(13, 60)];
@@ -281,7 +281,7 @@ export function equationFromWords(r: Rng): Question {
   return choiceQ(r, `¿Qué ecuación representa «${text}»?`, answer, wrong, `«${text}» se escribe ${answer}.`);
 }
 
-// 6.° AA.4: identificar expresiones y ecuaciones.
+// Identificar expresiones y ecuaciones.
 export function expressionOrEquation(r: Rng): Question {
   const v = r.pick(VARS);
   const [a, b] = [r.int(2, 12), r.int(2, 30)];
@@ -290,7 +290,7 @@ export function expressionOrEquation(r: Rng): Question {
   return fixedQ("¿Es una expresión o una ecuación?", ["Expresión", "Ecuación"], isEquation ? "Ecuación" : "Expresión", "Una ecuación tiene el signo = y afirma que dos cantidades son iguales; una expresión no lo tiene.", text, isEquation ? "ecuacion" : "expresion");
 }
 
-// 6.° AA.5: representar y resolver ecuaciones con fichas (🟩 = x, 🟨 = 1).
+// Representar y resolver ecuaciones con fichas (🟩 = x, 🟨 = 1).
 export function algebraTiles(r: Rng): Question {
   const k = r.int(1, 3);
   const c = r.int(0, 5);
@@ -300,13 +300,13 @@ export function algebraTiles(r: Rng): Question {
   return numQ(x, "Cada 🟩 vale x y cada 🟨 vale 1. Los dos lados valen lo mismo. ¿Cuánto vale x?", `${"🟩".repeat(k)} ${"🟨".repeat(c)}   =   ${"🟨".repeat(total)}`, `${lin(k, "x", c)} = ${total}${c ? `; se quitan ${c} de cada lado: ${term(k, "x")} = ${k * x}` : ""}${k > 1 ? `; se reparte en ${k}: x = ${x}` : ""}.`, `${k}x`);
 }
 
-// 6.° AA.8 – AA.10: resolver ecuaciones de un paso con números naturales.
+// Resolver ecuaciones de un paso con números naturales.
 export function solveOneStep(r: Rng, ops: string[]): Question {
   const e = oneStep(r, ops, 200);
   return numQ(e.x, `Resuelve. ¿Cuánto vale ${e.v}?`, e.text, `${e.steps}.`, e.op);
 }
 
-// 6.° AA.11 – AA.13: resolver ecuaciones de un paso con decimales y fracciones.
+// Resolver ecuaciones de un paso con decimales y fracciones.
 export function solveOneStepRational(r: Rng, ops: ("+" | "−" | "×" | "÷")[]): Question {
   const op = r.pick(ops);
   const v = r.pick(VARS);
@@ -348,14 +348,14 @@ function equationStory(r: Rng, ops: string[]): Story {
   return { text: `${name} repartió sus canicas por igual entre ${k} amigos y a cada uno le tocaron ${x}. ¿Cuántas canicas tenía?`, equation: `x ÷ ${k} = ${x}`, x: x * k, wrong: [`${k}x = ${x}`, `x − ${k} = ${x}`, `${k} ÷ x = ${x}`] };
 }
 
-// 6.° AA.14 – AA.17: problemas con ecuaciones de un paso (`write`: elegir la ecuación).
+// Problemas con ecuaciones de un paso (`write`: elegir la ecuación).
 export function equationWordProblem(r: Rng, ops: string[], write = false): Question {
   const s = equationStory(r, ops);
   if (write) return choiceQ(r, `${s.text} Si x es la cantidad que se busca, ¿qué ecuación lo representa?`, s.equation, s.wrong, `La ecuación es ${s.equation}; su solución es x = ${s.x}.`);
   return numQ(s.x, s.text, s.equation, `${s.equation}, entonces x = ${s.x}.`);
 }
 
-// 6.° AA.18: ¿qué problema corresponde a la ecuación?
+// ¿qué problema corresponde a la ecuación?
 export function matchWordProblem(r: Rng): Question {
   const [k, t] = [r.int(2, 9), r.int(12, 60)];
   const name = r.pick(NAMES);
@@ -370,7 +370,7 @@ export function matchWordProblem(r: Rng): Question {
   return choiceQ(r, `¿Qué situación corresponde a la ecuación ${equations[op]}?`, stories[op], Object.keys(stories).filter((o) => o !== op).map((o) => stories[o]), `«${stories[op]}» se escribe ${equations[op]}.`, equations[op], op);
 }
 
-// 6.° AA.19: resolver ecuaciones de un paso con enteros.
+// Resolver ecuaciones de un paso con enteros.
 export function solveOneStepIntegers(r: Rng): Question {
   const v = r.pick(VARS);
   const x = r.int(-15, 15);
@@ -386,7 +386,7 @@ export function solveOneStepIntegers(r: Rng): Question {
   return intQ(r, `Resuelve. ¿Cuánto vale ${v}?`, answer, `${steps}.`, text);
 }
 
-// 6.° AA (checkpoint): comprender y resolver ecuaciones.
+// Comprender y resolver ecuaciones.
 export function equationReview(r: Rng): Question {
   return r.pick([() => satisfiesEquation(r, r.chance(0.5)), () => equationFromWords(r), () => solveOneStep(r, ["+", "−", "×", "÷"]), () => equationWordProblem(r, ["+", "−", "×", "÷"]), () => equationWordProblem(r, ["+", "−", "×", "÷"], true), () => stripExpression(r, true)])();
 }
@@ -403,7 +403,7 @@ const describe = (i: Ineq) => `Punto ${i.op === "≥" || i.op === "≤" ? "relle
 const randIneq = (r: Rng, min = -8, max = 8): Ineq => ({ op: r.pick(INEQ_OPS), n: r.int(min, max) });
 const others = (i: Ineq): Ineq[] => INEQ_OPS.filter((o) => o !== i.op).map((op) => ({ op, n: i.n }));
 
-// 6.° BB.1: soluciones de inecuaciones.
+// Soluciones de inecuaciones.
 export function inequalitySolutions(r: Rng): Question {
   const i = randIneq(r);
   if (r.chance(0.5)) {
@@ -415,7 +415,7 @@ export function inequalitySolutions(r: Rng): Question {
   return multiQ(`Selecciona todas las soluciones de ${itext(i)}.`, options.map(sg), good.map(sg), `Cumplen ${itext(i)}: ${good.map(sg).join(", ")}.`, undefined, i.op);
 }
 
-// 6.° BB.2 / BB.3: inecuaciones y rectas numéricas (`fromLine`: leer el gráfico).
+// Inecuaciones y rectas numéricas (`fromLine`: leer el gráfico).
 export function inequalityLine(r: Rng, fromLine: boolean): Question {
   const i = randIneq(r);
   if (fromLine) return choiceQ(r, "¿Qué inecuación muestra la recta numérica?", itext(i), others(i).map((o) => itext(o)), `${describe(i)}: ${itext(i)}.`, iline(i), i.op);
@@ -433,7 +433,7 @@ const INEQ_STORIES: [(n: number) => string, Ineq["op"], [number, number]][] = [
   [(n) => `Se necesitan más de ${n} firmas.`, ">", [50, 500]],
 ];
 
-// 6.° BB.4 / BB.7: escribir (y resolver) inecuaciones en problemas.
+// Escribir (y resolver) inecuaciones en problemas.
 export function inequalityProblem(r: Rng, solve = false): Question {
   if (solve) {
     const k = r.int(2, 9);
@@ -452,7 +452,7 @@ export function inequalityProblem(r: Rng, solve = false): Question {
   return choiceQ(r, `${make(i.n)} ¿Qué inecuación lo representa?`, itext(i), others(i).map((o) => itext(o)), `«${op === ">" ? "más de" : op === "<" ? "menos de" : op === "≥" ? "al menos / o más" : "como máximo / no más de"}» se escribe con ${op}: ${itext(i)}.`, undefined, op);
 }
 
-// 6.° BB.5 / BB.6: resolver inecuaciones de un paso (`graph`: comprobar el gráfico).
+// Resolver inecuaciones de un paso (`graph`: comprobar el gráfico).
 export function solveInequality(r: Rng, graph = false): Question {
   const sol = randIneq(r, graph ? -6 : -10, graph ? 6 : 20);
   const form = r.int(0, 2);
@@ -469,7 +469,7 @@ export function solveInequality(r: Rng, graph = false): Question {
   return choiceQ(r, `Resuelve la inecuación ${text}.`, itext(sol), wrong.filter((w) => w !== itext(sol)), `${steps}: ${itext(sol)}.`, text, sol.op);
 }
 
-// 6.° BB (checkpoints).
+// Repasos.
 export function inequalityReview(r: Rng, solving: boolean): Question {
   return solving ? r.pick([() => solveInequality(r), () => solveInequality(r, true), () => inequalityProblem(r, true)])() : r.pick([() => inequalitySolutions(r), () => inequalityLine(r, true), () => inequalityLine(r, false), () => inequalityProblem(r)])();
 }
@@ -480,7 +480,7 @@ export function inequalityReview(r: Rng, solving: boolean): Question {
 const rule6 = (r: Rng): Rule2 => ({ m: r.int(1, 6), b: r.int(0, 10) });
 const eq = ({ m, b }: Rule2) => `y = ${term(m, "x")}${b ? ` + ${b}` : ""}`;
 
-// 6.° CC.1: ¿(x, y) cumple la ecuación?
+// ¿(x, y) cumple la ecuación?
 export function pairSatisfies(r: Rng): Question {
   const rule = rule6(r);
   const x = r.int(0, 9);
@@ -500,7 +500,7 @@ const DEPENDENCIES: [string, string, string][] = [
   ["las horas de estudio", "la nota del examen", "La nota depende de cuánto se estudia."],
 ];
 
-// 6.° CC.2 / CC.4: identificar la variable independiente y la dependiente.
+// Identificar la variable independiente y la dependiente.
 export function independentDependent(r: Rng, withTable: boolean): Question {
   const [indep, dep, why] = r.pick(DEPENDENCIES);
   const askDependent = r.chance(0.5);
@@ -520,14 +520,14 @@ function graphable(r: Rng): Rule2 {
 }
 const wrongRules = (rule: Rule2): Rule2[] => [{ m: rule.m + 1, b: rule.b }, { m: rule.m, b: rule.b + 1 }, { m: Math.max(1, rule.b || rule.m + 2), b: rule.m }, { m: rule.m, b: Math.max(0, rule.b - 1) }];
 
-// 6.° CC.3 / CC.11: escribir (o identificar) la ecuación de un gráfico.
+// Escribir (o identificar) la ecuación de un gráfico.
 export function equationFromGraph(r: Rng): Question {
   const rule = graphable(r);
   const wrong = wrongRules(rule).map(eq).filter((w) => w !== eq(rule));
   return choiceQ(r, "¿Qué ecuación corresponde al gráfico? (Arma una tabla con los puntos.)", eq(rule), wrong, `Los puntos son ${pts(rule, 12).map((p) => `(${p.x}, ${p.y})`).join(", ")}: cada vez que x aumenta 1, y aumenta ${rule.m}${rule.b ? `, y empieza en ${rule.b}` : ""}.`, plane(rule));
 }
 
-// 6.° CC.11: identificar el gráfico de una ecuación (¿este gráfico es el de la ecuación?).
+// Identificar el gráfico de una ecuación (¿este gráfico es el de la ecuación?).
 export function graphOfEquation(r: Rng): Question {
   const rule = graphable(r);
   const yes = r.chance(0.5);
@@ -544,7 +544,7 @@ const TWO_VAR_STORIES: [(m: number, b: number) => string, boolean][] = [
   [(m, b) => `Un club cobra ${b} soles de inscripción y ${m} soles por mes. Si x son los meses e y el total pagado`, true],
 ];
 
-// 6.° CC.6 / CC.7 / CC.10: relaciones entre dos variables en problemas.
+// Relaciones entre dos variables en problemas.
 export function twoVariableProblem(r: Rng, mode: "value" | "write"): Question {
   const [make, hasB] = r.pick(TWO_VAR_STORIES);
   const rule: Rule2 = { m: r.int(2, 12), b: hasB ? r.int(2, 30) : 0 };
@@ -554,7 +554,7 @@ export function twoVariableProblem(r: Rng, mode: "value" | "write"): Question {
   return numQ(ruleY(rule, x), `${text}, la ecuación es ${eq(rule)}. ¿Cuánto vale y cuando x = ${x}?`, eq(rule), `y = ${rule.m} × ${x}${rule.b ? ` + ${rule.b}` : ""} = ${ruleY(rule, x)}.`);
 }
 
-// 6.° CC.14: interpretar un gráfico en un problema.
+// Interpretar un gráfico en un problema.
 export function interpretGraphProblem(r: Rng): Question {
   const rule = graphable(r);
   const [xName, yName, start, rate] = r.pick([["semanas", "centímetros de altura de una planta", "medía al inicio", "crece por semana"], ["horas", "litros de agua en un tanque", "tenía al inicio", "entran por hora"], ["meses", "soles ahorrados", "tenía al inicio", "ahorra por mes"]]);

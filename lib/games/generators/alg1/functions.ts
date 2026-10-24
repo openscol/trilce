@@ -17,7 +17,7 @@ const absText = (q: Abs) => `f(x) = ${q.a === 1 ? "" : q.a === -1 ? "−" : q.a 
 const randomAbs = (r: Rng, dil = true): Abs => ({ a: r.pick(dil ? [1, -1, 2, -2, 0.5] : [1, -1]), h: r.int(-3, 3), k: r.int(-3, 3) });
 const absPlane = (qs: Abs[], points: { x: number; y: number }[] = []): Visual => ({ kind: "coordPlane", min: -6, max: 6, points: points.map((p) => ({ ...p, emoji: "•" })), curves: qs.map((q, i) => ({ points: curve(absF(q), -6, 6, 0.05), dashed: i > 0 })) });
 
-// BB.1: completar la tabla de una función valor absoluto.
+// Completar la tabla de una función valor absoluto.
 export function absTable(r: Rng): Question {
   const q = randomAbs(r, false);
   const xs = [q.h - 2, q.h - 1, q.h, q.h + 1, q.h + 2];
@@ -25,7 +25,7 @@ export function absTable(r: Rng): Question {
   return intQ(r, `Completa la tabla de ${absText(q)}. ¿Qué número va en lugar de «?»?`, absF(q)(xs[i]), `f(${sg(xs[i])}) = ${sg(absF(q)(xs[i]))}.`, table(["x", "f(x)"], xs.map((x, j) => [sg(x), j === i ? "?" : sg(absF(q)(x))])), "tabla", [-absF(q)(xs[i]), absF(q)(xs[i]) + 1]);
 }
 
-// BB.2: graficar una función valor absoluto.
+// Graficar una función valor absoluto.
 export function absGraph(r: Rng): Question {
   const q = randomAbs(r);
   const yes = r.chance(0.5);
@@ -33,7 +33,7 @@ export function absGraph(r: Rng): Question {
   return yesNo(`¿El gráfico muestra ${absText(q)}?`, yes, `Vértice en ${pt({ x: q.h, y: q.k })}, abre hacia ${q.a > 0 ? "arriba" : "abajo"} y la pendiente de cada lado es ±${Math.abs(q.a) === 0.5 ? "1/2" : Math.abs(q.a)}.`, absPlane([shown], [{ x: shown.h, y: shown.k }]), "graficar");
 }
 
-// BB.3 / BB.4: dominio y rango de funciones valor absoluto.
+// Dominio y rango de funciones valor absoluto.
 export function absDomainRange(r: Rng, graph: boolean): Question {
   const q = randomAbs(r);
   const domain = r.chance(0.3);
@@ -43,7 +43,7 @@ export function absDomainRange(r: Rng, graph: boolean): Question {
   return choiceQ(r, `¿Cuál es el ${domain ? "dominio" : "rango"} de ${graph ? "la función del gráfico" : absText(q)}?`, good, wrong.filter((w) => w !== good), domain ? "Se puede calcular el valor absoluto de cualquier número." : `El vértice ${pt({ x: q.h, y: q.k })} es el punto más ${q.a > 0 ? "bajo" : "alto"}: ${range}.`, graph ? absPlane([q], [{ x: q.h, y: q.k }]) : undefined, domain ? "dominio" : "rango");
 }
 
-// BB.5 / BB.6: transformaciones de funciones valor absoluto.
+// Transformaciones de funciones valor absoluto.
 export function absTransform(r: Rng, dilations: boolean): Question {
   const q = randomAbs(r, dilations);
   if (q.h === 0 && q.k === 0 && Math.abs(q.a) === 1) return absTransform(r, dilations);
@@ -55,7 +55,7 @@ export function absTransform(r: Rng, dilations: boolean): Question {
 // ---------------------------------------------------------------------------
 // Operaciones con funciones
 
-// CC.1 / CC.2: sumar, restar y multiplicar funciones.
+// Sumar, restar y multiplicar funciones.
 export function functionOps(r: Rng, multiply: boolean): Question {
   const f = [nz(r, 5), r.int(-6, 6)], g = multiply ? [1, nz(r, 6)] : [r.int(-3, 3) || 1, nz(r, 5), r.int(-6, 6)];
   const minus = !multiply && r.chance(0.5);
@@ -66,7 +66,7 @@ export function functionOps(r: Rng, multiply: boolean): Question {
   return choiceQ(r, `Si f(x) = ${poly(f)} y g(x) = ${poly(g)}, ¿cuánto es (f ${op} g)(x)?`, good, [...new Set(alt)].filter((w) => w !== good), multiply ? "Se multiplica cada término de f por cada término de g." : minus ? "Se resta g término a término (se cambia el signo de cada término de g)." : "Se suman los términos semejantes.", undefined, multiply ? "multiplicar" : minus ? "restar" : "sumar");
 }
 
-// CC.3: inversa de una función lineal.
+// Inversa de una función lineal.
 export function inverseLinear(r: Rng): Question {
   const a = r.pick([2, 3, 4, 5, -2, -3]), b = nz(r, 9);
   const good = `f⁻¹(x) = (x ${b < 0 ? "+" : "−"} ${Math.abs(b)}) / ${a < 0 ? `(${sg(a)})` : a}`;
@@ -86,7 +86,7 @@ const tText = (t: T) => {
 };
 const applyT = (t: T, p: { x: number; y: number }) => ({ x: (t.reflectY ? -p.x : p.x) + t.h, y: t.a * p.y + t.k });
 
-// DD.1: reglas de las transformaciones.
+// Reglas de las transformaciones.
 const RULES: [string, string, string[]][] = [
   ["f(x) + k (con k > 0)", "Se traslada k unidades hacia arriba", ["Se traslada k unidades hacia abajo", "Se traslada k unidades a la derecha", "Se traslada k unidades a la izquierda"]],
   ["f(x − h) (con h > 0)", "Se traslada h unidades a la derecha", ["Se traslada h unidades a la izquierda", "Se traslada h unidades hacia abajo", "Se traslada h unidades hacia arriba"]],
@@ -100,7 +100,7 @@ export function transformRules(r: Rng): Question {
   return choiceQ(r, `¿Qué le pasa al gráfico de f cuando se cambia por ${g}?`, good, wrong, `${g}: ${good.toLowerCase()}.`, undefined, "regla");
 }
 
-// DD.2-DD.6: traslaciones, reflexiones, dilataciones y combinaciones (con el gráfico de f).
+// Traslaciones, reflexiones, dilataciones y combinaciones (con el gráfico de f).
 export function transformFunction(r: Rng, kind: "translate" | "reflect" | "dilate" | "mixed" | "describe"): Question {
   const t: T = { h: 0, k: 0, a: 1, reflectY: false };
   if (kind === "translate" || kind === "mixed" || kind === "describe") {
@@ -139,7 +139,7 @@ const simpRoot = (n: number): [number, number] => {
 const rad = (k: number, m: number) => (m === 1 ? sg(k) : `${k === 1 ? "" : k === -1 ? "−" : sg(k)}√${m}`);
 const FREE = [2, 3, 5, 6, 7, 10];
 
-// EE.1: simplificar raíces cuadradas.
+// Simplificar raíces cuadradas.
 export function simplifyRoot(r: Rng): Question {
   const k = r.int(2, 7), m = r.pick(FREE);
   const n = k * k * m;
@@ -147,7 +147,7 @@ export function simplifyRoot(r: Rng): Question {
   return choiceQ(r, `Simplifica √${n}.`, good, [rad(m, k * k), rad(k * k, m), rad(k, m * 2), rad(Math.floor(Math.sqrt(n)), n - Math.floor(Math.sqrt(n)) ** 2)].filter((w, i, a) => w !== good && a.indexOf(w) === i && !w.endsWith("√1")), `${n} = ${k * k} × ${m} y √${k * k} = ${k}: √${n} = ${good}.`, undefined, "simplificar");
 }
 
-// EE.2: simplificar raíces con variables (x ≥ 0).
+// Simplificar raíces con variables (x ≥ 0).
 export function simplifyRootVar(r: Rng): Question {
   const k = r.int(2, 5), m = r.pick([2, 3, 5, 1]), e = r.int(2, 7);
   const out = Math.floor(e / 2), rest = e % 2;
@@ -159,7 +159,7 @@ export function simplifyRootVar(r: Rng): Question {
   return choiceQ(r, `Simplifica ${shown}. (Supón x ≥ 0.)`, good, [...new Set(wrong)], `√${k * k} = ${k} y √(x${sup(e)}) = x${sup(out)}${rest ? "√x" : ""}.`, undefined, "variables");
 }
 
-// EE.3: sumar y restar radicales.
+// Sumar y restar radicales.
 export function addRadicals(r: Rng): Question {
   const m = r.pick([2, 3, 5]), a = r.int(1, 6), k = r.int(2, 3), b = nz(r, 5);
   const total = a + b * k;
@@ -167,7 +167,7 @@ export function addRadicals(r: Rng): Question {
   return choiceQ(r, "Simplifica.", good, [rad(a + b, m), rad(a + b, m * k * k + m), rad(total, m * k * k), rad(a + b * k * k, m)].filter((w, i, all) => w !== good && all.indexOf(w) === i), `√${m * k * k} = ${k}√${m}, así que ${a}√${m} ${b < 0 ? "−" : "+"} ${Math.abs(b)}(${k}√${m}) = ${good}.`, `${a === 1 ? "" : a}√${m} ${b < 0 ? "−" : "+"} ${Math.abs(b) === 1 ? "" : Math.abs(b)}√${m * k * k}`, "sumar");
 }
 
-// EE.4: multiplicar radicales.
+// Multiplicar radicales.
 export function multiplyRadicals(r: Rng): Question {
   const [p, q] = r.pick([[6, 15], [2, 8], [3, 12], [10, 15], [6, 10], [5, 20], [2, 18], [3, 6]]);
   const a = r.int(1, 4), b = r.int(1, 4);
@@ -176,7 +176,7 @@ export function multiplyRadicals(r: Rng): Question {
   return choiceQ(r, "Multiplica y simplifica.", good, [rad(a * b, p * q), rad(a + b, p * q), rad(a * b * k * 2, m), rad(a * b, m)].filter((w, i, all) => w !== good && all.indexOf(w) === i), `${a * b} × √${p * q} = ${a * b} × ${k}${m === 1 ? "" : `√${m}`} = ${good}.`, `${a === 1 ? "" : a}√${p} · ${b === 1 ? "" : b}√${q}`, "multiplicar");
 }
 
-// EE.5: radicales con fracciones (racionalizar).
+// Radicales con fracciones (racionalizar).
 export function radicalFractions(r: Rng): Question {
   if (r.chance(0.5)) {
     const m = r.pick([2, 3, 5, 6, 7]), k = r.int(1, 5);
@@ -189,7 +189,7 @@ export function radicalFractions(r: Rng): Question {
   return choiceQ(r, `Simplifica √(${a}/${b}).`, good, [`${a}/${Math.sqrt(b)}`, `√${a}/${b}`, `${Math.sqrt(b)}/√${a}`], `√(${a}/${b}) = √${a}/√${b} = ${good}.`, undefined, "fraccion");
 }
 
-// EE.6: propiedad distributiva con radicales.
+// Propiedad distributiva con radicales.
 export function distributeRadical(r: Rng): Question {
   const a = r.pick([2, 3, 5]), b = r.pick([6, 10, 15, 3, 2].filter((x) => x !== a)), c = r.int(1, 6);
   const [k, m] = simpRoot(a * b);
@@ -198,7 +198,7 @@ export function distributeRadical(r: Rng): Question {
   return choiceQ(r, "Multiplica y simplifica.", good, [`√${a * b} + ${c}`, `${t1} + ${c}`, `${rad(k, m)} + √${c * a}`, `√${a + b} + ${t2}`].filter((w) => w !== good), `√${a} · √${b} = √${a * b} = ${t1} y √${a} · ${c} = ${t2}.`, `√${a}(√${b} + ${c})`, "distributiva");
 }
 
-// EE.7: racionalizar con el conjugado.
+// Racionalizar con el conjugado.
 export function conjugate(r: Rng): Question {
   const m = r.pick([2, 3, 5, 6, 7]), a = r.int(m === 2 ? 2 : 3, 5);
   const den = a * a - m;
@@ -208,12 +208,12 @@ export function conjugate(r: Rng): Question {
   return choiceQ(r, `Racionaliza ${k}/(${a} − √${m}).`, good, [`${c === 1 ? "" : c}(${a} − √${m})`.replace(/^\((\d+) − √(\d+)\)$/, "$1 − √$2"), `${k}(${a} + √${m})`, `${k}/(${a} + √${m})`, `${c === 1 ? "" : c}√${m}`].filter((w) => w !== good), `Se multiplica por el conjugado ${a} + √${m}: el denominador queda ${a}² − ${m} = ${den}, y ${k} ÷ ${den} = ${c}.`, undefined, "conjugado");
 }
 
-// EE.8: repaso mixto de radicales.
+// Repaso mixto de radicales.
 export function radicalMixed(r: Rng): Question {
   return r.pick([simplifyRoot, addRadicals, multiplyRadicals, radicalFractions, distributeRadical])(r);
 }
 
-// EE.9: convertir entre exponentes racionales y radicales.
+// Convertir entre exponentes racionales y radicales.
 export function exponentToRadical(r: Rng): Question {
   const v = r.pick(["x", "m", "n"]), n = r.pick([2, 3, 4]), m = r.pick([1, 2, 3].filter((k) => k !== n));
   const SUP = ["", "", "²", "³", "⁴"];
@@ -235,14 +235,14 @@ const rootText = (q: Root, cube = false) => `f(x) = ${q.a === 1 ? "" : q.a === -
 const rootF = (q: Root, cube = false) => (x: number) => (cube ? q.a * Math.cbrt(x - q.h) + q.k : x < q.h ? NaN : q.a * Math.sqrt(x - q.h) + q.k);
 const randomRoot = (r: Rng): Root => ({ a: r.pick([1, 1, -1, 2]), h: r.int(-4, 2), k: r.int(-3, 3) });
 
-// FF.1: evaluar funciones raíz cuadrada.
+// Evaluar funciones raíz cuadrada.
 export function evaluateRoot(r: Rng): Question {
   const q = randomRoot(r), s = r.int(0, 4);
   const x = q.h + s * s;
   return intQ(r, `Si ${rootText(q)}, ¿cuánto vale f(${sg(x)})?`, q.a * s + q.k, `${xMinus(q.h)} = ${s * s} y √${s * s} = ${s}: ${q.a === 1 ? "" : `${sg(q.a)} × `}${s}${q.k ? ` ${q.k < 0 ? "−" : "+"} ${Math.abs(q.k)}` : ""} = ${sg(q.a * s + q.k)}.`, undefined, "evaluar", [s * s + q.k, -(q.a * s + q.k), s]);
 }
 
-// FF.2 / FF.3: dominio y rango de funciones raíz cuadrada.
+// Dominio y rango de funciones raíz cuadrada.
 export function rootDomainRange(r: Rng, graph: boolean): Question {
   const q = randomRoot(r);
   const domain = r.chance(0.5);
@@ -252,7 +252,7 @@ export function rootDomainRange(r: Rng, graph: boolean): Question {
   return choiceQ(r, `¿Cuál es el ${domain ? "dominio" : "rango"} de ${graph ? "la función del gráfico" : rootText(q)}?`, good, [...new Set(wrong)].filter((w) => w !== good), domain ? `Lo de dentro de la raíz no puede ser negativo: ${xMinus(q.h)} ≥ 0.` : `Empieza en ${pt({ x: q.h, y: q.k })} y va hacia ${q.a > 0 ? "arriba" : "abajo"}.`, visual, domain ? "dominio" : "rango");
 }
 
-// FF.4 / FF.5: graficar funciones raíz cuadrada y raíz cúbica.
+// Graficar funciones raíz cuadrada y raíz cúbica.
 export function rootGraph(r: Rng, cube: boolean): Question {
   const q = randomRoot(r);
   const yes = r.chance(0.5);
@@ -261,7 +261,7 @@ export function rootGraph(r: Rng, cube: boolean): Question {
   return yesNo(`¿El gráfico muestra ${rootText(q, cube)}?`, yes, `${cube ? "El punto central" : "El punto inicial"} es ${pt({ x: q.h, y: q.k })} y la curva va hacia ${q.a > 0 ? "arriba" : "abajo"} a la derecha.`, { kind: "coordPlane", min: -6, max: 6, points: [{ x: shown.h, y: shown.k, emoji: "•" }], curves: [{ points: pts }] }, cube ? "cubica" : "cuadrada");
 }
 
-// FF.6 / FF.7: ecuaciones con radicales (con soluciones extrañas).
+// Ecuaciones con radicales (con soluciones extrañas).
 export function radicalEquation(r: Rng, level: 1 | 2): Question {
   if (level === 1) {
     const b = r.int(1, 9), a = r.int(-9, 9) || 4, k = r.pick([1, 1, 2]);
@@ -284,7 +284,7 @@ export function radicalEquation(r: Rng, level: 1 | 2): Question {
 
 const wrap = (t: string) => (/[ x]/.test(t) ? `(${t})` : t);
 const ratio = (num: string, den: string) => `${wrap(num)} / ${wrap(den)}`;
-// GG.1: simplificar expresiones racionales.
+// Simplificar expresiones racionales.
 export function simplifyRational(r: Rng): Question {
   const a = nz(r, 6), b = nz(r, 6), c = nz(r, 6);
   if (a === b || a === c || b === c) return simplifyRational(r);
@@ -293,7 +293,7 @@ export function simplifyRational(r: Rng): Question {
   return choiceQ(r, "Simplifica. (Supón que el denominador no es 0.)", good, [ratio(poly([1, a]), poly([1, c])), ratio(poly([1, -b]), poly([1, -c])), ratio(poly([1, b]), poly([1, a])), ratio(poly([num[1]]), poly([den[1]]))].filter((w, i, all) => w !== good && all.indexOf(w) === i), `Se factoriza: ${binom(1, a)}${binom(1, b)} / ${binom(1, a)}${binom(1, c)}; se cancela ${binom(1, a)}.`, ratio(poly(num), poly(den)), "simplificar");
 }
 
-// GG.2: multiplicar y dividir expresiones racionales.
+// Multiplicar y dividir expresiones racionales.
 export function multiplyRational(r: Rng): Question {
   const a = nz(r, 5), b = nz(r, 5), k = r.int(2, 6);
   if (a === b) return multiplyRational(r);
@@ -303,7 +303,7 @@ export function multiplyRational(r: Rng): Question {
   return choiceQ(r, "Simplifica. (Supón que ningún denominador es 0.)", good, [divide ? ratio(poly([k, 0]), poly([1, a])) : ratio(String(k), poly([1, a])), divide ? ratio(poly([k, 0, 0]), poly([1, b])) : ratio(poly([k, k * a]), poly([1, b])), divide ? ratio(poly([1, b]), poly([k, 0])) : ratio(poly([1, b]), String(k))].filter((w) => w !== good), divide ? "Dividir es multiplicar por el inverso; luego se cancela el factor común." : `Se cancela el factor común x ${a < 0 ? "−" : "+"} ${Math.abs(a)}.`, shown, divide ? "dividir" : "multiplicar");
 }
 
-// GG.3 / GG.4: sumar y restar (y operar) expresiones racionales.
+// Sumar y restar (y operar) expresiones racionales.
 export function addRational(r: Rng, mixed: boolean): Question {
   if (mixed && r.chance(0.5)) return multiplyRational(r);
   const p = r.int(1, 6), q = nz(r, 6), a = nz(r, 5);
@@ -319,7 +319,7 @@ export function addRational(r: Rng, mixed: boolean): Question {
   return choiceQ(r, "Simplifica.", good, [ratio(sg(p + q), poly([2, a])), ratio(poly([p + q, q * a]), poly(den)), ratio(poly([p + q, p * a]), poly([1, a])), ratio(sg(p + q), poly(den))].filter((w, i, all) => w !== good && all.indexOf(w) === i), `Denominador común x(x ${a < 0 ? "−" : "+"} ${Math.abs(a)}): ${p === 1 ? "" : p}(x ${a < 0 ? "−" : "+"} ${Math.abs(a)}) ${q < 0 ? "−" : "+"} ${Math.abs(q) === 1 ? "" : Math.abs(q)}x = ${poly(num)}.`, `${p}/x ${q < 0 ? "−" : "+"} ${Math.abs(q)}/(x ${a < 0 ? "−" : "+"} ${Math.abs(a)})`, "distinto-denominador");
 }
 
-// GG.5: resolver ecuaciones racionales.
+// Resolver ecuaciones racionales.
 export function rationalEquation(r: Rng): Question {
   const x = r.int(-6, 9), a = nz(r, 5), b = nz(r, 5);
   // p/(x + a) = q/(x + b) con p(x + b) = q(x + a).

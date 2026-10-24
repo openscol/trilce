@@ -7,7 +7,7 @@ import { poly } from "../alg1/util";
 
 // Álgebra 2: hacia dónde se abre una parábola, elipses e hipérbolas.
 
-// DD.1: ¿hacia dónde se abre la parábola?
+// ¿hacia dónde se abre la parábola?
 const DIRS = ["Hacia arriba", "Hacia abajo", "Hacia la derecha", "Hacia la izquierda"];
 export function parabolaDirection(r: Rng): Question {
   const a = r.pick([1, 2, 3, 0.5]) * r.pick([1, -1]), h = r.int(-4, 4), k = r.int(-4, 4);
@@ -60,7 +60,7 @@ function conicVisual(q: Conic): Visual {
 }
 const name = (q: Conic) => (q.hyper ? "la hipérbola" : "la elipse");
 
-// FF.1-FF.3, GG.1-GG.5: elementos de elipses e hipérbolas.
+// Elementos de elipses e hipérbolas.
 export function conicProps(r: Rng, hyper: boolean, mode: "center" | "vertices" | "covertices" | "axes" | "foci" | "asymptotes", general = false): Question {
   const q = randomConic(r, hyper);
   const eq = general ? generalEq(q) : stdEq(q);
@@ -91,7 +91,7 @@ export function conicProps(r: Rng, hyper: boolean, mode: "center" | "vertices" |
   return choiceQ(r, `¿Cuáles son las asíntotas de la hipérbola ${eq}?`, `${lhs} = ${rhs(m)}`, [`${lhs} = ${rhs(mBad)}`, `${q.k ? `y ${q.k < 0 ? "−" : "+"} ${Math.abs(q.k)}` : "y + 1"} = ${rhs(m)}`, `y = ${rhs(m)}`].filter((w, i, all) => w !== `${lhs} = ${rhs(m)}` && all.indexOf(w) === i), `Pasan por el centro con pendientes ±${m} (${q.horiz ? "b/a" : "a/b"}).`, undefined, "asintotas");
 }
 
-// FF.4-FF.6, GG.6-GG.8: escribir ecuaciones de elipses e hipérbolas.
+// Escribir ecuaciones de elipses e hipérbolas.
 export function conicEquation(r: Rng, hyper: boolean, mode: "graph" | "properties" | "convert"): Question {
   const q = randomConic(r, hyper);
   const good = stdEq(q);

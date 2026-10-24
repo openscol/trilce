@@ -1,20 +1,14 @@
 import { choose, order, type ChoiceItem, type OrderItem } from "../../../generators/lengua/bank";
 import { wordsOf } from "../../../generators/lengua/bank";
 import type { Rng } from "../../../rng";
-import type { Question, Section } from "../../../types";
+import type { Question } from "../../../types";
 import type { Row } from "./row";
 import { VERBS } from "./vocabulario";
 
-// Gramática y escritura (IXL Kindergarten ELA, TT-WW). En castellano los
-// signos de pregunta y de exclamación van al inicio y al final, y el juego
-// de «I» en mayúscula pasa a ser la mayúscula de los nombres propios.
+// Inicial 5 años · banco de oraciones y palabras: contar o preguntar, los
+// signos ¿? y ¡! al inicio y al final, la oración completa, mayúscula al
+// inicio y en los nombres propios, sustantivos y verbos de acción.
 
-export const SECTIONS: Section[] = [
-  { id: "TT", name: "Oraciones", icon: "💬" },
-  { id: "UU", name: "Mayúsculas", icon: "🔠" },
-  { id: "VV", name: "Sustantivos", icon: "🏷️" },
-  { id: "WW", name: "Verbos", icon: "🏃" },
-];
 
 const TELL = ["Cuenta algo", "Pregunta algo"];
 const TELL_ASK: [string, number][] = [
@@ -122,27 +116,27 @@ const fixed = (prompt: string, list: [string, number][], options: string[], show
 };
 
 export const ROWS: Row[] = [
-  ["TT.1", "¿La oración cuenta algo o pregunta algo?", fixed("¿La oración cuenta algo o pregunta algo?", TELL_ASK, TELL)],
-  ["TT.2", "Identificar y usar los signos de la oración", fixed("¿Qué signos le faltan a la oración?", END_MARKS, MARKS, (t) => `▢ ${t} ▢`)],
-  ["TT.3", "Encontrar la oración completa", (r) => {
+  ["contar-preguntar-1", fixed("¿La oración cuenta algo o pregunta algo?", TELL_ASK, TELL)],
+  ["signos-mayusculas-1", fixed("¿Qué signos le faltan a la oración?", END_MARKS, MARKS, (t) => `▢ ${t} ▢`)],
+  ["contar-preguntar-2", (r) => {
     const [good, a, b] = r.pick(COMPLETE);
     return { kind: "choice", prompt: "¿Cuál es una oración completa?", options: r.shuffle([good, a, b]), answer: good, explanation: `«${good}» dice quién y qué hace.` };
   }],
-  ["TT.4", "Ordenar las palabras para formar una oración completa", (r) => order(r, "Ordena las palabras para formar una oración.", SCRAMBLED)],
+  ["contar-preguntar-3", (r) => order(r, "Ordena las palabras para formar una oración.", SCRAMBLED)],
 
-  ["UU.1", "Usar mayúscula en la primera letra de una oración", firstCapital],
-  ["UU.2", "Usar mayúscula en los nombres propios", nameCapital],
+  ["signos-mayusculas-2", firstCapital],
+  ["signos-mayusculas-3", nameCapital],
 
-  ["VV.1", "¿El sustantivo es una persona, un animal, un lugar o una cosa?", fixed("¿Es una persona, un animal, un lugar o una cosa?", NOUNS, KINDS)],
-  ["VV.2", "Elegir el sustantivo singular o plural que corresponde al dibujo", singularPlural],
+  ["sustantivos-1", fixed("¿Es una persona, un animal, un lugar o una cosa?", NOUNS, KINDS)],
+  ["sustantivos-2", singularPlural],
 
-  ["WW.1", "Encontrar el verbo de acción con dibujos", (r) => {
+  ["verbos-1", (r) => {
     const [pic, verb] = r.pick(VERBS);
     return { kind: "choice", prompt: "¿Qué acción muestra el dibujo?", visual: { kind: "picture", emoji: pic }, options: r.shuffle([verb, ...r.shuffle(VERBS.filter((v) => v[1] !== verb)).slice(0, 3).map((v) => v[1])]), answer: verb, explanation: `${pic} muestra «${verb}».` };
   }],
-  ["WW.2", "Encontrar el verbo de acción", (r) => {
+  ["verbos-2", (r) => {
     const [s, verb] = r.pick(VERB_SENTENCES);
     return { kind: "choice", prompt: "¿Qué palabra dice la acción (lo que hace)?", visual: { kind: "text", text: s }, options: wordsOf(s), answer: verb, explanation: `La acción es «${verb}».` };
   }],
-  ["WW.3", "Completar la oración con un verbo de acción que corresponda al dibujo", (r) => choose(r, "Mira el dibujo y completa la oración.", VERB_ITEMS)],
+  ["verbos-3", (r) => choose(r, "Mira el dibujo y completa la oración.", VERB_ITEMS)],
 ];

@@ -11,14 +11,14 @@ export const sup = (e: number) => [...String(e)].map((c) => SUP[Number(c)]).join
 // 5³, (2/3)², 0,4²
 export const pw = (base: string, e: number) => `${base.includes("/") ? `(${base})` : base}${sup(e)}`;
 
-// 6.° C.6: dividir entre números de tres cifras.
+// Dividir entre números de tres cifras.
 export function divideBy3Digits(r: Rng): Question {
   const d = r.int(101, 499);
   const q = r.int(2, 98);
   return numQ(q, "Resuelve la división.", `${fmt(d * q)} ÷ ${d} = ?`, `${fmt(d * q)} ÷ ${d} = ${q}, porque ${d} × ${q} = ${fmt(d * q)}.`);
 }
 
-// 6.° C.7: dividir y escribir el residuo como fracción.
+// Dividir y escribir el residuo como fracción.
 export function divideRemainderFraction(r: Rng): Question {
   const d = r.int(3, 25);
   const q = r.int(2, 40);
@@ -28,7 +28,7 @@ export function divideRemainderFraction(r: Rng): Question {
   return fracQ(r, "Divide. Escribe el residuo como fracción (número mixto en su mínima expresión).", answer, `${n} ÷ ${d} = ${q} y sobran ${rem}; el residuo se escribe sobre el divisor: ${q} ${rem}/${d}${gcd(rem, d) > 1 ? ` = ${fshow(answer)}` : ""}.`, `${n} ÷ ${d} = ?`, undefined, [[q * rem + d, rem], [n + d, d], [q * d + rem, d + 1]]);
 }
 
-// 6.° D.1: escribir multiplicaciones usando exponentes.
+// Escribir multiplicaciones usando exponentes.
 export function writeWithExponents(r: Rng): Question {
   const base = r.int(2, 12);
   const e = r.int(2, 6);
@@ -43,7 +43,7 @@ const smallPower = (r: Rng): [number, number] => {
   return [base, r.int(2, maxE)];
 };
 
-// 6.° D.2: calcular potencias de base natural.
+// Calcular potencias de base natural.
 export function evaluatePower(r: Rng): Question {
   const [base, e] = smallPower(r);
   if (r.chance(0.15)) {
@@ -53,7 +53,7 @@ export function evaluatePower(r: Rng): Question {
   return numQ(base ** e, "Calcula la potencia.", `${pw(String(base), e)} = ?`, `${Array.from({ length: e }, () => base).join(" × ")} = ${fmt(base ** e)} (no es ${base} × ${e}).`, `exp-${e}`);
 }
 
-// 6.° D.4: hallar el exponente o la base que falta.
+// Hallar el exponente o la base que falta.
 export function missingExponentOrBase(r: Rng): Question {
   const [base, e] = smallPower(r);
   return r.chance(0.5)
@@ -61,7 +61,7 @@ export function missingExponentOrBase(r: Rng): Question {
     : numQ(base, "¿Qué base falta?", `? elevado a ${e} = ${fmt(base ** e)}`, `${pw(String(base), e)} = ${fmt(base ** e)}: la base es ${base}.`, "base");
 }
 
-// 6.° D.5: potencias de base decimal.
+// Potencias de base decimal.
 export function powerOfDecimal(r: Rng): Question {
   const tenths = r.pick([1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15]);
   const e = tenths <= 5 ? r.int(2, 3) : 2;
@@ -70,7 +70,7 @@ export function powerOfDecimal(r: Rng): Question {
   return decQ(r, "Calcula la potencia.", value, `${Array.from({ length: e }, () => base).join(" × ")} = ${d3(value)}: el resultado tiene ${e} cifras decimales.`, `${pw(base, e)} = ?`, `exp-${e}`, [tenths * e * 100, value * 10, value * 100, tenths ** e * 100].filter(Number.isInteger));
 }
 
-// 6.° D.6: potencias de base fraccionaria.
+// Potencias de base fraccionaria.
 export function fractionPower(r: Rng): Question {
   for (;;) {
     const d = r.int(2, 6);
@@ -82,12 +82,12 @@ export function fractionPower(r: Rng): Question {
   }
 }
 
-// 6.° D.7: potencias con bases naturales, decimales y fraccionarias.
+// Potencias con bases naturales, decimales y fraccionarias.
 export function mixedPowers(r: Rng): Question {
   return r.pick([evaluatePower, powerOfDecimal, fractionPower])(r);
 }
 
-// 6.° D (checkpoint): expresiones numéricas con exponentes.
+// Expresiones numéricas con exponentes.
 export function exponentExpression(r: Rng): Question {
   const b = r.int(2, 5);
   const e = r.int(2, 3);
@@ -115,7 +115,7 @@ function primeFactors(n: number) {
 }
 const withExponents = (fs: number[]) => [...new Set(fs)].map((p) => (fs.filter((x) => x === p).length > 1 ? pw(String(p), fs.filter((x) => x === p).length) : String(p))).join(" × ");
 
-// 6.° F.5: descomposición en factores primos con exponentes.
+// Descomposición en factores primos con exponentes.
 export function primeFactorizationExponents(r: Rng): Question {
   for (;;) {
     const n = r.int(12, 360);
@@ -131,7 +131,7 @@ export function primeFactorizationExponents(r: Rng): Question {
   }
 }
 
-// 6.° F.6 / F.7: máximo común divisor de dos, tres o cuatro números.
+// Máximo común divisor de dos, tres o cuatro números.
 export function greatestCommonFactor(r: Rng, count: 2 | 3 | 4 = 2): Question {
   for (;;) {
     const g = r.int(2, count === 2 ? 15 : 9);
@@ -143,7 +143,7 @@ export function greatestCommonFactor(r: Rng, count: 2 | 3 | 4 = 2): Question {
   }
 }
 
-// 6.° F.9: mínimo común múltiplo de tres o cuatro números.
+// Mínimo común múltiplo de tres o cuatro números.
 export function leastCommonMultipleN(r: Rng, count: 3 | 4 = 3): Question {
   for (;;) {
     const nums = distinct(r, count, 2, 12);
@@ -154,7 +154,7 @@ export function leastCommonMultipleN(r: Rng, count: 3 | 4 = 3): Question {
   }
 }
 
-// 6.° F.10: problemas de m. c. d. y m. c. m.
+// Problemas de m. c. d. y m. c. m.
 export function gcfLcmProblem(r: Rng): Question {
   const name = r.pick(NAMES);
   if (r.chance(0.5)) {
@@ -173,7 +173,7 @@ export function gcfLcmProblem(r: Rng): Question {
   }
 }
 
-// 6.° F.11: identificar los factores de una expresión numérica.
+// Identificar los factores de una expresión numérica.
 export function factorsOfExpression(r: Rng): Question {
   const a = r.int(2, 9);
   const b = r.int(2, 9);
@@ -186,7 +186,7 @@ export function factorsOfExpression(r: Rng): Question {
 
 const REPEATING: [string, string][] = [["1/3", "0,333…"], ["2/3", "0,666…"], ["1/6", "0,1666…"], ["5/6", "0,8333…"], ["1/9", "0,111…"], ["2/9", "0,222…"], ["4/9", "0,444…"], ["5/9", "0,555…"], ["7/9", "0,777…"], ["8/9", "0,888…"], ["1/11", "0,0909…"], ["2/11", "0,1818…"], ["3/11", "0,2727…"], ["5/11", "0,4545…"], ["1/12", "0,08333…"], ["7/12", "0,58333…"]];
 
-// 6.° G.6: convertir entre fracciones y decimales periódicos.
+// Convertir entre fracciones y decimales periódicos.
 export function repeatingDecimals(r: Rng): Question {
   const [fraction, decimal] = r.pick(REPEATING);
   const others = REPEATING.filter(([f]) => f !== fraction);
@@ -194,7 +194,7 @@ export function repeatingDecimals(r: Rng): Question {
   return choiceQ(r, `¿Qué fracción es igual a ${decimal}?`, fraction, r.shuffle(others).slice(0, 5).map(([f]) => f), `${fraction.replace("/", " ÷ ")} = ${decimal}`, undefined, "a-fraccion");
 }
 
-// 6.° E.6: evaluar expresiones un paso a la vez (¿qué se calcula primero?).
+// Evaluar expresiones un paso a la vez (¿qué se calcula primero?).
 export function firstStep(r: Rng): Question {
   const a = r.int(10, 20);
   const [b, c, d] = distinct(r, 3, 2, 9);

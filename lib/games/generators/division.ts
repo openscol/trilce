@@ -2,7 +2,7 @@ import type { Rng } from "../rng";
 import type { Question } from "../types";
 import { COUNTABLES } from "./common";
 
-// 2.° N.1: repartir una matriz en filas iguales.
+// Repartir una matriz en filas iguales.
 export function divArrays(r: Rng): Question {
   const rows = r.int(2, 5);
   const cols = r.int(2, 6);
@@ -16,7 +16,7 @@ export function divArrays(r: Rng): Question {
   };
 }
 
-// 2.° N.2 - N.6: el divisor sale de `divisors`; el cociente va de 1 a 10.
+// El divisor sale de `divisors`; el cociente va de 1 a 10.
 export function divFacts(r: Rng, divisors: number[]): Question {
   const d = r.pick(divisors);
   const q = r.int(1, 10);

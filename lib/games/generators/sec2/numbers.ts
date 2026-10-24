@@ -17,7 +17,7 @@ const REPEATING: [number, number, string][] = [
   [5, 3, "1,666…"], [1, 6, "0,1666…"], [5, 6, "0,8333…"], [1, 15, "0,0666…"], [7, 12, "0,58333…"], [2, 33, "0,0606…"],
 ];
 
-// B.1: convertir entre decimales periódicos y fracciones.
+// Convertir entre decimales periódicos y fracciones.
 export function repeatingDecimal(r: Rng): Question {
   const [n, d, text] = r.pick(REPEATING);
   const others = REPEATING.filter(([a, b]) => a * d !== n * b);
@@ -29,7 +29,7 @@ export function repeatingDecimal(r: Rng): Question {
   return choiceQ(r, `¿Qué fracción es igual a ${text}?`, `${n}/${d}`, pick3(others.map((o) => `${o[0]}/${o[1]}`)), why, undefined, "a-fraccion");
 }
 
-// B.7 y B.10: problemas con números racionales (decimales con signo).
+// Problemas con números racionales (decimales con signo).
 export function rationalWord(r: Rng, kind: "addsub" | "multdiv"): Question {
   const name = r.pick(NAMES);
   if (kind === "addsub") {
@@ -49,7 +49,7 @@ export function rationalWord(r: Rng, kind: "addsub" | "multdiv"): Question {
 
 const powFrac = (b: number, e: number) => (e >= 0 ? String(b ** e) : `1/${b ** -e}`);
 
-// C.6-C.8: exponentes negativos y cero.
+// Exponentes negativos y cero.
 export function negativeExponent(r: Rng, mode: "understand" | "evaluate" | "zero"): Question {
   const b = r.int(2, 9), e = r.int(2, 4);
   if (mode === "understand") {
@@ -72,7 +72,7 @@ export function negativeExponent(r: Rng, mode: "understand" | "evaluate" | "zero
   return choiceQ(r, `¿Cuánto vale ${pw(String(small), -se)} × ${pw(String(small), 0)}?`, powFrac(small, -se), [String(small ** se), "0", `−${small ** se}`].filter((x) => x !== powFrac(small, -se)), `${pw(String(small), 0)} = 1, así que queda ${pw(String(small), -se)} = ${powFrac(small, -se)}.`, undefined, "mixto");
 }
 
-// C.9-C.12: propiedades de las potencias con bases enteras (también exponentes negativos).
+// Propiedades de las potencias con bases enteras (también exponentes negativos).
 export function intPowerRule(r: Rng, rule: "product" | "quotient" | "both" | "power"): Question {
   const b = String(r.int(2, 9));
   const ex = () => r.int(-6, 8) || 3;
@@ -96,7 +96,7 @@ export function intPowerRule(r: Rng, rule: "product" | "quotient" | "both" | "po
   return { ...q, visual: { kind: "text", text: `(${pw(b, base)})${pw("", p)}` }, explanation: `Potencia de una potencia: se multiplican los exponentes, ${sg(base)} × ${par(p)} = ${sg(base * p)}.`, tag: "potencia" };
 }
 
-// C.14-C.15: expresiones equivalentes con potencias.
+// Expresiones equivalentes con potencias.
 export function equivalentPowers(r: Rng, level: 1 | 2): Question {
   const b = r.int(2, 5);
   if (level === 1) {
@@ -110,7 +110,7 @@ export function equivalentPowers(r: Rng, level: 1 | 2): Question {
   return choiceQ(r, `¿Qué expresión es equivalente a (${pw(String(b), -m)})${pw("", n)}?`, good, [`−${pw(String(b), m * n)}`, pw(String(b), m * n), `1/${pw(String(b), m + n)}`], `Se multiplican los exponentes: (${pw(String(b), -m)})${pw("", n)} = ${pw(String(b), exp)} = 1/${pw(String(b), m * n)}.`, undefined, "equivalente-negativo");
 }
 
-// C.16-C.19: propiedades de las potencias con bases variables.
+// Propiedades de las potencias con bases variables.
 export function varPowerRule(r: Rng, rule: "product" | "quotient" | "both" | "power"): Question {
   const v = r.pick(["x", "m", "n", "p", "b"]);
   const m = r.int(2, 9), n = r.int(2, 7);
@@ -151,7 +151,7 @@ function normalize(c: number, k: number): { m: number; e: number } {
   return { m: Number(m.toFixed(6)) * Math.sign(c), e };
 }
 
-// D.2: notación científica en la calculadora (4.7E8).
+// Notación científica en la calculadora (4.7E8).
 export function sciCalculator(r: Rng): Question {
   const m = r.int(11, 99) / 10, e = r.pick([3, 5, 6, 8, 9, 11, -3, -4, -6, -7]);
   const calc = `${String(m)}E${e}`;
@@ -160,7 +160,7 @@ export function sciCalculator(r: Rng): Question {
 }
 
 type SciOp = "+" | "−" | "×" | "÷";
-// D.4-D.8: operaciones en notación científica.
+// Operaciones en notación científica.
 export function sciOperation(r: Rng, ops: SciOp[], word = false): Question {
   const op = r.pick(ops);
   let a: { m: number; e: number }, b: { m: number; e: number }, res: { m: number; e: number };
@@ -202,7 +202,7 @@ export function sciOperation(r: Rng, ops: SciOp[], word = false): Question {
 // ---------------------------------------------------------------------------
 // Raíces
 
-// E.3-E.6: raíces cuadradas positivas y negativas, estimarlas, relación con los cuadrados y ecuaciones.
+// Raíces cuadradas positivas y negativas, estimarlas, relación con los cuadrados y ecuaciones.
 export function squareRoots(r: Rng, mode: "pm" | "estimate" | "relation" | "solve"): Question {
   const n = r.int(2, 15), sq = n * n;
   if (mode === "pm") {
@@ -225,7 +225,7 @@ export function squareRoots(r: Rng, mode: "pm" | "estimate" | "relation" | "solv
   return choiceQ(r, "Resuelve la ecuación.", `x = ${n} o x = −${n}`, [`x = ${n}`, `x = ${sq / 2 === Math.floor(sq / 2) ? sq / 2 : sq} o x = −${sq / 2 === Math.floor(sq / 2) ? sq / 2 : sq}`, `x = −${n}`], `${k === 1 ? "" : `Se divide entre ${k}: x² = ${sq}. `}Las dos soluciones son ±${sqrtText(sq)} = ±${n}.`, shown, "ecuacion");
 }
 
-// E.7-E.10: raíces cúbicas.
+// Raíces cúbicas.
 export function cubeRoots(r: Rng, mode: "positive" | "signed" | "solve" | "estimate"): Question {
   const n = r.int(1, 10), cube = n ** 3;
   if (mode === "positive") return numQ(n, `¿Cuánto vale ${cbrtText(cube)}?`, undefined, `${n} × ${n} × ${n} = ${cube}.`, "positiva");
@@ -244,7 +244,7 @@ export function cubeRoots(r: Rng, mode: "positive" | "signed" | "solve" | "estim
 // ---------------------------------------------------------------------------
 // Irracionales
 
-// F.1: raíces cuadradas racionales e irracionales.
+// Raíces cuadradas racionales e irracionales.
 export function rationalRoot(r: Rng): Question {
   const form = r.int(0, 3);
   if (form === 0) {
@@ -263,7 +263,7 @@ export function rationalRoot(r: Rng): Question {
   return yesNo(`¿√${d[0]} es un número racional?`, true, `Sí: √${d[0]} = ${d[1]}.`, undefined, "decimal");
 }
 
-// F.4: números irracionales en la recta numérica.
+// Números irracionales en la recta numérica.
 export function irrationalLine(r: Rng): Question {
   const cands = [2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37, 38, 39, 40, 41, 42, 44, 45, 47, 48, 50];
   const k = r.pick(cands);
@@ -274,7 +274,7 @@ export function irrationalLine(r: Rng): Question {
   return choiceQ(r, "¿Qué número está marcado en la recta numérica?", sqrtText(k), wrong, `${sqrtText(k)} ≈ ${dec(Math.round(v * 10) / 10)}: está entre ${Math.floor(v)} y ${Math.floor(v) + 1}.`, visual, "recta");
 }
 
-// F.5: comparar y ordenar racionales e irracionales.
+// Comparar y ordenar racionales e irracionales.
 export function compareIrrational(r: Rng): Question {
   const pool: [string, number][] = [
     ["π", Math.PI], [sqrtText(2), Math.SQRT2], [sqrtText(10), Math.sqrt(10)], [sqrtText(20), Math.sqrt(20)], [sqrtText(30), Math.sqrt(30)], [sqrtText(50), Math.sqrt(50)],
@@ -298,7 +298,7 @@ export function compareIrrational(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Porcentajes
 
-// H.3-H.4: ¿qué porcentaje es un número de otro?
+// ¿qué porcentaje es un número de otro?
 export function percentOfAnother(r: Rng, word = false): Question {
   const p = r.pick([5, 10, 12, 15, 20, 25, 30, 40, 45, 50, 60, 75, 80, ...(word ? [] : [125, 150])]);
   const whole = r.pick([20, 40, 60, 80, 120, 200, 240, 400, 500].filter((w) => (w * p) % 100 === 0));
@@ -310,7 +310,7 @@ export function percentOfAnother(r: Rng, word = false): Question {
   return numQ(p, `¿Qué porcentaje de ${whole} es ${part}?`, undefined, `${part} ÷ ${whole} = ${dec(part / whole)} → ${pct(p)}.`, "porcentaje");
 }
 
-// H.8: comparar porcentajes de números.
+// Comparar porcentajes de números.
 export function comparePercentOf(r: Rng): Question {
   const mk = () => {
     const p = r.pick([10, 20, 25, 30, 40, 50, 60, 75]);

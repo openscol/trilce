@@ -1,23 +1,14 @@
 import { readPassage } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { read } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Lecturas (IXL 7th grade ELA: I, K y L).
-// K. «Novel study»: IXL trabaja con A Long Walk to Water, Anne of Green Gables y
-// The Hobbit. Aquí se reemplazan por tres obras peruanas de dominio público:
-// «Tradiciones peruanas» (Ricardo Palma), «Aves sin nido» (Clorinda Matto de
-// Turner) y el drama quechua «Ollantay». Los pasajes son resúmenes adaptados,
-// no citas textuales.
-// L. «Nonfiction book study»: en lugar del diario de Ana Frank y del naufragio
-// del Titanic, los «Comentarios reales» del Inca Garcilaso de la Vega y el
-// terremoto de 1970 que sepultó Yungay, con textos informativos propios.
+// 1.° de Secundaria · banco de lecturas largas: textos informativos propios y
+// el estudio de tres obras peruanas de dominio público: «Tradiciones
+// peruanas» (Ricardo Palma), «Aves sin nido» (Clorinda Matto de Turner) y el
+// drama quechua «Ollantay». Los pasajes son resúmenes adaptados, no citas
+// textuales. En no ficción, los «Comentarios reales» del Inca Garcilaso de la
+// Vega y el terremoto de 1970 que sepultó Yungay, con textos propios.
 
-export const SECTIONS: Section[] = [
-  { id: "I", name: "Analizar textos informativos", icon: "📰" },
-  { id: "K", name: "Estudio de obras narrativas", icon: "📚" },
-  { id: "L", name: "Estudio de obras de no ficción", icon: "📓" },
-];
 
 const INFO = {
   animals: [
@@ -72,7 +63,7 @@ const INFO = {
   ],
 };
 
-// --- K. Obras narrativas -----------------------------------------------------
+// --- Obras narrativas -----------------------------------------------------
 
 const PALMA = [
   [
@@ -143,7 +134,7 @@ const OLLANTAY = [
   ],
 ];
 
-// --- L. Obras de no ficción --------------------------------------------------
+// --- Obras de no ficción --------------------------------------------------
 
 const GARCILASO = [
   [
@@ -192,21 +183,21 @@ const YUNGAY = [
 ];
 
 export const ROWS: Row[] = [
-  ["I.1", "Leer sobre animales", (r) => readPassage(r, INFO.animals, false)],
-  ["I.2", "Leer sobre lugares famosos", (r) => readPassage(r, INFO.places, false)],
-  ["I.3", "Leer sobre negocios y tecnología", (r) => readPassage(r, INFO.business, false)],
-  ["I.4", "Leer sobre ciencia y naturaleza", (r) => readPassage(r, INFO.science, false)],
-  ["I.5", "Leer sobre historia", (r) => readPassage(r, INFO.history, false)],
+  ["informativos-1", (r) => readPassage(r, INFO.animals, false)],
+  ["informativos-2", (r) => readPassage(r, INFO.places, false)],
+  ["informativos-3", (r) => readPassage(r, INFO.business, false)],
+  ["informativos-4", (r) => readPassage(r, INFO.science, false)],
+  ["informativos-5", (r) => readPassage(r, INFO.history, false)],
 
-  ["K.1", "Analizar pasajes de «Tradiciones peruanas»: parte 1", (r) => readPassage(r, PALMA[0], false)],
-  ["K.2", "Analizar pasajes de «Tradiciones peruanas»: parte 2", (r) => readPassage(r, PALMA[1], false)],
-  ["K.3", "Analizar pasajes de «Aves sin nido»: parte 1", (r) => readPassage(r, AVES[0], false)],
-  ["K.4", "Analizar pasajes de «Aves sin nido»: parte 2", (r) => readPassage(r, AVES[1], false)],
-  ["K.5", "Analizar pasajes de «Ollantay»: parte 1", (r) => readPassage(r, OLLANTAY[0], false)],
-  ["K.6", "Analizar pasajes de «Ollantay»: parte 2", (r) => readPassage(r, OLLANTAY[1], false)],
+  ["tradiciones-1", (r) => readPassage(r, PALMA[0], false)],
+  ["tradiciones-2", (r) => readPassage(r, PALMA[1], false)],
+  ["aves-sin-nido-1", (r) => readPassage(r, AVES[0], false)],
+  ["aves-sin-nido-2", (r) => readPassage(r, AVES[1], false)],
+  ["ollantay-1", (r) => readPassage(r, OLLANTAY[0], false)],
+  ["ollantay-2", (r) => readPassage(r, OLLANTAY[1], false)],
 
-  ["L.1", "Analizar textos sobre los «Comentarios reales» del Inca Garcilaso: parte 1", (r) => readPassage(r, GARCILASO[0], false)],
-  ["L.2", "Analizar textos sobre los «Comentarios reales» del Inca Garcilaso: parte 2", (r) => readPassage(r, GARCILASO[1], false)],
-  ["L.3", "Analizar textos sobre el terremoto de 1970 y la tragedia de Yungay: parte 1", (r) => readPassage(r, YUNGAY[0], false)],
-  ["L.4", "Analizar textos sobre el terremoto de 1970 y la tragedia de Yungay: parte 2", (r) => readPassage(r, YUNGAY[1], false)],
+  ["garcilaso-1", (r) => readPassage(r, GARCILASO[0], false)],
+  ["garcilaso-2", (r) => readPassage(r, GARCILASO[1], false)],
+  ["yungay-1", (r) => readPassage(r, YUNGAY[0], false)],
+  ["yungay-2", (r) => readPassage(r, YUNGAY[1], false)],
 ];

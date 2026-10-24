@@ -1,17 +1,10 @@
 import { readPassage } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { read } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Lecturas (IXL 5th grade ELA, P-S): textos propios, literarios e
+// 5.° de Primaria · banco de lecturas largas: textos propios, literarios e
 // informativos, con temas del Perú y de Latinoamérica.
 
-export const SECTIONS: Section[] = [
-  { id: "P", name: "Textos literarios: nivel 1", icon: "📗" },
-  { id: "Q", name: "Textos literarios: nivel 2", icon: "📘" },
-  { id: "R", name: "Textos informativos: nivel 1", icon: "📰" },
-  { id: "S", name: "Textos informativos: nivel 2", icon: "🗞️" },
-];
 
 const LIT1 = {
   fantasy: [
@@ -176,22 +169,22 @@ const INFO2 = {
 };
 
 export const ROWS: Row[] = [
-  ["P.1", "Leer fantasía con ilustraciones", (r) => readPassage(r, LIT1.fantasy, false)],
-  ["P.2", "Leer cuentos realistas con ilustraciones", (r) => readPassage(r, LIT1.realistic, false)],
-  ["P.3", "Leer ficción histórica con ilustraciones", (r) => readPassage(r, LIT1.historical, false)],
+  ["ilustrados-1", (r) => readPassage(r, LIT1.fantasy, false)],
+  ["ilustrados-2", (r) => readPassage(r, LIT1.realistic, false)],
+  ["ilustrados-3", (r) => readPassage(r, LIT1.historical, false)],
 
-  ["Q.1", "Leer cuentos realistas", (r) => readPassage(r, LIT2.realistic, false)],
-  ["Q.2", "Leer ficción histórica", (r) => readPassage(r, LIT2.historical, false)],
-  ["Q.3", "Leer poesía", (r) => readPassage(r, LIT2.poetry, false)],
-  ["Q.4", "Leer teatro", (r) => readPassage(r, LIT2.drama, false)],
+  ["realistas-1", (r) => readPassage(r, LIT2.realistic, false)],
+  ["realistas-2", (r) => readPassage(r, LIT2.historical, false)],
+  ["realistas-3", (r) => readPassage(r, LIT2.poetry, false)],
+  ["realistas-4", (r) => readPassage(r, LIT2.drama, false)],
 
-  ["R.1", "Leer sobre animales", (r) => readPassage(r, INFO1.animals, false)],
-  ["R.2", "Leer sobre arte, música y tradiciones", (r) => readPassage(r, INFO1.art, false)],
-  ["R.3", "Leer sobre lugares famosos", (r) => readPassage(r, INFO1.places, false)],
-  ["R.4", "Leer sobre deportes y pasatiempos", (r) => readPassage(r, INFO1.sports, false)],
+  ["informativos-1-1", (r) => readPassage(r, INFO1.animals, false)],
+  ["informativos-1-2", (r) => readPassage(r, INFO1.art, false)],
+  ["informativos-1-3", (r) => readPassage(r, INFO1.places, false)],
+  ["informativos-1-4", (r) => readPassage(r, INFO1.sports, false)],
 
-  ["S.1", "Leer sobre personajes famosos", (r) => readPassage(r, INFO2.people, false)],
-  ["S.2", "Leer sobre negocios y tecnología", (r) => readPassage(r, INFO2.business, false)],
-  ["S.3", "Leer sobre ciencia y naturaleza", (r) => readPassage(r, INFO2.science, false)],
-  ["S.4", "Leer sobre historia", (r) => readPassage(r, INFO2.history, false)],
+  ["informativos-2-1", (r) => readPassage(r, INFO2.people, false)],
+  ["informativos-2-2", (r) => readPassage(r, INFO2.business, false)],
+  ["informativos-2-3", (r) => readPassage(r, INFO2.science, false)],
+  ["informativos-2-4", (r) => readPassage(r, INFO2.history, false)],
 ];

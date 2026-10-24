@@ -1,33 +1,13 @@
 import { choose, mix, order, pickAll, pickInSentence, type ChoiceItem, type InSentenceItem, type OrderItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import type { Row } from "./row";
 
-// Gramática y ortografía (IXL 2nd grade ELA, XX-LLL), con las reglas del
-// castellano en lugar de las del inglés:
-//   sufijos (drop e, double consonant, y→i) → z→c, c→qu, g→gu
-//   posesivo con 's → pertenencia con de, del, de la, de los
-//   irregular plurals → plurales en -ces, con tilde y los que no cambian
-//   I and me → yo, mí, conmigo            a / an → un, una, unos, unas
-//   to be → ser y estar                   to have → tener
-//   contractions (I'm, don't) → al, del, conmigo, contigo
-//   mayúsculas: días y meses van con minúscula; en los títulos, solo la primera palabra
+// 2.° de Primaria · banco de gramática y ortografía: cambios al agregar
+// sufijos (z→c, c→qu, g→gu), la oración y sus partes, plurales en -ces y
+// pertenencia con de, del, de la, de los; pronombres (yo, mí, conmigo), ser,
+// estar y tener, verbos irregulares, artículos un/una, adjetivos y adverbios,
+// al y del, comas, mayúsculas (días y meses con minúscula; en los títulos, solo
+// la primera palabra) y abreviaturas.
 
-export const SECTIONS: Section[] = [
-  { id: "XX", name: "Ortografía", icon: "✍️" },
-  { id: "YY", name: "Oraciones completas e incompletas", icon: "💬" },
-  { id: "ZZ", name: "Sustantivos", icon: "🏷️" },
-  { id: "AAA", name: "Pronombres", icon: "👤" },
-  { id: "BBB", name: "Tipos de verbos", icon: "🏃" },
-  { id: "CCC", name: "Concordancia entre sujeto y verbo", icon: "🤝" },
-  { id: "DDD", name: "Tiempos verbales", icon: "⏳" },
-  { id: "EEE", name: "Artículos", icon: "📌" },
-  { id: "FFF", name: "Adjetivos y adverbios", icon: "🎨" },
-  { id: "GGG", name: "Preposiciones", icon: "📦" },
-  { id: "HHH", name: "Contracciones", icon: "✂️" },
-  { id: "III", name: "Puntuación", icon: "❗" },
-  { id: "JJJ", name: "Mayúsculas", icon: "🔠" },
-  { id: "LLL", name: "Abreviaturas", icon: "📅" },
-];
 
 // Atajos para escribir los bancos: f = completar un texto; w = pregunta sola.
 const f = (t: string, a: string, ...d: string[]): ChoiceItem => ({ t, a, d });
@@ -35,7 +15,7 @@ const w = (p: string, a: string, ...d: string[]): ChoiceItem => ({ p, a, d });
 const pt = (p: string, t: string, a: string, ...d: string[]): ChoiceItem => ({ p, t, a, d });
 const s = (sentence: string, ...ans: string[]): InSentenceItem => ({ s: sentence, ans });
 
-// --- XX. Ortografía -----------------------------------------------------------------
+// --- Ortografía -----------------------------------------------------------------
 
 const Z_TO_C: ChoiceItem[] = [
   f("un pez → muchos ___", "peces", "pezes", "peses", "pecez"),
@@ -69,7 +49,7 @@ const G_TO_GU: ChoiceItem[] = [
   f("un fuego pequeño → un ___", "fueguito", "fuegito", "fuejito", "fuegüito"),
 ];
 
-// --- YY. Oraciones -------------------------------------------------------------------
+// --- Oraciones -------------------------------------------------------------------
 
 const KINDS = ["Afirmación", "Pregunta", "Orden", "Exclamación"];
 const kind = (t: string, a: string): ChoiceItem => ({ t, a, d: KINDS.filter((k) => k !== a) });
@@ -121,7 +101,7 @@ const UNSCRAMBLE: OrderItem[] = [
   { seq: ["¿Dónde", "guardaste", "mis", "zapatos?"] },
 ];
 
-// --- ZZ. Sustantivos -----------------------------------------------------------------
+// --- Sustantivos -----------------------------------------------------------------
 
 const NOUNS = ["perro", "escuela", "maestra", "lápiz", "río", "abuelo", "ciudad", "mesa", "flor", "doctor"];
 const NOT_NOUNS = ["correr", "bonito", "rápido", "saltar", "azul", "comer", "muy", "feliz", "cantar", "debajo"];
@@ -231,7 +211,7 @@ const POSSESSIVE_ERRORS: ChoiceItem[] = [
   w("¿Cuál está bien escrita?", "El nido de las aves está en el árbol.", "El nido de la aves está en el árbol.", "El nido del aves está en el árbol.", "El nidos de las aves está en el árbol."),
 ];
 
-// --- AAA. Pronombres -------------------------------------------------------------------
+// --- Pronombres -------------------------------------------------------------------
 
 const PRONOUNS_IN: InSentenceItem[] = [
   s("Ella canta muy bien.", "Ella"),
@@ -336,7 +316,7 @@ const REFLEXIVE_USE: ChoiceItem[] = [
   f("Ustedes ___ divierten en el recreo.", "se", "nos", "te", "me"),
 ];
 
-// --- BBB. Tipos de verbos ---------------------------------------------------------------
+// --- Tipos de verbos ---------------------------------------------------------------
 
 const ACTION_USE: ChoiceItem[] = [
   f("El pájaro ___ en la rama.", "canta", "verde", "nido", "arriba"),
@@ -369,7 +349,7 @@ const HELPING_IN: InSentenceItem[] = [
   s("Mañana voy a visitar a mi tía.", "voy"),
 ];
 
-// --- CCC. Concordancia --------------------------------------------------------------------
+// --- Concordancia --------------------------------------------------------------------
 
 const ONE = "Uno";
 const MANY = "Más de uno";
@@ -400,7 +380,7 @@ const PRONOUN_VERB: ChoiceItem[] = [
   f("Yo ___ una carta.", "escribo", "escribes", "escribe", "escriben"),
 ];
 
-// --- DDD. Tiempos verbales ---------------------------------------------------------------
+// --- Tiempos verbales ---------------------------------------------------------------
 
 const PAST_SENTENCE: ChoiceItem[] = [
   w("¿Qué oración está en pasado?", "Ayer jugué en el parque.", "Hoy juego en el parque.", "Mañana jugaré en el parque.", "Siempre juego en el parque."),
@@ -572,7 +552,7 @@ const TIMELINE_IRREGULAR: ChoiceItem[] = [
   when("Iré al mercado.", "Futuro"), when("Mi papá hará una torta.", "Futuro"), when("Ellos vendrán a la fiesta.", "Futuro"), when("Tendré mucho sueño.", "Futuro"),
 ];
 
-// --- EEE. Artículos --------------------------------------------------------------------------
+// --- Artículos --------------------------------------------------------------------------
 
 const UN_UNA: ChoiceItem[] = [
   f("Vi ___ perro en la calle.", "un", "una", "unos", "unas"),
@@ -595,7 +575,7 @@ const ARTICLES_IN: InSentenceItem[] = [
   s("El sol calienta las piedras.", "El", "las"),
 ];
 
-// --- FFF. Adjetivos y adverbios -----------------------------------------------------------------
+// --- Adjetivos y adverbios -----------------------------------------------------------------
 
 const HOW = "Cómo es";
 const HOW_MANY = "Cuántos hay";
@@ -667,7 +647,7 @@ const ADJ_OR_ADV: ChoiceItem[] = [
   ...["El niño juega FELIZMENTE.", "Llegamos TEMPRANO.", "Camina DESPACIO.", "El perro ladra FUERTEMENTE.", "Vive LEJOS."].map((t) => ({ p: "¿La palabra en MAYÚSCULAS es adjetivo o adverbio?", t, a: "Adverbio", d: ["Adjetivo"] })),
 ];
 
-// --- GGG. Preposiciones ---------------------------------------------------------------------
+// --- Preposiciones ---------------------------------------------------------------------
 
 const PREP_PIC: ChoiceItem[] = [
   { pic: "🐱📦", t: "El gato está ___ la caja. (adentro)", a: "en", d: ["sobre", "bajo", "entre"] },
@@ -690,7 +670,7 @@ const PREP_SENT: ChoiceItem[] = [
   f("El libro está ___ la mesa.", "sobre", "sin", "para", "hacia"),
 ];
 
-// --- HHH. Contracciones ------------------------------------------------------------------------
+// --- Contracciones ------------------------------------------------------------------------
 
 const CONTRACTION_MATCH: ChoiceItem[] = [
   w("a + el =", "al", "ael", "a el", "del"),
@@ -751,7 +731,7 @@ const CONTRACTION_SENTENCE: ChoiceItem[] = [
   w("¿Cuál está bien escrita?", "Salimos de la casa.", "Salimos del la casa.", "Salimos dela casa.", "Salimos de el casa."),
 ];
 
-// --- III. Puntuación ---------------------------------------------------------------------------
+// --- Puntuación ---------------------------------------------------------------------------
 
 const COMMA_SERIES: ChoiceItem[] = [
   w("¿Cuál tiene las comas bien puestas?", "Compré pan, queso, leche y huevos.", "Compré pan queso leche y huevos.", "Compré, pan queso leche, y huevos.", "Compré pan, queso leche, y, huevos."),
@@ -780,7 +760,7 @@ const COMMA_PLACES: ChoiceItem[] = [
   w("¿Cuál está bien escrita?", "Vivo en Miraflores, Lima.", "Vivo en Miraflores Lima.", "Vivo, en Miraflores Lima.", "Vivo en, Miraflores Lima."),
 ];
 
-// --- JJJ. Mayúsculas -------------------------------------------------------------------------
+// --- Mayúsculas -------------------------------------------------------------------------
 
 const CAPS_NAMES: ChoiceItem[] = [
   w("¿Cuál está bien escrita?", "Mi amiga se llama Valeria.", "Mi amiga se llama valeria.", "mi amiga se llama Valeria.", "Mi Amiga se llama valeria."),
@@ -828,7 +808,7 @@ const LETTERS: ChoiceItem[] = [
   w("¿Qué signo va después del saludo de una carta, como «Querida mamá»?", "Dos puntos (:)", "Punto y coma (;)", "Signo de pregunta (?)", "Ningún signo"),
 ];
 
-// --- LLL. Abreviaturas -----------------------------------------------------------------------
+// --- Abreviaturas -----------------------------------------------------------------------
 
 const abbr = (list: [string, string][], all: string[]): ChoiceItem[] => list.map(([name, a]) => ({ p: `¿Cuál es la abreviatura de «${name}»?`, a, d: all.filter((x) => x !== a) }));
 const DAY_ABBR: [string, string][] = [["lunes", "lun."], ["martes", "mar."], ["miércoles", "mié."], ["jueves", "jue."], ["viernes", "vie."], ["sábado", "sáb."], ["domingo", "dom."]];
@@ -837,106 +817,106 @@ const MONTH_ABBR: [string, string][] = [["enero", "ene."], ["febrero", "feb."], 
 const fromSet = (i: number) => (r: Parameters<typeof choose>[0]) => choose(r, "Completa con el verbo en pasado.", IRREGULAR_SETS[i]);
 
 export const ROWS: Row[] = [
-  ["XX.1", "Escribir palabras con sufijos: cambiar z por c", (r) => choose(r, "¿Cuál está bien escrita?", Z_TO_C)],
-  ["XX.2", "Escribir palabras con sufijos: cambiar c por qu", (r) => choose(r, "¿Cuál está bien escrita?", C_TO_QU)],
-  ["XX.3", "Escribir palabras con sufijos: cambiar g por gu", (r) => choose(r, "¿Cuál está bien escrita?", G_TO_GU)],
-  ["XX.4", "Escribir palabras con sufijos: repaso", (r) => choose(r, "¿Cuál está bien escrita?", [...Z_TO_C, ...C_TO_QU, ...G_TO_GU])],
+  ["sufijos-1", (r) => choose(r, "¿Cuál está bien escrita?", Z_TO_C)],
+  ["sufijos-2", (r) => choose(r, "¿Cuál está bien escrita?", C_TO_QU)],
+  ["sufijos-3", (r) => choose(r, "¿Cuál está bien escrita?", G_TO_GU)],
+  ["sufijos-4", (r) => choose(r, "¿Cuál está bien escrita?", [...Z_TO_C, ...C_TO_QU, ...G_TO_GU])],
 
-  ["YY.1", "¿La oración es una afirmación, una pregunta, una orden o una exclamación?", (r) => choose(r, "¿Qué tipo de oración es?", SENTENCE_KIND)],
-  ["YY.2", "Identificar el sujeto de una oración", (r) => choose(r, "", SUBJECT)],
-  ["YY.3", "Identificar el predicado de una oración", (r) => choose(r, "", PREDICATE)],
-  ["YY.4", "¿Es una oración completa o un fragmento?", (r) => choose(r, "¿Es una oración completa o un fragmento?", [...label(COMPLETE_ITEMS, COMPLETE, [COMPLETE, FRAGMENT]), ...label(FRAGMENT_ITEMS, FRAGMENT, [COMPLETE, FRAGMENT])])],
-  ["YY.5", "¿Es una oración completa o son oraciones pegadas?", (r) => choose(r, "¿Es una oración completa o son oraciones pegadas (sin punto ni conector)?", [...label(COMPLETE_ITEMS, COMPLETE, [COMPLETE, RUN_ON]), ...label(RUN_ON_ITEMS, RUN_ON, [COMPLETE, RUN_ON])])],
-  ["YY.6", "¿Es una oración completa, un fragmento u oraciones pegadas?", (r) =>
+  ["tipos-oracion", (r) => choose(r, "¿Qué tipo de oración es?", SENTENCE_KIND)],
+  ["sujeto-predicado-1", (r) => choose(r, "", SUBJECT)],
+  ["sujeto-predicado-2", (r) => choose(r, "", PREDICATE)],
+  ["oracion-completa-1", (r) => choose(r, "¿Es una oración completa o un fragmento?", [...label(COMPLETE_ITEMS, COMPLETE, [COMPLETE, FRAGMENT]), ...label(FRAGMENT_ITEMS, FRAGMENT, [COMPLETE, FRAGMENT])])],
+  ["pegadas-1", (r) => choose(r, "¿Es una oración completa o son oraciones pegadas (sin punto ni conector)?", [...label(COMPLETE_ITEMS, COMPLETE, [COMPLETE, RUN_ON]), ...label(RUN_ON_ITEMS, RUN_ON, [COMPLETE, RUN_ON])])],
+  ["pegadas-2", (r) =>
     choose(r, "¿Qué es?", [...label(COMPLETE_ITEMS, COMPLETE, [COMPLETE, FRAGMENT, RUN_ON]), ...label(FRAGMENT_ITEMS, FRAGMENT, [COMPLETE, FRAGMENT, RUN_ON]), ...label(RUN_ON_ITEMS, RUN_ON, [COMPLETE, FRAGMENT, RUN_ON])])],
-  ["YY.7", "Ordenar las palabras para formar una oración completa", (r) => order(r, "Ordena las palabras para formar una oración.", UNSCRAMBLE)],
+  ["oracion-completa-2", (r) => order(r, "Ordena las palabras para formar una oración.", UNSCRAMBLE)],
 
-  ["ZZ.1", "Seleccionar los sustantivos", (r) => pickAll(r, "Selecciona los sustantivos (nombres de personas, animales, lugares o cosas).", NOUNS, NOT_NOUNS)],
-  ["ZZ.2", "¿Qué palabra es un sustantivo?", (r) => choose(r, "", WHICH_NOUN)],
-  ["ZZ.3", "Identificar sustantivos", (r) => pickInSentence(r, "Selecciona los sustantivos de la oración.", NOUNS_IN)],
-  ["ZZ.4", "Clasificar sustantivos comunes y propios", (r) => mix(r, [(q) => pickAll(q, "Selecciona los sustantivos propios.", PROPER, COMMON), (q) => pickAll(q, "Selecciona los sustantivos comunes.", COMMON, PROPER)])],
-  ["ZZ.5", "Identificar sustantivos comunes y propios", (r) => choose(r, "¿El sustantivo es común o propio?", COMMON_PROPER)],
-  ["ZZ.6", "Formar plurales regulares con -s y -es", (r) => choose(r, "Escribe el plural.", PLURAL_FORM)],
-  ["ZZ.7", "Usar plurales regulares con -s y -es", (r) => choose(r, "Completa la oración.", PLURAL_USE)],
-  ["ZZ.8", "Usar sustantivos en singular y en plural", (r) => choose(r, "Completa la oración.", SING_PLUR)],
-  ["ZZ.9", "¿El sustantivo está en singular o en plural?", (r) => choose(r, "¿Está en singular o en plural?", SINGULAR_OR_PLURAL)],
-  ["ZZ.10", "Formar y usar plurales especiales", (r) => choose(r, "Escribe el plural.", IRREGULAR_PLURAL)],
-  ["ZZ.11", "Identificar plurales y frases de pertenencia", (r) => choose(r, "¿Qué muestra la oración?", POSSESSIVE_ID)],
-  ["ZZ.12", "Formar frases de pertenencia: de, del, de la, de los", (r) => choose(r, "Completa la frase.", POSSESSIVE_FORM)],
-  ["ZZ.13", "Identificar y corregir errores de plural y de pertenencia", (r) => choose(r, "", POSSESSIVE_ERRORS)],
+  ["sustantivos-1", (r) => pickAll(r, "Selecciona los sustantivos (nombres de personas, animales, lugares o cosas).", NOUNS, NOT_NOUNS)],
+  ["sustantivos-2", (r) => choose(r, "", WHICH_NOUN)],
+  ["sustantivos-3", (r) => pickInSentence(r, "Selecciona los sustantivos de la oración.", NOUNS_IN)],
+  ["sustantivos-4", (r) => mix(r, [(q) => pickAll(q, "Selecciona los sustantivos propios.", PROPER, COMMON), (q) => pickAll(q, "Selecciona los sustantivos comunes.", COMMON, PROPER)])],
+  ["sustantivos-5", (r) => choose(r, "¿El sustantivo es común o propio?", COMMON_PROPER)],
+  ["plurales-1", (r) => choose(r, "Escribe el plural.", PLURAL_FORM)],
+  ["plurales-2", (r) => choose(r, "Completa la oración.", PLURAL_USE)],
+  ["plurales-3", (r) => choose(r, "Completa la oración.", SING_PLUR)],
+  ["plurales-4", (r) => choose(r, "¿Está en singular o en plural?", SINGULAR_OR_PLURAL)],
+  ["plurales-5", (r) => choose(r, "Escribe el plural.", IRREGULAR_PLURAL)],
+  ["plurales-6", (r) => choose(r, "¿Qué muestra la oración?", POSSESSIVE_ID)],
+  ["plurales-7", (r) => choose(r, "Completa la frase.", POSSESSIVE_FORM)],
+  ["plurales-8", (r) => choose(r, "", POSSESSIVE_ERRORS)],
 
-  ["AAA.1", "Identificar pronombres personales", (r) => pickInSentence(r, "Selecciona los pronombres personales.", PRONOUNS_IN)],
-  ["AAA.2", "Elegir entre pronombres de sujeto y de objeto", (r) => choose(r, "Completa la oración.", SUBJ_OBJ)],
-  ["AAA.3", "Reemplazar el sustantivo singular por un pronombre personal", (r) => choose(r, "Reemplaza las palabras en MAYÚSCULAS por un pronombre.", REPLACE_SINGULAR)],
-  ["AAA.4", "Reemplazar el sustantivo plural por un pronombre personal", (r) => choose(r, "Reemplaza las palabras en MAYÚSCULAS por un pronombre.", REPLACE_PLURAL)],
-  ["AAA.5", "Sujetos y complementos compuestos con «yo» y «mí»", (r) => choose(r, "Completa la oración.", I_AND_ME)],
-  ["AAA.6", "Elegir el pronombre personal correcto", (r) => choose(r, "Completa la oración.", PERSONAL)],
-  ["AAA.7", "Identificar pronombres posesivos", (r) => pickInSentence(r, "Selecciona los pronombres posesivos.", POSS_IN)],
-  ["AAA.8", "Usar pronombres posesivos", (r) => choose(r, "Completa la oración.", POSS_USE)],
-  ["AAA.9", "Elegir entre pronombres personales y reflexivos", (r) => choose(r, "Completa la oración.", REFLEXIVE_CHOICE)],
-  ["AAA.10", "Usar pronombres reflexivos", (r) => choose(r, "Completa la oración.", REFLEXIVE_USE)],
+  ["pronombres-1", (r) => pickInSentence(r, "Selecciona los pronombres personales.", PRONOUNS_IN)],
+  ["pronombres-2", (r) => choose(r, "Completa la oración.", SUBJ_OBJ)],
+  ["pronombres-3", (r) => choose(r, "Reemplaza las palabras en MAYÚSCULAS por un pronombre.", REPLACE_SINGULAR)],
+  ["pronombres-4", (r) => choose(r, "Reemplaza las palabras en MAYÚSCULAS por un pronombre.", REPLACE_PLURAL)],
+  ["pronombres-5", (r) => choose(r, "Completa la oración.", I_AND_ME)],
+  ["pronombres-6", (r) => choose(r, "Completa la oración.", PERSONAL)],
+  ["posesivos-1", (r) => pickInSentence(r, "Selecciona los pronombres posesivos.", POSS_IN)],
+  ["posesivos-2", (r) => choose(r, "Completa la oración.", POSS_USE)],
+  ["reflexivos-1", (r) => choose(r, "Completa la oración.", REFLEXIVE_CHOICE)],
+  ["reflexivos-2", (r) => choose(r, "Completa la oración.", REFLEXIVE_USE)],
 
-  ["BBB.1", "Usar verbos de acción", (r) => choose(r, "Completa la oración con un verbo.", ACTION_USE)],
-  ["BBB.2", "Identificar verbos de acción", (r) => pickInSentence(r, "Selecciona los verbos de acción.", ACTION_IN)],
-  ["BBB.3", "Identificar verbos auxiliares", (r) => pickInSentence(r, "Selecciona el verbo auxiliar (el que ayuda al otro verbo).", HELPING_IN)],
+  ["tipos-verbos-1", (r) => choose(r, "Completa la oración con un verbo.", ACTION_USE)],
+  ["tipos-verbos-2", (r) => pickInSentence(r, "Selecciona los verbos de acción.", ACTION_IN)],
+  ["tipos-verbos-3", (r) => pickInSentence(r, "Selecciona el verbo auxiliar (el que ayuda al otro verbo).", HELPING_IN)],
 
-  ["CCC.1", "¿Uno o más de uno?", (r) => choose(r, "¿La oración habla de uno o de más de uno?", ONE_OR_MORE)],
-  ["CCC.2", "Usar el sujeto o el verbo correcto", (r) => choose(r, "Completa la oración.", SUBJECT_VERB)],
-  ["CCC.3", "Concordancia entre pronombre y verbo", (r) => choose(r, "Completa la oración.", PRONOUN_VERB)],
+  ["concordancia-1", (r) => choose(r, "¿La oración habla de uno o de más de uno?", ONE_OR_MORE)],
+  ["concordancia-2", (r) => choose(r, "Completa la oración.", SUBJECT_VERB)],
+  ["concordancia-3", (r) => choose(r, "Completa la oración.", PRONOUN_VERB)],
 
-  ["DDD.1", "¿Qué oración está en pasado?", (r) => choose(r, "", PAST_SENTENCE)],
-  ["DDD.2", "Identificar verbos regulares en pasado", (r) => pickInSentence(r, "Selecciona los verbos en pasado.", PAST_VERBS_IN)],
-  ["DDD.3", "Formar y usar el pasado de verbos regulares", (r) => choose(r, "Completa con el verbo en pasado.", PAST_REGULAR)],
-  ["DDD.4", "Ubicar oraciones en la línea de tiempo", (r) => choose(r, "¿Cuándo pasa?", TIMELINE)],
-  ["DDD.5", "Cambiar la oración al futuro", (r) => choose(r, "", TO_FUTURE)],
-  ["DDD.6", "Identificar el pasado de verbos irregulares I", (r) => choose(r, "", IRREGULAR_ID_1)],
-  ["DDD.7", "Identificar el pasado de verbos irregulares II", (r) => choose(r, "", IRREGULAR_ID_2)],
-  ["DDD.8", "Formar y usar el pasado de verbos irregulares: grupo 1", fromSet(0)],
-  ["DDD.9", "Formar y usar el pasado de verbos irregulares: grupo 2", fromSet(1)],
-  ["DDD.10", "Formar y usar el pasado de verbos irregulares: grupo 3", fromSet(2)],
-  ["DDD.11", "Formar y usar el pasado de verbos irregulares: grupo 4", fromSet(3)],
-  ["DDD.12", "Relacionar oraciones: ya pasó o está pasando", (r) => choose(r, "", DONE_OR_NOW)],
-  ["DDD.13", "Ser y estar: usar la forma correcta en presente", (r) => choose(r, "Completa la oración.", SER_ESTAR_PRESENT)],
-  ["DDD.14", "Ser y estar: usar la forma correcta en pasado", (r) => choose(r, "Completa la oración.", SER_ESTAR_PAST)],
-  ["DDD.15", "Ser y estar: usar la forma correcta", (r) => choose(r, "Completa con ser o estar.", SER_O_ESTAR)],
-  ["DDD.16", "Tener: usar la forma correcta", (r) => choose(r, "Completa con el verbo tener.", TENER)],
-  ["DDD.17", "Ubicar oraciones con verbos irregulares en la línea de tiempo", (r) => choose(r, "¿Cuándo pasa?", TIMELINE_IRREGULAR)],
-  ["DDD.18", "¿La oración está en pasado, presente o futuro?", (r) => choose(r, "¿En qué tiempo está la oración?", [...TIMELINE, ...TIMELINE_IRREGULAR])],
+  ["pasado-regular-1", (r) => choose(r, "", PAST_SENTENCE)],
+  ["pasado-regular-2", (r) => pickInSentence(r, "Selecciona los verbos en pasado.", PAST_VERBS_IN)],
+  ["pasado-regular-3", (r) => choose(r, "Completa con el verbo en pasado.", PAST_REGULAR)],
+  ["pasado-regular-4", (r) => choose(r, "¿Cuándo pasa?", TIMELINE)],
+  ["pasado-regular-5", (r) => choose(r, "", TO_FUTURE)],
+  ["pasado-irregular-1", (r) => choose(r, "", IRREGULAR_ID_1)],
+  ["pasado-irregular-2", (r) => choose(r, "", IRREGULAR_ID_2)],
+  ["pasado-irregular-3", fromSet(0)],
+  ["pasado-irregular-4", fromSet(1)],
+  ["pasado-irregular-5", fromSet(2)],
+  ["pasado-irregular-6", fromSet(3)],
+  ["pasado-regular-6", (r) => choose(r, "", DONE_OR_NOW)],
+  ["ser-estar-1", (r) => choose(r, "Completa la oración.", SER_ESTAR_PRESENT)],
+  ["ser-estar-2", (r) => choose(r, "Completa la oración.", SER_ESTAR_PAST)],
+  ["ser-estar-3", (r) => choose(r, "Completa con ser o estar.", SER_O_ESTAR)],
+  ["ser-estar-4", (r) => choose(r, "Completa con el verbo tener.", TENER)],
+  ["pasado-irregular-7", (r) => choose(r, "¿Cuándo pasa?", TIMELINE_IRREGULAR)],
+  ["pasado-regular-7", (r) => choose(r, "¿En qué tiempo está la oración?", [...TIMELINE, ...TIMELINE_IRREGULAR])],
 
-  ["EEE.1", "Usar el artículo correcto: un, una, unos, unas", (r) => choose(r, "¿Qué artículo va?", UN_UNA)],
-  ["EEE.2", "Identificar artículos", (r) => pickInSentence(r, "Selecciona los artículos de la oración.", ARTICLES_IN)],
+  ["articulos-1", (r) => choose(r, "¿Qué artículo va?", UN_UNA)],
+  ["articulos-2", (r) => pickInSentence(r, "Selecciona los artículos de la oración.", ARTICLES_IN)],
 
-  ["FFF.1", "¿El adjetivo dice cómo es o cuántos hay?", (r) => choose(r, "", KIND_OR_MANY)],
-  ["FFF.2", "Identificar el adjetivo que describe al sustantivo", (r) => choose(r, "", ADJ_FOR_NOUN)],
-  ["FFF.3", "Identificar adjetivos", (r) => pickInSentence(r, "Selecciona los adjetivos (palabras que dicen cómo es algo).", ADJECTIVES_IN)],
-  ["FFF.4", "Identificar adjetivos comparativos y superlativos", (r) => choose(r, "¿Qué tipo de comparación es?", COMPARE_TYPE)],
-  ["FFF.5", "¿El adverbio dice cómo, cuándo o dónde?", (r) => choose(r, "", ADVERB_KIND)],
-  ["FFF.6", "Identificar adverbios", (r) => pickInSentence(r, "Selecciona los adverbios (dicen cómo, cuándo o dónde).", ADVERBS_IN)],
-  ["FFF.7", "Elegir entre adjetivos y adverbios", (r) => choose(r, "Completa la oración.", ADJ_OR_ADV_USE)],
-  ["FFF.8", "¿La palabra es un adjetivo o un adverbio?", (r) => choose(r, "", ADJ_OR_ADV)],
+  ["adjetivos-1", (r) => choose(r, "", KIND_OR_MANY)],
+  ["adjetivos-2", (r) => choose(r, "", ADJ_FOR_NOUN)],
+  ["adjetivos-3", (r) => pickInSentence(r, "Selecciona los adjetivos (palabras que dicen cómo es algo).", ADJECTIVES_IN)],
+  ["adjetivos-4", (r) => choose(r, "¿Qué tipo de comparación es?", COMPARE_TYPE)],
+  ["adverbios-1", (r) => choose(r, "", ADVERB_KIND)],
+  ["adverbios-2", (r) => pickInSentence(r, "Selecciona los adverbios (dicen cómo, cuándo o dónde).", ADVERBS_IN)],
+  ["adverbios-3", (r) => choose(r, "Completa la oración.", ADJ_OR_ADV_USE)],
+  ["adverbios-4", (r) => choose(r, "", ADJ_OR_ADV)],
 
-  ["GGG.1", "Elegir la mejor preposición según el dibujo", (r) => choose(r, "Completa la oración según el dibujo.", PREP_PIC)],
-  ["GGG.2", "Elegir la mejor preposición para completar la oración", (r) => choose(r, "Completa la oración.", PREP_SENT)],
+  ["preposiciones-1", (r) => choose(r, "Completa la oración según el dibujo.", PREP_PIC)],
+  ["preposiciones-2", (r) => choose(r, "Completa la oración.", PREP_SENT)],
 
-  ["HHH.1", "Relacionar las contracciones", (r) => choose(r, "", CONTRACTION_MATCH)],
-  ["HHH.2", "Formar conmigo, contigo y consigo", (r) => choose(r, "", CONMIGO_FORM)],
-  ["HHH.3", "Formar las contracciones al y del", (r) => choose(r, "", AL_DEL_FORM)],
-  ["HHH.4", "Usar conmigo, contigo y consigo", (r) => choose(r, "Completa la oración.", CONMIGO_USE)],
-  ["HHH.5", "Usar las contracciones al y del", (r) => choose(r, "Completa con al o del.", AL_DEL_USE)],
-  ["HHH.6", "Usar contracciones en una oración", (r) => choose(r, "", CONTRACTION_SENTENCE)],
+  ["contracciones-1", (r) => choose(r, "", CONTRACTION_MATCH)],
+  ["contracciones-2", (r) => choose(r, "", CONMIGO_FORM)],
+  ["contracciones-3", (r) => choose(r, "", AL_DEL_FORM)],
+  ["contracciones-4", (r) => choose(r, "Completa la oración.", CONMIGO_USE)],
+  ["contracciones-5", (r) => choose(r, "Completa con al o del.", AL_DEL_USE)],
+  ["contracciones-6", (r) => choose(r, "", CONTRACTION_SENTENCE)],
 
-  ["III.1", "Comas en una enumeración", (r) => choose(r, "", COMMA_SERIES)],
-  ["III.2", "Comas en las fechas", (r) => choose(r, "", COMMA_DATES)],
-  ["III.3", "Comas en los nombres de lugares", (r) => choose(r, "", COMMA_PLACES)],
-  ["III.4", "Comas: repaso", (r) => choose(r, "", [...COMMA_SERIES, ...COMMA_DATES, ...COMMA_PLACES])],
+  ["comas-1", (r) => choose(r, "", COMMA_SERIES)],
+  ["comas-2", (r) => choose(r, "", COMMA_DATES)],
+  ["comas-3", (r) => choose(r, "", COMMA_PLACES)],
+  ["comas-4", (r) => choose(r, "", [...COMMA_SERIES, ...COMMA_DATES, ...COMMA_PLACES])],
 
-  ["JJJ.1", "Mayúscula en los nombres de personas y mascotas", (r) => choose(r, "", CAPS_NAMES)],
-  ["JJJ.2", "Días y meses con minúscula; festividades con mayúscula", (r) => choose(r, "", CAPS_DAYS)],
-  ["JJJ.3", "Mayúscula en los nombres de lugares y accidentes geográficos", (r) => choose(r, "", CAPS_PLACES)],
-  ["JJJ.4", "Mayúsculas: repaso", (r) => choose(r, "", [...CAPS_NAMES, ...CAPS_DAYS, ...CAPS_PLACES])],
-  ["JJJ.5", "Mayúsculas en los títulos", (r) => choose(r, "", CAPS_TITLES)],
-  ["JJJ.6", "Saludos y despedidas de las cartas", (r) => choose(r, "", LETTERS)],
+  ["mayusculas-1", (r) => choose(r, "", CAPS_NAMES)],
+  ["mayusculas-2", (r) => choose(r, "", CAPS_DAYS)],
+  ["mayusculas-3", (r) => choose(r, "", CAPS_PLACES)],
+  ["mayusculas-4", (r) => choose(r, "", [...CAPS_NAMES, ...CAPS_DAYS, ...CAPS_PLACES])],
+  ["mayusculas-5", (r) => choose(r, "", CAPS_TITLES)],
+  ["cartas", (r) => choose(r, "", LETTERS)],
 
-  ["LLL.1", "Abreviar los días de la semana", (r) => choose(r, "", abbr(DAY_ABBR, DAY_ABBR.map(([, a]) => a)))],
-  ["LLL.2", "Abreviar los meses del año", (r) => choose(r, "", abbr(MONTH_ABBR, MONTH_ABBR.map(([, a]) => a)))],
+  ["abreviaturas-1", (r) => choose(r, "", abbr(DAY_ABBR, DAY_ABBR.map(([, a]) => a)))],
+  ["abreviaturas-2", (r) => choose(r, "", abbr(MONTH_ABBR, MONTH_ABBR.map(([, a]) => a)))],
 ];

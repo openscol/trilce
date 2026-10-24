@@ -22,7 +22,7 @@ const PLANE_FACTS: [string, boolean, string][] = [
   ["Dos rectas que no se cortan siempre son paralelas.", false, "Pueden ser alabeadas: no se cortan y no están en el mismo plano."],
   ["Por un punto pasan infinitas rectas.", true, "Por un punto se pueden trazar todas las rectas que se quiera."],
 ];
-// B.2: propiedades de planos, rectas y puntos.
+// Propiedades de planos, rectas y puntos.
 export function planeFacts(r: Rng): Question {
   const [text, ok, why] = r.pick(PLANE_FACTS);
   return fixedQ(`¿Es verdadera o falsa? ${text}`, ["Verdadera", "Falsa"], ok ? "Verdadera" : "Falsa", why, undefined, ok ? "verdadera" : "falsa");
@@ -35,19 +35,19 @@ const INTERSECTIONS: [string, string, string[]][] = [
   ["dos rectas paralelas", "No tienen puntos en común", ["Un punto", "Una recta", "Dos puntos"]],
   ["una recta contenida en un plano y ese plano", "La misma recta", ["Un punto", "Ningún punto", "Dos rectas"]],
 ];
-// B.3: describir intersecciones.
+// Describir intersecciones.
 export function intersections(r: Rng): Question {
   const [what, good, wrong] = r.pick(INTERSECTIONS);
   return choiceQ(r, `¿Cuál es la intersección de ${what}?`, good, wrong, `La intersección de ${what} es: ${good.toLowerCase()}.`, undefined, "interseccion");
 }
 
-// B.4: longitudes de segmentos en la recta numérica.
+// Longitudes de segmentos en la recta numérica.
 export function segmentOnLine(r: Rng): Question {
   const a = r.int(-9, 5), b = r.int(a + 2, 10);
   return numQ(b - a, "¿Cuánto mide el segmento entre los dos puntos marcados?", line10({ dots: [a, b] }), `|${sg(b)} − ${a < 0 ? `(${sg(a)})` : a}| = ${b - a}.`, "recta");
 }
 
-// B.5: propiedad aditiva de la longitud (postulado de la suma de segmentos).
+// Propiedad aditiva de la longitud (postulado de la suma de segmentos).
 export function segmentAddition(r: Rng): Question {
   const x = r.int(2, 9), a = r.int(2, 5), b = r.int(1, 8) * r.pick([1, -1]), c = r.int(1, 4), d = r.int(1, 9) * r.pick([1, -1]);
   const AB = a * x + b, BC = c * x + d;
@@ -59,7 +59,7 @@ export function segmentAddition(r: Rng): Question {
   return numQ(ask ? AB : x, prompt, undefined, why, "suma");
 }
 
-// B.6: puntos medios.
+// Puntos medios.
 export function midpointSegment(r: Rng): Question {
   const x = r.int(2, 9), a = r.int(3, 6), c = r.int(1, a - 1), b = r.int(1, 5) * r.pick([1, -1]);
   const d = a * x + b - c * x;
@@ -69,14 +69,14 @@ export function midpointSegment(r: Rng): Question {
   return numQ(askWhole ? 2 * half : x, `M es el punto medio de AB. AM = ${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)} y MB = ${c === 1 ? "" : c}x ${d < 0 ? "−" : "+"} ${Math.abs(d)}. ${askWhole ? "¿Cuánto mide AB?" : "¿Cuánto vale x?"}`.replace(" + 0", "").replace(" − 0", ""), undefined, `AM = MB: ${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${c === 1 ? "" : c}x ${d < 0 ? "−" : "+"} ${Math.abs(d)} → x = ${x}.${askWhole ? ` AM = ${half}, así que AB = ${2 * half}.` : ""}`, "punto-medio");
 }
 
-// B.7: promedios ponderados en la recta numérica.
+// Promedios ponderados en la recta numérica.
 export function weightedPoint(r: Rng): Question {
   const a = r.int(-8, 0), b = r.int(a + 4, 10), wa = r.int(1, 4), wb = r.int(1, 4);
   const v = (wa * a + wb * b) / (wa + wb);
   return valQ(r, `En una recta numérica hay ${wa} ${wa === 1 ? "ficha" : "fichas"} en ${sg(a)} y ${wb} ${wb === 1 ? "ficha" : "fichas"} en ${sg(b)}. ¿Cuál es la posición promedio (promedio ponderado) de todas las fichas?`, Math.round(v * 100) / 100, [(a + b) / 2, Math.round(((wb * a + wa * b) / (wa + wb)) * 100) / 100, Math.round(v) + 1, Math.round(v) - 1, (wa * a + wb * b) / 2], `(${wa} × ${sg(a)} + ${wb} × ${sg(b)}) ÷ ${wa + wb} = ${dec(Math.round(v * 100) / 100)}.`, line10({ dots: [a, b] }), "ponderado");
 }
 
-// B.8: distancias fraccionarias en la recta numérica.
+// Distancias fraccionarias en la recta numérica.
 export function fractionalDistance(r: Rng): Question {
   const [n, d] = r.pick([[1, 2], [1, 3], [2, 3], [1, 4], [3, 4], [2, 5], [3, 5]]);
   const len = d * r.int(1, 4), a = r.int(-10, 10 - len);
@@ -85,7 +85,7 @@ export function fractionalDistance(r: Rng): Question {
   return intQ(r, `En la recta numérica, A está en ${sg(a)} y B en ${sg(b)}. ¿En qué número está el punto que se encuentra a ${n}/${d} del camino de A hacia B?`, p, `AB mide ${len}; ${n}/${d} de ${len} es ${(len * n) / d}: ${sg(a)} + ${(len * n) / d} = ${sg(p)}.`, line10({ dots: [a, b] }), "fraccion", [b - (len * n) / d, a + n, (a + b) / 2 === Math.round((a + b) / 2) ? (a + b) / 2 : p + 1]);
 }
 
-// B.9: segmentos congruentes (en el plano).
+// Segmentos congruentes (en el plano).
 export function congruentSegments(r: Rng): Question {
   const [a, b] = r.pick([[3, 4], [6, 8], [5, 12], [0, 5], [4, 0], [0, 3]]);
   const A = { x: r.int(-6, 0), y: r.int(-6, 0) };
@@ -98,7 +98,7 @@ export function congruentSegments(r: Rng): Question {
   return yesNo(`¿Son congruentes los segmentos AB, con A${pt(A)} y B${pt(B)}, y CD, con C${pt(C)} y D${pt(D)}?`, yes, `AB = √(${a}² + ${b}²) = ${dec(Math.round(len(A, B) * 100) / 100)} y CD = ${dec(Math.round(len(C, D) * 100) / 100)}${yes ? ": miden lo mismo." : ": no miden lo mismo."}`, undefined, yes ? "si" : "no");
 }
 
-// B.10: teorema de la mediatriz.
+// Teorema de la mediatriz.
 export function perpBisectorTheorem(r: Rng): Question {
   const x = r.int(2, 9), a = r.int(2, 6), c = r.int(1, a - 1), b = r.int(-5, 6);
   const d = (a - c) * x + b;
@@ -106,7 +106,7 @@ export function perpBisectorTheorem(r: Rng): Question {
   return numQ(x, `P está en la mediatriz de AB. PA = ${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)} y PB = ${c === 1 ? "" : c}x + ${d}. ¿Cuánto vale x?`.replace(" + 0", "").replace(" − 0", ""), undefined, `Todo punto de la mediatriz equidista de A y B: PA = PB → x = ${x}.`, "mediatriz");
 }
 
-// B.12: dividir un segmento en una razón dada.
+// Dividir un segmento en una razón dada.
 export function partitionSegment(r: Rng): Question {
   const [m, n] = r.pick([[1, 2], [2, 1], [1, 3], [3, 1], [2, 3], [3, 2], [1, 1]]);
   const k = m + n;
@@ -116,7 +116,7 @@ export function partitionSegment(r: Rng): Question {
   return pointQ(r, `A${pt(A)} y B${pt(B)}. ¿Qué punto P divide a AB en la razón AP : PB = ${m} : ${n}?`, P, `P está a ${m}/${k} del camino de A a B: (${sg(A.x)} + ${m}/${k} × ${sg(B.x - A.x)}, ${sg(A.y)} + ${m}/${k} × ${sg(B.y - A.y)}) = ${pt(P)}.`, undefined, "razon", [{ x: A.x + ((B.x - A.x) * n) / k, y: A.y + ((B.y - A.y) * n) / k }]);
 }
 
-// B.16: distancia al origen en tres dimensiones.
+// Distancia al origen en tres dimensiones.
 export function distance3D(r: Rng): Question {
   const [a, b, c, d] = r.pick([[1, 2, 2, 3], [2, 3, 6, 7], [1, 4, 8, 9], [2, 6, 9, 11], [4, 4, 7, 9], [6, 6, 7, 11], [4, 8, 8, 12], [2, 10, 11, 15]]);
   const s = [a * r.pick([1, -1]), b * r.pick([1, -1]), c * r.pick([1, -1])];
@@ -127,7 +127,7 @@ export function distance3D(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Ángulos
 
-// C.1: vocabulario de ángulos.
+// Vocabulario de ángulos.
 export function angleVocabulary(r: Rng): Question {
   const [A, B, C] = r.shuffle(["P", "Q", "R", "S", "T", "M", "N", "K"]).slice(0, 3);
   const form = r.int(0, 2);
@@ -142,7 +142,7 @@ export function angleVocabulary(r: Rng): Question {
 const CUBE: Record<string, [number, number, number]> = { A: [0, 0, 0], B: [1, 0, 0], C: [1, 1, 0], D: [0, 1, 0], E: [0, 0, 1], F: [1, 0, 1], G: [1, 1, 1], H: [0, 1, 1] };
 const EDGES = ["AB", "BC", "CD", "DA", "EF", "FG", "GH", "HE", "AE", "BF", "CG", "DH"];
 const REL = ["Paralelas", "Se cortan", "Alabeadas"];
-// D.1: rectas paralelas, secantes y alabeadas (en un cubo).
+// Rectas paralelas, secantes y alabeadas (en un cubo).
 export function skewLines(r: Rng): Question {
   const [e1, e2] = r.shuffle(EDGES).slice(0, 2);
   const dir = (e: string) => CUBE[e[1]].map((v, i) => v - CUBE[e[0]][i]);
@@ -156,7 +156,7 @@ export function skewLines(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Rectas en el plano: distancias
 
-// E.6: distancia de un punto a una recta.
+// Distancia de un punto a una recta.
 export function pointLineDistance(r: Rng): Question {
   const [A, B, n] = r.pick([[3, 4, 5], [4, 3, 5], [5, 12, 13], [12, 5, 13], [1, 0, 1], [0, 1, 1], [8, 6, 10]]);
   const P = { x: r.int(-5, 5), y: r.int(-5, 5) };
@@ -166,7 +166,7 @@ export function pointLineDistance(r: Rng): Question {
   return numQ(d, `¿Cuál es la distancia del punto ${pt(P)} a la recta ${eq}?`, undefined, `d = |Ax₀ + By₀ − C| ÷ √(A² + B²) = |${sg(A * P.x + B * P.y)} − ${C < 0 ? `(${sg(C)})` : C}| ÷ ${n} = ${d}.`, "punto-recta");
 }
 
-// E.7: distancia entre dos rectas paralelas.
+// Distancia entre dos rectas paralelas.
 export function parallelDistance(r: Rng): Question {
   const [A, B, n] = r.pick([[3, 4, 5], [4, 3, 5], [5, 12, 13], [6, 8, 10], [0, 1, 1]]);
   const C1 = r.int(-20, 20), d = r.int(1, 5);
@@ -178,7 +178,7 @@ export function parallelDistance(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Triángulos y polígonos
 
-// F.4: desigualdad del ángulo exterior.
+// Desigualdad del ángulo exterior.
 export function exteriorInequality(r: Rng): Question {
   const ext = r.int(100, 150);
   const good = r.int(20, ext - 20);
@@ -188,7 +188,7 @@ export function exteriorInequality(r: Rng): Question {
 
 const POLY_NAMES = ["", "", "", "triángulo", "cuadrilátero", "pentágono", "hexágono", "heptágono", "octágono", "eneágono", "decágono", "", "dodecágono"];
 const NS = [3, 4, 5, 6, 8, 9, 10, 12];
-// G.1: vocabulario de polígonos.
+// Vocabulario de polígonos.
 export function polygonVocabulary(r: Rng): Question {
   const n = r.pick(NS);
   const form = r.int(0, 2);
@@ -201,7 +201,7 @@ export function polygonVocabulary(r: Rng): Question {
   return choiceQ(r, `¿Cómo se llama un polígono de ${n} lados?`, POLY_NAMES[n], NS.filter((m) => m !== n).map((m) => POLY_NAMES[m]).slice(0, 4), `Un polígono de ${n} lados es un ${POLY_NAMES[n]}.`, undefined, "nombre");
 }
 
-// G.2-G.4: ángulos interiores y exteriores de polígonos.
+// Ángulos interiores y exteriores de polígonos.
 export function polygonAngles(r: Rng, kind: "interior" | "exterior" | "mixed"): Question {
   const k = kind === "mixed" ? r.pick(["interior", "exterior"] as const) : kind;
   const n = r.pick(NS);
@@ -239,7 +239,7 @@ const SYMMETRY: [string, number, number, string][] = [
   ["un trapecio isósceles", 1, 1, "la recta que une los puntos medios de las bases"],
   ["un círculo", Infinity, Infinity, "cualquier diámetro"],
 ];
-// J.1-J.4: simetría axial y rotacional.
+// Simetría axial y rotacional.
 export function symmetry(r: Rng, mode: "line" | "rotational" | "draw" | "count"): Question {
   const fig = r.pick(SYMMETRY.filter((f) => (mode === "count" ? Number.isFinite(f[1]) : mode === "draw" ? f[1] > 0 && Number.isFinite(f[1]) : true)));
   const [name, lines, order, axis] = fig;

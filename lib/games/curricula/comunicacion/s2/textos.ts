@@ -1,24 +1,14 @@
 import { readPassage } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { read } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Lecturas (IXL 8th grade ELA: I, K y L). En I, «Read about animals» (nuevo en
-// IXL) es I.1 y el resto se corre un número.
-// K. «Novel study»: IXL trabaja con The Giver y The Outsiders. Aquí van dos
-// novelas peruanas del plan lector de secundaria: «Los ríos profundos» (José
-// María Arguedas) y «El mundo es ancho y ajeno» (Ciro Alegría). Los pasajes son
-// resúmenes propios, no citas textuales.
-// L. «Nonfiction book study»: en lugar de Frederick Douglass, The Boy Who
-// Harnessed the Wind y Travels with Charley, tres temas peruanos con textos
-// informativos propios: la abolición de la esclavitud y el pueblo afroperuano,
+// 2.° de Secundaria · banco de lecturas largas: textos informativos propios y
+// dos novelas peruanas del plan lector: «Los ríos profundos» (José María
+// Arguedas) y «El mundo es ancho y ajeno» (Ciro Alegría). Los pasajes son
+// resúmenes propios, no citas textuales. En no ficción, tres temas peruanos
+// con textos propios: la abolición de la esclavitud y el pueblo afroperuano,
 // el inventor Pedro Ruiz Gallo y los viajes de Antonio Raimondi.
 
-export const SECTIONS: Section[] = [
-  { id: "I", name: "Analizar textos informativos", icon: "📰" },
-  { id: "K", name: "Estudio de obras narrativas", icon: "📚" },
-  { id: "L", name: "Estudio de obras de no ficción", icon: "📓" },
-];
 
 const INFO = {
   animals: [
@@ -73,7 +63,7 @@ const INFO = {
   ],
 };
 
-// --- K. Obras narrativas -----------------------------------------------------
+// --- Obras narrativas -----------------------------------------------------
 
 const RIOS = [
   [
@@ -121,7 +111,7 @@ const ALEGRIA = [
   ],
 ];
 
-// --- L. Obras de no ficción --------------------------------------------------
+// --- Obras de no ficción --------------------------------------------------
 
 const AFRO = [
   [
@@ -193,21 +183,21 @@ const RAIMONDI = [
 ];
 
 export const ROWS: Row[] = [
-  ["I.1", "Leer sobre animales", (r) => readPassage(r, INFO.animals, false)],
-  ["I.2", "Leer sobre lugares famosos", (r) => readPassage(r, INFO.places, false)],
-  ["I.3", "Leer sobre negocios y tecnología", (r) => readPassage(r, INFO.business, false)],
-  ["I.4", "Leer sobre ciencia y naturaleza", (r) => readPassage(r, INFO.science, false)],
-  ["I.5", "Leer sobre historia", (r) => readPassage(r, INFO.history, false)],
+  ["informativos-1", (r) => readPassage(r, INFO.animals, false)],
+  ["informativos-2", (r) => readPassage(r, INFO.places, false)],
+  ["informativos-3", (r) => readPassage(r, INFO.business, false)],
+  ["informativos-4", (r) => readPassage(r, INFO.science, false)],
+  ["informativos-5", (r) => readPassage(r, INFO.history, false)],
 
-  ["K.1", "Analizar pasajes de «Los ríos profundos»: parte 1", (r) => readPassage(r, RIOS[0], false)],
-  ["K.2", "Analizar pasajes de «Los ríos profundos»: parte 2", (r) => readPassage(r, RIOS[1], false)],
-  ["K.3", "Analizar pasajes de «El mundo es ancho y ajeno»: parte 1", (r) => readPassage(r, ALEGRIA[0], false)],
-  ["K.4", "Analizar pasajes de «El mundo es ancho y ajeno»: parte 2", (r) => readPassage(r, ALEGRIA[1], false)],
+  ["rios-profundos-1", (r) => readPassage(r, RIOS[0], false)],
+  ["rios-profundos-2", (r) => readPassage(r, RIOS[1], false)],
+  ["mundo-ancho-1", (r) => readPassage(r, ALEGRIA[0], false)],
+  ["mundo-ancho-2", (r) => readPassage(r, ALEGRIA[1], false)],
 
-  ["L.1", "Analizar textos sobre la abolición de la esclavitud y el pueblo afroperuano: parte 1", (r) => readPassage(r, AFRO[0], false)],
-  ["L.2", "Analizar textos sobre la abolición de la esclavitud y el pueblo afroperuano: parte 2", (r) => readPassage(r, AFRO[1], false)],
-  ["L.3", "Analizar textos sobre el inventor Pedro Ruiz Gallo: parte 1", (r) => readPassage(r, RUIZ_GALLO[0], false)],
-  ["L.4", "Analizar textos sobre el inventor Pedro Ruiz Gallo: parte 2", (r) => readPassage(r, RUIZ_GALLO[1], false)],
-  ["L.5", "Analizar textos sobre los viajes de Antonio Raimondi: parte 1", (r) => readPassage(r, RAIMONDI[0], false)],
-  ["L.6", "Analizar textos sobre los viajes de Antonio Raimondi: parte 2", (r) => readPassage(r, RAIMONDI[1], false)],
+  ["afroperuanos-1", (r) => readPassage(r, AFRO[0], false)],
+  ["afroperuanos-2", (r) => readPassage(r, AFRO[1], false)],
+  ["ruiz-gallo-1", (r) => readPassage(r, RUIZ_GALLO[0], false)],
+  ["ruiz-gallo-2", (r) => readPassage(r, RUIZ_GALLO[1], false)],
+  ["raimondi-1", (r) => readPassage(r, RAIMONDI[0], false)],
+  ["raimondi-2", (r) => readPassage(r, RAIMONDI[1], false)],
 ];

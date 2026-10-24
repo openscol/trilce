@@ -3,7 +3,7 @@ import type { Question, Visual } from "../types";
 
 // Geometría de 3.° en adelante: rectas, ángulos, triángulos y perímetro.
 
-// 3.° V.8: rectas paralelas, perpendiculares y secantes.
+// Rectas paralelas, perpendiculares y secantes.
 export function lineRelation(r: Rng): Question {
   const relation = r.pick(["paralelas", "perpendiculares", "secantes"] as const);
   const names = { paralelas: "Paralelas", perpendiculares: "Perpendiculares", secantes: "Secantes" };
@@ -26,7 +26,7 @@ export function lineRelation(r: Rng): Question {
 const ANGLES = [20, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165];
 const ROTATIONS = [0, 30, 60, 90, 180, 210, 270, 300];
 
-// 3.° V.9: comparar con un ángulo recto.
+// Comparar con un ángulo recto.
 export function angleVsRight(r: Rng): Question {
   const degrees = r.chance(0.3) ? 90 : r.pick(ANGLES);
   const options = ["Menor que un ángulo recto", "Igual a un ángulo recto", "Mayor que un ángulo recto"];
@@ -42,7 +42,7 @@ export function angleVsRight(r: Rng): Question {
   };
 }
 
-// 3.° V.10: agudo, recto, obtuso o llano.
+// Agudo, recto, obtuso o llano.
 export function classifyAngle(r: Rng): Question {
   const type = r.pick(["Agudo", "Recto", "Obtuso", "Llano"] as const);
   const degrees = type === "Agudo" ? r.pick(ANGLES.filter((a) => a < 90)) : type === "Recto" ? 90 : type === "Obtuso" ? r.pick(ANGLES.filter((a) => a > 90)) : 180;
@@ -67,7 +67,7 @@ const TRIANGLES: Record<string, Pt[]> = {
   obtusangulo: [[2, 30], [98, 92], [34, 92]],
 };
 
-// 3.° V.11: clasificar triángulos por sus lados o por sus ángulos.
+// Clasificar triángulos por sus lados o por sus ángulos.
 export function classifyTriangle(r: Rng): Question {
   if (r.chance(0.5)) {
     const type = r.pick(["Equilátero", "Isósceles", "Escaleno"] as const);
@@ -115,7 +115,7 @@ export function classifyTriangle(r: Rng): Question {
   };
 }
 
-// 3.° V.12: perímetro de rectángulos, cuadrados, triángulos y otros polígonos.
+// Perímetro de rectángulos, cuadrados, triángulos y otros polígonos.
 export function perimeter(r: Rng): Question {
   const form = r.int(0, 3);
   const unit = r.pick(["cm", "m"]);

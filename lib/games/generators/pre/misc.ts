@@ -6,7 +6,7 @@ import { dec, line10, poly, valQ, xMinus } from "../alg1/util";
 
 // Precálculo: temas sueltos que no estaban en cursos anteriores.
 
-// D.1: valor máximo o mínimo de una función cuadrática.
+// Valor máximo o mínimo de una función cuadrática.
 export function quadExtreme(r: Rng): Question {
   const a = nz(r, 3), h = r.int(-4, 4), k = r.int(-9, 9);
   const coefs = [a, -2 * a * h, a * h * h + k];
@@ -14,7 +14,7 @@ export function quadExtreme(r: Rng): Question {
   return intQ(r, `¿Cuál es el valor ${max ? "máximo" : "mínimo"} de f(x) = ${poly(coefs)}?`, k, `El vértice está en x = −b ÷ 2a = ${sg(h)}; f(${sg(h)}) = ${sg(k)}. Como a ${max ? "< 0, es un máximo" : "> 0, es un mínimo"}.`, undefined, max ? "maximo" : "minimo", [h, -k, coefs[2]]);
 }
 
-// E.6: resolver ecuaciones con sumas y diferencias de cubos (soluciones reales).
+// Resolver ecuaciones con sumas y diferencias de cubos (soluciones reales).
 export function cubeEquation(r: Rng): Question {
   const a = r.pick([1, 2, 3]), b = r.int(1, 5) * r.pick([1, -1]);
   const k = r.pick([1, 2]);
@@ -24,7 +24,7 @@ export function cubeEquation(r: Rng): Question {
   return choiceQ(r, `¿Cuál es la solución real de ${lhs}?`, `x = ${Number.isInteger(x) ? sg(x) : `${b < 0 ? "−" : ""}${Math.abs(b)}/${a}`}`, [`x = ${Number.isInteger(x) ? sg(-x) : `${b < 0 ? "" : "−"}${Math.abs(b)}/${a}`}`, `x = ±${Math.abs(b)}${a === 1 ? "" : `/${a}`}`, `x = ${sg(b ** 3)}`].filter((w, i, all) => all.indexOf(w) === i), `Se factoriza como diferencia (o suma) de cubos: (${poly([a, -b])})(…) = 0; el factor cuadrático no tiene raíces reales. x = ${dec(Math.round(x * 1000) / 1000)}.`, undefined, "cubos");
 }
 
-// G.4: ¿dos funciones racionales son inversas?
+// ¿dos funciones racionales son inversas?
 export function rationalInverse(r: Rng): Question {
   const a = r.int(1, 4), b = nz(r, 5), c = nz(r, 4);
   // f(x) = (ax + b)/(x − c) ⇒ f⁻¹(x) = (cx + b)/(x − a)
@@ -33,7 +33,7 @@ export function rationalInverse(r: Rng): Question {
   return yesNo(`¿Son inversas f(x) = (${poly([a, b])})/(${xMinus(c)}) y g(x) = ${g}?`, yes, yes ? "Al despejar x en y = f(x) se obtiene g; además f(g(x)) = x." : "Al despejar x en y = f(x) se obtiene otra expresión: f(g(x)) ≠ x.", undefined, yes ? "si" : "no");
 }
 
-// P.3 / P.4: inecuaciones de grado mayor (tabla de signos).
+// Inecuaciones de grado mayor (tabla de signos).
 export function higherInequality(r: Rng, graph: boolean): Question {
   const roots = r.shuffle([-6, -4, -3, -1, 0, 2, 3, 5, 7]).slice(0, 3).sort((x, y) => x - y);
   const [p, q, s] = roots;
@@ -54,7 +54,7 @@ export function higherInequality(r: Rng, graph: boolean): Question {
   return choiceQ(r, "Resuelve la inecuación.", good, [flip, `${sg(p)} ${lt} x ${lt} ${sg(s)}`, `x ${lt} ${sg(q)}`].filter((w) => w !== good), why, text, pos ? "positivo" : "negativo");
 }
 
-// Q.14: inversa de una matriz 3 × 3 (un elemento).
+// Inversa de una matriz 3 × 3 (un elemento).
 export function inverse3(r: Rng): Question {
   // Triangular superior con unos en la diagonal: la inversa es entera.
   const a = nz(r, 4), b = nz(r, 4), c = nz(r, 4);
@@ -65,7 +65,7 @@ export function inverse3(r: Rng): Question {
   return intQ(r, `¿Qué número está en la fila ${i + 1}, columna ${j + 1} de A⁻¹?`, inv[i][j], `Al reducir [A | I] por filas se obtiene A⁻¹; el elemento pedido es ${sg(inv[i][j])}. (Comprueba que A · A⁻¹ = I.)`, text, "3x3", [-inv[i][j], M[i][j]]);
 }
 
-// U.8 / U.11: excentricidad de elipses e hipérbolas.
+// Excentricidad de elipses e hipérbolas.
 export function eccentricity(r: Rng, hyper: boolean): Question {
   const [a, b, c] = r.pick(hyper ? [[3, 4, 5], [4, 3, 5], [6, 8, 10], [5, 12, 13]] : [[5, 3, 4], [5, 4, 3], [10, 6, 8], [13, 5, 12]]);
   const eq = hyper ? `x²/${a * a} − y²/${b * b} = 1` : `x²/${a * a} + y²/${b * b} = 1`;
@@ -74,7 +74,7 @@ export function eccentricity(r: Rng, hyper: boolean): Question {
   return choiceQ(r, `¿Cuál es la excentricidad de ${hyper ? "la hipérbola" : "la elipse"} ${eq}?`, `${c / k}/${a / k}`, [`${a / g(a, c)}/${c / g(a, c)}`, `${b / g(b, a)}/${a / g(b, a)}`, `${c / g(c, b)}/${b / g(c, b)}`].filter((w, i, all) => w !== `${c / k}/${a / k}` && all.indexOf(w) === i), `e = c ÷ a, con c² = a² ${hyper ? "+" : "−"} b²: c = ${c}, e = ${c}/${a}. ${hyper ? "En una hipérbola e > 1." : "En una elipse 0 < e < 1."}`, undefined, hyper ? "hiperbola" : "elipse");
 }
 
-// AA.1: hallar términos de una sucesión (fórmula explícita).
+// Hallar términos de una sucesión (fórmula explícita).
 export function sequenceTerm(r: Rng): Question {
   const n = r.int(3, 9);
   const forms: [string, (k: number) => number][] = [["aₙ = n² − 1", (k) => k * k - 1], ["aₙ = 3n + 4", (k) => 3 * k + 4], ["aₙ = 2ⁿ", (k) => 2 ** k], ["aₙ = (−1)ⁿ · n", (k) => (k % 2 ? -k : k)], ["aₙ = n(n + 1)/2", (k) => (k * (k + 1)) / 2], ["aₙ = 5 − 2n", (k) => 5 - 2 * k]];
@@ -82,7 +82,7 @@ export function sequenceTerm(r: Rng): Question {
   return intQ(r, `Si ${f}, ¿cuánto vale a${"₀₁₂₃₄₅₆₇₈₉"[n]}?`, fn(n), `Se reemplaza n = ${n}: a${"₀₁₂₃₄₅₆₇₈₉"[n]} = ${sg(fn(n))}.`, undefined, "explicita", [fn(n - 1), fn(n + 1)]);
 }
 
-// EE.2 / EE.8 / EE.9: binomial (media y desviación), teorema central del límite y aproximación normal.
+// Binomial (media y desviación), teorema central del límite y aproximación normal.
 export function binomialStats(r: Rng, mode: "moments" | "clt" | "approx"): Question {
   const n = r.pick([20, 50, 100, 200, 400]), p = r.pick([0.1, 0.2, 0.25, 0.5, 0.4]);
   const mu = n * p, v = n * p * (1 - p), sd = Math.round(Math.sqrt(v) * 100) / 100;
@@ -97,7 +97,7 @@ export function binomialStats(r: Rng, mode: "moments" | "clt" | "approx"): Quest
   return yesNo(`Una binomial tiene n = ${n} y p = ${dec(p)}. ¿Se puede aproximar con una normal (np ≥ 10 y n(1 − p) ≥ 10)?`, ok, `np = ${dec(mu)} y n(1 − p) = ${dec(n * (1 - p))}: ${ok ? "los dos son al menos 10." : "alguno es menor que 10."}`, undefined, ok ? "si" : "no");
 }
 
-// GG.7: analizar una recta de regresión usando estadísticos (m = r · sy / sx; b = ȳ − m x̄).
+// Analizar una recta de regresión usando estadísticos (m = r · sy / sx; b = ȳ − m x̄).
 export function regressionStats(r: Rng): Question {
   const rr = r.pick([0.5, 0.6, 0.8, -0.5, -0.8]), sx = r.int(2, 6), sy = r.int(2, 12), xb = r.int(5, 20), yb = r.int(20, 80);
   const m = Math.round(((rr * sy) / sx) * 100) / 100;

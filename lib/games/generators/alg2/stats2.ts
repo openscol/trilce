@@ -15,7 +15,7 @@ const r4 = (n: number) => Math.round(n * 10000) / 10000;
 // ---------------------------------------------------------------------------
 // Distribuciones discretas
 
-// QQ.1: identificar distribuciones de probabilidad.
+// Identificar distribuciones de probabilidad.
 export function identifyDistribution(r: Rng): Question {
   const xs = [0, 1, 2, 3];
   const ps = r.pick([[0.1, 0.2, 0.3, 0.4], [0.25, 0.25, 0.25, 0.25], [0.5, 0.2, 0.2, 0.1], [0.3, 0.3, 0.3, 0.3], [0.4, 0.3, 0.2, 0.2], [0.6, 0.5, -0.2, 0.1]]);
@@ -25,13 +25,13 @@ export function identifyDistribution(r: Rng): Question {
 }
 
 const VARS: [string, boolean][] = [["el número de caras al lanzar 5 monedas", true], ["la estatura de un alumno elegido al azar", false], ["el número de alumnos que faltan un día", true], ["el tiempo que tarda un bus en llegar", false], ["la cantidad de goles en un partido", true], ["el peso de una sandía", false], ["el número de hermanos de una persona", true], ["la temperatura al mediodía", false]];
-// QQ.2: variables aleatorias discretas y continuas.
+// Variables aleatorias discretas y continuas.
 export function discreteContinuous(r: Rng): Question {
   const [v, disc] = r.pick(VARS);
   return fixedQ(`¿La variable aleatoria «${v}» es discreta o continua?`, ["Discreta", "Continua"], disc ? "Discreta" : "Continua", disc ? "Toma valores que se pueden contar (0, 1, 2…)." : "Puede tomar cualquier valor de un intervalo (se mide, no se cuenta).", undefined, disc ? "discreta" : "continua");
 }
 
-// QQ.3 / QQ.4: escribir y graficar distribuciones discretas.
+// Escribir y graficar distribuciones discretas.
 export function writeDistribution(r: Rng, graph: boolean): Question {
   const counts = [r.int(1, 6), r.int(1, 6), r.int(1, 6), r.int(1, 6)];
   const total = counts.reduce((s, c) => s + c, 0);
@@ -43,7 +43,7 @@ export function writeDistribution(r: Rng, graph: boolean): Question {
   return choiceQ(r, `Una bolsa tiene ${counts.map((c, j) => `${c} fichas con el ${j + 1}`).join(", ")}. Se saca una al azar y x es el número. ¿Cuál es P(x = ${i + 1})?`, frac(counts[i], total), [frac(counts[i], total - counts[i] || 1), frac(1, 4), frac(i + 1, total)].filter((w, k, all) => w !== frac(counts[i], total) && all.indexOf(w) === k), `P(x = ${i + 1}) = ${counts[i]}/${total}${frac(counts[i], total) !== `${counts[i]}/${total}` ? ` = ${frac(counts[i], total)}` : ""}.`, undefined, "escribir");
 }
 
-// QQ.5-QQ.7: valor esperado, varianza y desviación estándar.
+// Valor esperado, varianza y desviación estándar.
 export function expectedValue(r: Rng, what: "mean" | "variance" | "sd"): Question {
   const xs = [0, 1, 2, 3];
   const ps = r.pick([[0.1, 0.2, 0.3, 0.4], [0.25, 0.25, 0.25, 0.25], [0.4, 0.3, 0.2, 0.1], [0.2, 0.3, 0.3, 0.2], [0.1, 0.4, 0.4, 0.1]]);
@@ -55,7 +55,7 @@ export function expectedValue(r: Rng, what: "mean" | "variance" | "sd"): Questio
   return valQ(r, "¿Cuál es la desviación estándar de la distribución? Redondea a la centésima.", r2(Math.sqrt(v)), [r2(v), r2(Math.sqrt(v) + 0.2), r2(mu)], `σ = √Var = √${dec(r2(v))} ≈ ${dec(r2(Math.sqrt(v)))}.`, vis, "desviacion");
 }
 
-// QQ.8-QQ.10: juegos de azar (distribución, valor esperado, mejor apuesta).
+// Juegos de azar (distribución, valor esperado, mejor apuesta).
 export function gameOfChance(r: Rng, mode: "distribution" | "expected" | "better"): Question {
   const cost = r.int(1, 5), prize = r.int(5, 20), n = r.pick([4, 5, 10]);
   const ev = r2(prize / n - cost);
@@ -73,7 +73,7 @@ export function gameOfChance(r: Rng, mode: "distribution" | "expected" | "better
 // Binomial y normal
 
 const C = (n: number, k: number) => { let c = 1; for (let i = 0; i < k; i++) c = (c * (n - i)) / (i + 1); return c; };
-// RR.1: probabilidades binomiales.
+// Probabilidades binomiales.
 export function binomial(r: Rng): Question {
   const n = r.int(3, 8), k = r.int(0, n), p = r.pick([0.5, 0.2, 0.3, 0.6]);
   const v = r4(C(n, k) * p ** k * (1 - p) ** (n - k));
@@ -87,7 +87,7 @@ const phi = (z: number) => {
   const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
   return z > 0 ? 1 - p : p;
 };
-// RR.2-RR.5: distribución normal (regla 68-95-99,7, valores z y valores de la variable).
+// Distribución normal (regla 68-95-99,7, valores z y valores de la variable).
 export function normal(r: Rng, mode: "empirical" | "probability" | "z" | "value"): Question {
   const mu = r.pick([50, 60, 70, 100, 150]), s = r.pick([5, 8, 10, 15]);
   if (mode === "empirical") {
@@ -110,7 +110,7 @@ export function normal(r: Rng, mode: "empirical" | "probability" | "z" | "value"
   return valQ(r, `Una variable normal tiene media ${mu} y desviación estándar ${s}. ¿Cuál es la probabilidad de que x sea ${less ? "menor" : "mayor"} que ${dec(mu + z * s)}? Usa una tabla o calculadora; redondea a la diezmilésima.`, p, [r4(1 - p), r4(p / 2), r4(phi(-Math.abs(z)) * 2)].filter((v) => v !== p), `z = ${dec(z)}; P(${less ? "Z < " : "Z > "}${dec(z)}) ≈ ${dec(p)}.`, undefined, "probabilidad");
 }
 
-// RR.6: distribución de las medias muestrales.
+// Distribución de las medias muestrales.
 export function sampleMeans(r: Rng): Question {
   const mu = r.pick([40, 50, 100]), s = r.pick([6, 8, 10, 12, 15, 20]), n = r.pick([4, 9, 16, 25, 36]);
   if (r.chance(0.5)) return numQ(mu, `Una población tiene media ${mu} y desviación estándar ${s}. Se toman muestras de tamaño ${n}. ¿Cuál es la media de la distribución de las medias muestrales?`, undefined, "La media de las medias muestrales es igual a la media de la población.", "media");
@@ -120,7 +120,7 @@ export function sampleMeans(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Inferencia y experimentos
 
-// SS.6-SS.8: intervalos de confianza (medias y proporciones) e interpretación.
+// Intervalos de confianza (medias y proporciones) e interpretación.
 export function confidenceInterval(r: Rng, mode: "mean" | "proportion" | "interpret"): Question {
   if (mode === "interpret") {
     const lo = r.int(10, 50), hi = lo + r.int(2, 8);
@@ -145,13 +145,13 @@ const DESIGN: [string, string, string[]][] = [
   ["En un experimento, el grupo que no recibe el tratamiento sirve para comparar.", "Grupo de control", ["Grupo experimental", "Muestra sesgada", "Variable de respuesta"]],
   ["Asignar los tratamientos al azar a los participantes.", "Aleatorización", ["Replicación", "Muestreo por conveniencia", "Censo"]],
 ];
-// SS.9: diseño de experimentos.
+// Diseño de experimentos.
 export function experimentDesign(r: Rng): Question {
   const [text, good, wrong] = r.pick(DESIGN);
   return choiceQ(r, `¿Qué es? ${text}`, good, wrong, `${good}.`, undefined, "diseno");
 }
 
-// SS.10: analizar resultados con simulaciones.
+// Analizar resultados con simulaciones.
 export function simulationAnalysis(r: Rng): Question {
   const diff = r.int(2, 12), extreme = r.int(0, 40);
   const sig = extreme < 25;
@@ -166,7 +166,7 @@ const m2 = (r: Rng, max = 6): M2 => [[r.int(-max, max), r.int(-max, max)], [r.in
 const mText = (name: string, m: number[][]) => m.map((row, i) => `${i === 0 ? `${name} = ` : " ".repeat(name.length + 3)}[ ${row.map((v) => sg(v).padStart(3, " ")).join("  ")} ]`).join("\n");
 const det2 = (m: M2) => m[0][0] * m[1][1] - m[0][1] * m[1][0];
 
-// UU.8 / UU.10: simplificar expresiones matriciales y resolver ecuaciones (X + A = B, kX = B).
+// Simplificar expresiones matriciales y resolver ecuaciones (X + A = B, kX = B).
 export function matrixEquation(r: Rng, simplify: boolean): Question {
   const A = m2(r), B = m2(r), k = r.pick([2, 3, -1]);
   const i = r.int(0, 1), j = r.int(0, 1);
@@ -178,7 +178,7 @@ export function matrixEquation(r: Rng, simplify: boolean): Question {
   return intQ(r, `Resuelve X + A = B. ¿Qué número queda en la fila ${i + 1}, columna ${j + 1} de X?`, v, `X = B − A: ${sg(B[i][j])} − ${A[i][j] < 0 ? `(${sg(A[i][j])})` : A[i][j]} = ${sg(v)}.`, `${mText("A", A)}\n${mText("B", B)}`, "ecuacion", [A[i][j] + B[i][j], -v]);
 }
 
-// UU.11 / UU.12: determinante y matrices invertibles.
+// Determinante y matrices invertibles.
 export function determinant(r: Rng, invertible: boolean): Question {
   if (!invertible && r.chance(0.3)) {
     const M = [[r.int(-3, 3), r.int(-3, 3), r.int(-3, 3)], [r.int(-3, 3), r.int(-3, 3), r.int(-3, 3)], [r.int(-3, 3), r.int(-3, 3), r.int(-3, 3)]];
@@ -195,7 +195,7 @@ export function determinant(r: Rng, invertible: boolean): Question {
   return intQ(r, "Calcula el determinante de la matriz A.", d, `det = ad − bc = (${sg(A[0][0])})(${sg(A[1][1])}) − (${sg(A[0][1])})(${sg(A[1][0])}) = ${sg(d)}.`, mText("A", A), "2x2", [A[0][0] * A[1][1] + A[0][1] * A[1][0], -d]);
 }
 
-// UU.13-UU.15: matriz inversa, identificar inversas y resolver con la inversa.
+// Matriz inversa, identificar inversas y resolver con la inversa.
 export function matrixInverse(r: Rng, mode: "inverse" | "identify" | "solve"): Question {
   // Matrices con determinante ±1 para que la inversa sea entera.
   const a = r.int(1, 4), b = r.int(1, 4);
@@ -217,7 +217,7 @@ export function matrixInverse(r: Rng, mode: "inverse" | "identify" | "solve"): Q
 }
 
 const TRANS: [string, M2][] = [["Reflexión respecto del eje x", [[1, 0], [0, -1]]], ["Reflexión respecto del eje y", [[-1, 0], [0, 1]]], ["Rotación de 90° antihoraria", [[0, -1], [1, 0]]], ["Rotación de 180°", [[-1, 0], [0, -1]]], ["Reflexión respecto de y = x", [[0, 1], [1, 0]]], ["Dilatación de factor 2", [[2, 0], [0, 2]]]];
-// UU.16-UU.18: matrices de transformación (identificar, matriz de vértices, imagen).
+// Matrices de transformación (identificar, matriz de vértices, imagen).
 export function transformMatrix(r: Rng, mode: "identify" | "vertex" | "image"): Question {
   const [name, M] = r.pick(TRANS);
   const pts = [{ x: r.int(-4, 4), y: r.int(-4, 4) }, { x: r.int(-4, 4), y: r.int(-4, 4) }, { x: r.int(-4, 4), y: r.int(-4, 4) }];

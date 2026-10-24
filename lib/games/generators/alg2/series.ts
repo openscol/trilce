@@ -8,14 +8,14 @@ import { dec, frac } from "../alg1/util";
 // geométricas, notación sigma, sumas parciales, series infinitas).
 
 const KINDS = ["Aritmética", "Geométrica", "Ninguna de las dos"];
-// NN.4: clasificar fórmulas y sucesiones.
+// Clasificar fórmulas y sucesiones.
 export function classifySequence(r: Rng): Question {
   const cases: [string, number][] = [["aₙ = 3n + 2", 0], ["aₙ = 5 · 2ⁿ⁻¹", 1], ["aₙ = n² + 1", 2], ["aₙ = aₙ₋₁ − 4, a₁ = 10", 0], ["aₙ = 3aₙ₋₁, a₁ = 2", 1], ["aₙ = aₙ₋₁ + n, a₁ = 1", 2], ["2, 6, 18, 54, …", 1], ["7, 4, 1, −2, …", 0], ["1, 4, 9, 16, …", 2], ["1, 1/2, 1/4, 1/8, …", 1]];
   const [f, k] = r.pick(cases);
   return fixedQ(`¿Cómo es la sucesión ${f}?`, KINDS, KINDS[k], ["Se suma siempre la misma cantidad.", "Se multiplica siempre por la misma razón.", "No tiene diferencia ni razón constante."][k], undefined, KINDS[k]);
 }
 
-// OO.1: identificar series aritméticas y geométricas.
+// Identificar series aritméticas y geométricas.
 export function classifySeries(r: Rng): Question {
   const a = r.int(1, 9), d = nz(r, 5), q = r.pick([2, 3, -2]);
   const k = r.int(0, 2);
@@ -23,7 +23,7 @@ export function classifySeries(r: Rng): Question {
   return fixedQ(`¿Cómo es la serie ${terms.map(sg).join(" + ").replace(/\+ −/g, "− ")} + …?`, KINDS, KINDS[k], ["Diferencia constante entre términos.", "Razón constante entre términos.", "No hay diferencia ni razón constante."][k], undefined, KINDS[k]);
 }
 
-// OO.2: escribir una serie con notación sigma.
+// Escribir una serie con notación sigma.
 export function sigmaNotation(r: Rng): Question {
   const a = r.int(1, 6), d = r.int(2, 5), n = r.int(4, 8);
   const terms = Array.from({ length: n }, (_, i) => a + i * d);
@@ -32,7 +32,7 @@ export function sigmaNotation(r: Rng): Question {
   return choiceQ(r, `¿Cómo se escribe ${terms.join(" + ")} con notación sigma?`, good, [`Σ (k = 1 a ${n}) de (${a}k ${d < 0 ? "−" : "+"} ${Math.abs(d)})`, `Σ (k = 1 a ${n + 1}) de (${d}k ${c < 0 ? "−" : "+"} ${Math.abs(c)})`.replace(" + 0)", ")"), `Σ (k = 1 a ${n}) de (${d}k ${a < 0 ? "−" : "+"} ${Math.abs(a)})`].filter((w) => w !== good), `El término general es ${d}k ${c < 0 ? "−" : "+"} ${Math.abs(c)} (para k = 1 da ${a}) y hay ${n} términos.`, undefined, "sigma");
 }
 
-// OO.3 / OO.6: suma de una serie aritmética (y sumas parciales).
+// Suma de una serie aritmética (y sumas parciales).
 export function arithmeticSum(r: Rng, partial: boolean): Question {
   const a = r.int(-10, 15), d = nz(r, 6), n = r.int(5, partial ? 30 : 15);
   const last = a + (n - 1) * d;
@@ -42,7 +42,7 @@ export function arithmeticSum(r: Rng, partial: boolean): Question {
   return intQ(r, `¿Cuál es la suma de la serie ${terms} ${last < 0 ? "− …" : "+ …"} ${last < 0 ? "−" : "+"} ${Math.abs(last)}? (Tiene ${n} términos.)`, S, `S = n(a₁ + aₙ) ÷ 2 = ${n} × (${sg(a)} + ${last < 0 ? `(${sg(last)})` : last}) ÷ 2 = ${sg(S)}.`, undefined, "aritmetica", [n * (a + last), S - last]);
 }
 
-// OO.4 / OO.7: suma de una serie geométrica finita (y sumas parciales).
+// Suma de una serie geométrica finita (y sumas parciales).
 export function geometricSum(r: Rng, partial: boolean): Question {
   const a = r.int(1, 5), q = r.pick([2, 3, -2, 4]), n = r.int(3, partial ? 8 : 6);
   const S = (a * (q ** n - 1)) / (q - 1);
@@ -50,7 +50,7 @@ export function geometricSum(r: Rng, partial: boolean): Question {
   return intQ(r, partial ? `En la serie geométrica con primer término ${a} y razón ${sg(q)}, ¿cuánto vale la suma de los primeros ${n} términos?` : `¿Cuál es la suma de los ${n} primeros términos de la serie ${terms} + …?`, S, `Sₙ = a₁(rⁿ − 1) ÷ (r − 1) = ${a}((${sg(q)})^${n} − 1) ÷ ${sg(q - 1)} = ${sg(S)}.`, undefined, partial ? "parcial" : "geometrica", [a * q ** n, S + a * q ** n]);
 }
 
-// OO.5: introducción a las sumas parciales.
+// Introducción a las sumas parciales.
 export function partialIntro(r: Rng): Question {
   const terms = Array.from({ length: 6 }, () => r.int(-5, 9));
   const n = r.int(2, 5);
@@ -58,7 +58,7 @@ export function partialIntro(r: Rng): Question {
   return intQ(r, `Una sucesión empieza ${terms.map(sg).join(", ")}, … ¿Cuánto vale la suma parcial S_${n} (suma de los ${n} primeros términos)?`, S, `${terms.slice(0, n).map(sg).join(" + ")} = ${sg(S)}.`.replace(/\+ −/g, "− "), undefined, "intro", [S + terms[n], terms[n - 1]]);
 }
 
-// OO.9 / OO.10: series geométricas infinitas (convergencia y valor).
+// Series geométricas infinitas (convergencia y valor).
 export function infiniteGeometric(r: Rng, value: boolean): Question {
   const [n, d] = r.pick([[1, 2], [1, 3], [2, 3], [1, 4], [3, 4], [-1, 2], [-1, 3], [3, 2], [5, 4], [-2, 1]]);
   const ratio = n / d;
@@ -70,7 +70,7 @@ export function infiniteGeometric(r: Rng, value: boolean): Question {
   return choiceQ(r, `¿Cuál es la suma de la serie geométrica infinita con primer término ${a} y razón ${frac(n, d)}?`, frac(a * d, d - n), [frac(a * d, d + n), frac(a, 1), frac(a * n, d - n)].filter((w, i, all) => w !== frac(a * d, d - n) && all.indexOf(w) === i), `S = a₁ ÷ (1 − r) = ${a} ÷ (1 − ${n < 0 ? `(${frac(n, d)})` : frac(n, d)}) = ${frac(a * d, d - n)}${Number.isInteger(S) ? "" : ` ≈ ${dec(Math.round(S * 100) / 100)}`}.`, undefined, "suma-infinita");
 }
 
-// OO.11: escribir un decimal periódico como fracción (con series).
+// Escribir un decimal periódico como fracción (con series).
 export function repeatingAsSeries(r: Rng): Question {
   const digits = r.pick([1, 2]);
   const p = digits === 1 ? r.int(1, 8) : r.int(10, 98);

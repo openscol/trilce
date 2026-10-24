@@ -15,7 +15,6 @@ function repeat(unit: number[], set: string[], length: number) {
   return Array.from({ length }, (_, i) => set[unit[i % unit.length]]);
 }
 
-// N.1
 export function completePattern(r: Rng): Question {
   const { unit, set } = unitTokens(r);
   const length = unit.length * 2 + r.int(1, unit.length);
@@ -33,7 +32,6 @@ export function completePattern(r: Rng): Question {
   };
 }
 
-// N.2
 export function createPattern(r: Rng): Question {
   const { unit, set } = unitTokens(r);
   const shownLen = unit.length * 2;
@@ -52,7 +50,6 @@ export function createPattern(r: Rng): Question {
   };
 }
 
-// N.3 / N.4
 export function numberSequence(r: Rng, increasing: boolean): Question {
   const d = r.pick([1, 2, 3, 4, 5, 10]);
   const start = increasing ? r.int(0, 30) : r.int(45, 99);

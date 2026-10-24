@@ -1,24 +1,14 @@
 import { choose, order, type ChoiceItem, type OrderItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { f, pt, sorter, w } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Estrategias de escritura (IXL 5th grade ELA, T-AA). Las «palabras que se
-// confunden» del inglés (their/there, its/it's) pasan a las del castellano:
-// haber / a ver, hay / ahí / ay, porque / por qué, sino / si no, hecho / echo.
+// 5.° de Primaria · banco de escritura: organizar las ideas, oraciones
+// temáticas y de cierre, resumir, argumentar, detalles, variedad de oraciones,
+// investigación y palabras que se confunden (haber / a ver, hay / ahí / ay,
+// porque / por qué, sino / si no, hecho / echo).
 
-export const SECTIONS: Section[] = [
-  { id: "T", name: "Organizar la escritura", icon: "🗂️" },
-  { id: "U", name: "Introducciones y conclusiones", icon: "🎯" },
-  { id: "V", name: "Resumir", icon: "✂️" },
-  { id: "W", name: "Desarrollar y apoyar argumentos", icon: "💬" },
-  { id: "X", name: "Detalles descriptivos", icon: "🎨" },
-  { id: "Y", name: "Variedad de oraciones", icon: "🔀" },
-  { id: "Z", name: "Corregir y revisar", icon: "🔍" },
-  { id: "AA", name: "Habilidades de investigación", icon: "🔎" },
-];
 
-// --- T. Organizar la escritura -----------------------------------------------
+// --- Organizar la escritura -----------------------------------------------
 
 const SENTENCE_ORDER: OrderItem[] = [
   { seq: ["El domingo decidimos preparar una pachamanca.", "Primero cavamos un hoyo y calentamos las piedras.", "Luego colocamos las papas, las habas y la carne.", "Dos horas después, toda la familia almorzó junta."] },
@@ -70,7 +60,7 @@ const NOT_BELONG: ChoiceItem[] = [
   pt(NOT, "(1) Mi abuela teje desde niña. (2) El bus pasa cada veinte minutos. (3) Aprendió mirando a su madre. (4) Hoy enseña a sus nietas.", "La oración 2", "La oración 3", "La oración 4"),
 ];
 
-// --- U. Introducciones y conclusiones ----------------------------------------
+// --- Introducciones y conclusiones ----------------------------------------
 
 const TOPIC = "¿Cuál es la mejor oración temática para este párrafo?";
 const TOPIC_SENTENCE: ChoiceItem[] = [
@@ -91,7 +81,7 @@ const CONCLUDING: ChoiceItem[] = [
   pt(END, "Mi abuelo no fue a la escuela, pero sabe cuándo lloverá con solo mirar los cerros. ___", "Hay saberes que no están en los libros.", "Los cerros son altos.", "Mi abuelo tiene un sombrero de paja muy antiguo."),
 ];
 
-// --- V. Resumir --------------------------------------------------------------
+// --- Resumir --------------------------------------------------------------
 
 const SUM = "¿Cuál es el mejor resumen del relato?";
 const SUMMARIES: ChoiceItem[] = [
@@ -103,7 +93,7 @@ const SUMMARIES: ChoiceItem[] = [
   pt(SUM, "En el concurso de talentos, el micrófono de Abril se apagó. El público empezó a murmurar. Abril dejó el micrófono, caminó al borde del escenario y cantó a viva voz. No ganó, pero fue la más aplaudida.", "Abril resuelve un imprevisto con valentía y se gana al público.", "El micrófono de Abril se apagó durante el concurso.", "Abril no ganó el concurso de talentos de su escuela ese año."),
 ];
 
-// --- W. Argumentos -----------------------------------------------------------
+// --- Argumentos -----------------------------------------------------------
 
 const FO = sorter(["Hecho (se puede comprobar)", "Opinión (lo que alguien piensa)"], "¿Es un hecho o una opinión?");
 const FACT_OPINION: ChoiceItem[] = [
@@ -143,7 +133,7 @@ const SUPPORT_INFO: ChoiceItem[] = [
   pt(DETAIL, "Afirmación: La lectura mejora la escritura.\nTexto: En la escuela se lee una hora diaria desde marzo. Quienes leen más cometen menos errores al escribir. Hay una biblioteca.", "Quienes leen más cometen menos errores.", "Se lee una hora diaria desde marzo.", "Hay una biblioteca."),
 ];
 
-// --- X. Detalles descriptivos ------------------------------------------------
+// --- Detalles descriptivos ------------------------------------------------
 
 const SHOW = "¿Qué oración muestra la emoción o el rasgo, en lugar de solo decirlo?";
 const EMOTIONS: ChoiceItem[] = [
@@ -174,7 +164,7 @@ const IMAGERY: ChoiceItem[] = [
   pt(IMAGE, "Relato: La feria abrió sus puertas. ___", "Entre humo de anticuchos sonaba una banda.", "Había mucha comida y también bastante música.", "Era una feria."),
 ];
 
-// --- Y. Variedad de oraciones ------------------------------------------------
+// --- Variedad de oraciones ------------------------------------------------
 
 const MODEL = "¿Qué oración sigue la misma estructura que el modelo?";
 const VARIED: ChoiceItem[] = [
@@ -188,7 +178,7 @@ const VARIED: ChoiceItem[] = [
   pt(MODEL, "Modelo: Mientras el pan se horneaba, la abuela contaba historias.", "Mientras el bus avanzaba, los niños cantaban.", "El bus avanzaba y además los niños iban cantando.", "Los niños cantaban."),
 ];
 
-// --- Z. Corregir y revisar ---------------------------------------------------
+// --- Corregir y revisar ---------------------------------------------------
 
 const CONFUSED_USE: ChoiceItem[] = [
   f("Vamos ___ qué dan en el cine.", "a ver", "haber", "a haber"), f("Debe ___ una solución para este problema.", "haber", "a ver", "aver"),
@@ -217,7 +207,7 @@ const SIGNS: ChoiceItem[] = [
   pt(SIGN, "🪧 «Halla paz en este hogar»", "«Haya paz en este hogar»", "«Aya paz en este hogar»", "«Halla pas en este hogar»"), pt(SIGN, "🪧 «No se aceptan devoluciónes»", "«No se aceptan devoluciones»", "«No se acepta devoluciónes»", "«No se aseptan devoluciónes»"),
 ];
 
-// --- AA. Investigación -------------------------------------------------------
+// --- Investigación -------------------------------------------------------
 
 const PLAG = "¿Es plagio? ¿Por qué?";
 const SOURCE = "Fuente (revista «Andes», artículo de Luis Vega): «Los glaciares tropicales son los más sensibles al aumento de la temperatura».";
@@ -238,34 +228,34 @@ const SOURCES: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["T.1", "Poner las oraciones en orden", (r) => order(r, "Ordena las oraciones.", SENTENCE_ORDER)],
-  ["T.2", "Usar conjunciones coordinantes", (r) => choose(r, "Completa la oración.", COORD)],
-  ["T.3", "Elegir el mejor conector", (r) => choose(r, "Completa con el mejor conector.", TRANSITION)],
-  ["T.4", "Ordenar de lo más general a lo más específico", (r) => order(r, "Ordena de lo más general a lo más específico.", GENERAL_SPECIFIC)],
-  ["T.5", "Organizar la información por tema", (r) => choose(r, "", BY_TOPIC)],
-  ["T.6", "Quitar la oración que no pertenece", (r) => choose(r, "", NOT_BELONG)],
+  ["organizar-1", (r) => order(r, "Ordena las oraciones.", SENTENCE_ORDER)],
+  ["organizar-2", (r) => choose(r, "Completa la oración.", COORD)],
+  ["organizar-3", (r) => choose(r, "Completa con el mejor conector.", TRANSITION)],
+  ["organizar-4", (r) => order(r, "Ordena de lo más general a lo más específico.", GENERAL_SPECIFIC)],
+  ["organizar-5", (r) => choose(r, "", BY_TOPIC)],
+  ["organizar-6", (r) => choose(r, "", NOT_BELONG)],
 
-  ["U.1", "Elegir la mejor oración temática", (r) => choose(r, "", TOPIC_SENTENCE)],
-  ["U.2", "Elegir la mejor oración de cierre", (r) => choose(r, "", CONCLUDING)],
+  ["inicio-cierre-1", (r) => choose(r, "", TOPIC_SENTENCE)],
+  ["inicio-cierre-2", (r) => choose(r, "", CONCLUDING)],
 
-  ["V.1", "Resumir un relato", (r) => choose(r, "", SUMMARIES)],
+  ["resumir", (r) => choose(r, "", SUMMARIES)],
 
-  ["W.1", "Distinguir hechos de opiniones", (r) => choose(r, "", FACT_OPINION)],
-  ["W.2", "Identificar la opinión que expresa el autor", (r) => choose(r, "", AUTHOR_OPINION)],
-  ["W.3", "Elegir razones que apoyen una opinión", (r) => choose(r, "", REASONS)],
-  ["W.4", "Identificar detalles de apoyo en textos literarios", (r) => choose(r, "", SUPPORT_LITERARY)],
-  ["W.5", "Identificar detalles de apoyo en textos informativos", (r) => choose(r, "", SUPPORT_INFO)],
+  ["argumentos-1", (r) => choose(r, "", FACT_OPINION)],
+  ["argumentos-2", (r) => choose(r, "", AUTHOR_OPINION)],
+  ["argumentos-3", (r) => choose(r, "", REASONS)],
+  ["argumentos-4", (r) => choose(r, "", SUPPORT_LITERARY)],
+  ["argumentos-5", (r) => choose(r, "", SUPPORT_INFO)],
 
-  ["X.1", "Mostrar las emociones y los rasgos de los personajes", (r) => choose(r, "", EMOTIONS)],
-  ["X.2", "Mejorar la oración con un verbo más preciso", (r) => choose(r, "", STRONG_VERB)],
-  ["X.3", "Agregar imágenes a los relatos", (r) => choose(r, "", IMAGERY)],
+  ["detalles-1", (r) => choose(r, "", EMOTIONS)],
+  ["detalles-2", (r) => choose(r, "", STRONG_VERB)],
+  ["detalles-3", (r) => choose(r, "", IMAGERY)],
 
-  ["Y.1", "Crear oraciones variadas a partir de modelos", (r) => choose(r, "", VARIED)],
+  ["variar", (r) => choose(r, "", VARIED)],
 
-  ["Z.1", "Usar la palabra correcta entre las que se confunden", (r) => choose(r, "Completa la oración.", CONFUSED_USE)],
-  ["Z.2", "Corregir errores con palabras que se confunden", (r) => choose(r, "", CONFUSED_FIX)],
-  ["Z.3", "Corregir errores en carteles", (r) => choose(r, "", SIGNS)],
+  ["confundidas-1", (r) => choose(r, "Completa la oración.", CONFUSED_USE)],
+  ["confundidas-2", (r) => choose(r, "", CONFUSED_FIX)],
+  ["corregir", (r) => choose(r, "", SIGNS)],
 
-  ["AA.1", "Identificar y corregir el plagio", (r) => choose(r, "", PLAGIARISM)],
-  ["AA.2", "Identificar fuentes primarias y secundarias", (r) => choose(r, "", SOURCES)],
+  ["fuentes-1", (r) => choose(r, "", PLAGIARISM)],
+  ["fuentes-2", (r) => choose(r, "", SOURCES)],
 ];

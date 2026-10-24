@@ -36,7 +36,7 @@ const piFrac = (d: number) => {
   return den === 1 ? num : `${num}/${den}`;
 };
 
-// II.3 / II.4: gráficos de ángulos y cuadrantes.
+// Gráficos de ángulos y cuadrantes.
 export function angleQuadrant(r: Rng, graph: boolean): Question {
   const d = r.int(1, 35) * 10 * r.pick([1, 1, -1]);
   if (quadrant(d) === 0) return angleQuadrant(r, graph);
@@ -52,7 +52,7 @@ export function angleQuadrant(r: Rng, graph: boolean): Question {
   return fixedQ(`¿En qué cuadrante está el lado terminal de un ángulo de ${shown} en posición estándar?`, ["I", "II", "III", "IV"], QN[quadrant(d)], `${sg(d)}° es coterminal con ${norm(d)}°, que está en el cuadrante ${QN[quadrant(d)]}.`, undefined, QN[quadrant(d)]);
 }
 
-// II.5 / II.6: ángulos coterminales y ángulos de referencia.
+// Ángulos coterminales y ángulos de referencia.
 export function coterminalReference(r: Rng, reference: boolean): Question {
   const d = r.int(-36, 72) * 10;
   if (reference) {
@@ -62,7 +62,7 @@ export function coterminalReference(r: Rng, reference: boolean): Question {
   return numQ(norm(d), `¿Qué ángulo entre 0° y 360° es coterminal con ${sg(d)}°?`, undefined, `Se suma o resta 360° las veces necesarias: ${sg(d)}° → ${norm(d)}°.`, "coterminal");
 }
 
-// JJ.1: razones trigonométricas a partir de un punto del círculo unitario.
+// Razones trigonométricas a partir de un punto del círculo unitario.
 export function unitCirclePoint(r: Rng): Question {
   const [a, b] = r.pick([[3, 4], [4, 3], [5, 12], [12, 5], [8, 15]]);
   const c = Math.round(Math.hypot(a, b));
@@ -73,7 +73,7 @@ export function unitCirclePoint(r: Rng): Question {
   return choiceQ(r, `El lado terminal de θ corta el círculo unitario en (${x}, ${y}). ¿Cuánto vale ${f} θ?`, val, [x, y, `${sx * sy < 0 ? "−" : ""}${a}/${b}`, `${sx * sy < 0 ? "" : "−"}${b}/${a}`].filter((w, i, all) => w !== val && all.indexOf(w) === i), "En el círculo unitario, cos θ = x, sen θ = y y tan θ = y/x.", undefined, f);
 }
 
-// JJ.2-JJ.4: razones trigonométricas exactas usando ángulos de referencia.
+// Razones trigonométricas exactas usando ángulos de referencia.
 export function exactTrig(r: Rng, set: "basic" | "reciprocal" | "all"): Question {
   const f = r.pick<F>(set === "basic" ? ["sen", "cos", "tan"] : set === "reciprocal" ? ["csc", "sec", "cot"] : ["sen", "cos", "tan", "csc", "sec", "cot"]);
   const d = r.pick(NOTABLE);
@@ -83,7 +83,7 @@ export function exactTrig(r: Rng, set: "basic" | "reciprocal" | "all"): Question
   return choiceQ(r, `¿Cuál es el valor exacto de ${f} ${d}°?`, good, wrong, `Ángulo de referencia ${refAngle(d)}°${quadrant(d) ? `, cuadrante ${QN[quadrant(d)]}` : ""}: ${f} ${d}° = ${good}.`, undefined, f);
 }
 
-// JJ.5: aproximar razones trigonométricas con calculadora.
+// Aproximar razones trigonométricas con calculadora.
 export function trigApprox(r: Rng): Question {
   const f = r.pick<F>(["sen", "cos", "tan"]), d = r.int(91, 359);
   if (d % 90 === 0) return trigApprox(r);
@@ -91,7 +91,7 @@ export function trigApprox(r: Rng): Question {
   return valQ(r, `Usa una calculadora (en grados). ¿Cuánto vale ${f} ${d}°? Redondea a la diezmilésima.`, v, [-v, Math.round((f === "sen" ? Math.cos(rad(d)) : Math.sin(rad(d))) * 10000) / 10000, Math.round((v + 0.01) * 10000) / 10000], `${f} ${d}° ≈ ${dec(v)} (fíjate en el signo según el cuadrante).`, undefined, f);
 }
 
-// JJ.6-JJ.8: funciones trigonométricas inversas (grados, radianes; csc, sec, cot).
+// Funciones trigonométricas inversas (grados, radianes; csc, sec, cot).
 export function inverseTrig(r: Rng, mode: "degrees" | "radians" | "reciprocal"): Question {
   const cases: [string, number][] = [["sen⁻¹(1/2)", 30], ["sen⁻¹(−1/2)", -30], ["sen⁻¹(√2/2)", 45], ["sen⁻¹(√3/2)", 60], ["sen⁻¹(−1)", -90], ["cos⁻¹(1/2)", 60], ["cos⁻¹(−1/2)", 120], ["cos⁻¹(√3/2)", 30], ["cos⁻¹(−√2/2)", 135], ["cos⁻¹(0)", 90], ["tan⁻¹(1)", 45], ["tan⁻¹(−√3)", -60], ["tan⁻¹(√3/3)", 30]];
   const rec: [string, number][] = [["csc⁻¹(2)", 30], ["sec⁻¹(2)", 60], ["cot⁻¹(1)", 45], ["csc⁻¹(√2)", 45], ["sec⁻¹(−2)", 120], ["cot⁻¹(√3)", 30]];
@@ -101,7 +101,7 @@ export function inverseTrig(r: Rng, mode: "degrees" | "radians" | "reciprocal"):
   return choiceQ(r, `¿Cuánto vale ${e}${mode === "radians" ? ", en radianes" : ", en grados"}?`, show(d), [...new Set(wrong)].filter((w) => w !== show(d)), "El rango de sen⁻¹ y tan⁻¹ es de −90° a 90°; el de cos⁻¹, de 0° a 180°.", undefined, mode);
 }
 
-// JJ.9 / JJ.10: resolver ecuaciones trigonométricas (0° ≤ x < 360°).
+// Resolver ecuaciones trigonométricas (0° ≤ x < 360°).
 export function trigEquation(r: Rng, advanced: boolean): Question {
   const cases: [string, number[]][] = [["2 sen x − 1 = 0", [30, 150]], ["2 cos x + 1 = 0", [120, 240]], ["tan x − 1 = 0", [45, 225]], ["2 sen x + √3 = 0", [240, 300]], ["√2 cos x − 1 = 0", [45, 315]], ["sen x = 0", [0, 180]], ["cos x = −1", [180]]];
   const adv: [string, number[]][] = [["2 sen² x − 1 = 0", [45, 135, 225, 315]], ["4 cos² x − 3 = 0", [30, 150, 210, 330]], ["tan² x = 3", [60, 120, 240, 300]], ["sen x cos x = 0", [0, 90, 180, 270]]];
@@ -125,7 +125,7 @@ const sinF = (s: Sin) => (x: number) => s.A * (s.cos ? Math.cos : Math.sin)((Mat
 const sinVisual = (s: Sin): Visual => ({ kind: "coordPlane", min: -8, max: 8, points: [], curves: [{ points: curve(sinF(s), -8, 8, 0.05) }] });
 const randomSin = (r: Rng, cos: boolean, shift: boolean): Sin => ({ A: r.pick([1, 2, 3, -2]), p: r.pick([1, 2, 3, 4]), h: shift ? r.int(-2, 2) : 0, k: shift ? r.int(-3, 3) : r.int(-2, 2), cos });
 
-// LL.1 / LL.6 / LL.11: propiedades (amplitud, período, línea media, máximo y mínimo).
+// Propiedades (amplitud, período, línea media, máximo y mínimo).
 export function sinProps(r: Rng, cos: boolean | null): Question {
   const s = randomSin(r, cos ?? r.chance(0.5), true);
   const k = r.int(0, 3);
@@ -137,7 +137,7 @@ export function sinProps(r: Rng, cos: boolean | null): Question {
   return intQ(r, `¿Cuál es el valor ${max ? "máximo" : "mínimo"} de ${eq}?`, max ? s.k + Math.abs(s.A) : s.k - Math.abs(s.A), `Línea media ${sg(s.k)} ${max ? "más" : "menos"} la amplitud ${Math.abs(s.A)}.`, undefined, max ? "maximo" : "minimo", [s.k, Math.abs(s.A)]);
 }
 
-// LL.2-LL.3, LL.7-LL.8, LL.12-LL.13: escribir ecuaciones desde gráficos o propiedades.
+// Escribir ecuaciones desde gráficos o propiedades.
 export function sinEquation(r: Rng, cos: boolean | null, graph: boolean): Question {
   const s = { ...randomSin(r, cos ?? r.chance(0.5), false), A: r.pick([1, 2, 3]) };
   const good = sinText(s);
@@ -146,7 +146,7 @@ export function sinEquation(r: Rng, cos: boolean | null, graph: boolean): Questi
   return choiceQ(r, `Una función ${s.cos ? "coseno" : "seno"} tiene amplitud ${s.A}, período ${2 * s.p}, línea media y = ${sg(s.k)} y no está desplazada horizontalmente. ¿Cuál es su ecuación?`, good, wrong, `A = ${s.A}, B = 2π ÷ ${2 * s.p} = π/${s.p}, k = ${sg(s.k)}.`, undefined, "propiedades");
 }
 
-// LL.4-LL.5, LL.9-LL.10, LL.14-LL.15: graficar (también con traslaciones).
+// Graficar (también con traslaciones).
 export function sinGraph(r: Rng, cos: boolean | null, shift: boolean): Question {
   const s = randomSin(r, cos ?? r.chance(0.5), shift);
   const yes = r.chance(0.5);
@@ -157,7 +157,7 @@ export function sinGraph(r: Rng, cos: boolean | null, shift: boolean): Question 
 // ---------------------------------------------------------------------------
 // Identidades
 
-// MM.2: simetría y periodicidad.
+// Simetría y periodicidad.
 export function symmetryPeriod(r: Rng): Question {
   const d = r.int(10, 80), f = r.pick<F>(["sen", "cos", "tan"]);
   const v = Math.round((f === "sen" ? Math.sin(rad(d)) : f === "cos" ? Math.cos(rad(d)) : Math.tan(rad(d))) * 10000) / 10000;
@@ -170,7 +170,7 @@ export function symmetryPeriod(r: Rng): Question {
   return valQ(r, `Si ${f} ${d}° ≈ ${dec(v)}, ¿cuánto vale ${f} ${d + period}°?`, v, [-v, Math.round((1 - v) * 10000) / 10000], `El período de ${f} es ${period}°: ${f}(θ + ${period}°) = ${f} θ.`, undefined, "periodo");
 }
 
-// MM.3 / MM.4: razones con identidades pitagóricas y recíprocas.
+// Razones con identidades pitagóricas y recíprocas.
 export function pythagoreanIdentity(r: Rng, multiple: boolean): Question {
   const [a, b, c] = r.pick([[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25]]);
   const q = r.int(1, 4);
@@ -189,7 +189,7 @@ const SUMDIFF: [string, string, string][] = [
   ["sen 105°", "(√6 + √2)/4", "sen(60° + 45°) = sen 60° cos 45° + cos 60° sen 45°"],
   ["cos 105°", "(√2 − √6)/4", "cos(60° + 45°) = cos 60° cos 45° − sen 60° sen 45°"],
 ];
-// MM.5 / MM.6: identidades de suma y diferencia (y ecuaciones con ellas).
+// Identidades de suma y diferencia (y ecuaciones con ellas).
 export function sumDifference(r: Rng, solve: boolean): Question {
   if (solve) {
     const [eq, ans, why] = r.pick([["sen x cos 30° + cos x sen 30° = 1", "60°", "sen(x + 30°) = 1 → x + 30° = 90°"], ["cos x cos 45° − sen x sen 45° = 0", "45°", "cos(x + 45°) = 0 → x + 45° = 90°"], ["sen x cos 20° − cos x sen 20° = 1/2", "50°", "sen(x − 20°) = 1/2 → x − 20° = 30°"], ["cos x cos 15° + sen x sen 15° = √3/2", "45°", "cos(x − 15°) = √3/2 → x − 15° = 30°"]] as [string, string, string][]);

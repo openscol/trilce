@@ -23,21 +23,21 @@ const SITUATIONS: [(n: number) => string, 1 | -1][] = [
   [(n) => `un depósito de ${n} soles en la cuenta`, 1],
 ];
 
-// 6.° O.1: comprender los números enteros.
+// Comprender los números enteros.
 export function understandIntegers(r: Rng): Question {
   const [text, sign] = r.pick(SITUATIONS);
   const n = r.int(2, 90);
   return intQ(r, `¿Qué número entero representa ${text(n)}?`, sign * n, sign < 0 ? "Lo que está por debajo de cero (o se pierde) se representa con un número negativo." : "Lo que está por encima de cero (o se gana) se representa con un número positivo.", undefined, sign < 0 ? "negativo" : "positivo");
 }
 
-// 6.° O.2 / O.3: enteros en rectas numéricas (horizontal, o vertical como termómetro).
+// Enteros en rectas numéricas (horizontal, o vertical como termómetro).
 export function integersOnLine(r: Rng, vertical = false): Question {
   const n = r.int(-9, 9);
   if (vertical && r.chance(0.5)) return intQ(r, "¿Qué temperatura marca el termómetro, en grados?", n * 2, `La columna llega hasta ${sg(n * 2)}: por debajo de 0 los números son negativos.`, { kind: "thermometer", value: n * 2, min: -20, max: 20 }, "vertical");
   return intQ(r, "¿Qué número entero marca el punto?", n, `Las marcas van de 1 en 1; a la izquierda de 0 están los negativos: el punto está en ${sg(n)}.`, line(n), "horizontal");
 }
 
-// 6.° O.4: enteros opuestos.
+// Enteros opuestos.
 export function oppositeIntegers(r: Rng): Question {
   const n = nonZero(r, 60);
   const form = r.int(0, 2);
@@ -46,7 +46,7 @@ export function oppositeIntegers(r: Rng): Question {
   return numQ(Math.abs(n) * 2, `En la recta numérica, ¿cuántas unidades hay entre ${sg(n)} y su opuesto?`, undefined, `Cada uno está a ${Math.abs(n)} unidades de 0: ${Math.abs(n)} + ${Math.abs(n)} = ${Math.abs(n) * 2}.`, "distancia");
 }
 
-// 6.° O.5 / O.6: valor absoluto.
+// Valor absoluto.
 export function absoluteValue(r: Rng, concept: boolean): Question {
   const n = nonZero(r, concept ? 12 : 90);
   if (concept) return numQ(Math.abs(n), `¿A cuántas unidades de 0 está el ${sg(n)} en la recta numérica?`, line(n, -12, 12), `El valor absoluto es la distancia a 0, siempre positiva: |${sg(n)}| = ${Math.abs(n)}.`);
@@ -57,7 +57,7 @@ export function absoluteValue(r: Rng, concept: boolean): Question {
   return numQ(Math.abs(n) + Math.abs(m), "Calcula.", `|${sg(n)}| + |${sg(m)}| = ?`, `${Math.abs(n)} + ${Math.abs(m)} = ${Math.abs(n) + Math.abs(m)}.`, "suma");
 }
 
-// 6.° O.7 / O.9: comparar enteros (`absolute`: con valores absolutos).
+// Comparar enteros (`absolute`: con valores absolutos).
 export function compareIntegers(r: Rng, absolute = false): Question {
   const a = nonZero(r, 30);
   const b = r.chance(0.15) ? (absolute ? -a : a) : r.chance(0.3) ? -a + r.pick([-1, 1]) : nonZero(r, 30);
@@ -70,7 +70,7 @@ export function compareIntegers(r: Rng, absolute = false): Question {
   return fixedQ("Elige el símbolo correcto.", SYMBOLS, sym(lv, rv), `${show(a, leftAbs)} = ${sg(lv)} y ${show(b, rightAbs)} = ${sg(rv)}.`, `${show(a, leftAbs)}  ?  ${show(b, rightAbs)}`, sym(lv, rv));
 }
 
-// 6.° O.8: ordenar enteros.
+// Ordenar enteros.
 export function orderIntegers(r: Rng): Question {
   const nums = distinct(r, 5, -30, 30);
   const ascending = r.chance(0.6);
@@ -78,7 +78,7 @@ export function orderIntegers(r: Rng): Question {
   return orderQ(r, `Ordena los números de ${ascending ? "menor a mayor" : "mayor a menor"}. Tócalos en orden.`, sorted.map(sg), `El orden correcto es ${sorted.map(sg).join(" ; ")}.`, undefined, ascending ? "menor-a-mayor" : "mayor-a-menor");
 }
 
-// 6.° O.10: problemas con enteros y valor absoluto.
+// Problemas con enteros y valor absoluto.
 export function integerProblem(r: Rng): Question {
   const [n1, n2] = r.shuffle(NAMES).slice(0, 2);
   const a = r.int(2, 40);
@@ -120,7 +120,7 @@ const WHY: Record<IntOp, (a: number, b: number, c: number) => string> = {
   "÷": (a, b, c) => `${Math.abs(a)} ÷ ${Math.abs(b)} = ${Math.abs(c)}; signos ${a < 0 === b < 0 ? "iguales dan positivo" : "distintos dan negativo"}: ${sg(c)}.`,
 };
 
-// 6.° P.3 / P.6 / P.13 / P.15 / P.16: operar con dos enteros.
+// Operar con dos enteros.
 export function integerOperation(r: Rng, ops: IntOp[], max = 12): Question {
   const op = r.pick(ops);
   const [a, b, c] = intOperands(r, op, max);
@@ -129,7 +129,7 @@ export function integerOperation(r: Rng, ops: IntOp[], max = 12): Question {
 
 const chips = (n: number) => (n > 0 ? "🟡" : "🔴").repeat(Math.abs(n));
 
-// 6.° P.1 / P.4: sumar y restar enteros con fichas (🟡 = +1, 🔴 = −1).
+// Sumar y restar enteros con fichas (🟡 = +1, 🔴 = −1).
 export function integerCounters(r: Rng, op: "+" | "−"): Question {
   const a = nonZero(r, 7);
   const b = nonZero(r, 7);
@@ -137,7 +137,7 @@ export function integerCounters(r: Rng, op: "+" | "−"): Question {
   return intQ(r, `Cada 🟡 vale +1 y cada 🔴 vale −1. Restar ${par(b)} es agregar su opuesto. ¿Cuánto es ${sg(a)} − ${par(b)}?`, a - b, `${sg(a)} − ${par(b)} = ${sg(a)} + ${par(-b)} = ${sg(a - b)}.`, `${chips(a)}   y se agregan   ${chips(-b)}`, "resta");
 }
 
-// 6.° P.2 / P.5: sumar y restar enteros en la recta numérica.
+// Sumar y restar enteros en la recta numérica.
 export function integerOnLineOperation(r: Rng, op: "+" | "−"): Question {
   for (;;) {
     const a = r.int(-8, 8);
@@ -152,7 +152,7 @@ export function integerOnLineOperation(r: Rng, op: "+" | "−"): Question {
 const SIGN = ["Negativo", "Cero", "Positivo"];
 const signOf = (n: number) => SIGN[Math.sign(n) + 1];
 
-// 6.° P.7 / P.12 / P.14: hallar el signo del resultado.
+// Hallar el signo del resultado.
 export function integerSign(r: Rng, ops: IntOp[]): Question {
   const op = r.pick(ops);
   const big = op === "+" || op === "−";
@@ -162,7 +162,7 @@ export function integerSign(r: Rng, ops: IntOp[]): Question {
   return fixedQ(`Sin calcular todo: ¿qué signo tiene el resultado de ${sg(a)} ${op} ${par(b)}?`, big ? SIGN : [SIGN[0], SIGN[2]], signOf(c), big ? `${sg(a)} ${op} ${par(b)} = ${sg(c)}.` : `Signos ${a < 0 === b < 0 ? "iguales: el resultado es positivo" : "distintos: el resultado es negativo"}.`, undefined, signOf(c).toLowerCase());
 }
 
-// 6.° P.8: problemas de suma y resta de enteros.
+// Problemas de suma y resta de enteros.
 export function integerAddSubProblem(r: Rng): Question {
   const name = r.pick(NAMES);
   const a = r.int(2, 25);
@@ -178,7 +178,7 @@ export function integerAddSubProblem(r: Rng): Question {
   return intQ(r, text, answer, `${why}.`);
 }
 
-// 6.° P.9: tablas de entrada y salida con enteros.
+// Tablas de entrada y salida con enteros.
 export function integerTable(r: Rng): Question {
   const k = nonZero(r, 12);
   const add = r.chance(0.5);
@@ -188,7 +188,7 @@ export function integerTable(r: Rng): Question {
   return intQ(r, `Regla: ${add ? "sumar" : "restar"} ${sg(k)}. ¿Qué número falta en la tabla?`, out(inputs[hidden]), `${sg(inputs[hidden])} ${add ? "+" : "−"} ${par(k)} = ${sg(out(inputs[hidden]))}.`, table(["Entrada", "Salida"], inputs.map((x, i) => [sg(x), i === hidden ? "?" : sg(out(x))])), add ? "suma" : "resta");
 }
 
-// 6.° P.10: sumar tres o más enteros.
+// Sumar tres o más enteros.
 export function addSeveralIntegers(r: Rng): Question {
   const xs = Array.from({ length: r.int(3, 4) }, () => nonZero(r, 20));
   const total = xs.reduce((a, b) => a + b, 0);
@@ -197,14 +197,14 @@ export function addSeveralIntegers(r: Rng): Question {
   return intQ(r, "Resuelve.", total, `Positivos: ${pos}; negativos: ${sg(neg)}; ${pos} + ${par(neg)} = ${sg(total)}.`, `${xs.map((x, i) => (i === 0 ? sg(x) : par(x))).join(" + ")} = ?`, `${xs.length}-sumandos`);
 }
 
-// 6.° P.11: multiplicar por un entero negativo en la recta numérica.
+// Multiplicar por un entero negativo en la recta numérica.
 export function multiplyOnLine(r: Rng): Question {
   const k = r.int(2, 4);
   const jump = -r.int(1, Math.floor(10 / k));
   return intQ(r, `En la recta se dan ${k} saltos de ${sg(jump)} desde 0. ¿Cuánto es ${k} × ${par(jump)}?`, k * jump, `${Array.from({ length: k }, () => par(jump)).join(" + ")} = ${sg(k * jump)}.`, line(k * jump), undefined, [k - jump]);
 }
 
-// 6.° P.17: expresiones numéricas con enteros.
+// Expresiones numéricas con enteros.
 export function integerExpression(r: Rng): Question {
   const a = nonZero(r, 9);
   const b = nonZero(r, 9);
@@ -234,7 +234,7 @@ function rational(r: Rng, maxWhole = 4, negative?: boolean): Rational {
 const rt = (q: Rational) => `${q.h < 0 ? "−" : ""}${q.asFraction ? fshow([Math.abs(q.h), 100]) : d2(Math.abs(q.h))}`;
 const other = (q: Rational): Rational => ({ h: q.h, asFraction: !q.asFraction });
 
-// 6.° Q.1: números racionales en rectas numéricas.
+// Números racionales en rectas numéricas.
 export function rationalOnLine(r: Rng): Question {
   const step = r.pick([50, 25]);
   const k = r.int(-3 * (100 / step), 3 * (100 / step));
@@ -244,7 +244,7 @@ export function rationalOnLine(r: Rng): Question {
   return choiceQ(r, "¿Qué número racional marca el punto?", rt(q), wrong.filter((w) => w !== rt(q) && w !== "0" && w !== "−0"), `Entre un entero y el siguiente hay ${100 / step} partes iguales; a la izquierda de 0 son negativos: ${rt(q)}.`, { kind: "numberLine", min: -3, max: 3, step: step / 100, labelEvery: 1, marked: q.h / 100 });
 }
 
-// 6.° Q.2: números racionales, ¿iguales o distintos?
+// Números racionales, ¿iguales o distintos?
 export function rationalEqual(r: Rng): Question {
   const a = rational(r);
   const equal = r.chance(0.5);
@@ -253,7 +253,7 @@ export function rationalEqual(r: Rng): Question {
   return yesNo(`¿${rt(a)} y ${rt(b)} son iguales?`, equal, equal ? `Sí: ${rt(a)} = ${rt(other(a))}.` : `No: ${rt(a)} = ${rt(other(a))}, que no es ${rt(b)}.`);
 }
 
-// 6.° Q.3 / Q.4: comparar números racionales (`withLine`: con recta numérica).
+// Comparar números racionales (`withLine`: con recta numérica).
 export function compareRationals(r: Rng, withLine = false): Question {
   const a = rational(r, withLine ? 2 : 4);
   const b = r.chance(0.15) ? other(a) : rational(r, withLine ? 2 : 4);
@@ -261,7 +261,7 @@ export function compareRationals(r: Rng, withLine = false): Question {
   return fixedQ(withLine ? `Ubica los dos números en la recta y elige el símbolo: ${rt(a)} ? ${rt(b)}` : "Elige el símbolo correcto.", SYMBOLS, s, `Como decimales: ${rt({ h: a.h, asFraction: false })} ${s} ${rt({ h: b.h, asFraction: false })}. En la recta, el de la derecha es el mayor.`, withLine ? { kind: "numberLine", min: -3, max: 3, step: 0.5, labelEvery: 1 } : `${rt(a)}  ?  ${rt(b)}`, s);
 }
 
-// 6.° Q.5: ordenar números racionales.
+// Ordenar números racionales.
 export function orderRationals(r: Rng): Question {
   for (;;) {
     const items = [rational(r, 3, true), rational(r, 3, true), rational(r, 3, false), rational(r, 3)];
@@ -272,7 +272,7 @@ export function orderRationals(r: Rng): Question {
   }
 }
 
-// 6.° Q.6: comparar y ordenar racionales en problemas.
+// Comparar y ordenar racionales en problemas.
 export function rationalProblem(r: Rng): Question {
   const names = r.shuffle(["Puno", "Cusco", "Juliaca", "Huaraz", "Cerro de Pasco", "Huancavelica"]).slice(0, 3);
   // Temperaturas en décimos de grado, entre −12,0 y 8,0.
@@ -283,7 +283,7 @@ export function rationalProblem(r: Rng): Question {
   return { kind: "choice", prompt: `Temperaturas de la madrugada: ${names.map((n, i) => `${n}: ${show(temps[i])} °C`).join("; ")}. ¿Dónde hizo ${coldest ? "más frío" : "menos frío"}?`, options: names, answer: names[temps.indexOf(target)], explanation: `La temperatura ${coldest ? "menor" : "mayor"} es ${show(target)} °C.`, tag: coldest ? "menor" : "mayor" };
 }
 
-// 6.° Q.7 / Q.8: opuesto y valor absoluto de números racionales.
+// Opuesto y valor absoluto de números racionales.
 export function rationalOppositeAbs(r: Rng, what: "opuesto" | "absoluto"): Question {
   const q = rational(r);
   const flip: Rational = { h: -q.h, asFraction: q.asFraction };
@@ -293,7 +293,7 @@ export function rationalOppositeAbs(r: Rng, what: "opuesto" | "absoluto"): Quest
   return choiceQ(r, what === "opuesto" ? `¿Cuál es el opuesto de ${rt(q)}?` : `¿Cuál es el valor absoluto de ${rt(q)}?`, rt(answer), wrongPool.filter((w) => w.h !== answer.h).map(rt), what === "opuesto" ? `El opuesto cambia el signo: ${rt(flip)}.` : `Es la distancia a 0, siempre positiva: |${rt(q)}| = ${rt(abs)}.`, what === "absoluto" ? `|${rt(q)}| = ?` : undefined, what);
 }
 
-// 6.° Q.9: números racionales, hallar el signo del resultado.
+// Números racionales, hallar el signo del resultado.
 export function rationalSign(r: Rng): Question {
   const a = rational(r, 3);
   const b = rational(r, 3);
@@ -313,20 +313,20 @@ function sample(r: Rng): Sample {
   return { text: rt(rational(r)), set: 2 };
 }
 
-// 6.° Q.10: clasificar números racionales con un diagrama (el conjunto más pequeño).
+// Clasificar números racionales con un diagrama (el conjunto más pequeño).
 export function classifyRational(r: Rng): Question {
   const s = sample(r);
   return fixedQ(`Los naturales están dentro de los enteros, y los enteros dentro de los racionales. ¿Cuál es el conjunto más pequeño al que pertenece ${s.text}?`, SETS, SETS[s.set], s.set === 0 ? "Sirve para contar: es natural (y también entero y racional)." : s.set === 1 ? "No tiene parte decimal, pero no sirve para contar: es entero (y también racional)." : "Tiene parte fraccionaria o decimal: es racional, pero no entero.", undefined, SETS[s.set]);
 }
 
-// 6.° Q.11: clasificar números (todos los conjuntos a los que pertenece).
+// Clasificar números (todos los conjuntos a los que pertenece).
 export function classifyNumbers(r: Rng): Question {
   const s = sample(r);
   const negative = s.text.startsWith("−");
   return multiQ(`¿A qué conjuntos pertenece ${s.text}? Selecciona todos.`, [...SETS, "Números negativos"], [...SETS.slice(s.set), ...(negative ? ["Números negativos"] : [])], `Cada conjunto contiene al anterior: naturales ⊂ enteros ⊂ racionales.${negative ? " Además, es menor que 0." : ""}`, undefined, SETS[s.set]);
 }
 
-// 6.° W.10: comparar temperaturas sobre y bajo cero.
+// Comparar temperaturas sobre y bajo cero.
 export function compareTemperatures(r: Rng): Question {
   const a = r.int(-25, 25);
   const b = r.chance(0.15) ? a : r.int(-25, 25);

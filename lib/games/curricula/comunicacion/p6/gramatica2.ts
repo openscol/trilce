@@ -1,32 +1,15 @@
 import { choose, pickInSentence, type ChoiceItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { f, pt, s, sorter, w } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Gramática y ortografía, segunda parte (IXL 6th grade ELA, NN-UU), con las
-// reglas del castellano:
-//   orden de los adjetivos → posición del adjetivo y formas cortas (buen, gran, primer)
-//   comparativos y superlativos → más... que, el más..., -ísimo
-//   good/better/best, bad/worse/worst → bueno, mejor, óptimo; malo, peor, pésimo
-//   well/better/best, badly/worse/worst → bien, mejor; mal, peor
-//   conjunciones correlativas → ni... ni, o... o, tanto... como, no solo... sino también
-//   contracciones (I'm, don't) → al, del; conmigo, contigo, consigo
-//   comas con adjetivos coordinados, incisos y explicativas; uso de la raya
-//   mayúsculas: días, meses, gentilicios e idiomas van con minúscula
-//   citas y diálogos: comillas angulares («») y raya (—)
+// 6.° de Primaria · banco de gramática y ortografía (segunda parte):
+// adjetivos y adverbios, comparativos y superlativos (bueno, mejor, óptimo;
+// malo, peor, pésimo; bien, mejor; mal, peor), correlativas, contracciones,
+// comas con adjetivos coordinados, incisos y explicativas, la raya, mayúsculas
+// y citas con comillas angulares («»).
 
-export const SECTIONS: Section[] = [
-  { id: "NN", name: "Adjetivos y adverbios", icon: "🎨" },
-  { id: "OO", name: "Preposiciones", icon: "📦" },
-  { id: "PP", name: "Objeto directo e indirecto", icon: "🎯" },
-  { id: "QQ", name: "Conjunciones", icon: "🔗" },
-  { id: "RR", name: "Contracciones", icon: "✂️" },
-  { id: "SS", name: "Puntuación", icon: "❗" },
-  { id: "TT", name: "Mayúsculas", icon: "🔠" },
-  { id: "UU", name: "Formato", icon: "📝" },
-];
 
-// --- NN. Adjetivos y adverbios -----------------------------------------------
+// --- Adjetivos y adverbios -----------------------------------------------
 
 const ADJECTIVES_IN = [
   s("El informe detallado reveló datos sorprendentes.", "detallado", "sorprendentes"), s("Una multitud silenciosa llenó la plaza antigua.", "silenciosa", "antigua"), s("El viejo faro iluminaba la costa rocosa.", "viejo", "rocosa"),
@@ -88,7 +71,7 @@ const WELL_BADLY: ChoiceItem[] = [
   f("Cuanto más practica, ___ toca.", "mejor", "más bueno", "bien"),
 ];
 
-// --- OO. Preposiciones -------------------------------------------------------
+// --- Preposiciones -------------------------------------------------------
 
 const PREPS_IN = [
   s("Tras el debate, votamos por la segunda propuesta.", "Tras", "por"), s("Según el informe, el río nace en la cordillera.", "Según", "en"), s("Caminó hacia el puerto sin mirar atrás.", "hacia", "sin"),
@@ -115,7 +98,7 @@ const PREP_REVIEW: ChoiceItem[] = [
   f("Estoy de acuerdo ___ ustedes.", "con", "a", "de"),
 ];
 
-// --- PP. Objeto directo e indirecto ------------------------------------------
+// --- Objeto directo e indirecto ------------------------------------------
 
 const OBJ = sorter(["Objeto directo (lo que recibe la acción)", "Objeto indirecto (a quién o para quién)"], "La parte en MAYÚSCULAS, ¿es objeto directo o indirecto?");
 const OBJECTS: ChoiceItem[] = [
@@ -123,7 +106,7 @@ const OBJECTS: ChoiceItem[] = [
   ...["La profesora entregó los exámenes A LOS ALUMNOS.", "Mi abuelo contó una leyenda A SUS NIETOS.", "LE regalé un cuaderno.", "Envié un mensaje A MI HERMANA.", "El jurado otorgó el premio A LA AUTORA.", "LES expliqué el problema.", "Escribí una carta AL DIRECTOR."].map((x) => OBJ(x, 1)),
 ];
 
-// --- QQ. Conjunciones --------------------------------------------------------
+// --- Conjunciones --------------------------------------------------------
 
 const COORD_USE: ChoiceItem[] = [
   f("Presentó pruebas, ___ el jurado no le creyó.", "pero", "o", "ni"), f("No aprobó el proyecto ___ lo rechazó: pidió más datos.", "ni", "pero", "sino"), f("No es una novela, ___ un ensayo.", "sino", "pero", "y"),
@@ -155,7 +138,7 @@ const CORRELATIVE_FILL: ChoiceItem[] = [
   f("Tanto tú ___ yo lo sabíamos.", "como", "o", "ni"),
 ];
 
-// --- RR. Contracciones -------------------------------------------------------
+// --- Contracciones -------------------------------------------------------
 
 const AL_DEL: ChoiceItem[] = [
   f("Enviamos la carta ___ director.", "al", "a el", "del"), f("La decisión ___ jurado fue unánime.", "del", "de el", "al"), f("Volvimos ___ lugar del hallazgo.", "al", "a el", "del"),
@@ -170,7 +153,7 @@ const CONMIGO: ChoiceItem[] = [
   f("Me gustaría trabajar ___ otra vez.", "contigo", "con ti", "con tú"),
 ];
 
-// --- SS. Puntuación ----------------------------------------------------------
+// --- Puntuación ----------------------------------------------------------
 
 const COMMA = "¿Qué oración tiene las comas bien puestas?";
 const COMMA_SERIES: ChoiceItem[] = [
@@ -220,7 +203,7 @@ const DASHES: ChoiceItem[] = [
   w("¿Para qué sirven las rayas en «El río —crecido por las lluvias— arrasó el puente»?", "Para encerrar una aclaración", "Para indicar un diálogo", "Para separar dos oraciones"), w("¿Para qué sirve la raya en «—Buenos días —saludó»?", "Para marcar lo que dice un personaje", "Para encerrar una aclaración", "Para unir dos palabras"),
 ];
 
-// --- TT. Mayúsculas ----------------------------------------------------------
+// --- Mayúsculas ----------------------------------------------------------
 
 const CAPS_FIX = "¿Cómo se corrigen las mayúsculas de la oración?";
 const CAPS_ERRORS: ChoiceItem[] = [
@@ -238,7 +221,7 @@ const CAPS_TITLES: ChoiceItem[] = [
   w("¿Qué título de revista está bien escrito?", "Somos", "somos", "SOmos"), w("¿Qué título de novela está bien escrito?", "El viejo y el mar", "El Viejo Y El Mar", "el viejo y el Mar"),
 ];
 
-// --- UU. Formato -------------------------------------------------------------
+// --- Formato -------------------------------------------------------------
 
 const FORMAT_TITLES: ChoiceItem[] = [
   w("En un texto digitado, ¿cómo se escribe el título de una novela?", "En cursiva", "En negrita", "Entre corchetes"), w("¿Cómo se escribe el título de un artículo periodístico?", "Entre comillas", "En cursiva", "Subrayado"),
@@ -266,47 +249,47 @@ const QUOTES: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["NN.1", "Identificar adjetivos", (r) => pickInSentence(r, "Selecciona los adjetivos de la oración.", ADJECTIVES_IN)],
-  ["NN.2", "Ordenar los adjetivos: su lugar y sus formas cortas", (r) => choose(r, "", ADJ_ORDER)],
-  ["NN.3", "Identificar adverbios", (r) => pickInSentence(r, "Selecciona los adverbios de la oración.", ADVERBS_IN)],
-  ["NN.4", "Usar adverbios relativos: donde, cuando y como", (r) => choose(r, "Completa la oración.", RELATIVE_ADVERBS)],
-  ["NN.5", "Elegir entre adjetivos y adverbios", (r) => choose(r, "Completa la oración.", ADJ_OR_ADV_USE)],
-  ["NN.6", "¿La palabra es un adjetivo o un adverbio?", (r) => choose(r, "", ADJ_OR_ADV)],
-  ["NN.7", "Formar y usar adjetivos comparativos y superlativos", (r) => choose(r, "Completa la oración.", COMP_SUP_ADJ)],
-  ["NN.8", "Bueno, mejor, óptimo; malo, peor, pésimo", (r) => choose(r, "Completa la oración.", GOOD_BAD)],
-  ["NN.9", "Formar y usar adverbios comparativos y superlativos", (r) => choose(r, "Completa la oración.", COMP_SUP_ADV)],
-  ["NN.10", "Bien, mejor; mal, peor", (r) => choose(r, "Completa la oración.", WELL_BADLY)],
+  ["adjetivos-adverbios-1", (r) => pickInSentence(r, "Selecciona los adjetivos de la oración.", ADJECTIVES_IN)],
+  ["adjetivos-adverbios-2", (r) => choose(r, "", ADJ_ORDER)],
+  ["adjetivos-adverbios-3", (r) => pickInSentence(r, "Selecciona los adverbios de la oración.", ADVERBS_IN)],
+  ["adjetivos-adverbios-4", (r) => choose(r, "Completa la oración.", RELATIVE_ADVERBS)],
+  ["adjetivos-adverbios-5", (r) => choose(r, "Completa la oración.", ADJ_OR_ADV_USE)],
+  ["adjetivos-adverbios-6", (r) => choose(r, "", ADJ_OR_ADV)],
+  ["comparar-1", (r) => choose(r, "Completa la oración.", COMP_SUP_ADJ)],
+  ["comparar-2", (r) => choose(r, "Completa la oración.", GOOD_BAD)],
+  ["comparar-3", (r) => choose(r, "Completa la oración.", COMP_SUP_ADV)],
+  ["comparar-4", (r) => choose(r, "Completa la oración.", WELL_BADLY)],
 
-  ["OO.1", "Identificar preposiciones", (r) => pickInSentence(r, "Selecciona las preposiciones.", PREPS_IN)],
-  ["OO.2", "Identificar las preposiciones y sus términos", (r) => choose(r, "", PREP_OBJECT)],
-  ["OO.3", "Identificar frases con preposición", (r) => choose(r, "", PREP_PHRASE)],
-  ["OO.4", "Preposiciones: repaso", (r) => choose(r, "Completa la oración.", PREP_REVIEW)],
+  ["preposiciones-1", (r) => pickInSentence(r, "Selecciona las preposiciones.", PREPS_IN)],
+  ["preposiciones-2", (r) => choose(r, "", PREP_OBJECT)],
+  ["preposiciones-3", (r) => choose(r, "", PREP_PHRASE)],
+  ["preposiciones-4", (r) => choose(r, "Completa la oración.", PREP_REVIEW)],
 
-  ["PP.1", "¿Es un objeto directo o un objeto indirecto?", (r) => choose(r, "", OBJECTS)],
+  ["objetos", (r) => choose(r, "", OBJECTS)],
 
-  ["QQ.1", "Usar conjunciones coordinantes", (r) => choose(r, "Completa la oración.", COORD_USE)],
-  ["QQ.2", "Identificar conjunciones coordinantes", (r) => pickInSentence(r, "Selecciona las conjunciones coordinantes.", COORD_IN)],
-  ["QQ.3", "Identificar conjunciones subordinantes", (r) => pickInSentence(r, "Selecciona la conjunción que introduce la idea subordinada.", SUBORD_IN)],
-  ["QQ.4", "Usar el par correcto de conjunciones correlativas", (r) => choose(r, "Completa la oración.", CORRELATIVE_PAIR)],
-  ["QQ.5", "Completar con la conjunción correlativa que falta", (r) => choose(r, "Completa la oración.", CORRELATIVE_FILL)],
+  ["conjunciones-1", (r) => choose(r, "Completa la oración.", COORD_USE)],
+  ["conjunciones-2", (r) => pickInSentence(r, "Selecciona las conjunciones coordinantes.", COORD_IN)],
+  ["conjunciones-3", (r) => pickInSentence(r, "Selecciona la conjunción que introduce la idea subordinada.", SUBORD_IN)],
+  ["conjunciones-4", (r) => choose(r, "Completa la oración.", CORRELATIVE_PAIR)],
+  ["conjunciones-5", (r) => choose(r, "Completa la oración.", CORRELATIVE_FILL)],
 
-  ["RR.1", "Contracciones: al y del", (r) => choose(r, "Completa la oración.", AL_DEL)],
-  ["RR.2", "Contracciones: conmigo, contigo y consigo", (r) => choose(r, "Completa la oración.", CONMIGO)],
+  ["conjunciones-6", (r) => choose(r, "Completa la oración.", AL_DEL)],
+  ["conjunciones-7", (r) => choose(r, "Completa la oración.", CONMIGO)],
 
-  ["SS.1", "Comas en enumeraciones, fechas y lugares", (r) => choose(r, "", COMMA_SERIES)],
-  ["SS.2", "Comas en oraciones compuestas y subordinadas", (r) => choose(r, "", COMMA_COMPOUND)],
-  ["SS.3", "Comas con vocativos, palabras introductorias, interjecciones e incisos", (r) => choose(r, "", COMMA_ADDRESS)],
-  ["SS.4", "Comas entre adjetivos coordinados", (r) => choose(r, "", COMMA_ADJ)],
-  ["SS.5", "Comas: repaso", (r) => choose(r, "", [...COMMA_SERIES, ...COMMA_COMPOUND, ...COMMA_ADDRESS, ...COMMA_ADJ])],
-  ["SS.6", "¿Qué sugiere la puntuación?", (r) => choose(r, "", PUNCT_MEANING)],
-  ["SS.7", "Comas en las aclaraciones (elementos explicativos)", (r) => choose(r, "", NONRESTRICTIVE)],
-  ["SS.8", "Usar la raya", (r) => choose(r, "", DASHES)],
+  ["comas-1", (r) => choose(r, "", COMMA_SERIES)],
+  ["comas-compuestas", (r) => choose(r, "", COMMA_COMPOUND)],
+  ["comas-2", (r) => choose(r, "", COMMA_ADDRESS)],
+  ["comas-3", (r) => choose(r, "", COMMA_ADJ)],
+  ["comas-4", (r) => choose(r, "", [...COMMA_SERIES, ...COMMA_COMPOUND, ...COMMA_ADDRESS, ...COMMA_ADJ])],
+  ["sugiere", (r) => choose(r, "", PUNCT_MEANING)],
+  ["comas-5", (r) => choose(r, "", NONRESTRICTIVE)],
+  ["raya", (r) => choose(r, "", DASHES)],
 
-  ["TT.1", "Corregir errores de mayúsculas", (r) => choose(r, "", CAPS_ERRORS)],
-  ["TT.2", "Mayúsculas en los títulos", (r) => choose(r, "", CAPS_TITLES)],
+  ["mayusculas-1", (r) => choose(r, "", CAPS_ERRORS)],
+  ["mayusculas-2", (r) => choose(r, "", CAPS_TITLES)],
 
-  ["UU.1", "Dar formato a los títulos", (r) => choose(r, "", FORMAT_TITLES)],
-  ["UU.2", "Dar formato y poner mayúsculas a los títulos: repaso", (r) => choose(r, "", TITLES_BOTH)],
-  ["UU.3", "Dar formato a las direcciones", (r) => choose(r, "", ADDRESSES)],
-  ["UU.4", "Dar formato a las citas y a los diálogos", (r) => choose(r, "", QUOTES)],
+  ["mayusculas-3", (r) => choose(r, "", FORMAT_TITLES)],
+  ["mayusculas-4", (r) => choose(r, "", TITLES_BOTH)],
+  ["citas-dialogos-1", (r) => choose(r, "", ADDRESSES)],
+  ["citas-dialogos-2", (r) => choose(r, "", QUOTES)],
 ];

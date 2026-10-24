@@ -9,21 +9,21 @@ import { dec, valQ } from "../alg1/util";
 // fórmula de Herón), sólidos (vocabulario, sólidos de revolución), áreas
 // laterales, volúmenes compuestos, cambios de escala, unidades y densidad.
 
-// S.4: área de trapecios.
+// Área de trapecios.
 export function trapezoidArea(r: Rng): Question {
   const b1 = r.int(3, 15), b2 = b1 + r.int(2, 10), h = r.int(2, 12);
   if (((b1 + b2) * h) % 2) return trapezoidArea(r);
   return numQ(((b1 + b2) * h) / 2, `Un trapecio tiene bases de ${b1} cm y ${b2} cm, y una altura de ${h} cm. ¿Cuál es su área, en cm²?`, { kind: "polygon", points: [[10, 85], [90, 85], [70, 25], [30, 25]], sideLabels: [`${b2} cm`, "", `${b1} cm`, ""], dashed: [[[30, 25], [30, 85]]] }, `A = (b₁ + b₂) × h ÷ 2 = (${b1} + ${b2}) × ${h} ÷ 2 = ${((b1 + b2) * h) / 2}.`, "trapecio");
 }
 
-// S.5: área de rombos.
+// Área de rombos.
 export function rhombusArea(r: Rng): Question {
   const d1 = r.int(2, 12) * 2, d2 = r.int(2, 12);
   return numQ((d1 * d2) / 2, `Las diagonales de un rombo miden ${d1} cm y ${d2} cm. ¿Cuál es su área, en cm²?`, undefined, `A = d₁ × d₂ ÷ 2 = ${d1} × ${d2} ÷ 2 = ${(d1 * d2) / 2}.`, "rombo");
 }
 
 const POLY: [string, number][] = [["pentágono", 5], ["hexágono", 6], ["octágono", 8], ["decágono", 10]];
-// S.6: área de polígonos regulares (con apotema).
+// Área de polígonos regulares (con apotema).
 export function regularPolygonArea(r: Rng): Question {
   const [name, n] = r.pick(POLY);
   const side = r.int(2, 12), ap = r.int(2, 15);
@@ -31,7 +31,7 @@ export function regularPolygonArea(r: Rng): Question {
   return valQ(r, `Un ${name} regular tiene lados de ${side} cm y apotema de ${ap} cm. ¿Cuál es su área, en cm²?`, area, [n * side * ap, (side * ap) / 2, (n * side + ap) / 2], `A = perímetro × apotema ÷ 2 = (${n} × ${side}) × ${ap} ÷ 2 = ${dec(area)}.`, undefined, "regular");
 }
 
-// S.7 / S.8: área y perímetro en el plano de coordenadas.
+// Área y perímetro en el plano de coordenadas.
 export function coordinateArea(r: Rng, level: 1 | 2): Question {
   const x0 = r.int(-6, 0), y0 = r.int(-6, 0);
   if (level === 1) {
@@ -47,7 +47,7 @@ export function coordinateArea(r: Rng, level: 1 | 2): Question {
   return valQ(r, `¿Cuál es el área del triángulo de vértices ${pts.map(pt).join(", ")}?`, twice / 2, [twice, twice / 2 + 1, twice / 4], `Con la fórmula de los cordones (o encerrándolo en un rectángulo y restando triángulos): ${dec(twice / 2)}.`, { kind: "coordPlane", min: -8, max: 8, points: [], shapes: [{ points: pts }] }, "triangulo");
 }
 
-// S.14: fórmula de Herón.
+// Fórmula de Herón.
 export function heron(r: Rng): Question {
   const [a, b, c] = r.pick([[13, 14, 15], [5, 5, 6], [5, 5, 8], [10, 13, 13], [7, 15, 20], [9, 10, 17], [6, 25, 29], [3, 4, 5], [6, 8, 10], [17, 25, 26]]);
   const s = (a + b + c) / 2;
@@ -68,7 +68,7 @@ const VOCAB: [string, string, string[]][] = [
   ["Punto donde se unen tres o más aristas.", "Vértice", ["Arista", "Cara", "Apotema"]],
   ["Altura de una cara lateral de una pirámide regular (del vértice al punto medio de un lado de la base).", "Apotema (altura inclinada)", ["Altura", "Arista lateral", "Radio"]],
 ];
-// T.2: vocabulario de figuras tridimensionales.
+// Vocabulario de figuras tridimensionales.
 export function solidVocabulary(r: Rng): Question {
   const [def, good, wrong] = r.pick(VOCAB);
   return choiceQ(r, `¿Qué es? ${def}`, good, wrong, `${good}: ${def.toLowerCase()}`, undefined, "vocabulario");
@@ -81,7 +81,7 @@ const REVOLUTION: [string, string, string[]][] = [
   ["un cuadrado alrededor de uno de sus lados", "Un cilindro (con altura igual al radio)", ["Un cubo (con arista igual al lado)", "Un cono (con altura igual al radio)", "Una esfera"]],
   ["un triángulo rectángulo alrededor de su hipotenusa", "Dos conos unidos por sus bases", ["Un cono con la punta hacia abajo", "Un cilindro con dos bases", "Una pirámide de base circular"]],
 ];
-// T.5: sólidos de revolución.
+// Sólidos de revolución.
 export function revolution(r: Rng): Question {
   const [shape, good, wrong] = r.pick(REVOLUTION);
   return choiceQ(r, `¿Qué sólido se forma al girar ${shape}?`, good, wrong, `Al girar ${shape} se forma ${good.toLowerCase()}.`, undefined, "revolucion");
@@ -90,7 +90,7 @@ export function revolution(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Área lateral y volúmenes
 
-// U.1 / U.2: área lateral de prismas y cilindros / de pirámides y conos.
+// Área lateral de prismas y cilindros / de pirámides y conos.
 export function lateral(r: Rng, kind: "prismCylinder" | "pyramidCone"): Question {
   const cyl = r.chance(0.5);
   if (kind === "prismCylinder") {
@@ -109,7 +109,7 @@ export function lateral(r: Rng, kind: "prismCylinder" | "pyramidCone"): Question
   return numQ(2 * s * ap, `Una pirámide cuadrangular regular tiene base de ${s} cm de lado y apotema (altura inclinada) de ${ap} cm. ¿Cuál es su área lateral, en cm²?`, undefined, `4 caras triangulares: 4 × (${s} × ${ap} ÷ 2) = ${2 * s * ap}.`, "piramide");
 }
 
-// U.12: volumen de figuras compuestas.
+// Volumen de figuras compuestas.
 export function compoundVolume(r: Rng): Question {
   if (r.chance(0.5)) {
     const rr = r.int(1, 6), h = r.int(2, 10), hc = 3 * r.int(1, 4);
@@ -120,7 +120,7 @@ export function compoundVolume(r: Rng): Question {
   return numQ(s * s * h + (s * s * hp) / 3, `Un sólido está formado por un prisma de base cuadrada de ${s} cm de lado y ${h} cm de altura, con una pirámide de la misma base y ${hp} cm de altura encima. ¿Cuál es su volumen, en cm³?`, undefined, `Prisma: ${s * s} × ${h} = ${s * s * h}. Pirámide: ${s * s} × ${hp} ÷ 3 = ${(s * s * hp) / 3}. Total: ${s * s * h + (s * s * hp) / 3}.`, "prisma-piramide");
 }
 
-// U.15 / U.16: cambios de escala en perímetro, área y volumen.
+// Cambios de escala en perímetro, área y volumen.
 export function scaleChanges(r: Rng, withPerimeter: boolean): Question {
   const k = r.pick([2, 3, 4, 0.5]);
   const what = r.pick(withPerimeter ? ["perímetro", "área", "volumen"] : ["área de superficie", "volumen"]);
@@ -133,7 +133,7 @@ export function scaleChanges(r: Rng, withPerimeter: boolean): Question {
 // ---------------------------------------------------------------------------
 // Medición
 
-// V.3: convertir unidades cuadradas y cúbicas.
+// Convertir unidades cuadradas y cúbicas.
 export function squareCubicUnits(r: Rng): Question {
   const form = r.int(0, 3);
   const n = r.int(2, 9);
@@ -143,7 +143,7 @@ export function squareCubicUnits(r: Rng): Question {
   return numQ(n * 1000, `¿Cuántos litros caben en un tanque de ${n} m³? (1 dm³ = 1 litro)`, undefined, `1 m³ = 1000 dm³ = 1000 litros; ${n} × 1000 = ${fmt(n * 1000)}.`, "m3-litros");
 }
 
-// V.9: densidad, masa y volumen.
+// Densidad, masa y volumen.
 export function density(r: Rng): Question {
   const [what, d] = r.pick([["aluminio", 2.7], ["hierro", 7.9], ["madera de pino", 0.5], ["oro", 19.3], ["hielo", 0.9]] as [string, number][]);
   const v = r.int(2, 20) * 10;

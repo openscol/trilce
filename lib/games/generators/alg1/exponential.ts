@@ -17,7 +17,7 @@ const rp = (base: string, n0: number, d0: number) => {
 };
 const PERFECT: [number, number, number][] = [[4, 2, 2], [9, 3, 2], [16, 4, 2], [25, 5, 2], [36, 6, 2], [49, 7, 2], [64, 8, 2], [100, 10, 2], [8, 2, 3], [27, 3, 3], [64, 4, 3], [125, 5, 3], [16, 2, 4], [81, 3, 4], [32, 2, 5], [1000, 10, 3]];
 
-// S.1 / S.2: evaluar enteros elevados a exponentes racionales (positivos o también negativos).
+// Evaluar enteros elevados a exponentes racionales (positivos o también negativos).
 export function rationalPower(r: Rng, negative: boolean): Question {
   const [b, k, n] = r.pick(PERFECT);
   const m = r.pick([1, 1, 2, 3].filter((x) => k ** x <= 1000 && x % n !== 0));
@@ -34,7 +34,7 @@ const fracAdd = (a: [number, number], b: [number, number], sign = 1): [number, n
   const k = g(n, d) || 1;
   return [n / k, d / k];
 };
-// S.3-S.6: reglas de las potencias con exponentes racionales.
+// Reglas de las potencias con exponentes racionales.
 export function rationalExponentRule(r: Rng, rule: "product" | "quotient" | "power" | "mixed"): Question {
   const ru = rule === "mixed" ? r.pick(["product", "quotient", "power"] as const) : rule;
   const v = r.pick(["x", "m", "n", "p"]);
@@ -67,7 +67,7 @@ export function rationalExponentRule(r: Rng, rule: "product" | "quotient" | "pow
 
 const fnText = (k: number, c: number, kind: "arith" | "geo") => (kind === "arith" ? `f(n) = f(n − 1) ${c < 0 ? "−" : "+"} ${Math.abs(c)}` : `f(n) = ${coef(k)}f(n − 1)`);
 
-// U.5: evaluar fórmulas recursivas.
+// Evaluar fórmulas recursivas.
 export function evaluateRecursive(r: Rng): Question {
   const a = r.int(-3, 5), k = r.pick([2, 3, -2]), c = nz0(r, 5), n = r.int(3, 5);
   const terms = [a];
@@ -78,7 +78,7 @@ export function evaluateRecursive(r: Rng): Question {
 const nz0 = (r: Rng, max: number) => r.int(1, max) * r.pick([-1, 1]);
 
 const FORMULAS: [string, boolean][] = [["f(n) = 3n + 2", true], ["f(n) = f(n − 1) + 4", false], ["f(n) = 5 · 2^(n − 1)", true], ["f(n) = 3f(n − 1)", false], ["f(n) = −2n + 10", true], ["f(n) = f(n − 1) − 7", false], ["f(n) = n² + 1", true], ["f(n) = 2f(n − 1) + 1", false]];
-// U.6: ¿fórmula explícita o recursiva?
+// ¿fórmula explícita o recursiva?
 export function explicitOrRecursive(r: Rng): Question {
   const [f, explicit] = r.pick(FORMULAS);
   const O = ["Explícita", "Recursiva"];
@@ -90,7 +90,7 @@ const powK = (k: number) => (k < 0 ? `(${sg(k)})` : String(k));
 const geoF = (a: number, k: number, exp = "n − 1") => `f(n) = ${a === 1 ? "" : `${sg(a)} · `}${powK(k)}^(${exp})`.replace("^(n)", "^n");
 const arithF = (a: number, c: number, exp = "(n − 1)") => `f(n) = ${sg(a)} ${c < 0 ? "−" : "+"} ${Math.abs(c) === 1 ? "" : Math.abs(c)}${exp}`;
 
-// U.8: expresiones para sucesiones geométricas.
+// Expresiones para sucesiones geométricas.
 export function geometricFormula(r: Rng): Question {
   const a = r.int(1, 6), k = r.pick([2, 3, 4, -2, 5]);
   const terms = [0, 1, 2, 3].map((i) => a * k ** i);
@@ -99,7 +99,7 @@ export function geometricFormula(r: Rng): Question {
   return choiceQ(r, `¿Qué fórmula explícita describe la sucesión ${terms.map(sg).join(", ")}, …?`, good, [...new Set(wrong)], `Empieza en ${a} y se multiplica por ${sg(k)} cada vez: ${good}.`, undefined, "geometrica");
 }
 
-// U.9: escribir una fórmula recursiva.
+// Escribir una fórmula recursiva.
 export function writeRecursive(r: Rng): Question {
   const arith = r.chance(0.5);
   const a = r.int(-5, 9), c = nz0(r, 9), k = r.pick([2, 3, -2, 4]);
@@ -112,7 +112,7 @@ export function writeRecursive(r: Rng): Question {
   return choiceQ(r, `¿Qué fórmula recursiva describe la sucesión ${terms.map(sg).join(", ")}, …?`, good, [...new Set(wrong)].filter((w) => w !== good), arith ? `Primer término ${sg(a)}; cada término es el anterior ${c < 0 ? "menos" : "más"} ${Math.abs(c)}.` : `Primer término ${sg(a)}; cada término es el anterior por ${sg(k)}.`, undefined, arith ? "aritmetica" : "geometrica");
 }
 
-// U.10 / U.11: convertir entre fórmulas recursivas y explícitas.
+// Convertir entre fórmulas recursivas y explícitas.
 export function convertFormula(r: Rng, toExplicit: boolean): Question {
   const arith = r.chance(0.6);
   const a = r.int(-5, 9) || 2, c = nz0(r, 9), k = r.pick([2, 3, -2, 4]);
@@ -139,7 +139,7 @@ const expF = (e: Exp) => (x: number) => e.a * e.b ** x + e.k;
 const randomExp = (r: Rng, shift = true): Exp => ({ a: r.pick([1, 1, 2, 3, -1]), b: r.pick([2, 3, 0.5, 2]), k: shift ? r.int(-3, 2) : 0 });
 const expPlane = (es: Exp[], points: { x: number; y: number }[] = []): Visual => ({ kind: "coordPlane", min: -6, max: 6, points: points.map((p) => ({ ...p, emoji: "•" })), curves: es.map((e) => ({ points: curve(expF(e), -6, 6, 0.05) })) });
 
-// V.1: evaluar una función exponencial.
+// Evaluar una función exponencial.
 export function evaluateExponential(r: Rng): Question {
   const e = randomExp(r, false), x = e.b < 1 ? r.int(-3, 1) : r.int(-1, 4);
   const v = expF(e)(x);
@@ -149,7 +149,7 @@ export function evaluateExponential(r: Rng): Question {
   return choiceQ(r, `Si ${expText(e)}, ¿cuánto vale f(${sg(x)})?`, good, [frac(e.a * d, 1), frac(-e.a, d), frac(e.a, d * 2), frac(e.a * x, 1)].filter((w, i, all) => w !== good && all.indexOf(w) === i), `Un exponente negativo da el inverso: f(${sg(x)}) = ${good}.`, undefined, "fraccion");
 }
 
-// V.2 / V.3 / V.4: graficar y relacionar funciones exponenciales con sus gráficos.
+// Graficar y relacionar funciones exponenciales con sus gráficos.
 export function matchExponential(r: Rng, mode: "graph" | "match" | "matchShift"): Question {
   const e = randomExp(r, mode === "matchShift");
   if (mode === "graph") {
@@ -161,7 +161,7 @@ export function matchExponential(r: Rng, mode: "graph" | "match" | "matchShift")
   return choiceQ(r, "¿Qué función corresponde al gráfico?", expText(e), [...new Set(wrong)].filter((w) => w !== expText(e)), `Corta el eje y en ${sg(e.a + e.k)}, la asíntota horizontal es y = ${sg(e.k)} y ${e.b > 1 ? (e.a > 0 ? "crece" : "decrece") : e.a > 0 ? "decrece" : "crece"} hacia la derecha.`, expPlane([e], [{ x: 0, y: e.a + e.k }]), "relacionar");
 }
 
-// V.5 / V.6: dominio y rango de funciones exponenciales.
+// Dominio y rango de funciones exponenciales.
 export function exponentialDomainRange(r: Rng, graph: boolean): Question {
   const e = randomExp(r);
   const domain = r.chance(0.35);
@@ -171,7 +171,7 @@ export function exponentialDomainRange(r: Rng, graph: boolean): Question {
   return choiceQ(r, `¿Cuál es el ${domain ? "dominio" : "rango"} de ${graph ? "la función del gráfico" : expText(e)}?`, good, wrong.filter((w) => w !== good), domain ? "Se puede elevar la base a cualquier número: el dominio son todos los reales." : `La función se acerca a y = ${sg(e.k)} sin tocarla y queda ${e.a > 0 ? "encima" : "debajo"}: ${range}.`, graph ? expPlane([e]) : undefined, domain ? "dominio" : "rango");
 }
 
-// V.7: escribir funciones exponenciales a partir de tablas y gráficos.
+// Escribir funciones exponenciales a partir de tablas y gráficos.
 export function writeExponential(r: Rng): Question {
   const a = r.int(1, 5), b = r.pick([2, 3, 4]), dec2 = r.chance(0.3);
   const base = dec2 ? 0.5 : b;
@@ -190,7 +190,7 @@ const GROWTH: [string, string, string][] = [
   ["El valor de una moto", "soles", "baja"],
   ["La cantidad de un medicamento en la sangre", "mg", "baja"],
 ];
-// V.8 / V.9 / V.10: crecimiento y decrecimiento exponencial.
+// Crecimiento y decrecimiento exponencial.
 export function exponentialGrowth(r: Rng, mode: "write" | "identify" | "word"): Question {
   const [what, unit, dir] = r.pick(GROWTH);
   const p = r.pick([2, 3, 4, 5, 8, 10, 12, 15, 20, 25]);
@@ -213,7 +213,7 @@ export function exponentialGrowth(r: Rng, mode: "write" | "identify" | "word"): 
   return valQ(r, `${what} es ${fmt(start)} ${unit} y ${dir === "crece" ? "aumenta" : "disminuye"} ${p} % cada año. ¿Cuánto será después de ${t} años? (Redondea al entero.)`, val, [Math.round(start * (1 + (dir === "crece" ? 1 : -1) * (p / 100) * t)), Math.round(start * factor ** (t - 1)), Math.round(start * factor ** (t + 1))], `${fmt(start)} × ${dec(factor)}^${t} ≈ ${fmt(val)}.`, undefined, dir === "crece" ? "crecimiento" : "decrecimiento");
 }
 
-// V.11: interés compuesto: problemas.
+// Interés compuesto: problemas.
 export function compoundInterestWord(r: Rng): Question {
   const P = r.pick([1000, 2000, 5000, 10000]), rate = r.pick([2, 3, 4, 5, 6, 8]), t = r.int(2, 6);
   const n = r.pick([1, 2, 4, 12]);

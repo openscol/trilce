@@ -24,7 +24,7 @@ const randomQuad = (r: Rng, intA = false): Quad => {
 };
 const quadPlane = (qs: Quad[], points: { x: number; y: number }[] = []): Visual => ({ kind: "coordPlane", min: -6, max: 6, points: points.map((p) => ({ ...p, emoji: "•" })), curves: qs.map((q) => ({ points: curve(qf(q), -6, 6, 0.05) })) });
 
-// Y.1 / Y.2: características de funciones cuadráticas (gráfico o ecuación).
+// Características de funciones cuadráticas (gráfico o ecuación).
 export function quadCharacteristics(r: Rng, graph: boolean): Question {
   const q = randomQuad(r, !graph);
   const visual = graph ? quadPlane([q], [{ x: q.h, y: q.k }]) : vertexText(q);
@@ -41,7 +41,7 @@ export function quadCharacteristics(r: Rng, graph: boolean): Question {
   return intQ(r, `${prompt} ¿en qué valor corta la parábola al eje y?`, y0, `f(0) = ${sg(y0)}.`, visual, "corte-y", [q.k, q.h, -y0]);
 }
 
-// Y.3: completar la tabla de una función cuadrática.
+// Completar la tabla de una función cuadrática.
 export function quadTable(r: Rng): Question {
   const q = randomQuad(r, true);
   const xs = [q.h - 2, q.h - 1, q.h, q.h + 1, q.h + 2];
@@ -49,7 +49,7 @@ export function quadTable(r: Rng): Question {
   return intQ(r, `Completa la tabla de ${standardText(q)}. ¿Qué número va en lugar de «?»?`, qf(q)(xs[i]), `f(${sg(xs[i])}) = ${sg(qf(q)(xs[i]))}.`, table(["x", "f(x)"], xs.map((x, j) => [sg(x), j === i ? "?" : sg(qf(q)(x))])), "tabla", [qf(q)(xs[i]) + q.a, -qf(q)(xs[i])]);
 }
 
-// Y.4: transformaciones de funciones cuadráticas.
+// Transformaciones de funciones cuadráticas.
 export function quadTransform(r: Rng): Question {
   const q = randomQuad(r);
   if (q.h === 0 && q.k === 0) return quadTransform(r);
@@ -63,7 +63,7 @@ export function quadTransform(r: Rng): Question {
   return choiceQ(r, `¿Cómo se obtiene el gráfico de ${vertexText(q)} a partir del de f(x) = ${coefText(q.a < 0 ? -q.a : q.a)}x²?`, good, [...new Set(bad)].filter((w) => w !== good), `En a(x − h)² + k: h = ${sg(q.h)} mueve en horizontal (el signo dentro del paréntesis es el contrario) y k = ${sg(q.k)} en vertical.`, undefined, "traslacion");
 }
 
-// Y.5 / Y.7 / Y.8: graficar y relacionar funciones cuadráticas con sus gráficos.
+// Graficar y relacionar funciones cuadráticas con sus gráficos.
 export function quadGraph(r: Rng, mode: "vertex" | "standard" | "match"): Question {
   const q = randomQuad(r, mode !== "vertex");
   const text = mode === "vertex" ? vertexText(q) : standardText(q);
@@ -76,7 +76,7 @@ export function quadGraph(r: Rng, mode: "vertex" | "standard" | "match"): Questi
   return yesNo(`¿El gráfico muestra ${text}?`, yes, `Vértice ${pt({ x: q.h, y: q.k })}, se abre hacia ${q.a > 0 ? "arriba" : "abajo"}${mode === "standard" ? ` (h = −b ÷ 2a = ${sg(q.h)})` : ""}.`, quadPlane([shown], [{ x: shown.h, y: shown.k }]), mode);
 }
 
-// Y.6: escribir una función cuadrática en forma de vértice (completando el cuadrado).
+// Escribir una función cuadrática en forma de vértice (completando el cuadrado).
 export function toVertexForm(r: Rng): Question {
   const q = { ...randomQuad(r, true), a: 1 };
   if (q.h === 0) q.h = r.pick([-2, 2, 3]);
@@ -85,7 +85,7 @@ export function toVertexForm(r: Rng): Question {
   return choiceQ(r, `Escribe ${standardText(q)} en forma de vértice.`, good, [...new Set(wrong)], `Se completa el cuadrado: la mitad de ${sg(-2 * q.h)} es ${sg(-q.h)}; (x ${q.h < 0 ? "+" : "−"} ${Math.abs(q.h)})² = ${poly([1, -2 * q.h, q.h * q.h])}, y se ajusta el término independiente: ${good}.`, undefined, "completar");
 }
 
-// Y.9 / Y.10: dominio y rango de funciones cuadráticas.
+// Dominio y rango de funciones cuadráticas.
 export function quadDomainRange(r: Rng, graph: boolean): Question {
   const q = randomQuad(r, !graph);
   const domain = r.chance(0.3);
@@ -95,7 +95,7 @@ export function quadDomainRange(r: Rng, graph: boolean): Question {
   return choiceQ(r, `¿Cuál es el ${domain ? "dominio" : "rango"} de ${graph ? "la función del gráfico" : vertexText(q)}?`, good, wrong.filter((w) => w !== good), domain ? "Se puede reemplazar x por cualquier número real." : `El vértice ${pt({ x: q.h, y: q.k })} es un ${q.a > 0 ? "mínimo" : "máximo"}: ${range}.`, graph ? quadPlane([q], [{ x: q.h, y: q.k }]) : undefined, domain ? "dominio" : "rango");
 }
 
-// Y.11 / Y.12: ceros de una función factorizada / escribir la función a partir de sus ceros.
+// Ceros de una función factorizada / escribir la función a partir de sus ceros.
 export function quadZeros(r: Rng, write: boolean): Question {
   const p = r.int(-6, 6), s = r.int(-6, 6), a = r.pick([1, 1, 2, -1, 3]);
   if (p === s || p === 0 || s === 0 || (write && p === -s)) return quadZeros(r, write);
@@ -108,7 +108,7 @@ export function quadZeros(r: Rng, write: boolean): Question {
   return choiceQ(r, `¿Cuáles son los ceros de f(x) = ${f}?`, `x = ${sg(lo)} y x = ${sg(hi)}`, [`x = ${sg(-hi)} y x = ${sg(-lo)}`, `x = ${sg(lo)} y x = ${sg(-hi)}`, `x = ${sg(a)} y x = ${sg(hi)}`].filter((w) => w !== `x = ${sg(lo)} y x = ${sg(hi)}`), "Cada factor vale 0 cuando x es el número que se resta dentro del paréntesis.", undefined, "ceros");
 }
 
-// Y.13-Y.16: escribir funciones cuadráticas a partir del vértice o de los ceros y otro punto.
+// Escribir funciones cuadráticas a partir del vértice o de los ceros y otro punto.
 export function quadFromPoints(r: Rng, given: "vertex" | "zeros", form: "vertex" | "standard" | "factored"): Question {
   if (given === "vertex") {
     const q = randomQuad(r, true);
@@ -132,7 +132,7 @@ export function quadFromPoints(r: Rng, given: "vertex" | "zeros", form: "vertex"
 }
 const par0 = (n: number) => (n < 0 ? `(${sg(n)})` : sg(n));
 
-// Y.17: interpretar partes de expresiones cuadráticas: problemas.
+// Interpretar partes de expresiones cuadráticas: problemas.
 export function interpretQuadratic(r: Rng): Question {
   const v = r.pick([10, 15, 20, 25, 30]), h0 = r.int(1, 20);
   const k = r.int(0, 2);
@@ -152,13 +152,13 @@ function solQ(r: Rng, prompt: string, p: number, s: number, why: string, visual?
   return choiceQ(r, prompt, good, [...new Set(wrong)].filter((w) => w !== good), why, visual, tag);
 }
 
-// Z.1: resolver con raíces cuadradas.
+// Resolver con raíces cuadradas.
 export function quadSqrt(r: Rng): Question {
   const h = r.int(-5, 5), d = r.int(1, 9), k = r.pick([1, 1, 2, 3]);
   return solQ(r, "Resuelve la ecuación.", h - d, h + d, `${k > 1 ? `Se divide entre ${k}. ` : ""}Se saca raíz: ${xMinus(h)} = ±${d}, así que ${sols(h - d, h + d)}.`, `${k === 1 ? "" : k}${h ? `(${xMinus(h)})` : "x"}² = ${k * d * d}`, "raices");
 }
 
-// Z.2 / Z.3: producto cero y factorización.
+// Producto cero y factorización.
 export function quadFactorSolve(r: Rng, factored: boolean): Question {
   const p = r.int(-8, 8), s = r.int(-8, 8), a = factored ? r.pick([1, 2, 3]) : 1;
   if (factored) return solQ(r, "Resuelve la ecuación.", p, s, `Si un producto es 0, algún factor es 0: ${xMinus(p)} = 0 o ${xMinus(s)} = 0.`, `${a === 1 ? "" : a}${p ? binom(1, -p) : "x"}${s ? binom(1, -s) : "x"} = 0`.replace(/^x\(/, "x("), "producto-cero");
@@ -166,13 +166,13 @@ export function quadFactorSolve(r: Rng, factored: boolean): Question {
   return solQ(r, "Resuelve la ecuación factorizando.", p, s, `${poly(c)} = ${binom(1, -p)}${binom(1, -s)} = 0, así que ${sols(p, s)}.`, `${poly(c)} = 0`, "factorizar");
 }
 
-// Z.4: completar el cuadrado.
+// Completar el cuadrado.
 export function completeSquare(r: Rng): Question {
   const h = nz(r, 9);
   return numQ(h * h, `¿Qué número completa el cuadrado? x² ${h < 0 ? "−" : "+"} ${Math.abs(2 * h)}x + □`, undefined, `Se toma la mitad de ${sg(2 * h)} y se eleva al cuadrado: (${sg(h)})² = ${h * h}. Queda (x ${h < 0 ? "−" : "+"} ${Math.abs(h)})².`, "completar");
 }
 
-// Z.5 / Z.6: resolver completando el cuadrado o con la fórmula general.
+// Resolver completando el cuadrado o con la fórmula general.
 export function quadFormula(r: Rng, method: "square" | "formula"): Question {
   if (r.chance(0.5)) {
     const p = r.int(-7, 7), s = r.int(-7, 7);
@@ -209,7 +209,7 @@ function radicalRoots(p: number, D: number, q: number): string {
   return Q === 1 ? `x = ${num}` : `x = (${num}) / ${Q}`;
 }
 
-// Z.7: ecuaciones cuadráticas: problemas.
+// Ecuaciones cuadráticas: problemas.
 export function quadWord(r: Rng): Question {
   const form = r.int(0, 2);
   if (form === 0) {
@@ -225,7 +225,7 @@ export function quadWord(r: Rng): Question {
 }
 
 const NROOTS = ["Dos soluciones reales", "Una solución real", "Ninguna solución real"];
-// Z.8: usar el discriminante.
+// Usar el discriminante.
 export function discriminant(r: Rng): Question {
   const kind = r.int(0, 2);
   let a = r.pick([1, 2, 3, -1]), b = nz(r, 8), c: number;
@@ -241,7 +241,7 @@ export function discriminant(r: Rng): Question {
   return fixedQ(`¿Cuántas soluciones reales tiene ${poly([a, b, c])} = 0?`, NROOTS, NROOTS[real], `El discriminante es b² − 4ac = ${sg(D)}: ${D > 0 ? "positivo, dos soluciones" : D === 0 ? "cero, una solución" : "negativo, ninguna solución real"}.`, undefined, ["dos", "una", "ninguna"][real]);
 }
 
-// Z.9 / Z.10: sistemas de una ecuación lineal y una cuadrática.
+// Sistemas de una ecuación lineal y una cuadrática.
 export function linearQuadSystem(r: Rng, graph: boolean): Question {
   const p = r.int(-3, 2), s = r.int(p + 1, 3), c = r.int(-3, 1);
   // y = x² + c y la recta que pasa por (p, p² + c) y (s, s² + c).
@@ -275,7 +275,7 @@ const modelF = (m: Model, r: Rng) => {
 };
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 
-// AA.1-AA.4: identificar funciones lineales, cuadráticas y exponenciales (gráficos o tablas).
+// Identificar funciones lineales, cuadráticas y exponenciales (gráficos o tablas).
 export function identifyModel(r: Rng, kinds: Model[], show: "graph" | "table"): Question {
   const m = r.pick(kinds);
   const opts = kinds.map(cap);
@@ -290,7 +290,7 @@ export function identifyModel(r: Rng, kinds: Model[], show: "graph" | "table"): 
   return fixedQ("¿Qué tipo de función muestra la tabla?", opts, cap(m), why, table(["x", "y"], xs.map((x, i) => [String(x), fmt(ys[i])])), m);
 }
 
-// AA.5-AA.7: escribir funciones lineales y exponenciales (problemas y tablas).
+// Escribir funciones lineales y exponenciales (problemas y tablas).
 export function writeModel(r: Rng, mode: "word" | "table" | "table3"): Question {
   if (mode === "word") {
     const start = r.pick([100, 200, 500, 1000]), d = r.pick([10, 20, 25, 50]), p = r.pick([2, 3]);
@@ -310,7 +310,7 @@ export function writeModel(r: Rng, mode: "word" | "table" | "table3"): Question 
   return choiceQ(r, "¿Qué función describe la tabla?", good, wrong, m === "lineal" ? `Sube ${a} cada vez y empieza en ${b}.` : m === "cuadrática" ? `Las segundas diferencias son constantes; y = ${a}x² + ${b}.` : `Empieza en ${b} y se multiplica por ${a}.`, table(["x", "y"], xs.map((x) => [String(x), fmt(f(x))])), m);
 }
 
-// AA.8 / AA.9: funciones lineales y exponenciales en intervalos de una unidad.
+// Funciones lineales y exponenciales en intervalos de una unidad.
 export function unitIntervals(r: Rng, exponential: boolean): Question {
   const a = r.int(2, 5), b = r.int(1, 9);
   const dec2 = exponential && r.chance(0.3);
@@ -321,7 +321,7 @@ export function unitIntervals(r: Rng, exponential: boolean): Question {
 }
 
 const GROWTH4 = ["Crecimiento lineal", "Decrecimiento lineal", "Crecimiento exponencial", "Decrecimiento exponencial"];
-// AA.10: describir crecimiento y decrecimiento lineal y exponencial.
+// Describir crecimiento y decrecimiento lineal y exponencial.
 export function describeGrowth(r: Rng): Question {
   const k = r.int(0, 3);
   const cases = [
@@ -333,7 +333,7 @@ export function describeGrowth(r: Rng): Question {
   return fixedQ(`¿Qué tipo de cambio describe la situación? ${r.chance(0.5) ? cases[0] : `y está dada por ${cases[1]}.`}`, GROWTH4, GROWTH4[k], ["Se suma la misma cantidad cada vez.", "Se resta la misma cantidad cada vez.", "Se multiplica por un factor mayor que 1.", "Se multiplica por un factor entre 0 y 1."][k], undefined, ["crece-lineal", "decrece-lineal", "crece-exp", "decrece-exp"][k]);
 }
 
-// AA.11 / AA.12: comparar crecimiento lineal, exponencial (y cuadrático).
+// Comparar crecimiento lineal, exponencial (y cuadrático).
 export function compareGrowth(r: Rng, withQuadratic: boolean): Question {
   const a = r.int(5, 30), b = r.int(1, 10);
   const funcs = [{ name: "f", text: `f(x) = ${a}x + ${b}`, f: (x: number) => a * x + b }, { name: "g", text: "g(x) = 2^x", f: (x: number) => 2 ** x }];

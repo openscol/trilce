@@ -19,7 +19,7 @@ const PROPORTIONAL: [string, boolean, string][] = [
   ["Una impresora imprime 20 páginas por minuto. Se relacionan los minutos con las páginas impresas.", true, "Páginas ÷ minutos siempre da 20."],
   ["La edad de Ana y la de su hermano, que es 3 años mayor. Se relaciona la edad de Ana con la de su hermano.", false, "Se suma 3, no se multiplica: la razón cambia con los años."],
 ];
-// X.8: identificar relaciones proporcionales: problemas.
+// Identificar relaciones proporcionales: problemas.
 export function proportionalWord(r: Rng): Question {
   const [text, yes, why] = r.pick(PROPORTIONAL);
   return yesNo(`${text} ¿Es una relación proporcional?`, yes, why, undefined, yes ? "si" : "no");
@@ -30,7 +30,7 @@ const quad1 = (k: number, max: number): Visual => {
   return { kind: "coordPlane", max, points: pts.map((p) => ({ ...p, emoji: "•" })), lines: [{ from: { x: 0, y: 0 }, to: { x: Math.min(max, max / k), y: Math.min(max, max / k) * k } }] };
 };
 
-// X.9: graficar relaciones proporcionales y hallar la pendiente.
+// Graficar relaciones proporcionales y hallar la pendiente.
 export function proportionalSlope(r: Rng): Question {
   const k = r.int(1, 4);
   const [what, unit] = r.pick([["kilómetros recorridos por hora", "km"], ["soles que se pagan por kilo", "soles"], ["litros que caen por minuto", "litros"]]);
@@ -38,7 +38,7 @@ export function proportionalSlope(r: Rng): Question {
 }
 
 const COMPARE = ["A", "B", "Las dos son iguales"];
-// X.12: comparar relaciones proporcionales representadas de formas distintas.
+// Comparar relaciones proporcionales representadas de formas distintas.
 export function compareProportional(r: Rng): Question {
   const kA = r.int(2, 9);
   let kB = r.int(2, 9);
@@ -80,7 +80,7 @@ function scatter(r: Rng, kind: "positive" | "negative" | "none" | "nonlinear" = 
 }
 const plot = (s: Scatter, line?: { from: { x: number; y: number }; to: { x: number; y: number } }): Visual => ({ kind: "scatterPlot", xLabel: s.xLabel, yLabel: s.yLabel, xMax: s.xMax, yMax: s.yMax, xStep: s.xStep, yStep: s.yStep, points: s.points, line });
 
-// II.3: interpretar diagramas de dispersión.
+// Interpretar diagramas de dispersión.
 export function interpretScatter(r: Rng): Question {
   const s = scatter(r);
   const cut = s.xStep * Math.round(r.int(3, 7) / 10 * s.xMax / s.xStep);
@@ -89,7 +89,7 @@ export function interpretScatter(r: Rng): Question {
   return numQ(count, `Cada punto del diagrama es un dato. ¿Cuántos puntos tienen un valor de «${s.xLabel}» ${above ? "mayor" : "menor"} que ${cut}?`, plot(s), `Se cuentan los puntos ${above ? "a la derecha" : "a la izquierda"} de ${cut} en el eje horizontal: ${count}.`, "contar");
 }
 
-// II.4: crear diagramas de dispersión (¿qué punto falta?).
+// Crear diagramas de dispersión (¿qué punto falta?).
 export function createScatter(r: Rng): Question {
   const s = scatter(r);
   const data = s.points.slice(0, 6);
@@ -101,7 +101,7 @@ export function createScatter(r: Rng): Question {
   return choiceQ(r, `Se graficaron estos datos: ${data.map(pt).join("; ")}. Falta un punto en el diagrama. ¿Cuál?`, good, wrong, `El par ${good} de la lista no aparece en el diagrama.`, plot(shown), "crear");
 }
 
-// II.5 / II.11: predicciones con la tendencia (o con la recta de ajuste).
+// Predicciones con la tendencia (o con la recta de ajuste).
 export function scatterPrediction(r: Rng, withLine = false): Question {
   const s = scatter(r);
   const x = s.xStep * Math.round((r.int(2, 8) / 10) * s.xMax / s.xStep);
@@ -113,7 +113,7 @@ export function scatterPrediction(r: Rng, withLine = false): Question {
   return choiceQ(r, `${withLine ? "La recta es la recta de ajuste de los datos." : "Observa la tendencia de los datos."} ¿Qué valor de «${s.yLabel}» se espera aproximadamente cuando «${s.xLabel}» es ${x}?`, `Unos ${y}`, opts.slice(1).map((v) => `Unos ${v}`), `Siguiendo la tendencia${withLine ? " (la recta)" : ""}, en x = ${x} el valor está cerca de ${y}.`, plot(s, withLine ? line : undefined), withLine ? "recta" : "tendencia");
 }
 
-// II.6: valores atípicos en diagramas de dispersión.
+// Valores atípicos en diagramas de dispersión.
 export function scatterOutlier(r: Rng): Question {
   const s = scatter(r);
   const i = r.int(0, s.points.length - 1);
@@ -127,7 +127,7 @@ export function scatterOutlier(r: Rng): Question {
 }
 
 const DESCRIBE = ["Asociación lineal positiva", "Asociación lineal negativa", "Asociación no lineal", "Sin asociación"];
-// II.7: describir diagramas de dispersión.
+// Describir diagramas de dispersión.
 export function describeScatter(r: Rng): Question {
   const k = r.int(0, 3);
   const s = scatter(r, (["positive", "negative", "nonlinear", "none"] as const)[k]);
@@ -141,7 +141,7 @@ const ASSOC: [string, number][] = [
   ["el número de calzado y la nota de matemática", 2], ["el mes de nacimiento y la estatura", 2], ["el color del cuaderno y las horas de estudio", 2],
 ];
 const ASSOC_OPTS = ["Positiva", "Negativa", "No hay asociación"];
-// II.8: describir asociaciones entre dos variables.
+// Describir asociaciones entre dos variables.
 export function association(r: Rng): Question {
   if (r.chance(0.4)) {
     const k = r.int(0, 2);
@@ -152,7 +152,7 @@ export function association(r: Rng): Question {
   return fixedQ(`Si se hace un diagrama de dispersión con ${text}, ¿qué asociación se espera?`, ASSOC_OPTS, ASSOC_OPTS[k], ["Cuando una aumenta, la otra también tiende a aumentar.", "Cuando una aumenta, la otra tiende a disminuir.", "Una variable no tiene que ver con la otra."][k], undefined, "situacion");
 }
 
-// II.9: identificar rectas de ajuste.
+// Identificar rectas de ajuste.
 export function bestFitLine(r: Rng): Question {
   const s = scatter(r);
   const good = r.chance(0.5);
@@ -162,7 +162,7 @@ export function bestFitLine(r: Rng): Question {
   return yesNo("¿La recta dibujada es una buena recta de ajuste para los datos?", good, good ? "Sigue la tendencia y deja más o menos la misma cantidad de puntos arriba y abajo." : "No sigue la tendencia: casi todos los puntos quedan del mismo lado o la inclinación es la contraria.", plot(s, { from, to }), good ? "si" : "no");
 }
 
-// II.10: escribir la ecuación de la recta de ajuste.
+// Escribir la ecuación de la recta de ajuste.
 export function bestFitEquation(r: Rng): Question {
   const s = scatter(r);
   const [mn, md] = s.m === 1.5 ? [3, 2] : s.m === -0.5 ? [-1, 2] : s.m === 0.25 ? [1, 4] : [s.m, 1];
@@ -172,7 +172,7 @@ export function bestFitEquation(r: Rng): Question {
   return choiceQ(r, "¿Qué ecuación corresponde a la recta de ajuste dibujada?", good, [...new Set(wrong)], `La recta corta el eje vertical en ${dec(s.b)} y cambia ${dec(s.m)} por cada unidad de x: ${good}.`, plot(s, line), "ecuacion");
 }
 
-// II.11: interpretar rectas de ajuste: problemas.
+// Interpretar rectas de ajuste: problemas.
 export function interpretBestFit(r: Rng): Question {
   const m = r.int(2, 6), b = r.int(20, 50), x = r.int(2, 9);
   if (r.chance(0.5)) return numQ(m * x + b, `La recta de ajuste y = ${m}x + ${b} relaciona las horas de práctica semanales (x) con el puntaje en un torneo (y). Según la recta, ¿qué puntaje se espera con ${x} horas de práctica?`, undefined, `y = ${m} × ${x} + ${b} = ${m * x + b}.`, "predecir");
@@ -187,7 +187,7 @@ const TWO_WAY: [string, [string, string], [string, string]][] = [
   ["si tienen mascota, según su zona", ["Con mascota", "Sin mascota"], ["Zona urbana", "Zona rural"]],
   ["cómo llegan al colegio, según el turno", ["A pie", "En movilidad"], ["Mañana", "Tarde"]],
 ];
-// JJ.1: crear e interpretar tablas de doble entrada.
+// Crear e interpretar tablas de doble entrada.
 export function twoWayTable(r: Rng): Question {
   const [topic, cols, rows] = r.pick(TWO_WAY);
   const cells = [[r.int(5, 30), r.int(5, 30)], [r.int(5, 30), r.int(5, 30)]];

@@ -1,36 +1,15 @@
 import { choose, pickInSentence, type ChoiceItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { f, pt, s, sorter, w } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Gramática y ortografía, segunda parte (IXL 8th grade ELA, OO-YY), con las
-// reglas del castellano (las mismas adaptaciones que en 1.°):
-//   orden de los adjetivos → posición del adjetivo y formas cortas (buen, gran, primer)
-//   good/better/best, bad/worse/worst → bueno, mejor, óptimo; malo, peor, pésimo
-//   well/better/best, badly/worse/worst → bien, mejor; mal, peor
-//   conjunciones correlativas → ni… ni, o… o, tanto… como, no solo… sino también
-//   misplaced / dangling modifiers → modificadores mal colocados y gerundios mal usados
-//   restrictive / nonrestrictive → especificativas (sin comas) y explicativas (con comas)
-//   hyphens in compound adjectives → guion en adjetivos compuestos (político-económico)
-//   mayúsculas: días, meses, gentilicios e idiomas van con minúscula; en los
-//   títulos, solo la primera palabra y los nombres propios
-//   citas y diálogos: comillas angulares («») y raya (—)
+// 2.° de Secundaria · banco de gramática y ortografía (segunda parte):
+// posición del adjetivo, comparativos, correlativas, modificadores mal
+// colocados, especificativas y explicativas, comas, punto y coma, raya, guion
+// en adjetivos compuestos (político-económico), puntos suspensivos,
+// mayúsculas y citas con comillas angulares y raya.
 
-export const SECTIONS: Section[] = [
-  { id: "OO", name: "Adjetivos y adverbios", icon: "🎨" },
-  { id: "PP", name: "Preposiciones", icon: "📦" },
-  { id: "QQ", name: "Objeto directo e indirecto", icon: "🎯" },
-  { id: "RR", name: "Conjunciones", icon: "🔗" },
-  { id: "SS", name: "Modificadores mal colocados", icon: "🧲" },
-  { id: "TT", name: "Elementos explicativos y especificativos", icon: "🔍" },
-  { id: "UU", name: "Comas", icon: "❗" },
-  { id: "VV", name: "Punto y coma, dos puntos y comas", icon: "⏸️" },
-  { id: "WW", name: "Raya, guion y puntos suspensivos", icon: "➖" },
-  { id: "XX", name: "Mayúsculas", icon: "🔠" },
-  { id: "YY", name: "Formato", icon: "📝" },
-];
 
-// --- OO. Adjetivos y adverbios -----------------------------------------------
+// --- Adjetivos y adverbios -----------------------------------------------
 
 const ADJECTIVES_IN = [
   s("Una neblina espesa cubría el puerto silencioso.", "espesa", "silencioso"), s("El joven arqueólogo halló una tumba intacta.", "joven", "intacta"), s("Las danzas puneñas tienen trajes deslumbrantes.", "puneñas", "deslumbrantes"),
@@ -85,7 +64,7 @@ const WELL_BADLY: ChoiceItem[] = [
   f("Cuanto más lee, ___ escribe.", "mejor", "más bueno", "bien"), f("Baila tan ___ como su hermana.", "bien", "buena", "mejor"),
 ];
 
-// --- PP. Preposiciones ---------------------------------------------------------
+// --- Preposiciones ---------------------------------------------------------
 
 const PREP = "¿Cuál es la frase con preposición de la oración?";
 const PREP_PHRASE: ChoiceItem[] = [
@@ -95,7 +74,7 @@ const PREP_PHRASE: ChoiceItem[] = [
   pt(PREP, "Los turistas vinieron desde Cusco.", "desde Cusco", "Los turistas vinieron", "vinieron"), pt(PREP, "El gato se escondió bajo la cama.", "bajo la cama", "El gato se escondió", "se escondió"),
 ];
 
-// --- QQ. Objeto directo e indirecto --------------------------------------------
+// --- Objeto directo e indirecto --------------------------------------------
 
 const OD = sorter(["Objeto directo", "Objeto indirecto"], "La parte en MAYÚSCULAS, ¿es objeto directo u objeto indirecto?");
 const OBJECTS: ChoiceItem[] = [
@@ -103,7 +82,7 @@ const OBJECTS: ChoiceItem[] = [
   ...["La artesana le regaló un retablo A SU NIETA.", "Le entregamos el informe AL ALCALDE.", "Les compré chompas A MIS SOBRINOS.", "El jurado les dio diplomas A LOS GANADORES.", "Le escribí una carta A MI ABUELO."].map((x) => OD(x, 1)),
 ];
 
-// --- RR. Conjunciones -----------------------------------------------------------
+// --- Conjunciones -----------------------------------------------------------
 
 const CORRELATIVE_PAIR: ChoiceItem[] = [
   f("___ la sierra ___ la selva sufrieron las heladas.", "Tanto… como", "Ni… o", "No solo… sino también"), f("___ los jóvenes ___ los adultos participaron.", "Tanto… como", "O… o", "Ni… o"),
@@ -112,7 +91,7 @@ const CORRELATIVE_PAIR: ChoiceItem[] = [
   f("___ quiso hablar ___ quiso comer.", "Ni… ni", "Tanto… como", "No solo… sino"), f("Visitamos ___ Puno, ___ también el lago.", "no solo… sino", "ni… ni", "o… o"),
 ];
 
-// --- SS. Modificadores mal colocados ---------------------------------------------
+// --- Modificadores mal colocados ---------------------------------------------
 
 const PIC = "¿Qué oración describe correctamente el dibujo?";
 const MISPLACED_PICS: ChoiceItem[] = [
@@ -136,7 +115,7 @@ const MODIFIERS_OK: ChoiceItem[] = [
   ...["Se vende refrigeradora para familia usada.", "Caminando por el parque, un colibrí me sorprendió.", "Compré un retablo para mi profesora de Ayacucho.", "Terminando el examen, la hoja fue entregada.", "Se necesita profesor para niños de matemáticas."].map((x) => MC(x, 1)),
 ];
 
-// --- TT. Explicativas y especificativas -----------------------------------------
+// --- Explicativas y especificativas -----------------------------------------
 
 const MEANING = "¿Qué sugiere la puntuación?";
 const PUNCT_MEANING: ChoiceItem[] = [
@@ -154,7 +133,7 @@ const NONRESTRICTIVE: ChoiceItem[] = [
   w(COMMA, "Los alumnos que llegaron tarde no entraron.", "Los alumnos, que llegaron tarde no entraron.", "Los alumnos que llegaron tarde, no entraron."), w(COMMA, "La novela que me recomendaste es buenísima.", "La novela, que me recomendaste es buenísima.", "La novela que me recomendaste, es buenísima."),
 ];
 
-// --- UU. Comas -------------------------------------------------------------------
+// --- Comas -------------------------------------------------------------------
 
 const COMMA_SERIES: ChoiceItem[] = [
   w(COMMA, "Llevamos carpas, linternas, agua y abrigo.", "Llevamos carpas linternas agua y abrigo.", "Llevamos, carpas, linternas, agua, y abrigo."), w(COMMA, "Recorrimos Tacna, Moquegua y Arequipa.", "Recorrimos Tacna Moquegua y Arequipa.", "Recorrimos, Tacna, Moquegua, y Arequipa."),
@@ -178,7 +157,7 @@ const COMMA_ADJ: ChoiceItem[] = [
   w("¿En qué oración NO van comas entre los adjetivos?", "Leyó una gran novela peruana.", "Leyó una novela larga, densa, conmovedora.", "Leyó un libro breve, claro, útil."), w("¿En qué oración NO van comas entre los adjetivos?", "Vive en una antigua casa colonial.", "Vive en una casa vieja, oscura, húmeda.", "Vive en un cuarto frío, estrecho, sucio."),
 ];
 
-// --- VV. Punto y coma, dos puntos y comas --------------------------------------------
+// --- Punto y coma, dos puntos y comas --------------------------------------------
 
 const PUNCT = "¿Qué oración está bien puntuada?";
 const SEMICOLON_CLAUSES: ChoiceItem[] = [
@@ -192,7 +171,7 @@ const SEMICOLON_LISTS: ChoiceItem[] = [
   w(PUNCT, "El Perú tiene tres regiones naturales: costa, sierra y selva.", "El Perú tiene tres regiones naturales; costa, sierra y selva.", "El Perú tiene: tres regiones naturales, costa, sierra, y selva."), w("¿Qué oración NO debe llevar dos puntos?", "Los ganadores son Ana y Luis.", "Hubo dos ganadores: Ana y Luis.", "Lo dijo claramente: no vendrá."),
 ];
 
-// --- WW. Raya, guion y puntos suspensivos ----------------------------------------------
+// --- Raya, guion y puntos suspensivos ----------------------------------------------
 
 const DASHES: ChoiceItem[] = [
   w("¿Qué oración usa bien la raya?", "El Misti —volcán activo— vigila Arequipa.", "El Misti -volcán activo vigila Arequipa.", "El Misti — volcán activo, vigila Arequipa."), w("¿Qué diálogo está bien escrito?", "—¿Ya terminaste? —preguntó la profesora.", "-¿Ya terminaste? -preguntó la profesora.", "¿Ya terminaste? — preguntó la profesora —"),
@@ -211,7 +190,7 @@ const ELLIPSIS: ChoiceItem[] = [
   w("¿Qué indican los puntos suspensivos en «Si supieras lo que vi…»?", "Que algo queda sin decir", "Que la oración es una pregunta", "Que termina el capítulo"), w("¿Qué indica «[…]» en una cita?", "Que se omitió parte del texto citado", "Que el autor dudaba al escribir", "Que la cita es inventada"),
 ];
 
-// --- XX. Mayúsculas --------------------------------------------------------------
+// --- Mayúsculas --------------------------------------------------------------
 
 const CAPS = "¿Qué oración está bien escrita?";
 const CAPS_ERRORS: ChoiceItem[] = [
@@ -227,7 +206,7 @@ const CAPS_TITLES: ChoiceItem[] = [
   w("En un título en castellano, ¿qué palabras llevan mayúscula?", "La primera y los nombres propios", "Todas las palabras importantes", "Ninguna"), w("¿Qué título está bien escrito?", "Viaje al centro de la Tierra", "Viaje al Centro de la Tierra", "viaje al centro de la tierra"),
 ];
 
-// --- YY. Formato -------------------------------------------------------------------
+// --- Formato -------------------------------------------------------------------
 
 const FORMAT_TITLES: ChoiceItem[] = [
   w("En un texto digitado, ¿cómo se escribe el título de una novela?", "En cursiva", "Entre comillas", "En negrita"), w("¿Cómo se escribe el título de un cuento dentro de un libro?", "Entre comillas", "En cursiva", "Subrayado"),
@@ -253,47 +232,47 @@ const QUOTES: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["OO.1", "Identificar adjetivos", (r) => pickInSentence(r, "Selecciona los adjetivos de la oración.", ADJECTIVES_IN)],
-  ["OO.2", "Ordenar los adjetivos: su lugar y sus formas cortas", (r) => choose(r, "", ADJ_ORDER)],
-  ["OO.3", "Identificar adverbios", (r) => pickInSentence(r, "Selecciona los adverbios de la oración.", ADVERBS_IN)],
-  ["OO.4", "Elegir entre adjetivos y adverbios", (r) => choose(r, "Completa la oración.", ADJ_OR_ADV_USE)],
-  ["OO.5", "¿La palabra es un adjetivo o un adverbio?", (r) => choose(r, "", ADJ_OR_ADV)],
-  ["OO.6", "Formar y usar adjetivos comparativos y superlativos", (r) => choose(r, "Completa la oración.", COMP_SUP_ADJ)],
-  ["OO.7", "Bueno, mejor, óptimo; malo, peor, pésimo", (r) => choose(r, "Completa la oración.", GOOD_BAD)],
-  ["OO.8", "Formar y usar adverbios comparativos y superlativos", (r) => choose(r, "Completa la oración.", COMP_SUP_ADV)],
-  ["OO.9", "Bien, mejor; mal, peor", (r) => choose(r, "Completa la oración.", WELL_BADLY)],
+  ["adjetivos-adverbios-1", (r) => pickInSentence(r, "Selecciona los adjetivos de la oración.", ADJECTIVES_IN)],
+  ["adjetivos-adverbios-2", (r) => choose(r, "", ADJ_ORDER)],
+  ["adjetivos-adverbios-3", (r) => pickInSentence(r, "Selecciona los adverbios de la oración.", ADVERBS_IN)],
+  ["adjetivos-adverbios-4", (r) => choose(r, "Completa la oración.", ADJ_OR_ADV_USE)],
+  ["adjetivos-adverbios-5", (r) => choose(r, "", ADJ_OR_ADV)],
+  ["comparar-1", (r) => choose(r, "Completa la oración.", COMP_SUP_ADJ)],
+  ["comparar-2", (r) => choose(r, "Completa la oración.", GOOD_BAD)],
+  ["comparar-3", (r) => choose(r, "Completa la oración.", COMP_SUP_ADV)],
+  ["comparar-4", (r) => choose(r, "Completa la oración.", WELL_BADLY)],
 
-  ["PP.1", "Identificar frases con preposición", (r) => choose(r, "", PREP_PHRASE)],
+  ["preposiciones-1", (r) => choose(r, "", PREP_PHRASE)],
 
-  ["QQ.1", "¿Es un objeto directo o un objeto indirecto?", (r) => choose(r, "", OBJECTS)],
+  ["objetos", (r) => choose(r, "", OBJECTS)],
 
-  ["RR.1", "Usar el par correcto de conjunciones correlativas", (r) => choose(r, "Completa la oración.", CORRELATIVE_PAIR)],
+  ["preposiciones-2", (r) => choose(r, "Completa la oración.", CORRELATIVE_PAIR)],
 
-  ["SS.1", "Modificadores mal colocados, con dibujos", (r) => choose(r, "", MISPLACED_PICS)],
-  ["SS.2", "Elegir el modificador mal colocado o el gerundio mal usado", (r) => choose(r, "", SELECT_MISPLACED)],
-  ["SS.3", "¿Los modificadores están bien usados?", (r) => choose(r, "", MODIFIERS_OK)],
+  ["modificadores-1", (r) => choose(r, "", MISPLACED_PICS)],
+  ["modificadores-2", (r) => choose(r, "", SELECT_MISPLACED)],
+  ["modificadores-3", (r) => choose(r, "", MODIFIERS_OK)],
 
-  ["TT.1", "¿Qué sugiere la puntuación?", (r) => choose(r, "", PUNCT_MEANING)],
-  ["TT.2", "Comas en los elementos explicativos", (r) => choose(r, "", NONRESTRICTIVE)],
+  ["explicativos-1", (r) => choose(r, "", PUNCT_MEANING)],
+  ["explicativos-2", (r) => choose(r, "", NONRESTRICTIVE)],
 
-  ["UU.1", "Comas en enumeraciones, fechas y lugares", (r) => choose(r, "", COMMA_SERIES)],
-  ["UU.2", "Comas en oraciones compuestas", (r) => choose(r, "", COMMA_COMPOUND)],
-  ["UU.3", "Comas con vocativos, palabras introductorias, interjecciones e incisos", (r) => choose(r, "", COMMA_ADDRESS)],
-  ["UU.4", "Comas entre adjetivos coordinados", (r) => choose(r, "", COMMA_ADJ)],
-  ["UU.5", "Comas: repaso", (r) => choose(r, "", [...COMMA_SERIES, ...COMMA_COMPOUND, ...COMMA_ADDRESS, ...COMMA_ADJ])],
+  ["comas-1", (r) => choose(r, "", COMMA_SERIES)],
+  ["comas-2", (r) => choose(r, "", COMMA_COMPOUND)],
+  ["comas-3", (r) => choose(r, "", COMMA_ADDRESS)],
+  ["comas-4", (r) => choose(r, "", COMMA_ADJ)],
+  ["comas-5", (r) => choose(r, "", [...COMMA_SERIES, ...COMMA_COMPOUND, ...COMMA_ADDRESS, ...COMMA_ADJ])],
 
-  ["VV.1", "Usar punto y coma y comas para separar proposiciones", (r) => choose(r, "", SEMICOLON_CLAUSES)],
-  ["VV.2", "Usar punto y coma, dos puntos y comas en enumeraciones", (r) => choose(r, "", SEMICOLON_LISTS)],
+  ["punto-y-coma-1", (r) => choose(r, "", SEMICOLON_CLAUSES)],
+  ["punto-y-coma-2", (r) => choose(r, "", SEMICOLON_LISTS)],
 
-  ["WW.1", "Usar la raya", (r) => choose(r, "", DASHES)],
-  ["WW.2", "Usar el guion en adjetivos compuestos", (r) => choose(r, "", HYPHENS)],
-  ["WW.3", "Decidir si los puntos suspensivos están bien usados", (r) => choose(r, "", ELLIPSIS)],
+  ["raya-suspensivos-1", (r) => choose(r, "", DASHES)],
+  ["guion", (r) => choose(r, "", HYPHENS)],
+  ["raya-suspensivos-2", (r) => choose(r, "", ELLIPSIS)],
 
-  ["XX.1", "Corregir errores de mayúsculas", (r) => choose(r, "", CAPS_ERRORS)],
-  ["XX.2", "Mayúsculas en los títulos", (r) => choose(r, "", CAPS_TITLES)],
+  ["mayusculas-1", (r) => choose(r, "", CAPS_ERRORS)],
+  ["mayusculas-2", (r) => choose(r, "", CAPS_TITLES)],
 
-  ["YY.1", "Dar formato a los títulos", (r) => choose(r, "", FORMAT_TITLES)],
-  ["YY.2", "Dar formato y poner mayúsculas a los títulos: repaso", (r) => choose(r, "", TITLES_BOTH)],
-  ["YY.3", "Dar formato a las direcciones", (r) => choose(r, "", ADDRESSES)],
-  ["YY.4", "Dar formato a las citas y a los diálogos", (r) => choose(r, "", QUOTES)],
+  ["mayusculas-3", (r) => choose(r, "", FORMAT_TITLES)],
+  ["mayusculas-4", (r) => choose(r, "", TITLES_BOTH)],
+  ["citas-dialogos-1", (r) => choose(r, "", ADDRESSES)],
+  ["citas-dialogos-2", (r) => choose(r, "", QUOTES)],
 ];

@@ -1,28 +1,13 @@
 import { choose, order, readPassage, type ChoiceItem, type OrderItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { pool, pt, read, sorter, w } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Estrategias de lectura (IXL 4th grade ELA, D-N). Lecturas propias, con temas
-// cercanos a los alumnos (Perú y Latinoamérica). Las ilustraciones de IXL se
-// reemplazan por descripciones y emojis; las alusiones usan fuentes conocidas
-// en castellano (mitos griegos, fábulas, el Quijote).
+// 4.° de Primaria · banco de comprensión con lecturas propias, cercanas a los
+// alumnos (Perú y Latinoamérica). Las alusiones usan fuentes conocidas en
+// castellano (mitos griegos, fábulas, el Quijote).
 
-export const SECTIONS: Section[] = [
-  { id: "D", name: "Idea principal", icon: "💡" },
-  { id: "E", name: "Inferencias y tema", icon: "🕵️" },
-  { id: "F", name: "Propósito y punto de vista del autor", icon: "✍️" },
-  { id: "G", name: "Personajes", icon: "🎭" },
-  { id: "H", name: "Elementos del cuento", icon: "📖" },
-  { id: "I", name: "Estructura del texto", icon: "🧱" },
-  { id: "J", name: "Detalles sensoriales", icon: "👃" },
-  { id: "K", name: "Recursos literarios", icon: "✨" },
-  { id: "L", name: "Elementos visuales", icon: "🖼️" },
-  { id: "M", name: "Partes del texto", icon: "🔖" },
-  { id: "N", name: "Elementos de la poesía", icon: "🎶" },
-];
 
-// --- D. Idea principal -------------------------------------------------------
+// --- Idea principal -------------------------------------------------------
 
 const DETAILS = "¿Qué idea principal unen estos detalles?";
 const KEY_DETAILS: ChoiceItem[] = [
@@ -68,7 +53,7 @@ const TWO_MAIN: ChoiceItem[] = [
   pt(TWO, "Texto 1: Apagar la luz al salir de un cuarto ahorra energía.\nTexto 2: Cerrar el caño mientras te cepillas ahorra muchos litros de agua.", "Los pequeños hábitos ayudan a cuidar los recursos.", "El agua y la luz son gratis.", "Solo las fábricas deben ahorrar energía y agua todos los días."),
 ];
 
-// --- E. Inferencias y tema ---------------------------------------------------
+// --- Inferencias y tema ---------------------------------------------------
 
 const BOOK_TITLES = pool([
   ["🧗‍♀️🏔️", "La cumbre más alta"], ["🔭🪐", "Vecinos del sistema solar"], ["🐢🌊", "El largo viaje de la tortuga"], ["🕵️🔍", "El caso del collar perdido"],
@@ -131,7 +116,7 @@ const THEMES = [
     ["¿Qué decisión de Iván revela el tema?", "Tocar la puerta y contar lo ocurrido.", "Pedir prestada la bicicleta.", "Pasar la tarde en casa."]),
 ];
 
-// --- F. Propósito y punto de vista -------------------------------------------
+// --- Propósito y punto de vista -------------------------------------------
 
 const PURPOSE = sorter(["Informar", "Convencer", "Entretener"], "¿Cuál es el propósito del texto?");
 const TEXT_PURPOSE: ChoiceItem[] = [
@@ -180,7 +165,7 @@ const PERSUASIVE = [
     ["¿Qué oración es un llamado directo al lector?", "«Antes de comprar una mascota, visita un albergue».", "«Hay cientos de perros esperando».", "«Suelen ser muy agradecidos»."]),
 ];
 
-// --- G. Personajes -----------------------------------------------------------
+// --- Personajes -----------------------------------------------------------
 
 const TRAIT = "¿Cómo es el personaje?";
 const TRAITS: ChoiceItem[] = [
@@ -205,7 +190,7 @@ const COMPARE_CHARACTERS = [
     ["¿Qué tienen en común los dos personajes?", "Los dos enfrentan la misma sequía.", "Los dos saben volar muy alto sobre el valle.", "Los dos hablan poco."]),
 ];
 
-// --- H. Elementos del cuento -------------------------------------------------
+// --- Elementos del cuento -------------------------------------------------
 
 const NARR = sorter(["Primera persona (el narrador participa)", "Tercera persona (el narrador cuenta desde fuera)"], "¿Desde qué punto de vista se narra?");
 const NARRATOR: ChoiceItem[] = [
@@ -237,7 +222,7 @@ const PLOT: ChoiceItem[] = [
   pt("¿Qué hecho es el desenlace?", "1. Un pueblo se queda sin agua.\n2. Los vecinos discuten.\n3. Una niña propone cavar juntos un pozo.\n4. Encuentran agua y celebran.", "Encuentran agua y celebran.", "El pueblo se queda sin agua.", "Los vecinos discuten."),
 ];
 
-// --- I. Estructura del texto -------------------------------------------------
+// --- Estructura del texto -------------------------------------------------
 
 const INFO_ORDER: OrderItem[] = [
   { p: "Ordena las etapas de la vida de una mariposa.", seq: ["La mariposa pone huevos.", "De cada huevo sale una oruga.", "La oruga forma una crisálida.", "De la crisálida sale una mariposa."] },
@@ -284,7 +269,7 @@ const STRUCTURES: ChoiceItem[] = [
   ...["El parque estaba oscuro y la gente tenía miedo. Los vecinos pidieron faroles y ahora todos pasean de noche.", "Faltaba agua en la chacra. Los comuneros construyeron un canal desde la laguna."].map((x) => STRUCT(x, 3)),
 ];
 
-// --- J. Detalles sensoriales -------------------------------------------------
+// --- Detalles sensoriales -------------------------------------------------
 
 const SENSE = sorter(["Vista", "Oído", "Olfato", "Gusto", "Tacto"], "¿A qué sentido se dirige el detalle?");
 const SENSES: ChoiceItem[] = [
@@ -307,7 +292,7 @@ const SENSORY_ID: ChoiceItem[] = [
   pt("¿Qué palabras del texto son detalles sensoriales?", "Entramos a la cueva. Las paredes húmedas y frías goteaban con un eco lento.", "«húmedas y frías» y «eco lento»", "«entramos» y «a la cueva»", "«las paredes» y «con un»"),
 ];
 
-// --- K. Recursos literarios --------------------------------------------------
+// --- Recursos literarios --------------------------------------------------
 
 const FIG = sorter(["Símil (compara con «como» o «parece»)", "Metáfora (dice que una cosa es otra)"], "¿Es un símil o una metáfora?");
 const SIMILE_METAPHOR: ChoiceItem[] = [
@@ -361,7 +346,7 @@ const FIGURE_EFFECT: ChoiceItem[] = [
   pt(EFFECT, "«El silencio pesaba como una losa».", "Transmite tensión e incomodidad.", "Transmite una gran alegría entre amigos.", "Describe una piedra."),
 ];
 
-// --- L. Elementos visuales ---------------------------------------------------
+// --- Elementos visuales ---------------------------------------------------
 
 const ILLU_1 = "Ilustración 1 ⚡: El dios Illapa, enorme entre nubes negras, lanza un rayo con su honda. Abajo, unos campesinos pequeños se cubren.\nIlustración 2 🌧️: Illapa vierte agua de un cántaro sobre los campos. Los campesinos levantan los brazos, sonrientes.";
 const ILLU_2 = "Ilustración 1 🌊: Un héroe rema solo en un mar oscuro; las olas son más altas que su balsa.\nIlustración 2 🏝️: El mismo héroe pisa una playa clara; detrás, el mar está en calma y sale el sol.";
@@ -386,7 +371,7 @@ const ORGANIZERS: ChoiceItem[] = [
   pt("Según la tabla, ¿qué dato corresponde a Mercurio?", TABLE, "Es el más pequeño.", "Tiene vida.", "Tiene una luna."),
 ];
 
-// --- M. Partes del texto -----------------------------------------------------
+// --- Partes del texto -----------------------------------------------------
 
 const FEATURES: ChoiceItem[] = [
   w("Quieres saber en qué página empieza el capítulo 5. ¿Qué parte del libro usas?", "El índice", "El glosario", "La portada"),
@@ -401,7 +386,7 @@ const FEATURES: ChoiceItem[] = [
   w("¿Dónde encuentras el nombre del autor y el título de un libro?", "En la portada", "En el glosario", "En el pie de foto"),
 ];
 
-// --- N. Poesía ---------------------------------------------------------------
+// --- Poesía ---------------------------------------------------------------
 
 const SCHEMES = ["AABB", "ABAB", "ABBA", "ABCB"];
 const RHYME = (t: string, i: number): ChoiceItem => ({ p: "¿Cuál es el esquema de rima de la estrofa?", t, a: SCHEMES[i], d: SCHEMES.filter((_, k) => k !== i), e: `Las rimas siguen el esquema ${SCHEMES[i]}.` });
@@ -431,51 +416,51 @@ const POETRY: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["D.1", "Usar detalles clave para determinar la idea principal", (r) => choose(r, "", KEY_DETAILS)],
-  ["D.2", "Determinar la idea principal de un texto", (r) => readPassage(r, MAIN_PASSAGES, false)],
-  ["D.3", "Identificar y analizar la idea principal de un texto", (r) => readPassage(r, MAIN_ANALYZE, false)],
-  ["D.4", "Combinar las ideas principales de dos textos", (r) => choose(r, "", TWO_MAIN)],
+  ["idea-principal-1", (r) => choose(r, "", KEY_DETAILS)],
+  ["idea-principal-2", (r) => readPassage(r, MAIN_PASSAGES, false)],
+  ["idea-principal-3", (r) => readPassage(r, MAIN_ANALYZE, false)],
+  ["dos-textos-1", (r) => choose(r, "", TWO_MAIN)],
 
-  ["E.1", "¿Qué título de libro corresponde al dibujo?", (r) => choose(r, "¿Qué título de libro corresponde al dibujo?", BOOK_TITLES)],
-  ["E.2", "Hacer inferencias a partir de un texto", (r) => choose(r, "", INFER)],
-  ["E.3", "Hacer inferencias e identificar los detalles que las apoyan", (r) => readPassage(r, INFER_SUPPORT, false)],
-  ["E.4", "Hacer predicciones sobre un cuento", (r) => choose(r, "", PREDICT)],
-  ["E.5", "Determinar el tema de mitos, fábulas y leyendas", (r) => readPassage(r, FABLES, false)],
-  ["E.6", "Determinar el tema de cuentos cortos", (r) => readPassage(r, THEMES, false)],
+  ["inferencias-1", (r) => choose(r, "¿Qué título de libro corresponde al dibujo?", BOOK_TITLES)],
+  ["inferencias-2", (r) => choose(r, "", INFER)],
+  ["inferencias-3", (r) => readPassage(r, INFER_SUPPORT, false)],
+  ["inferencias-4", (r) => choose(r, "", PREDICT)],
+  ["tema-1", (r) => readPassage(r, FABLES, false)],
+  ["tema-2", (r) => readPassage(r, THEMES, false)],
 
-  ["F.1", "Identificar el propósito de un texto", (r) => choose(r, "", TEXT_PURPOSE)],
-  ["F.2", "Identificar el propósito y el mensaje del autor", (r) => choose(r, "", PURPOSE_MESSAGE)],
-  ["F.3", "Distinguir puntos de vista", (r) => choose(r, "", POINT_OF_VIEW)],
-  ["F.4", "Comparar la información de dos textos", (r) => choose(r, "", TWO_TEXTS)],
-  ["F.5", "Analizar textos argumentativos", (r) => readPassage(r, PERSUASIVE, false)],
+  ["proposito-1", (r) => choose(r, "", TEXT_PURPOSE)],
+  ["proposito-2", (r) => choose(r, "", PURPOSE_MESSAGE)],
+  ["proposito-3", (r) => choose(r, "", POINT_OF_VIEW)],
+  ["dos-textos-2", (r) => choose(r, "", TWO_TEXTS)],
+  ["argumentativos", (r) => readPassage(r, PERSUASIVE, false)],
 
-  ["G.1", "Usar acciones y diálogos para entender a los personajes", (r) => choose(r, "", TRAITS)],
-  ["G.2", "Comparar y contrastar personajes", (r) => readPassage(r, COMPARE_CHARACTERS, false)],
+  ["personajes-1", (r) => choose(r, "", TRAITS)],
+  ["personajes-2", (r) => readPassage(r, COMPARE_CHARACTERS, false)],
 
-  ["H.1", "Identificar el punto de vista del narrador", (r) => choose(r, "", NARRATOR)],
-  ["H.2", "Identificar los elementos del cuento", (r) => readPassage(r, STORY_ELEMENTS, false)],
-  ["H.3", "Analizar los elementos de la trama", (r) => choose(r, "", PLOT)],
+  ["narrador-trama-1", (r) => choose(r, "", NARRATOR)],
+  ["narrador-trama-2", (r) => readPassage(r, STORY_ELEMENTS, false)],
+  ["narrador-trama-3", (r) => choose(r, "", PLOT)],
 
-  ["I.1", "Determinar el orden de los hechos en textos informativos", (r) => order(r, "Ordena los pasos.", INFO_ORDER)],
-  ["I.2", "Comparar y contrastar en textos informativos", (r) => readPassage(r, COMPARE, false)],
-  ["I.3", "Relacionar causas y efectos en textos informativos", (r) => choose(r, "", CAUSE_INFO)],
-  ["I.4", "Relacionar problemas con sus soluciones", (r) => choose(r, "¿Qué solución corresponde al problema?", PROBLEM_SOLUTION)],
-  ["I.5", "Identificar y analizar estructuras de texto", (r) => choose(r, "", STRUCTURES)],
+  ["orden-comparacion-1", (r) => order(r, "Ordena los pasos.", INFO_ORDER)],
+  ["orden-comparacion-2", (r) => readPassage(r, COMPARE, false)],
+  ["causa-efecto-1", (r) => choose(r, "", CAUSE_INFO)],
+  ["causa-efecto-2", (r) => choose(r, "¿Qué solución corresponde al problema?", PROBLEM_SOLUTION)],
+  ["estructuras", (r) => choose(r, "", STRUCTURES)],
 
-  ["J.1", "Clasificar detalles sensoriales", (r) => choose(r, "", SENSES)],
-  ["J.2", "Identificar detalles sensoriales", (r) => choose(r, "", SENSORY_ID)],
+  ["sentidos-1", (r) => choose(r, "", SENSES)],
+  ["sentidos-2", (r) => choose(r, "", SENSORY_ID)],
 
-  ["K.1", "Identificar símiles y metáforas", (r) => choose(r, "", SIMILE_METAPHOR)],
-  ["K.2", "Símiles y metáforas con dibujos", (r) => choose(r, "¿Qué símil o metáfora corresponde al dibujo?", FIGURE_PICS)],
-  ["K.3", "Determinar el significado de símiles y metáforas", (r) => choose(r, "", FIGURE_MEANING)],
-  ["K.4", "Interpretar el significado de una alusión a partir de su fuente", (r) => choose(r, "", ALLUSIONS)],
-  ["K.5", "Analizar el efecto de las figuras literarias en el significado y el tono", (r) => choose(r, "", FIGURE_EFFECT)],
+  ["simil-metafora-1", (r) => choose(r, "", SIMILE_METAPHOR)],
+  ["simil-metafora-2", (r) => choose(r, "¿Qué símil o metáfora corresponde al dibujo?", FIGURE_PICS)],
+  ["simil-metafora-3", (r) => choose(r, "", FIGURE_MEANING)],
+  ["alusion", (r) => choose(r, "", ALLUSIONS)],
+  ["efecto-figuras", (r) => choose(r, "", FIGURE_EFFECT)],
 
-  ["L.1", "Comparar ilustraciones de mitos", (r) => choose(r, "", ILLUSTRATIONS)],
-  ["L.2", "Leer organizadores gráficos", (r) => choose(r, "", ORGANIZERS)],
+  ["visuales-1", (r) => choose(r, "", ILLUSTRATIONS)],
+  ["visuales-2", (r) => choose(r, "", ORGANIZERS)],
 
-  ["M.1", "Elegir y usar las partes de un texto", (r) => choose(r, "", FEATURES)],
+  ["partes-texto", (r) => choose(r, "", FEATURES)],
 
-  ["N.1", "Señalar el esquema de rima", (r) => choose(r, "", RHYME_SCHEMES)],
-  ["N.2", "Identificar los elementos de la poesía", (r) => choose(r, "", POETRY)],
+  ["poesia-1", (r) => choose(r, "", RHYME_SCHEMES)],
+  ["poesia-2", (r) => choose(r, "", POETRY)],
 ];

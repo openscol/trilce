@@ -13,13 +13,13 @@ function decimal(r: Rng, maxWhole: number, tenths = false) {
   return whole + (tenths ? r.int(1, 9) * 10 : r.int(1, 99));
 }
 
-// 4.° BB.2: ¿qué número decimal se muestra?
+// ¿qué número decimal se muestra?
 export function decimalIllustrated(r: Rng): Question {
   const h = r.chance(0.4) ? r.int(1, 9) * 10 : r.int(1, 99);
   return dq(r, "El cuadrado grande es 1 entero. ¿Qué decimal está sombreado?", h, `Hay ${h} casillas sombreadas de 100: ${h}/100 = ${d2(h)}.`, { kind: "decimalGrid", hundredths: h }, h % 10 === 0 ? "decimos" : "centesimos", [h * 10, h % 10 === 0 ? h / 10 : (h % 10) * 10 + Math.floor(h / 10)]);
 }
 
-// 4.° BB.5: rectas numéricas con centésimos.
+// Rectas numéricas con centésimos.
 export function hundredthsLine(r: Rng): Question {
   const base = r.int(0, 9) * 100 + r.int(0, 9) * 10;
   const k = r.int(1, 9);
@@ -28,7 +28,7 @@ export function hundredthsLine(r: Rng): Question {
 
 const DEN_HUNDREDTHS: Record<number, number> = { 2: 50, 4: 25, 5: 20, 10: 10, 20: 5, 25: 4, 50: 2, 100: 1 };
 
-// 4.° BB.6 / BB.8: fracciones y números mixtos → decimales.
+// Fracciones y números mixtos → decimales.
 export function fractionToDecimal(r: Rng, dens: number[]): Question {
   const d = r.pick(dens);
   const w = r.chance(0.4) ? r.int(1, 9) : 0;
@@ -39,7 +39,7 @@ export function fractionToDecimal(r: Rng, dens: number[]): Question {
   return dq(r, `Escribe ${text} como número decimal.`, h, why, undefined, `sobre-${d}`, [w * 100 + n, w * 100 + n * 10, w * 100 + (n % 10) * 10, n * 100 + w]);
 }
 
-// 4.° BB.7: decimales → fracciones y números mixtos.
+// Decimales → fracciones y números mixtos.
 export function decimalToFraction(r: Rng): Question {
   const tenths = r.chance(0.4);
   const h = decimal(r, r.chance(0.4) ? 9 : 0, tenths);
@@ -52,7 +52,7 @@ export function decimalToFraction(r: Rng): Question {
   return choiceQ(r, `Escribe ${d2(h)} como fracción o número mixto.`, answer, wrong, `${d2(h)} tiene ${w ? `${w} ${w === 1 ? "entero" : "enteros"} y ` : ""}${n} ${d === 10 ? "décimos" : "centésimos"}: ${answer}.`, undefined, d === 10 ? "decimos" : "centesimos");
 }
 
-// 4.° CC.1: modelos de valor posicional para decimales.
+// Modelos de valor posicional para decimales.
 export function decimalPlaceModel(r: Rng): Question {
   const u = r.int(0, 9);
   const t = r.int(0, 9);
@@ -61,7 +61,7 @@ export function decimalPlaceModel(r: Rng): Question {
   return dq(r, "¿Qué número decimal muestra la tabla de valor posicional?", h, `${u} unidades, ${t} décimos y ${c} centésimos: ${d2(h)}.`, table(["Unidades", "Décimos", "Centésimos"], [[String(u), String(t), String(c)]]), undefined, [c * 100 + t * 10 + u, u * 100 + c * 10 + t, t * 100 + u * 10 + c]);
 }
 
-// 4.° CC.3: relacionar decimales y dinero.
+// Relacionar decimales y dinero.
 export function decimalsAndMoney(r: Rng): Question {
   const form = r.int(0, 2);
   if (form === 0) {
@@ -82,7 +82,7 @@ function decimalWords(h: number) {
   return w ? `${words(w).replace(/uno$/, "un")} ${w === 1 ? "entero" : "enteros"} y ${frac}` : frac;
 }
 
-// 4.° CC.5: decimales escritos con palabras.
+// Decimales escritos con palabras.
 export function decimalInWords(r: Rng): Question {
   const h = decimal(r, r.chance(0.5) ? 9 : 0, r.chance(0.35));
   const rest = h % 100;
@@ -100,7 +100,7 @@ function closeDecimals(r: Rng, tenthsOnly = false): [number, number] {
   return [a, b > 0 ? b : a + 3];
 }
 
-// 4.° CC.6: comparar decimales con modelos (barras de décimos).
+// Comparar decimales con modelos (barras de décimos).
 export function compareDecimalModels(r: Rng): Question {
   const a = r.int(1, 9);
   const b = r.chance(0.15) ? a : r.int(1, 9);
@@ -108,14 +108,14 @@ export function compareDecimalModels(r: Rng): Question {
   return fixedQ(`Cada barra es 1 entero dividido en 10 décimos. Elige el símbolo: 0,${a} ? 0,${b}`, SYMBOLS, s, `0,${a} son ${a} décimos y 0,${b} son ${b} décimos: 0,${a} ${s} 0,${b}.`, { kind: "fractionPair", hideLabels: true, items: [{ parts: 10, shaded: a }, { parts: 10, shaded: b }] }, s);
 }
 
-// 4.° CC.8: comparar números decimales.
+// Comparar números decimales.
 export function compareDecimals(r: Rng): Question {
   const [a, b] = closeDecimals(r);
   const s = sym(a, b);
   return fixedQ("Elige el símbolo correcto.", SYMBOLS, s, s === "=" ? "Los dos números son iguales." : `Comparamos enteros, luego décimos y luego centésimos: ${d2(a)} ${s} ${d2(b)}.`, `${d2(a)}  ?  ${d2(b)}`, s);
 }
 
-// 4.° CC.10 / CC.11: ordenar decimales (`level` 1: décimos; 2: décimos y centésimos mezclados).
+// Ordenar decimales (`level` 1: décimos; 2: décimos y centésimos mezclados).
 export function orderDecimals2(r: Rng, level: 1 | 2): Question {
   const whole = r.int(0, 9) * 100;
   const values = level === 1 ? distinct(r, 3, 1, 29).map((t) => whole + t * 10) : distinct(r, 4, 1, 99).map((x) => whole + (x % 3 === 0 ? Math.floor(x / 10) * 10 || 10 : x));
@@ -126,7 +126,7 @@ export function orderDecimals2(r: Rng, level: 1 | 2): Question {
   return orderQ(r, `Ordena los decimales de ${ascending ? "menor a mayor" : "mayor a menor"}. Tócalos en orden.`, sorted.map(d2), `El orden correcto es ${sorted.map(d2).join(" ; ")}.`, undefined, ascending ? "menor-a-mayor" : "mayor-a-menor");
 }
 
-// 4.° DD.1: un décimo o un centésimo más o menos.
+// Un décimo o un centésimo más o menos.
 export function tenthHundredthMoreLess(r: Rng): Question {
   const h = r.int(1, 9) * 100 + r.int(11, 89);
   const step = r.pick([10, 1]);
@@ -135,7 +135,7 @@ export function tenthHundredthMoreLess(r: Rng): Question {
   return dq(r, `¿Qué número es un ${step === 10 ? "décimo" : "centésimo"} ${more ? "más" : "menos"} que ${d2(h)}?`, answer, `${d2(h)} ${more ? "+" : "−"} ${step === 10 ? "0,1" : "0,01"} = ${d2(answer)}.`, undefined, step === 10 ? "decimo" : "centesimo", [more ? h - step : h + step, more ? h + (step === 10 ? 1 : 10) : h - (step === 10 ? 1 : 10), more ? h + 100 : h - 100]);
 }
 
-// 4.° DD.2 / DD.4: sumar y restar decimales con bloques (cuadrícula de centésimos).
+// Sumar y restar decimales con bloques (cuadrícula de centésimos).
 export function addSubDecimalBlocks(r: Rng, op: "+" | "−"): Question {
   if (op === "+") {
     const a = r.int(5, 80);
@@ -154,7 +154,7 @@ function operands(r: Rng, op: "+" | "−", maxWhole = 20): [number, number] {
   return op === "−" && a <= b ? [b + r.int(50, 300), b] : [a, b];
 }
 
-// 4.° DD.7 / DD.10: problemas de suma y resta con decimales.
+// Problemas de suma y resta con decimales.
 export function decimalProblem(r: Rng, several: boolean): Question {
   const name = r.pick(NAMES);
   if (several) {
@@ -171,7 +171,7 @@ export function decimalProblem(r: Rng, several: boolean): Question {
   return dq(r, text, answer, `${a} ${op} ${b} = ${d2(answer)}.`, undefined, op === "+" ? "suma" : "resta", [op === "+" ? Math.abs(x - y) || 1 : x + y]);
 }
 
-// 4.° DD.6: sumar y restar decimales con distinta cantidad de cifras decimales.
+// Sumar y restar decimales con distinta cantidad de cifras decimales.
 export function addSubDecimals2(r: Rng, op: "+" | "−" | "mixed"): Question {
   const o = op === "mixed" ? r.pick(["+", "−"] as const) : op;
   const [x, y0] = operands(r, o);
@@ -181,7 +181,7 @@ export function addSubDecimals2(r: Rng, op: "+" | "−" | "mixed"): Question {
   return dq(r, "Resuelve. Alinea las comas antes de operar.", answer, `${d2(a)} ${o} ${d2(b)} = ${d2(answer)}.`, `${d2(a)} ${o} ${d2(b)} = ?`, o === "+" ? "suma" : "resta", [o === "+" ? a + b / 10 : a - b / 10].filter(Number.isInteger));
 }
 
-// 4.° DD.8: elegir decimales con una suma o diferencia dada.
+// Elegir decimales con una suma o diferencia dada.
 export function chooseDecimals(r: Rng): Question {
   for (;;) {
     const add = r.chance(0.5);
@@ -195,14 +195,14 @@ export function chooseDecimals(r: Rng): Question {
   }
 }
 
-// 4.° DD.9: sumar tres o más decimales.
+// Sumar tres o más decimales.
 export function addSeveralDecimals(r: Rng): Question {
   const xs = Array.from({ length: r.int(3, 4) }, () => (r.chance(0.5) ? r.int(1, 99) * 10 : r.int(101, 999)));
   const total = xs.reduce((a, b) => a + b, 0);
   return dq(r, "Resuelve la suma.", total, `${xs.map(d2).join(" + ")} = ${d2(total)}.`, `${xs.map(d2).join(" + ")} = ?`, `${xs.length}-sumandos`);
 }
 
-// 4.° DD.11: completar la suma o la resta.
+// Completar la suma o la resta.
 export function completeDecimalSentence(r: Rng): Question {
   const op = r.pick(["+", "−"] as const);
   const [a, b] = operands(r, op, 9);
@@ -211,7 +211,7 @@ export function completeDecimalSentence(r: Rng): Question {
   return dq(r, "¿Qué número falta?", hideFirst ? a : b, `${d2(a)} ${op} ${d2(b)} = ${d2(c)}.`, hideFirst ? `? ${op} ${d2(b)} = ${d2(c)}` : `${d2(a)} ${op} ? = ${d2(c)}`, op === "+" ? "suma" : "resta", [op === "+" ? c + (hideFirst ? b : a) : hideFirst ? Math.abs(c - b) || 5 : a + c]);
 }
 
-// 4.° DD.12: inecuaciones con sumas y restas de decimales.
+// Inecuaciones con sumas y restas de decimales.
 export function decimalInequality(r: Rng): Question {
   const op = r.pick(["+", "−"] as const);
   const [a, b] = operands(r, op, 9);
@@ -221,7 +221,7 @@ export function decimalInequality(r: Rng): Question {
   return fixedQ("Elige el símbolo correcto.", SYMBOLS, s, `${d2(a)} ${op} ${d2(b)} = ${d2(v)}, y ${d2(v)} ${s} ${d2(other)}.`, `${d2(a)} ${op} ${d2(b)}  ?  ${d2(other)}`, s);
 }
 
-// 4.° DD.13: resolver problemas de decimales con diagramas de tiras.
+// Resolver problemas de decimales con diagramas de tiras.
 export function decimalDiagram(r: Rng): Question {
   const a = r.int(1, 9) * 100 + r.int(1, 9) * 10;
   const b = r.int(1, 9) * 100 + r.int(1, 9) * 10;
@@ -231,7 +231,7 @@ export function decimalDiagram(r: Rng): Question {
   return hideTotal ? dq(r, "Mira el diagrama. ¿Cuál es el total?", total, `${d2(a)} + ${d2(b)} = ${d2(total)}.`, visual, "total", [Math.abs(a - b) || 10]) : dq(r, "Mira el diagrama. ¿Qué número falta?", b, `${d2(total)} − ${d2(a)} = ${d2(b)}.`, visual, "parte", [total + a]);
 }
 
-// 4.° DD.14: secuencias numéricas con decimales.
+// Secuencias numéricas con decimales.
 export function decimalSequence(r: Rng): Question {
   const step = r.pick([10, 20, 50, 5, 25, 30, 15]);
   const up = r.chance(0.6);

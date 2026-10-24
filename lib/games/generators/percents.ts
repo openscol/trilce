@@ -8,13 +8,13 @@ const grid = (percent: number): Visual => ({ kind: "decimalGrid", hundredths: pe
 // Fracciones «amables» con su porcentaje exacto.
 const FRIENDLY: [Frac, number][] = [[[1, 2], 50], [[1, 4], 25], [[3, 4], 75], [[1, 5], 20], [[2, 5], 40], [[3, 5], 60], [[4, 5], 80], [[1, 10], 10], [[3, 10], 30], [[7, 10], 70], [[9, 10], 90], [[1, 20], 5], [[3, 20], 15], [[7, 20], 35], [[1, 25], 4], [[3, 25], 12], [[9, 20], 45], [[11, 20], 55], [[1, 50], 2], [[13, 20], 65]];
 
-// 6.° U.1: ¿qué porcentaje se muestra?
+// ¿qué porcentaje se muestra?
 export function percentIllustrated(r: Rng): Question {
   const p = r.int(1, 99);
   return numQ(p, "El cuadrado tiene 100 casillas. ¿Qué porcentaje está sombreado?", grid(p), `Hay ${p} casillas sombreadas de 100: ${p} por ciento (${pct(p)}).`);
 }
 
-// 6.° U.2 / U.3: porcentajes de referencia con modelos de tira.
+// Porcentajes de referencia con modelos de tira.
 export function benchmarkStrip(r: Rng, withThirds: boolean): Question {
   const parts = r.pick(withThirds ? [2, 3, 4, 5, 10, 3] : [2, 4, 5, 10]);
   const shaded = r.int(1, parts - (parts === 2 ? 0 : 1));
@@ -26,7 +26,7 @@ export function benchmarkStrip(r: Rng, withThirds: boolean): Question {
   return numQ((100 / parts) * shaded, "La tira completa es el 100 %. ¿Qué porcentaje está sombreado?", visual, `Cada parte es 100 ÷ ${parts} = ${100 / parts} %; ${shaded} ${shaded === 1 ? "parte" : "partes"}: ${(100 / parts) * shaded} %.`, `${parts}-partes`);
 }
 
-// 6.° U.4 / U.5 / U.6 / U.7: convertir entre porcentajes, fracciones y decimales.
+// Convertir entre porcentajes, fracciones y decimales.
 export function convertPercent(r: Rng, kinds: ("fraction" | "decimal" | "grid")[]): Question {
   const kind = r.pick(kinds);
   if (kind === "grid") {
@@ -43,7 +43,7 @@ export function convertPercent(r: Rng, kinds: ("fraction" | "decimal" | "grid")[
   return numQ(p, "Escribe el decimal como porcentaje.", `${d3(p * 10)} = ? %`, `${d3(p * 10)} × 100 = ${p} %: la coma se mueve dos lugares a la derecha.`, "decimal-a-porcentaje");
 }
 
-// 6.° U.8: convertir entre porcentajes, fracciones y decimales en problemas.
+// Convertir entre porcentajes, fracciones y decimales en problemas.
 export function convertPercentProblem(r: Rng): Question {
   const [f, p] = r.pick(FRIENDLY);
   const name = r.pick(NAMES);
@@ -53,7 +53,7 @@ export function convertPercentProblem(r: Rng): Question {
   return decQ(r, `Una tienda rebaja el ${pct(p)} del precio. ¿Qué decimal representa esa rebaja?`, p * 10, `${p} % = ${p}/100 = ${d3(p * 10)}.`, undefined, "a-decimal", [p * 100, p]);
 }
 
-// 6.° U.9 / U.10: comparar porcentajes entre sí y con fracciones.
+// Comparar porcentajes entre sí y con fracciones.
 export function comparePercents(r: Rng, word = false): Question {
   const [f, p] = r.pick(FRIENDLY);
   const other = r.chance(0.2) ? p : Math.min(99, Math.max(1, p + r.pick([-15, -10, -5, 5, 10, 15])));
@@ -80,7 +80,7 @@ function percentCase(r: Rng): { p: number; total: number; part: number } {
   return { p, total, part: (p * total) / 100 };
 }
 
-// 6.° V.1: estimar porcentajes de cantidades.
+// Estimar porcentajes de cantidades.
 export function estimatePercent(r: Rng): Question {
   const p = r.pick([10, 20, 25, 50, 75]);
   const total = r.int(2, 40) * 20;
@@ -90,7 +90,7 @@ export function estimatePercent(r: Rng): Question {
   return choiceQ(r, `¿Cuál es la mejor estimación del ${pct(shownP)} de ${fmt(shownTotal)}?`, fmt(answer), [answer * 2, answer / 2, answer * 10, answer + total / 10, total - answer].filter((x) => Number.isInteger(x) && x > 0 && x !== answer).map(fmt), `${shownP} % ≈ ${p} % y ${fmt(shownTotal)} ≈ ${fmt(total)}; ${p} % de ${fmt(total)} = ${fmt(answer)}.`);
 }
 
-// 6.° V.2 / V.3: resolver problemas de porcentaje con modelos (cuadrícula o tira).
+// Resolver problemas de porcentaje con modelos (cuadrícula o tira).
 export function percentModel(r: Rng, model: "grid" | "strip"): Question {
   if (model === "grid") {
     const each = r.pick([2, 3, 4, 5, 8]);
@@ -104,7 +104,7 @@ export function percentModel(r: Rng, model: "grid" | "strip"): Question {
   return numQ(k * each, `La tira completa es ${parts * each} y cada parte es el ${100 / parts} %. ¿Cuánto es el ${pct((100 / parts) * k)} de ${parts * each}?`, visual, `Cada parte vale ${parts * each} ÷ ${parts} = ${each}; ${k} ${k === 1 ? "parte" : "partes"}: ${k * each}.`);
 }
 
-// 6.° V.4 / V.5: porcentaje de una cantidad.
+// Porcentaje de una cantidad.
 export function percentOf(r: Rng, word = false): Question {
   const { p, total, part } = percentCase(r);
   const why = `${p} % de ${fmt(total)} = ${p}/100 × ${fmt(total)} = ${fmt(part)}.`;
@@ -112,14 +112,14 @@ export function percentOf(r: Rng, word = false): Question {
   return numQ(part, r.pick([`En un colegio hay ${fmt(total)} alumnos y el ${pct(p)} participa en el coro. ¿Cuántos alumnos están en el coro?`, `${r.pick(NAMES)} tenía ${fmt(total)} soles y gastó el ${pct(p)}. ¿Cuántos soles gastó?`, `Un libro tiene ${fmt(total)} páginas y ya se leyó el ${pct(p)}. ¿Cuántas páginas se leyeron?`, `De ${fmt(total)} entradas, se vendió el ${pct(p)}. ¿Cuántas entradas se vendieron?`]), undefined, why);
 }
 
-// 6.° V.6: porcentajes fraccionarios y decimales de una cantidad.
+// Porcentajes fraccionarios y decimales de una cantidad.
 export function fractionalPercent(r: Rng): Question {
   const [text, num, den] = r.pick<[string, number, number]>([["12,5 %", 1, 8], ["2,5 %", 1, 40], ["0,5 %", 1, 200], ["37,5 %", 3, 8], ["7,5 %", 3, 40], ["1/2 %", 1, 200], ["62,5 %", 5, 8], ["1,5 %", 3, 200]]);
   const total = den * r.int(1, den >= 200 ? 6 : 20);
   return numQ((total / den) * num, "Calcula.", `${text} de ${fmt(total)} = ?`, `${text} = ${num}/${den}; ${fmt(total)} ÷ ${den} × ${num} = ${fmt((total / den) * num)}.`, text);
 }
 
-// 6.° V.7 / V.8: ¿qué porcentaje es un número de otro?
+// ¿qué porcentaje es un número de otro?
 export function whatPercent(r: Rng, word = false): Question {
   const { p, total, part } = percentCase(r);
   const why = `${fmt(part)} ÷ ${fmt(total)} = ${d3(p * 10)} = ${p} %.`;
@@ -127,13 +127,13 @@ export function whatPercent(r: Rng, word = false): Question {
   return numQ(p, r.pick([`De ${fmt(total)} alumnos, ${fmt(part)} llegaron temprano. ¿Qué porcentaje llegó temprano?`, `Un equipo jugó ${fmt(total)} partidos y ganó ${fmt(part)}. ¿Qué porcentaje de los partidos ganó?`, `${r.pick(NAMES)} tenía ${fmt(total)} soles y ahorró ${fmt(part)}. ¿Qué porcentaje ahorró?`]), undefined, why);
 }
 
-// 6.° V.9: hallar el total dados una parte y un porcentaje.
+// Hallar el total dados una parte y un porcentaje.
 export function findTotal(r: Rng): Question {
   const { p, total, part } = percentCase(r);
   return numQ(total, "Completa.", `${fmt(part)} es el ${pct(p)} de ?`, `${fmt(part)} ÷ ${p} × 100 = ${fmt(total)}.`);
 }
 
-// 6.° V.10 / V.11: resolver problemas de porcentaje (parte, porcentaje o total).
+// Resolver problemas de porcentaje (parte, porcentaje o total).
 export function percentProblems(r: Rng, word = false): Question {
   if (!word) return r.pick([() => percentOf(r), () => whatPercent(r), () => findTotal(r)])();
   const { p, total, part } = percentCase(r);
@@ -149,7 +149,7 @@ export function percentProblems(r: Rng, word = false): Question {
 // Matemática del consumidor (montos en céntimos)
 
 const money = (r: Rng, answer: number, prompt: string, explanation: string, visual?: Question["visual"], tag?: string, extra: number[] = []) => choiceQ(r, prompt, soles(answer), nearCents(r, answer, soles, extra, 10), explanation, visual, tag);
-// 6.° X.1: ¿qué cupón conviene más?
+// ¿qué cupón conviene más?
 export function betterCoupon(r: Rng): Question {
   for (;;) {
     const price = r.int(4, 40) * 500;
@@ -163,7 +163,7 @@ export function betterCoupon(r: Rng): Question {
   }
 }
 
-// 6.° X.4: precios por unidad con conversión de unidades.
+// Precios por unidad con conversión de unidades.
 export function unitPriceConversion(r: Rng): Question {
   const [big, small, factor] = r.pick<[string, string, number]>([["kg", "100 g", 10], ["l", "100 ml", 10], ["docena", "unidad", 12], ["m", "10 cm", 10], ["libra", "onza", 16]]);
   const perSmall = r.int(1, 12) * 10;
@@ -171,7 +171,7 @@ export function unitPriceConversion(r: Rng): Question {
   return money(r, perSmall, `${k} ${big}${k > 1 ? (big === "docena" ? "s" : big === "libra" ? "s" : "") : ""} cuesta${k > 1 ? "n" : ""} ${soles(perSmall * factor * k)}. ¿Cuánto cuesta cada ${small}? (1 ${big} = ${factor} ${small === "unidad" ? "unidades" : small === "onza" ? "onzas" : `veces ${small}`})`, `Por ${big}: ${soles(perSmall * factor * k)} ÷ ${k} = ${soles(perSmall * factor)}; por ${small}: ÷ ${factor} = ${soles(perSmall)}.`);
 }
 
-// 6.° X.5 / X.6: precios de oferta (y hallar el precio original).
+// Precios de oferta (y hallar el precio original).
 export function salePrice(r: Rng, findOriginal = false): Question {
   const p = r.pick([10, 20, 25, 30, 40, 50]);
   const price = r.int(2, 40) * 400;
@@ -182,7 +182,7 @@ export function salePrice(r: Rng, findOriginal = false): Question {
   return money(r, sale, `${item[0].toUpperCase()}${item.slice(1)} cuesta ${soles(price)} y tiene un descuento del ${pct(p)}. ¿Cuál es el precio de oferta?`, `Descuento: ${p} % de ${soles(price)} = ${soles(discount)}; ${soles(price)} − ${soles(discount)} = ${soles(sale)}.`, undefined, undefined, [discount, price + discount]);
 }
 
-// 6.° X.7: porcentajes: impuesto, propina, recargo y más.
+// Porcentajes: impuesto, propina, recargo y más.
 export function taxTipMarkup(r: Rng): Question {
   const price = r.int(2, 60) * 500;
   const form = r.int(0, 3);
@@ -204,7 +204,7 @@ export function taxTipMarkup(r: Rng): Question {
   return money(r, fee, `Un vendedor gana una comisión del ${pct(p)} por cada venta. Si vende algo de ${soles(price)}, ¿cuánto gana de comisión?`, `${p} % de ${soles(price)} = ${soles(fee)}.`, undefined, "comision", [price - fee]);
 }
 
-// 6.° X.8: interés simple.
+// Interés simple.
 export function simpleInterest(r: Rng): Question {
   const capital = r.int(1, 40) * 100;
   const rate = r.pick([2, 3, 4, 5, 6, 8, 10]);

@@ -1,24 +1,10 @@
 import { choose, order, readPassage, type ChoiceItem, type OrderItem, type Passage } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import type { Row } from "./row";
 
-// Estrategias de lectura (IXL 1st grade ELA, Y-KK).
+// 1.° de Primaria · banco de comprensión: idea principal, inferencias,
+// enseñanzas, propósito, personajes, secuencia y narrador, con cuentos y
+// textos informativos para escuchar y para leer.
 
-export const SECTIONS: Section[] = [
-  { id: "Y", name: "Realidad o fantasía", icon: "🦄" },
-  { id: "Z", name: "Idea principal", icon: "💡" },
-  { id: "AA", name: "Inferencias y enseñanza", icon: "🕵️" },
-  { id: "BB", name: "Propósito del autor", icon: "✍️" },
-  { id: "CC", name: "Escenario y personajes", icon: "🎭" },
-  { id: "DD", name: "Secuencia", icon: "🔢" },
-  { id: "EE", name: "Trama", icon: "📖" },
-  { id: "FF", name: "Narrador", icon: "🗣️" },
-  { id: "GG", name: "Partes del texto", icon: "📰" },
-  { id: "HH", name: "Lecturas literarias en voz alta", icon: "🔊" },
-  { id: "II", name: "Lecturas literarias", icon: "📚" },
-  { id: "JJ", name: "Textos informativos en voz alta", icon: "🔊" },
-  { id: "KK", name: "Textos informativos", icon: "🌎" },
-];
 
 const REAL: ChoiceItem[] = [
   { a: "Un niño juega fútbol en el parque.", d: ["Un perro maneja un autobús.", "Una nube come helado.", "Un gato vuela hasta la luna."] },
@@ -417,46 +403,46 @@ const INFO_ALONE: Record<string, Passage[]> = {
 };
 
 export const ROWS: Row[] = [
-  ["Y.1", "¿Qué podría pasar en la vida real?", (r) => choose(r, "¿Qué podría pasar en la vida real?", REAL)],
+  ["real-fantasia", (r) => choose(r, "¿Qué podría pasar en la vida real?", REAL)],
 
-  ["Z.1", "¿De qué trata el dibujo?", (r) => choose(r, "¿De qué trata el dibujo?", PICTURE_TOPIC)],
-  ["Z.2", "Identificar el tema y la idea principal de un texto", (r) => readPassage(r, MAIN_IDEA, false)],
+  ["de-que-trata-1", (r) => choose(r, "¿De qué trata el dibujo?", PICTURE_TOPIC)],
+  ["de-que-trata-2", (r) => readPassage(r, MAIN_IDEA, false)],
 
-  ["AA.1", "¿Qué sentimiento corresponde al dibujo?", (r) => choose(r, "¿Cómo se siente?", FEELINGS)],
-  ["AA.2", "¿Qué pasará después?", (r) => choose(r, "¿Qué pasará después?", WHAT_NEXT)],
-  ["AA.3", "Hacer inferencias a partir de un texto", (r) => readPassage(r, INFERENCES, false)],
-  ["AA.4", "¿Qué soy? Adivinanzas", (r) => choose(r, "Adivina, adivinador.", RIDDLES)],
-  ["AA.5", "Identificar el tema y la enseñanza de un cuento", (r) => readPassage(r, FABLES, false)],
+  ["inferencias-1", (r) => choose(r, "¿Cómo se siente?", FEELINGS)],
+  ["inferencias-2", (r) => choose(r, "¿Qué pasará después?", WHAT_NEXT)],
+  ["inferencias-3", (r) => readPassage(r, INFERENCES, false)],
+  ["inferencias-4", (r) => choose(r, "Adivina, adivinador.", RIDDLES)],
+  ["ensenanza", (r) => readPassage(r, FABLES, false)],
 
-  ["BB.1", "Identificar el propósito de un texto", (r) => choose(r, "¿Para qué se escribió este texto?", PURPOSE)],
+  ["proposito", (r) => choose(r, "¿Para qué se escribió este texto?", PURPOSE)],
 
-  ["CC.1", "Elegir el dibujo que corresponde a la descripción", (r) => choose(r, "¿Qué dibujo corresponde a la descripción?", DESCRIBED)],
-  ["CC.2", "Identificar el escenario o el personaje", (r) => choose(r, "Lee y responde.", SETTING_CHARACTER)],
-  ["CC.3", "Usar acciones y diálogos para entender a los personajes", (r) => choose(r, "Lee y responde.", TRAITS)],
+  ["personajes-1", (r) => choose(r, "¿Qué dibujo corresponde a la descripción?", DESCRIBED)],
+  ["personajes-2", (r) => choose(r, "Lee y responde.", SETTING_CHARACTER)],
+  ["personajes-3", (r) => choose(r, "Lee y responde.", TRAITS)],
 
-  ["DD.1", "Ordenar las imágenes de una historia", (r) => order(r, "Ordena lo que pasa, del primero al último.", STORY_ORDER)],
-  ["DD.2", "Ordenar los pasos de un texto informativo", (r) => order(r, "Lee el texto y ordena los pasos.", INFO_ORDER)],
+  ["secuencia-1", (r) => order(r, "Ordena lo que pasa, del primero al último.", STORY_ORDER)],
+  ["secuencia-2", (r) => order(r, "Lee el texto y ordena los pasos.", INFO_ORDER)],
 
-  ["EE.1", "Escuchar y encontrar el problema y la solución", (r) => readPassage(r, PROBLEM_SOLUTION, true)],
-  ["EE.2", "Leer e identificar los elementos del cuento", (r) => readPassage(r, PLOT, false)],
+  ["problema-solucion", (r) => readPassage(r, PROBLEM_SOLUTION, true)],
+  ["elementos-cuento-1", (r) => readPassage(r, PLOT, false)],
 
-  ["FF.1", "¿Quién es el narrador?", (r) => choose(r, "¿Quién cuenta la historia?", NARRATOR)],
+  ["elementos-cuento-2", (r) => choose(r, "¿Quién cuenta la historia?", NARRATOR)],
 
-  ["GG.1", "Usar las partes de un texto", (r) => choose(r, "Elige la respuesta correcta.", TEXT_FEATURES)],
+  ["partes-texto", (r) => choose(r, "Elige la respuesta correcta.", TEXT_FEATURES)],
 
-  ["HH.1", "Escuchar cuentos de fantasía", (r) => readPassage(r, LIT_ALOUD.fantasia, true)],
-  ["HH.2", "Escuchar cuentos realistas", (r) => readPassage(r, LIT_ALOUD.realista, true)],
-  ["HH.3", "Escuchar poemas que cuentan una historia", (r) => readPassage(r, LIT_ALOUD.poesia, true)],
+  ["cuentos-oidos-1", (r) => readPassage(r, LIT_ALOUD.fantasia, true)],
+  ["cuentos-oidos-2", (r) => readPassage(r, LIT_ALOUD.realista, true)],
+  ["cuentos-oidos-3", (r) => readPassage(r, LIT_ALOUD.poesia, true)],
 
-  ["II.1", "Leer fantasías de animales", (r) => readPassage(r, LIT_ALONE.animales, false)],
-  ["II.2", "Leer cuentos realistas", (r) => readPassage(r, LIT_ALONE.realista, false)],
-  ["II.3", "Leer fábulas y leyendas", (r) => readPassage(r, LIT_ALONE.fabulas, false)],
+  ["cuentos-1", (r) => readPassage(r, LIT_ALONE.animales, false)],
+  ["cuentos-2", (r) => readPassage(r, LIT_ALONE.realista, false)],
+  ["cuentos-3", (r) => readPassage(r, LIT_ALONE.fabulas, false)],
 
-  ["JJ.1", "Escuchar textos de ciencia y naturaleza", (r) => readPassage(r, INFO_ALOUD.ciencia, true)],
-  ["JJ.2", "Escuchar textos sobre personajes famosos", (r) => readPassage(r, INFO_ALOUD.famosos, true)],
-  ["JJ.3", "Escuchar textos sobre la comida", (r) => readPassage(r, INFO_ALOUD.comida, true)],
+  ["textos-oidos-1", (r) => readPassage(r, INFO_ALOUD.ciencia, true)],
+  ["textos-oidos-2", (r) => readPassage(r, INFO_ALOUD.famosos, true)],
+  ["textos-oidos-3", (r) => readPassage(r, INFO_ALOUD.comida, true)],
 
-  ["KK.1", "Leer sobre animales", (r) => readPassage(r, INFO_ALONE.animales, false)],
-  ["KK.2", "Leer sobre deportes y pasatiempos", (r) => readPassage(r, INFO_ALONE.deportes, false)],
-  ["KK.3", "Leer sobre lugares famosos", (r) => readPassage(r, INFO_ALONE.lugares, false)],
+  ["informativos-1", (r) => readPassage(r, INFO_ALONE.animales, false)],
+  ["informativos-2", (r) => readPassage(r, INFO_ALONE.deportes, false)],
+  ["informativos-3", (r) => readPassage(r, INFO_ALONE.lugares, false)],
 ];

@@ -1,26 +1,10 @@
 import { choose, order, readPassage, type ChoiceItem, type OrderItem, type Passage } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import type { Row } from "./row";
 
-// Estrategias de lectura (IXL Kindergarten ELA, Z-LL). Los textos «para leer
-// con ayuda» (read-along) se pueden escuchar con 🔊; los «para leer solo»
-// (read-alone) son más cortos y no se leen en voz alta.
+// Inicial 5 años · banco de comprensión: imágenes, cuentos y textos
+// informativos. Los textos para leer con ayuda se pueden escuchar con 🔊; los
+// textos para leer solo son más cortos y no se leen en voz alta.
 
-export const SECTIONS: Section[] = [
-  { id: "Z", name: "Partes del libro", icon: "📕" },
-  { id: "AA", name: "Realidad y fantasía", icon: "🦄" },
-  { id: "BB", name: "Idea principal", icon: "💡" },
-  { id: "CC", name: "Inferencias y enseñanzas", icon: "🕵️" },
-  { id: "DD", name: "Propósito del autor", icon: "🎯" },
-  { id: "EE", name: "Lugar y personajes", icon: "🏰" },
-  { id: "FF", name: "Secuencia y trama", icon: "🔢" },
-  { id: "GG", name: "Punto de vista", icon: "🗣️" },
-  { id: "HH", name: "Elementos del texto", icon: "🔖" },
-  { id: "II", name: "Cuentos para leer con ayuda", icon: "📖" },
-  { id: "JJ", name: "Cuentos para leer solo", icon: "📗" },
-  { id: "KK", name: "Textos informativos para leer con ayuda", icon: "📰" },
-  { id: "LL", name: "Textos informativos para leer solo", icon: "📘" },
-];
 
 // Cada respuesta tiene como distractores las respuestas de los demás ítems.
 const fromText = (list: [string, string][]): ChoiceItem[] => list.map(([t, a]) => ({ t, a, d: list.map((x) => x[1]).filter((x) => x !== a) }));
@@ -347,9 +331,9 @@ const PLACES: Passage[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["Z.1", "Identificar las partes y los elementos de un libro", (r) => choose(r, "", BOOK)],
+  ["partes-libro-1", (r) => choose(r, "", BOOK)],
 
-  ["AA.1", "¿Qué puede pasar en la vida real?", (r) => {
+  ["real-fantasia", (r) => {
     const real = r.chance(0.5);
     const [yes, no] = real ? [REAL, FANTASY] : [FANTASY, REAL];
     const answer = r.pick(yes);
@@ -363,40 +347,40 @@ export const ROWS: Row[] = [
     };
   }],
 
-  ["BB.1", "¿De qué trata el dibujo?", (r) => choose(r, "¿De qué trata el dibujo?", fromPic(SCENES))],
-  ["BB.2", "Determinar el tema y la idea principal de un texto", (r) => readPassage(r, MAIN_IDEA, true)],
+  ["de-que-trata-1", (r) => choose(r, "¿De qué trata el dibujo?", fromPic(SCENES))],
+  ["de-que-trata-2", (r) => readPassage(r, MAIN_IDEA, true)],
 
-  ["CC.1", "¿Qué sentimiento corresponde al dibujo?", (r) => choose(r, "¿Cómo se siente?", fromPic(FEELINGS))],
-  ["CC.2", "¿Qué pasará después?", (r) => choose(r, "¿Qué pasará después?", NEXT)],
-  ["CC.3", "Hacer inferencias a partir de un texto", (r) => choose(r, "", INFER)],
-  ["CC.4", "¿Qué soy?", (r) => choose(r, "Adivina, adivinador: ¿qué soy?", fromText(RIDDLES))],
-  ["CC.5", "Determinar el tema y la enseñanza de un cuento", (r) => readPassage(r, THEME, true)],
+  ["sentimientos-1", (r) => choose(r, "¿Cómo se siente?", fromPic(FEELINGS))],
+  ["sentimientos-2", (r) => choose(r, "¿Qué pasará después?", NEXT)],
+  ["sentimientos-3", (r) => choose(r, "", INFER)],
+  ["sentimientos-4", (r) => choose(r, "Adivina, adivinador: ¿qué soy?", fromText(RIDDLES))],
+  ["ensenanza", (r) => readPassage(r, THEME, true)],
 
-  ["DD.1", "Identificar el propósito de un texto", (r) => {
+  ["para-que-1", (r) => {
     const [text, i] = r.pick(PURPOSE);
     return { kind: "choice", prompt: "¿Para qué se escribió este texto?", visual: { kind: "text", text }, options: PURPOSES, answer: PURPOSES[i], explanation: `Se escribió para: ${PURPOSES[i].toLowerCase()}.`, tag: PURPOSES[i] };
   }],
 
-  ["EE.1", "Elegir el dibujo que corresponde a la oración descriptiva", (r) => choose(r, "¿Qué dibujo corresponde a la descripción?", fromText(DESCRIBE))],
-  ["EE.2", "Elegir el dibujo que corresponde al lugar o al personaje", (r) => choose(r, "¿Qué dibujo corresponde?", fromText(SETTING))],
+  ["lugar-personajes-1", (r) => choose(r, "¿Qué dibujo corresponde a la descripción?", fromText(DESCRIBE))],
+  ["lugar-personajes-2", (r) => choose(r, "¿Qué dibujo corresponde?", fromText(SETTING))],
 
-  ["FF.1", "Ordenar las imágenes de un cuento", (r) => order(r, "Ordena los dibujos, de lo primero a lo último.", SEQUENCES)],
-  ["FF.2", "Identificar el problema y la solución en un cuento", (r) => readPassage(r, PROBLEM, true)],
+  ["ordenar-cuento-1", (r) => order(r, "Ordena los dibujos, de lo primero a lo último.", SEQUENCES)],
+  ["ordenar-cuento-2", (r) => readPassage(r, PROBLEM, true)],
 
-  ["GG.1", "¿Quién cuenta la historia?", (r) => choose(r, "¿Quién cuenta la historia?", NARRATOR)],
+  ["para-que-2", (r) => choose(r, "¿Quién cuenta la historia?", NARRATOR)],
 
-  ["HH.1", "Usar los elementos del texto", (r) => choose(r, "", FEATURES)],
+  ["partes-libro-2", (r) => choose(r, "", FEATURES)],
 
-  ["II.1", "Leer con ayuda cuentos de fantasía", (r) => readPassage(r, FANTASY_ALONG, true)],
-  ["II.2", "Leer con ayuda cuentos realistas", (r) => readPassage(r, REAL_ALONG, true)],
+  ["cuentos-escuchados-1", (r) => readPassage(r, FANTASY_ALONG, true)],
+  ["cuentos-escuchados-2", (r) => readPassage(r, REAL_ALONG, true)],
 
-  ["JJ.1", "Leer cuentos de animales fantásticos", (r) => readPassage(r, FANTASY_ALONE, false)],
-  ["JJ.2", "Leer cuentos realistas", (r) => readPassage(r, REAL_ALONE, false)],
+  ["cuentos-solo-1", (r) => readPassage(r, FANTASY_ALONE, false)],
+  ["cuentos-solo-2", (r) => readPassage(r, REAL_ALONE, false)],
 
-  ["KK.1", "Leer con ayuda sobre ciencia y naturaleza", (r) => readPassage(r, SCIENCE, true)],
-  ["KK.2", "Leer con ayuda sobre personas famosas", (r) => readPassage(r, PEOPLE, true)],
-  ["KK.3", "Leer con ayuda sobre alimentos", (r) => readPassage(r, FOOD, true)],
+  ["textos-escuchados-1", (r) => readPassage(r, SCIENCE, true)],
+  ["textos-escuchados-2", (r) => readPassage(r, PEOPLE, true)],
+  ["textos-escuchados-3", (r) => readPassage(r, FOOD, true)],
 
-  ["LL.1", "Leer sobre animales", (r) => readPassage(r, ANIMALS, false)],
-  ["LL.2", "Leer sobre lugares", (r) => readPassage(r, PLACES, false)],
+  ["informativos-solo-1", (r) => readPassage(r, ANIMALS, false)],
+  ["informativos-solo-2", (r) => readPassage(r, PLACES, false)],
 ];

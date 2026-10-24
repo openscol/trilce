@@ -1,32 +1,16 @@
 import * as P2 from "../../../generators/lengua/phonics2";
 import { choose, mix, order, pickAll, pickInSentence, type ChoiceItem, type OrderItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { f, pt, s, sorter, w } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Gramática y ortografía, primera parte (IXL 5th grade ELA, LL-RR), con las
-// reglas del castellano en lugar de las del inglés:
-//   prefijos con-, over-, pro- → con-/com-, sobre-, pro-
-//   sufijos -hood, -ion, -or, -ure → -dad, -ción/-sión, -or, -ura
-//   common words (sets 1-4) → tilde en hiatos, mb/mp/nv, ll/y, x/cc/sc
-//   cláusulas dependientes e independientes → proposición principal y subordinada
-//   plurales en f, fe, o, y → plurales de palabras en -z, -y, -í/-ú y con cambio de tilde
-//   posesivo con 's → pertenencia con de, del, de la, de los
-//   who/whom/whose/which/that → que, quien, cuyo, el cual, donde
-//   verbos modales → poder, deber, tener que, querer, soler
-//   progressive → estar + gerundio      perfect → haber + participio
+// 5.° de Primaria · banco de gramática y ortografía (primera parte): prefijos
+// con-/com-, sobre-, pro-; sufijos -dad, -ción/-sión, -or, -ura; tilde en
+// hiatos, mb/mp/nv, ll/y, x/cc/sc; proposición principal y subordinada;
+// plurales de palabras en -z, -y, -í/-ú; pertenencia; pronombres y relativos;
+// perífrasis; estar + gerundio y haber + participio.
 
-export const SECTIONS: Section[] = [
-  { id: "LL", name: "Ortografía", icon: "✍️" },
-  { id: "MM", name: "Oraciones, fragmentos y oraciones pegadas", icon: "💬" },
-  { id: "NN", name: "Sustantivos", icon: "🏷️" },
-  { id: "OO", name: "Pronombres", icon: "👤" },
-  { id: "PP", name: "Tipos de verbos", icon: "🏃" },
-  { id: "QQ", name: "Concordancia entre sujeto y verbo", icon: "🤝" },
-  { id: "RR", name: "Tiempos verbales", icon: "⏳" },
-];
 
-// --- LL. Ortografía ----------------------------------------------------------
+// --- Ortografía ----------------------------------------------------------
 
 const WELL = "¿Cuál está bien escrita?";
 const spell = (a: string, ...d: string[]): ChoiceItem => ({ a, d });
@@ -62,7 +46,7 @@ const SET_X: ChoiceItem[] = [
   spell("éxito", "ésito", "éccito"), spell("ascensor", "acensor", "asensor"), spell("extraño", "estraño", "extranio"), spell("disciplina", "diciplina", "disiplina"),
 ];
 
-// --- MM. Oraciones -----------------------------------------------------------
+// --- Oraciones -----------------------------------------------------------
 
 const KIND = sorter(["Enunciativa", "Interrogativa", "Imperativa", "Exclamativa"], "¿Qué tipo de oración es?");
 const SENTENCE_KIND: ChoiceItem[] = [
@@ -121,7 +105,7 @@ const UNSCRAMBLE: OrderItem[] = [
   { seq: ["El", "equipo", "que", "ganó", "recibió", "una", "copa"] }, { seq: ["Durante", "la", "noche", "cayó", "una", "fuerte", "helada"] },
 ];
 
-// --- NN. Sustantivos ---------------------------------------------------------
+// --- Sustantivos ---------------------------------------------------------
 
 const ABSTRACT_IN = [
   s("La solidaridad de los vecinos devolvió la esperanza al pueblo.", "solidaridad", "vecinos", "esperanza", "pueblo"), s("Su valentía venció al miedo.", "valentía", "miedo"), s("El respeto es la base de la convivencia.", "respeto", "base", "convivencia"),
@@ -175,7 +159,7 @@ const POSSESSIVE_ERRORS: ChoiceItem[] = [
   pt(FIX, "El discurso de el alcalde fue breve.", "El discurso del alcalde fue breve.", "El discurso de la alcalde fue breve.", "El discurso del el alcalde fue breve."), pt(FIX, "Las costumbre de los pueblo son valiosas.", "Las costumbres de los pueblos son valiosas.", "Las costumbres de los pueblo son valiosas.", "Las costumbre de los pueblos son valiosas."),
 ];
 
-// --- OO. Pronombres ----------------------------------------------------------
+// --- Pronombres ----------------------------------------------------------
 
 const PRONOUNS_IN = [
   s("Ellos nos avisaron tarde.", "Ellos", "nos"), s("Usted me conoce bien.", "Usted", "me"), s("Nosotras las vimos en el desfile.", "Nosotras", "las"), s("Yo le escribí ayer.", "Yo", "le"),
@@ -241,7 +225,7 @@ const RELATIVE_USE: ChoiceItem[] = [
   f("La maestra a ___ más recuerdo se llamaba Olga.", "quien", "cuya", "donde"),
 ];
 
-// --- PP. Tipos de verbos -----------------------------------------------------
+// --- Tipos de verbos -----------------------------------------------------
 
 const HELPING: ChoiceItem[] = [
   pt("¿Cuál es el verbo auxiliar?", "Los comuneros han limpiado el canal.", "han", "limpiado", "canal"), pt("¿Cuál es el verbo principal?", "Los comuneros han limpiado el canal.", "limpiado", "han", "comuneros"),
@@ -264,7 +248,7 @@ const MODAL_USE: ChoiceItem[] = [
   f("¿___ prestarme tu regla?", "Puedes", "Sueles", "Debo"),
 ];
 
-// --- QQ. Concordancia --------------------------------------------------------
+// --- Concordancia --------------------------------------------------------
 
 const SUBJECT_VERB: ChoiceItem[] = [
   f("La mayoría de los alumnos ___ temprano.", "llegó", "llegamos", "llegas"), f("El grupo de turistas ___ el museo.", "visitó", "visitamos", "visitaste"), f("___ cubren la cordillera.", "Las nubes", "La nube", "Una nube"),
@@ -279,7 +263,7 @@ const COMPOUND_SUBJECT: ChoiceItem[] = [
   f("___ viajan mañana a Puno.", "Marta y Elena", "Marta", "Mi prima"),
 ];
 
-// --- RR. Tiempos verbales ----------------------------------------------------
+// --- Tiempos verbales ----------------------------------------------------
 
 const TENSE = sorter(["Pasado", "Presente", "Futuro"], "¿En qué tiempo está la oración?");
 const TENSES: ChoiceItem[] = [
@@ -346,66 +330,66 @@ const PERFECT_FORM: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["LL.1", "Aprender a escribir palabras con prefijos: con-, sobre-, pro-", (r) => choose(r, WELL, PREFIX_SPELL)],
-  ["LL.2", "Aprender a escribir palabras con sufijos: -dad, -ción, -or, -ura", (r) => choose(r, WELL, SUFFIX_SPELL)],
-  ["LL.3", "Escribir palabras con prefijos y sufijos: repaso", (r) => mix(r, [(q) => choose(q, WELL, [...PREFIX_SPELL, ...SUFFIX_SPELL]), (q) => P2.spellHeard(q, "convivir compartir proponer sobrevolar hermosura inventor emoción decisión vecindad", "a e i o u ó b v m n s c z")])],
-  ["LL.4", "Aprender a escribir palabras frecuentes: grupo 1 (tilde en hiatos)", (r) => choose(r, WELL, SET_HIATO)],
-  ["LL.5", "Aprender a escribir palabras frecuentes: grupo 2 (mb, mp y nv)", (r) => choose(r, WELL, SET_MB)],
-  ["LL.6", "Escribir palabras frecuentes: grupos 1 y 2", (r) => P2.spellHeard(r, "había país maíz oído todavía también siempre invierno cambio enviar empezar tiempo", "a e i o u í m n b v p")],
-  ["LL.7", "Aprender a escribir palabras frecuentes: grupo 3 (ll e y)", (r) => choose(r, WELL, SET_LLY)],
-  ["LL.8", "Aprender a escribir palabras frecuentes: grupo 4 (x, cc y sc)", (r) => choose(r, WELL, SET_X)],
-  ["LL.9", "Escribir palabras frecuentes: grupos 3 y 4", (r) => P2.spellHeard(r, "lluvia ayer calle desayuno orilla apoyo examen acción piscina explicar escena éxito", "a e i o u ll y x c s")],
-  ["LL.10", "Escribir palabras frecuentes: repaso de los grupos 1 a 4", (r) => mix(r, [(q) => choose(q, WELL, [...SET_HIATO, ...SET_MB, ...SET_LLY, ...SET_X]), (q) => P2.spellHeard(q, "país oído también invierno lluvia desayuno examen piscina tiempo orilla", "a e i o u í ll y x c s m n b v")])],
+  ["prefijos-ortografia-1", (r) => choose(r, WELL, PREFIX_SPELL)],
+  ["prefijos-ortografia-2", (r) => choose(r, WELL, SUFFIX_SPELL)],
+  ["prefijos-ortografia-3", (r) => mix(r, [(q) => choose(q, WELL, [...PREFIX_SPELL, ...SUFFIX_SPELL]), (q) => P2.spellHeard(q, "convivir compartir proponer sobrevolar hermosura inventor emoción decisión vecindad", "a e i o u ó b v m n s c z")])],
+  ["hiatos-1", (r) => choose(r, WELL, SET_HIATO)],
+  ["mb-ll-y-1", (r) => choose(r, WELL, SET_MB)],
+  ["hiatos-2", (r) => P2.spellHeard(r, "había país maíz oído todavía también siempre invierno cambio enviar empezar tiempo", "a e i o u í m n b v p")],
+  ["mb-ll-y-2", (r) => choose(r, WELL, SET_LLY)],
+  ["x-cc-sc-1", (r) => choose(r, WELL, SET_X)],
+  ["x-cc-sc-2", (r) => P2.spellHeard(r, "lluvia ayer calle desayuno orilla apoyo examen acción piscina explicar escena éxito", "a e i o u ll y x c s")],
+  ["x-cc-sc-3", (r) => mix(r, [(q) => choose(q, WELL, [...SET_HIATO, ...SET_MB, ...SET_LLY, ...SET_X]), (q) => P2.spellHeard(q, "país oído también invierno lluvia desayuno examen piscina tiempo orilla", "a e i o u í ll y x c s m n b v")])],
 
-  ["MM.1", "¿La oración es enunciativa, interrogativa, imperativa o exclamativa?", (r) => choose(r, "", SENTENCE_KIND)],
-  ["MM.2", "Identificar el sujeto completo o el predicado completo de una oración", (r) => choose(r, "", SUBJECT_PREDICATE)],
-  ["MM.3", "Identificar el núcleo del sujeto o del predicado", (r) => choose(r, "", SIMPLE_SP)],
-  ["MM.4", "¿Es una oración completa o un fragmento?", (r) => choose(r, "¿Es una oración completa o un fragmento?", [...label(COMPLETE_ITEMS, COMPLETE, [COMPLETE, FRAGMENT]), ...label(FRAGMENT_ITEMS, FRAGMENT, [COMPLETE, FRAGMENT])])],
-  ["MM.5", "¿Es una oración completa o son oraciones pegadas?", (r) => choose(r, "¿Es una oración completa o son oraciones pegadas (sin punto ni conector)?", [...label(COMPLETE_ITEMS, COMPLETE, [COMPLETE, RUN_ON]), ...label(RUN_ON_ITEMS, RUN_ON, [COMPLETE, RUN_ON])])],
-  ["MM.6", "¿Es una oración completa, un fragmento u oraciones pegadas?", (r) => choose(r, "¿Qué es?", [...label(COMPLETE_ITEMS, COMPLETE, [COMPLETE, FRAGMENT, RUN_ON]), ...label(FRAGMENT_ITEMS, FRAGMENT, [COMPLETE, FRAGMENT, RUN_ON]), ...label(RUN_ON_ITEMS, RUN_ON, [COMPLETE, FRAGMENT, RUN_ON])])],
-  ["MM.7", "Identificar proposiciones principales y subordinadas", (r) => choose(r, "", CLAUSES)],
-  ["MM.8", "¿La oración es simple o compuesta?", (r) => choose(r, "", SIMPLE_COMPOUND)],
-  ["MM.9", "¿La oración es simple, coordinada o subordinada?", (r) => choose(r, "", SIMPLE_COMPOUND_COMPLEX)],
-  ["MM.10", "Crear oraciones compuestas", (r) => choose(r, "", MAKE_COMPOUND)],
-  ["MM.11", "Ordenar las palabras para crear una oración", (r) => order(r, "Ordena las palabras para formar una oración.", UNSCRAMBLE)],
+  ["tipos-oracion", (r) => choose(r, "", SENTENCE_KIND)],
+  ["sujeto-predicado-1", (r) => choose(r, "", SUBJECT_PREDICATE)],
+  ["sujeto-predicado-2", (r) => choose(r, "", SIMPLE_SP)],
+  ["fragmentos-1", (r) => choose(r, "¿Es una oración completa o un fragmento?", [...label(COMPLETE_ITEMS, COMPLETE, [COMPLETE, FRAGMENT]), ...label(FRAGMENT_ITEMS, FRAGMENT, [COMPLETE, FRAGMENT])])],
+  ["fragmentos-2", (r) => choose(r, "¿Es una oración completa o son oraciones pegadas (sin punto ni conector)?", [...label(COMPLETE_ITEMS, COMPLETE, [COMPLETE, RUN_ON]), ...label(RUN_ON_ITEMS, RUN_ON, [COMPLETE, RUN_ON])])],
+  ["fragmentos-3", (r) => choose(r, "¿Qué es?", [...label(COMPLETE_ITEMS, COMPLETE, [COMPLETE, FRAGMENT, RUN_ON]), ...label(FRAGMENT_ITEMS, FRAGMENT, [COMPLETE, FRAGMENT, RUN_ON]), ...label(RUN_ON_ITEMS, RUN_ON, [COMPLETE, FRAGMENT, RUN_ON])])],
+  ["subordinadas-1", (r) => choose(r, "", CLAUSES)],
+  ["compuestas-oraciones-1", (r) => choose(r, "", SIMPLE_COMPOUND)],
+  ["subordinadas-2", (r) => choose(r, "", SIMPLE_COMPOUND_COMPLEX)],
+  ["compuestas-oraciones-2", (r) => choose(r, "", MAKE_COMPOUND)],
+  ["fragmentos-4", (r) => order(r, "Ordena las palabras para formar una oración.", UNSCRAMBLE)],
 
-  ["NN.1", "Identificar sustantivos, incluidos los abstractos", (r) => pickInSentence(r, "Selecciona los sustantivos (también los que nombran ideas o sentimientos).", ABSTRACT_IN)],
-  ["NN.2", "Identificar sustantivos comunes y propios", (r) => mix(r, [(q) => pickAll(q, "Selecciona los sustantivos propios.", PROPER, COMMON, "propios"), (q) => pickAll(q, "Selecciona los sustantivos comunes.", COMMON, PROPER, "comunes")])],
-  ["NN.3", "Formar plurales de sustantivos terminados en -z, -y, -í y -ú", (r) => choose(r, "", PLURAL_FORM)],
-  ["NN.4", "Formar y usar plurales de sustantivos terminados en -z, -y, -í y -ú", (r) => choose(r, "Completa la oración.", PLURAL_USE)],
-  ["NN.5", "Formar plurales: repaso", (r) => choose(r, "", [...PLURAL_REVIEW, ...PLURAL_FORM])],
-  ["NN.6", "Formar y usar plurales: repaso", (r) => choose(r, "Completa la oración.", [...PLURAL_REVIEW_USE, ...PLURAL_USE])],
-  ["NN.7", "Identificar plurales y frases de pertenencia de uno o de varios dueños", (r) => choose(r, "", POSSESSIVE_ID)],
-  ["NN.8", "Formar la frase de pertenencia de uno o de varios dueños", (r) => choose(r, "Completa la frase.", POSSESSIVE_FORM)],
-  ["NN.9", "Identificar y corregir errores de plural y de pertenencia", (r) => choose(r, "", POSSESSIVE_ERRORS)],
+  ["sustantivos-1", (r) => pickInSentence(r, "Selecciona los sustantivos (también los que nombran ideas o sentimientos).", ABSTRACT_IN)],
+  ["sustantivos-2", (r) => mix(r, [(q) => pickAll(q, "Selecciona los sustantivos propios.", PROPER, COMMON, "propios"), (q) => pickAll(q, "Selecciona los sustantivos comunes.", COMMON, PROPER, "comunes")])],
+  ["plurales-1", (r) => choose(r, "", PLURAL_FORM)],
+  ["plurales-2", (r) => choose(r, "Completa la oración.", PLURAL_USE)],
+  ["plurales-3", (r) => choose(r, "", [...PLURAL_REVIEW, ...PLURAL_FORM])],
+  ["plurales-4", (r) => choose(r, "Completa la oración.", [...PLURAL_REVIEW_USE, ...PLURAL_USE])],
+  ["plurales-5", (r) => choose(r, "", POSSESSIVE_ID)],
+  ["plurales-6", (r) => choose(r, "Completa la frase.", POSSESSIVE_FORM)],
+  ["plurales-7", (r) => choose(r, "", POSSESSIVE_ERRORS)],
 
-  ["OO.1", "Identificar pronombres personales", (r) => pickInSentence(r, "Selecciona los pronombres personales.", PRONOUNS_IN)],
-  ["OO.2", "Elegir entre pronombres de sujeto y de objeto", (r) => choose(r, "Completa la oración.", SUBJ_OBJ)],
-  ["OO.3", "Reemplazar el sustantivo por un pronombre personal", (r) => choose(r, "", REPLACE)],
-  ["OO.4", "Sujetos y complementos compuestos con «yo» y «mí»", (r) => choose(r, "Completa la oración.", I_AND_ME)],
-  ["OO.5", "Sujetos y complementos compuestos con pronombres personales", (r) => choose(r, "Completa la oración.", COMPOUND_PRONOUNS)],
-  ["OO.6", "Usar pronombres posesivos", (r) => choose(r, "Completa la oración.", POSS_USE)],
-  ["OO.7", "Elegir entre pronombres personales y reflexivos", (r) => choose(r, "Completa la oración.", REFLEXIVE_CHOICE)],
-  ["OO.8", "Usar pronombres reflexivos", (r) => choose(r, "Completa la oración.", REFLEXIVE_USE)],
-  ["OO.9", "Identificar pronombres relativos", (r) => pickInSentence(r, "Selecciona el pronombre o adverbio relativo.", REL_IN)],
-  ["OO.10", "Usar pronombres relativos: que, quien y quienes", (r) => choose(r, "Completa la oración.", QUE_QUIEN)],
-  ["OO.11", "Usar pronombres relativos: que, quien, cuyo, el cual y donde", (r) => choose(r, "Completa la oración.", RELATIVE_USE)],
+  ["pronombres-1", (r) => pickInSentence(r, "Selecciona los pronombres personales.", PRONOUNS_IN)],
+  ["pronombres-2", (r) => choose(r, "Completa la oración.", SUBJ_OBJ)],
+  ["pronombres-3", (r) => choose(r, "", REPLACE)],
+  ["pronombres-4", (r) => choose(r, "Completa la oración.", I_AND_ME)],
+  ["pronombres-5", (r) => choose(r, "Completa la oración.", COMPOUND_PRONOUNS)],
+  ["pronombres-6", (r) => choose(r, "Completa la oración.", POSS_USE)],
+  ["pronombres-7", (r) => choose(r, "Completa la oración.", REFLEXIVE_CHOICE)],
+  ["pronombres-8", (r) => choose(r, "Completa la oración.", REFLEXIVE_USE)],
+  ["relativos-1", (r) => pickInSentence(r, "Selecciona el pronombre o adverbio relativo.", REL_IN)],
+  ["relativos-2", (r) => choose(r, "Completa la oración.", QUE_QUIEN)],
+  ["relativos-3", (r) => choose(r, "Completa la oración.", RELATIVE_USE)],
 
-  ["PP.1", "Identificar verbos principales y verbos auxiliares", (r) => choose(r, "", HELPING)],
-  ["PP.2", "¿Qué indica el verbo: capacidad, permiso, obligación o posibilidad?", (r) => choose(r, "", MODAL_SHOWS)],
-  ["PP.3", "Usar el verbo correcto: poder, deber, tener que, soler", (r) => choose(r, "Completa la oración.", MODAL_USE)],
+  ["tipos-verbos-1", (r) => choose(r, "", HELPING)],
+  ["tipos-verbos-2", (r) => choose(r, "", MODAL_SHOWS)],
+  ["tipos-verbos-3", (r) => choose(r, "Completa la oración.", MODAL_USE)],
 
-  ["QQ.1", "Usar el sujeto o el verbo correcto", (r) => choose(r, "Completa la oración.", SUBJECT_VERB)],
-  ["QQ.2", "Usar el sujeto o el verbo correcto, con sujetos compuestos", (r) => choose(r, "Completa la oración.", COMPOUND_SUBJECT)],
+  ["concordancia-1", (r) => choose(r, "Completa la oración.", SUBJECT_VERB)],
+  ["concordancia-2", (r) => choose(r, "Completa la oración.", COMPOUND_SUBJECT)],
 
-  ["RR.1", "¿La oración está en pasado, presente o futuro?", (r) => choose(r, "", TENSES)],
-  ["RR.2", "Formar y usar el pasado de verbos regulares", (r) => choose(r, "Completa con el verbo en pasado.", PAST_REGULAR)],
-  ["RR.3", "Formar y usar el pasado de verbos irregulares", (r) => choose(r, "Completa con el verbo en pasado.", PAST_IRREGULAR)],
-  ["RR.4", "Formar y usar el pasado, el presente y el futuro", (r) => choose(r, "Completa con el verbo en el tiempo que corresponde.", THREE_TENSES)],
-  ["RR.5", "Corregir cambios indebidos de tiempo verbal", (r) => choose(r, "", TENSE_SHIFTS)],
-  ["RR.6", "Usar los tiempos con estar + gerundio", (r) => choose(r, "Completa la oración.", PROGRESSIVE_USE)],
-  ["RR.7", "Formar el gerundio para los tiempos con estar", (r) => choose(r, "", PROGRESSIVE_FORM)],
-  ["RR.8", "Elegir entre el pasado y el participio", (r) => choose(r, "Completa la oración.", PAST_OR_PARTICIPLE)],
-  ["RR.9", "Usar los tiempos compuestos con haber", (r) => choose(r, "Completa la oración.", PERFECT_USE)],
-  ["RR.10", "Formar los tiempos compuestos con haber", (r) => choose(r, "", PERFECT_FORM)],
+  ["tiempos-1", (r) => choose(r, "", TENSES)],
+  ["tiempos-2", (r) => choose(r, "Completa con el verbo en pasado.", PAST_REGULAR)],
+  ["tiempos-3", (r) => choose(r, "Completa con el verbo en pasado.", PAST_IRREGULAR)],
+  ["tiempos-4", (r) => choose(r, "Completa con el verbo en el tiempo que corresponde.", THREE_TENSES)],
+  ["tiempos-5", (r) => choose(r, "", TENSE_SHIFTS)],
+  ["gerundio-1", (r) => choose(r, "Completa la oración.", PROGRESSIVE_USE)],
+  ["gerundio-2", (r) => choose(r, "", PROGRESSIVE_FORM)],
+  ["compuestos-1", (r) => choose(r, "Completa la oración.", PAST_OR_PARTICIPLE)],
+  ["compuestos-2", (r) => choose(r, "Completa la oración.", PERFECT_USE)],
+  ["compuestos-3", (r) => choose(r, "", PERFECT_FORM)],
 ];

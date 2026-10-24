@@ -1,27 +1,15 @@
 import { choose, type ChoiceItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { abcOrder, f, pool, pt, sorter, w } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Vocabulario (IXL 8th grade ELA, W-EE). Los afijos del inglés pasan a los del
-// castellano, como en 1.°: mis- → mal-; un-, dis-, in-, im-, non- → des-, in-,
-// im-, i- y no; -ful → -oso; -less → a-, an- y sin-; -able, -ible → -able, -ible.
+// 2.° de Secundaria · banco de vocabulario: prefijos y sufijos del castellano,
+// raíces griegas y latinas, sinónimos y antónimos, matices, homófonos,
+// analogías, contexto y diccionario.
 
-export const SECTIONS: Section[] = [
-  { id: "W", name: "Prefijos y sufijos", icon: "🧩" },
-  { id: "X", name: "Raíces griegas y latinas", icon: "🏛️" },
-  { id: "Y", name: "Sinónimos y antónimos", icon: "↔️" },
-  { id: "Z", name: "Elección y uso de las palabras", icon: "🌈" },
-  { id: "AA", name: "Homófonos", icon: "👂" },
-  { id: "BB", name: "Analogías", icon: "🔁" },
-  { id: "CC", name: "Claves de contexto", icon: "🔎" },
-  { id: "DD", name: "Vocabulario de las áreas", icon: "🔬" },
-  { id: "EE", name: "Uso del diccionario", icon: "📖" },
-];
 
 const means = (word: string, a: string, ...d: string[]) => w(`¿Qué significa «${word}»?`, a, ...d);
 
-// --- W. Prefijos y sufijos ---------------------------------------------------
+// --- Prefijos y sufijos ---------------------------------------------------
 
 const PRE: ChoiceItem[] = [
   means("precursor", "Que abre el camino a otros", "Que llega al final, cuando todo ya terminó", "Corredor"), means("preestablecido", "Fijado con anterioridad", "Que se decide en el momento, sin plan", "Nuevo"),
@@ -72,7 +60,7 @@ const ABLE: ChoiceItem[] = [
   f("Presentó pruebas ___ de su inocencia.", "irrefutables", "refutables", "refutadas"), f("Es una explicación ___, aunque no está comprobada.", "plausible", "aplaudida", "aplausiva"),
 ];
 
-// --- X. Raíces griegas y latinas -----------------------------------------------
+// --- Raíces griegas y latinas -----------------------------------------------
 
 const ROOT_CLUES: ChoiceItem[] = [
   pt("Usa la raíz como pista: ¿qué significa «xenofobia»?", "La raíz griega «xeno» significa «extranjero» y «fobia», «miedo o rechazo».", "Rechazo a los extranjeros", "Amor por los viajes al extranjero", "Miedo a la oscuridad"),
@@ -101,7 +89,7 @@ const ROOT_WORDS: ChoiceItem[] = [
   means("demografía", "Estudio estadístico de la población", "Estudio de las rocas, los suelos y los minerales", "Dibujo"), means("anacrónico", "Que no corresponde a su época", "Que es muy moderno y actual", "Crónico"),
 ];
 
-// --- Y. Sinónimos y antónimos ----------------------------------------------------
+// --- Sinónimos y antónimos ----------------------------------------------------
 
 const SYN = (sentence: string, word: string, a: string, ...d: string[]) => pt(`¿Qué palabra es sinónimo de «${word}»?`, sentence, a, ...d);
 const SYNONYMS: ChoiceItem[] = [
@@ -118,7 +106,7 @@ const ANTONYMS: ChoiceItem[] = [
   ANT("El orador fue prolijo.", "prolijo", "conciso", "extenso", "propio"), ANT("Tiene una visión optimista.", "optimista", "pesimista", "positiva", "óptica"),
 ];
 
-// --- Z. Elección de las palabras --------------------------------------------------
+// --- Elección de las palabras --------------------------------------------------
 
 const DIFFERENCE: ChoiceItem[] = [
   w("¿Cuál es la diferencia entre «informar» y «delatar»?", "Delatar es revelar una falta de alguien para que lo castiguen.", "Informar siempre tiene la intención de que alguien sea castigado.", "No hay diferencia."),
@@ -136,7 +124,7 @@ const CONNOTATION: ChoiceItem[] = [
   ...["Es un joven TEMERARIO.", "Es una persona COBARDE.", "Tiene un estilo SOSO.", "Es un vendedor MANIPULADOR.", "Es una alumna OBSTINADA.", "Es un hombre ESQUELÉTICO."].map((x) => CONN(x, 1)),
 ];
 
-// --- AA. Homófonos ----------------------------------------------------------------
+// --- Homófonos ----------------------------------------------------------------
 
 const HOMOPHONE_USE: ChoiceItem[] = [
   f("La ___ del Ministerio de Cultura está en San Borja.", "sede", "cede", "cedé"), f("El conductor ___ el paso al peatón.", "cede", "sede", "sedé"),
@@ -163,7 +151,7 @@ const SENTENCE_FOR_DEF: ChoiceItem[] = [
   w("¿En qué oración «grabar» significa «registrar sonido o imagen»?", "Vamos a grabar un podcast.", "El impuesto va a gravar las importaciones.", "El Estado decidió gravar el tabaco."),
 ];
 
-// --- BB. Analogías ------------------------------------------------------------------
+// --- Analogías ------------------------------------------------------------------
 
 const ANALOGY: ChoiceItem[] = [
   f("Novelista es a novela como dramaturgo es a ___.", "obra de teatro", "poema", "pintura al óleo sobre lienzo"), f("Pincel es a pintor como batuta es a ___.", "director de orquesta", "escultor", "pianista de una banda de rock"),
@@ -178,7 +166,7 @@ const ANALOGY_HARD: ChoiceItem[] = [
   f("Censura es a expresión como represa es a ___.", "río", "luz", "aire de los pulmones"), f("Mecenas es a artista como patrocinador es a ___.", "deportista", "árbitro", "público que mira el partido"),
 ];
 
-// --- CC. Claves de contexto ----------------------------------------------------------
+// --- Claves de contexto ----------------------------------------------------------
 
 const FIND_WORD: ChoiceItem[] = [
   f("Tras la derrota, el equipo regresó ___, sin hablar.", "cabizbajo", "eufórico", "orgulloso"), f("La ley fue ___: quedó sin efecto.", "derogada", "aprobada", "promulgada"),
@@ -225,7 +213,7 @@ const ACADEMIC_INFO: ChoiceItem[] = [
   f("El informe ___ las causas del problema antes de proponer soluciones.", "analiza", "rima", "inventa al azar"), f("Una ___ es una fuente original, como un diario o un documento de la época.", "fuente primaria", "fuente falsa", "fuente secundaria"),
 ];
 
-// --- DD. Vocabulario de las áreas -----------------------------------------------------
+// --- Vocabulario de las áreas -----------------------------------------------------
 
 const DOMAIN = pool([
   ["🧬 Proceso por el que las especies cambian a lo largo de generaciones", "evolución"], ["⚡ Flujo de cargas eléctricas por un conductor", "corriente eléctrica"], ["🏛️ Separación del poder en Ejecutivo, Legislativo y Judicial", "separación de poderes"], ["💹 Diferencia entre lo que un país exporta e importa", "balanza comercial"],
@@ -233,7 +221,7 @@ const DOMAIN = pool([
   ["🌡️ Aumento de la temperatura media del planeta", "calentamiento global"], ["⚗️ Sustancia formada por dos o más elementos químicos unidos", "compuesto"],
 ]);
 
-// --- EE. Uso del diccionario -------------------------------------------------------
+// --- Uso del diccionario -------------------------------------------------------
 
 const ABC = [["transacción", "transcribir", "transcurrir", "transeúnte", "transferir"], ["preferir", "pregunta", "prejuicio", "preludio", "premio"], ["comparar", "compartir", "compás", "compasión", "compatible"], ["intención", "intenso", "intentar", "interés", "interior"], ["resolver", "respeto", "respirar", "responder", "restaurar"], ["desafío", "desarrollo", "desastre", "desayuno", "descanso"]];
 const GUIDE = (a: string, b: string, ans: string, ...d: string[]) => w(`Las palabras guía de la página son «${a}» y «${b}». ¿Qué palabra está en esa página?`, ans, ...d);
@@ -268,45 +256,45 @@ const THESAURUS: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["W.1", "Palabras con pre-", (r) => choose(r, "Completa la oración.", PRE)],
-  ["W.2", "Palabras con re-", (r) => choose(r, "Completa la oración.", RE)],
-  ["W.3", "Palabras con sub-", (r) => choose(r, "Completa la oración.", SUB)],
-  ["W.4", "Palabras con mal-", (r) => choose(r, "Completa la oración.", MAL)],
-  ["W.5", "Palabras con des-, in-, im-, i- y no", (r) => choose(r, "Completa la oración.", NEG)],
-  ["W.6", "Palabras con -oso y -osa", (r) => choose(r, "Completa la oración.", OSO)],
-  ["W.7", "Palabras con a-, an- y sin-", (r) => choose(r, "Completa la oración.", SIN)],
-  ["W.8", "Palabras con -able e -ible", (r) => choose(r, "Completa la oración.", ABLE)],
+  ["prefijos-1", (r) => choose(r, "Completa la oración.", PRE)],
+  ["prefijos-2", (r) => choose(r, "Completa la oración.", RE)],
+  ["prefijos-3", (r) => choose(r, "Completa la oración.", SUB)],
+  ["prefijos-4", (r) => choose(r, "Completa la oración.", MAL)],
+  ["prefijos-5", (r) => choose(r, "Completa la oración.", NEG)],
+  ["sufijos-1", (r) => choose(r, "Completa la oración.", OSO)],
+  ["prefijos-6", (r) => choose(r, "Completa la oración.", SIN)],
+  ["sufijos-2", (r) => choose(r, "Completa la oración.", ABLE)],
 
-  ["X.1", "Usar raíces griegas y latinas como pistas del significado de las palabras", (r) => choose(r, "", ROOT_CLUES)],
-  ["X.2", "Usar palabras como pistas del significado de raíces griegas y latinas", (r) => choose(r, "", WORDS_TO_ROOT)],
-  ["X.3", "Determinar el significado de raíces griegas y latinas", (r) => choose(r, "", ROOT_MEANING)],
-  ["X.4", "Determinar el significado de palabras con raíces griegas y latinas", (r) => choose(r, "", ROOT_WORDS)],
+  ["griegas-latinas-1", (r) => choose(r, "", ROOT_CLUES)],
+  ["griegas-latinas-2", (r) => choose(r, "", WORDS_TO_ROOT)],
+  ["griegas-latinas-3", (r) => choose(r, "", ROOT_MEANING)],
+  ["griegas-latinas-4", (r) => choose(r, "", ROOT_WORDS)],
 
-  ["Y.1", "Elegir el sinónimo", (r) => choose(r, "", SYNONYMS)],
-  ["Y.2", "Elegir el antónimo", (r) => choose(r, "", ANTONYMS)],
+  ["sinonimos-antonimos-1", (r) => choose(r, "", SYNONYMS)],
+  ["sinonimos-antonimos-2", (r) => choose(r, "", ANTONYMS)],
 
-  ["Z.1", "Describir la diferencia entre palabras parecidas", (r) => choose(r, "", DIFFERENCE)],
-  ["Z.2", "Connotación positiva y negativa", (r) => choose(r, "", CONNOTATION)],
+  ["matices-1", (r) => choose(r, "", DIFFERENCE)],
+  ["matices-2", (r) => choose(r, "", CONNOTATION)],
 
-  ["AA.1", "Usar el homófono correcto", (r) => choose(r, "Completa la oración.", HOMOPHONE_USE)],
-  ["AA.2", "¿Qué definición corresponde a la oración?", (r) => choose(r, "", DEF_FOR_SENTENCE)],
-  ["AA.3", "¿Qué oración corresponde a la definición?", (r) => choose(r, "", SENTENCE_FOR_DEF)],
+  ["homofonos-1", (r) => choose(r, "Completa la oración.", HOMOPHONE_USE)],
+  ["homofonos-2", (r) => choose(r, "", DEF_FOR_SENTENCE)],
+  ["homofonos-3", (r) => choose(r, "", SENTENCE_FOR_DEF)],
 
-  ["BB.1", "Analogías", (r) => choose(r, "Completa la analogía.", ANALOGY)],
-  ["BB.2", "Analogías: desafío", (r) => choose(r, "Completa la analogía.", ANALOGY_HARD)],
+  ["analogias-1", (r) => choose(r, "Completa la analogía.", ANALOGY)],
+  ["analogias-2", (r) => choose(r, "Completa la analogía.", ANALOGY_HARD)],
 
-  ["CC.1", "Encontrar palabras usando el contexto", (r) => choose(r, "¿Qué palabra completa mejor la oración?", FIND_WORD)],
-  ["CC.2", "Determinar el significado de palabras usando sinónimos en contexto", (r) => choose(r, "", SYN_CLUE)],
-  ["CC.3", "Determinar el significado de palabras usando antónimos en contexto", (r) => choose(r, "", ANT_CLUE)],
-  ["CC.4", "Usar el contexto para identificar el significado de una palabra", (r) => choose(r, "", CONTEXT)],
-  ["CC.5", "Usar vocabulario académico en contexto: textos literarios", (r) => choose(r, "Completa la oración.", ACADEMIC_LIT)],
-  ["CC.6", "Usar vocabulario académico en contexto: textos informativos", (r) => choose(r, "Completa la oración.", ACADEMIC_INFO)],
+  ["contexto-1", (r) => choose(r, "¿Qué palabra completa mejor la oración?", FIND_WORD)],
+  ["contexto-2", (r) => choose(r, "", SYN_CLUE)],
+  ["contexto-3", (r) => choose(r, "", ANT_CLUE)],
+  ["contexto-4", (r) => choose(r, "", CONTEXT)],
+  ["academico-1", (r) => choose(r, "Completa la oración.", ACADEMIC_LIT)],
+  ["academico-2", (r) => choose(r, "Completa la oración.", ACADEMIC_INFO)],
 
-  ["DD.1", "Determinar el significado de palabras de las áreas, con dibujos", (r) => choose(r, "¿Qué término corresponde al dibujo y a la definición?", DOMAIN)],
+  ["academico-3", (r) => choose(r, "¿Qué término corresponde al dibujo y a la definición?", DOMAIN)],
 
-  ["EE.1", "Ordenar alfabéticamente", (r) => abcOrder(r, ABC, "Empiezan con las mismas letras: sigue comparando hasta encontrar la diferencia.")],
-  ["EE.2", "Usar las palabras guía", (r) => choose(r, "", GUIDE_WORDS)],
-  ["EE.3", "Usar las entradas del diccionario", (r) => choose(r, "", DICTIONARY)],
-  ["EE.4", "Usar las definiciones del diccionario", (r) => choose(r, "", DEFINITIONS)],
-  ["EE.5", "Usar las entradas del diccionario de sinónimos", (r) => choose(r, "", THESAURUS)],
+  ["diccionario-1", (r) => abcOrder(r, ABC, "Empiezan con las mismas letras: sigue comparando hasta encontrar la diferencia.")],
+  ["diccionario-2", (r) => choose(r, "", GUIDE_WORDS)],
+  ["diccionario-3", (r) => choose(r, "", DICTIONARY)],
+  ["diccionario-4", (r) => choose(r, "", DEFINITIONS)],
+  ["diccionario-5", (r) => choose(r, "", THESAURUS)],
 ];

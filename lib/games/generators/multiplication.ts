@@ -6,7 +6,7 @@ function num(answer: number, prompt: string, text: string, explanation: string, 
   return { kind: "number", prompt, visual: { kind: "text", text }, answer, explanation, tag };
 }
 
-// 2.° M.1: grupos iguales → multiplicación.
+// Grupos iguales → multiplicación.
 export function multEqualGroups(r: Rng): Question {
   const groups = r.int(2, 5);
   const each = r.int(2, 5);
@@ -33,7 +33,7 @@ export function multEqualGroups(r: Rng): Question {
   };
 }
 
-// 2.° M.2: matrices (filas × columnas).
+// Matrices (filas × columnas).
 export function multArrays(r: Rng): Question {
   const rows = r.int(2, 5);
   const cols = r.int(2, 6);
@@ -61,7 +61,7 @@ export function multArrays(r: Rng): Question {
   };
 }
 
-// 2.° M.3 - M.7: tablas. Un factor sale de `factors`, el otro va de 0 a `otherMax`.
+// Tablas. Un factor sale de `factors`, el otro va de 0 a `otherMax`.
 export function multFacts(r: Rng, factors: number[], otherMax = 10): Question {
   const a = r.pick(factors);
   const b = r.int(0, otherMax);

@@ -7,7 +7,7 @@ import { WORDS } from "../../generators/lengua/words";
 import type { Rng } from "../../rng";
 import type { Curriculum, Question, Section, Skill } from "../../types";
 
-// Computación · 1.° de Primaria. Sin lista oficial de IXL: temas habituales de
+// Computación · 1.° de Primaria. Temas habituales de
 // computación en primer grado (partes y cuidado del equipo, mouse, teclado,
 // íconos, dibujo), pensamiento computacional estilo Code.org (algoritmos,
 // robot con flechas, bucles, condicionales, depuración) y ciudadanía digital.

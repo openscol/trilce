@@ -25,7 +25,7 @@ const pieceVisual = (p: Piece): Visual => {
 };
 const DNE = "No existe";
 
-// HH.1-HH.3: límites (y límites laterales) a partir de gráficos.
+// Límites (y límites laterales) a partir de gráficos.
 export function limitGraph(r: Rng, mode: "two" | "one" | "exists"): Question {
   const p = randomPiece(r, mode === "two" ? r.pick(["continuous", "hole", "isolated"] as const) : "any");
   const v = pieceVisual(p);
@@ -41,7 +41,7 @@ export function limitGraph(r: Rng, mode: "two" | "one" | "exists"): Question {
   return choiceQ(r, `Según el gráfico, ¿cuánto vale el límite de f(x) cuando x tiende a ${sg(p.a)}?`, sg(p.L), [p.fa !== null && p.fa !== p.L ? sg(p.fa) : sg(p.L + 1), DNE, sg(p.a), sg(p.L - 1)].filter((w, i, all) => w !== sg(p.L) && all.indexOf(w) === i).slice(0, 3), `Los dos lados se acercan a ${sg(p.L)}; el límite no depende del valor en el punto${p.fa === null ? " (aunque allí haya un hueco)" : ""}.`, v, "limite");
 }
 
-// HH.4 / HH.5: límites en asíntotas verticales y comportamiento en los extremos.
+// Límites en asíntotas verticales y comportamiento en los extremos.
 export function limitInfinite(r: Rng, end: boolean): Question {
   const a = r.int(-3, 3), k = r.pick([1, 2, 3]), c = r.int(-2, 2), sq = r.chance(0.4);
   const f = (x: number) => (sq ? k / (x - a) ** 2 : k / (x - a)) + c;
@@ -55,7 +55,7 @@ export function limitInfinite(r: Rng, end: boolean): Question {
   return choiceQ(r, `Según el gráfico, ¿cuál es el límite de f(x) cuando x tiende a ${sg(a)} por la ${left ? "izquierda" : "derecha"}?`, val, ["+∞", "−∞", sg(c), DNE].filter((w) => w !== val), `Cerca de la asíntota vertical x = ${sg(a)}, la gráfica ${val === "+∞" ? "sube sin límite" : "baja sin límite"}.`, visual, "asintota");
 }
 
-// HH.6-HH.9: leyes de los límites.
+// Leyes de los límites.
 export function limitLaws(r: Rng, mode: "addMul" | "div" | "powRoot" | "all"): Question {
   const F = nz(r, 6), G = nz(r, 5), a = r.int(-3, 3);
   const m = mode === "all" ? r.pick(["addMul", "div", "powRoot"] as const) : mode;
@@ -75,7 +75,7 @@ export function limitLaws(r: Rng, mode: "addMul" | "div" | "powRoot" | "all"): Q
   return numQ(s, `Si lím(x→${sg(a)}) f(x) = ${s * s}, ¿cuánto vale lím(x→${sg(a)}) √f(x)?`, undefined, `Ley de la raíz: √${s * s} = ${s}.`, "raiz");
 }
 
-// HH.10: límites de polinomios y funciones racionales (sustitución directa).
+// Límites de polinomios y funciones racionales (sustitución directa).
 export function limitSubstitution(r: Rng): Question {
   const a = r.int(-3, 3), p = [r.int(1, 3), nz(r, 5), r.int(-6, 6)];
   const ev = (q: number[], x: number) => q.reduce((s, c) => s * x + c, 0);
@@ -90,7 +90,7 @@ export function limitSubstitution(r: Rng): Question {
   return choiceQ(r, `¿Cuánto vale lím(x→${sg(a)}) (${poly(p)}) / (x ${d < 0 ? "−" : "+"} ${Math.abs(d)})?`, good, [DNE, "0", sg(num)].filter((w) => w !== good), `El denominador no se anula en x = ${sg(a)}: se reemplaza y da ${sg(num)} ÷ ${den < 0 ? `(${sg(den)})` : den} = ${good}.`, undefined, "racional");
 }
 
-// HH.11: límites con factorización y racionalización.
+// Límites con factorización y racionalización.
 export function limitIndeterminate(r: Rng): Question {
   if (r.chance(0.6)) {
     const a = nz(r, 5), b = r.int(-5, 5);
@@ -107,7 +107,7 @@ export function limitIndeterminate(r: Rng): Question {
 // Continuidad
 
 const DISC = ["Removible (un hueco)", "De salto", "Infinita (asíntota vertical)", "Es continua"];
-// II.1-II.5: continuidad a partir de gráficos.
+// Continuidad a partir de gráficos.
 export function continuity(r: Rng, mode: "identify" | "atPoint" | "oneSided" | "type" | "interval"): Question {
   const p = randomPiece(r);
   const v = pieceVisual(p);
@@ -140,7 +140,7 @@ export function continuity(r: Rng, mode: "identify" | "atPoint" | "oneSided" | "
 const ev = (q: number[], x: number) => q.reduce((s, c) => s * x + c, 0);
 const deriv = (q: number[]) => q.slice(0, -1).map((c, i) => c * (q.length - 1 - i));
 
-// JJ.1 / JJ.2: tasa de cambio promedio (fórmula o tabla).
+// Tasa de cambio promedio (fórmula o tabla).
 export function averageRateJJ(r: Rng, fromTable: boolean): Question {
   const q = [r.int(-2, 3) || 1, r.int(-5, 5), r.int(-6, 6)];
   const a = r.int(-3, 2), b = a + r.int(1, 4);
@@ -152,7 +152,7 @@ export function averageRateJJ(r: Rng, fromTable: boolean): Question {
   return valQ(r, `¿Cuál es la tasa de cambio promedio de f(x) = ${poly(q)} entre x = ${sg(a)} y x = ${sg(b)}?`, rate, [-rate, ev(q, b) - ev(q, a), rate + 2], `(f(${sg(b)}) − f(${sg(a)})) ÷ (${sg(b)} − ${a < 0 ? `(${sg(a)})` : a}) = ${dec(rate)}.`, undefined, "formula");
 }
 
-// JJ.3 / JJ.5 / JJ.6: tasas instantáneas, derivadas y pendientes de rectas tangentes (con límites).
+// Tasas instantáneas, derivadas y pendientes de rectas tangentes (con límites).
 export function derivativeValue(r: Rng, mode: "rate" | "value" | "slope"): Question {
   const q = [r.int(-2, 3) || 1, r.int(-5, 5), r.int(-6, 6)];
   const a = r.int(-3, 3);
@@ -161,14 +161,14 @@ export function derivativeValue(r: Rng, mode: "rate" | "value" | "slope"): Quest
   return intQ(r, prompt, d, `[f(${sg(a)} + h) − f(${sg(a)})] / h = ${sg(2 * q[0] * a + q[1])} ${q[0] < 0 ? "−" : "+"} ${Math.abs(q[0]) === 1 ? "" : Math.abs(q[0])}h; cuando h → 0 queda ${sg(d)}.`, undefined, mode, [ev(q, a), q[0] * a + q[1], d + q[0]]);
 }
 
-// JJ.4: velocidad como tasa de cambio.
+// Velocidad como tasa de cambio.
 export function velocity(r: Rng): Question {
   const v0 = r.int(10, 40), t = r.int(1, 4), h0 = r.int(0, 30);
   const v = v0 - 10 * t;
   return intQ(r, `La altura de una pelota (en m) a los t segundos es h(t) = −5t² + ${v0}t${h0 ? ` + ${h0}` : ""}. ¿Cuál es su velocidad (en m/s) a los ${t} segundos?`, v, `v(t) = lím(Δt→0) [h(t + Δt) − h(t)] / Δt = −10t + ${v0}; v(${t}) = ${sg(v)}. ${v < 0 ? "Es negativa: la pelota ya está bajando." : ""}`, undefined, "velocidad", [-5 * t * t + v0 * t + h0, v0, -v]);
 }
 
-// JJ.7: ecuación de la recta tangente.
+// Ecuación de la recta tangente.
 export function tangentLine(r: Rng): Question {
   const q = [r.int(-2, 3) || 1, r.int(-4, 4), r.int(-5, 5)];
   const a = r.int(-2, 2);

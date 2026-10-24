@@ -1,7 +1,6 @@
 import type { Rng } from "../rng";
 import type { Question } from "../types";
 
-// I.1 - I.3
 export function compareSymbol(r: Rng, max: number): Question {
   const a = r.int(0, max);
   let b = r.chance(0.15) ? a : r.int(0, max);
@@ -21,7 +20,6 @@ export function compareSymbol(r: Rng, max: number): Question {
   };
 }
 
-// I.4 / I.5
 export function orderNumbers(r: Rng, max: number, count: number): Question {
   const set = new Set<number>();
   while (set.size < count) set.add(r.int(0, max));

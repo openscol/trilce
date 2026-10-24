@@ -11,7 +11,7 @@ import { dec, valQ } from "./util";
 
 const round = (n: number, k = 1) => Math.round(n * 10 ** k) / 10 ** k;
 
-// II.6 / II.7: desviación estándar de una población o de una muestra.
+// Desviación estándar de una población o de una muestra.
 export function standardDeviation(r: Rng, sample: boolean): Question {
   const n = r.int(4, 6), mean = r.int(5, 20);
   const xs = Array.from({ length: n - 1 }, () => mean + r.int(-6, 6));
@@ -28,7 +28,7 @@ const MEASURES: [string, string, string[], string][] = [
   ["Las estaturas de los alumnos de un salón: los datos son simétricos y sin valores atípicos.", "La media y la desviación estándar", ["La mediana y el rango intercuartílico", "La moda y el rango", "Solo la moda"], "Con datos simétricos y sin atípicos, la media y la desviación estándar describen bien el centro y la dispersión."],
   ["Los precios de casas en un distrito: la mayoría son baratas y unas pocas muy caras (datos sesgados a la derecha).", "La mediana y el rango intercuartílico", ["La media y la desviación estándar", "La moda y el rango", "La media y el rango"], "Con datos sesgados, la mediana y el rango intercuartílico no se dejan arrastrar por los extremos."],
 ];
-// II.8: elegir medidas de centro y de dispersión apropiadas.
+// Elegir medidas de centro y de dispersión apropiadas.
 export function chooseMeasures(r: Rng): Question {
   const [text, good, wrong, why] = r.pick(MEASURES);
   return choiceQ(r, `${text} ¿Qué medidas de centro y de dispersión conviene usar?`, good, wrong, why, undefined, "medidas");
@@ -52,7 +52,7 @@ const corr = (ps: { x: number; y: number }[]) => {
 };
 const scatter = (ps: { x: number; y: number }[], line?: { m: number; b: number }): Visual => ({ kind: "scatterPlot", xLabel: "x", yLabel: "y", xMax: 10, yMax: 10, xStep: 1, yStep: 1, points: ps, line: line ? { from: { x: 0, y: line.b }, to: { x: 10, y: line.m * 10 + line.b } } : undefined });
 
-// JJ.4: relacionar coeficientes de correlación con diagramas de dispersión.
+// Relacionar coeficientes de correlación con diagramas de dispersión.
 export function matchCorrelation(r: Rng): Question {
   const levels = [0.95, 0.6, 0, -0.6, -0.95];
   const target = r.pick(levels);
@@ -71,7 +71,7 @@ function dataset(r: Rng) {
   return xs.map((x) => ({ x, y: Math.max(0, Math.round(m * x + b + r.int(-2, 2))) }));
 }
 
-// JJ.5: calcular coeficientes de correlación.
+// Calcular coeficientes de correlación.
 export function calculateCorrelation(r: Rng): Question {
   const ps = dataset(r);
   const c = corr(ps).r;
@@ -86,7 +86,7 @@ const lineText = (m: number, b: number) => {
   if (!head) return `y = ${dec(bb)}`;
   return bb === 0 ? `y = ${head}` : `y = ${head} ${bb < 0 ? "−" : "+"} ${dec(Math.abs(bb))}`;
 };
-// JJ.8: hallar la ecuación de la recta de regresión.
+// Hallar la ecuación de la recta de regresión.
 export function regressionLine(r: Rng): Question {
   const ps = dataset(r);
   const { m, b } = corr(ps);
@@ -99,7 +99,7 @@ const REG_CTX: [string, string, string][] = [
   ["la temperatura en °C (x) y las bebidas vendidas (y)", "grado más de temperatura", "las bebidas que se venderían a 0 °C"],
   ["los años de antigüedad de un auto (x) y su precio en miles de soles (y)", "año más de antigüedad", "el precio de un auto nuevo"],
 ];
-// JJ.7 / JJ.9: interpretar rectas de ajuste y de regresión.
+// Interpretar rectas de ajuste y de regresión.
 export function interpretRegression(r: Rng): Question {
   const [ctx, per, icpt] = r.pick(REG_CTX);
   const neg = ctx.includes("antigüedad");
@@ -110,7 +110,7 @@ export function interpretRegression(r: Rng): Question {
   return choiceQ(r, `La recta de regresión ${lineText(m, b)} relaciona ${ctx}. ¿Qué significa ${askSlope ? `el ${dec(m)}` : `el ${b}`}?`, good, wrong, askSlope ? "Es la pendiente: el cambio en y por cada unidad de x." : "Es la intersección con el eje y: el valor de y cuando x = 0.", undefined, askSlope ? "pendiente" : "interseccion");
 }
 
-// JJ.10: analizar una recta de regresión (residuos).
+// Analizar una recta de regresión (residuos).
 export function analyzeRegression(r: Rng): Question {
   const m = r.int(2, 5), b = r.int(10, 30), x = r.int(3, 9), res = r.int(-6, 6) || 3;
   const actual = m * x + b + res;
@@ -118,7 +118,7 @@ export function analyzeRegression(r: Rng): Question {
   return numQ(m * x + b, `La recta de regresión es y = ${m}x + ${b}. ¿Qué valor de y predice para x = ${x}?`, undefined, `${m} × ${x} + ${b} = ${m * x + b}.`, "prediccion");
 }
 
-// JJ.11: regresión exponencial.
+// Regresión exponencial.
 export function exponentialRegression(r: Rng): Question {
   const a = r.pick([2, 3, 5, 10]), b = r.pick([1.5, 2, 3, 0.5]);
   const xs = [0, 1, 2, 3, 4];
@@ -135,7 +135,7 @@ const CAUSAL: [string, boolean, string][] = [
   ["Las ciudades con más bomberos tienen más incendios.", false, "Las ciudades más grandes tienen más bomberos y más incendios: la causa es el tamaño."],
   ["A más horas de ejercicio intenso, más calorías se queman.", true, "El ejercicio causa el gasto de calorías."],
 ];
-// JJ.12: correlación y causalidad.
+// Correlación y causalidad.
 export function correlationCausation(r: Rng): Question {
   const [text, causal, why] = r.pick(CAUSAL);
   const O = ["Es probable que una cause la otra", "Hay correlación, pero no causalidad"];
@@ -149,7 +149,7 @@ const fact = (n: number): number => (n <= 1 ? 1 : n * fact(n - 1));
 const P = (n: number, k: number) => fact(n) / fact(n - k);
 const C = (n: number, k: number) => P(n, k) / fact(k);
 
-// KK.7: permutaciones.
+// Permutaciones.
 export function permutations(r: Rng): Question {
   const n = r.int(4, 8), k = r.int(2, Math.min(4, n));
   const form = r.int(0, 2);
@@ -158,7 +158,7 @@ export function permutations(r: Rng): Question {
   return numQ(P(n, k), `${r.pick(NAMES)} quiere formar una clave con ${k} letras distintas elegidas entre ${n} letras, sin repetir. ¿Cuántas claves puede formar?`, undefined, `P(${n}, ${k}) = ${fmt(P(n, k))}.`, "clave");
 }
 
-// KK.8: notación de permutaciones y combinaciones.
+// Notación de permutaciones y combinaciones.
 export function permCombNotation(r: Rng): Question {
   const n = r.int(4, 9), k = r.int(2, Math.min(4, n - 1));
   const form = r.int(0, 2);
@@ -174,7 +174,7 @@ export function permCombNotation(r: Rng): Question {
 const mat = (rows: number, cols: number, r: Rng, max = 9) => Array.from({ length: rows }, () => Array.from({ length: cols }, () => r.int(-max, max)));
 const matText = (name: string, m: number[][]) => m.map((row, i) => `${i === 0 ? `${name} = ` : " ".repeat(name.length + 3)}[ ${row.map((v) => (v < 0 ? `−${-v}` : String(v)).padStart(3, " ")).join("  ")} ]`).join("\n");
 
-// LL.1: vocabulario de matrices.
+// Vocabulario de matrices.
 export function matrixVocabulary(r: Rng): Question {
   const rows = r.int(2, 4), cols = r.int(2, 4);
   const A = mat(rows, cols, r);
@@ -183,7 +183,7 @@ export function matrixVocabulary(r: Rng): Question {
   return intQ(r, `¿Cuál es el elemento a${"₀₁₂₃₄"[i]}${"₀₁₂₃₄"[j]} (fila ${i}, columna ${j}) de la matriz A?`, A[i - 1][j - 1], `Se busca la fila ${i} y la columna ${j}: ${sg(A[i - 1][j - 1])}.`, matText("A", A), "elemento", i <= cols && j <= rows ? [A[j - 1][i - 1]] : []);
 }
 
-// LL.2: reglas de las operaciones con matrices.
+// Reglas de las operaciones con matrices.
 export function matrixRules(r: Rng): Question {
   const [a, b, c, d] = [r.int(1, 4), r.int(1, 4), r.int(1, 4), r.int(1, 4)];
   const mult = r.chance(0.6);
@@ -196,7 +196,7 @@ export function matrixRules(r: Rng): Question {
   return yesNo(`A es una matriz ${a} × ${b} y B es ${c} × ${d}. ¿Se puede calcular A + B?`, ok, ok ? "Sí: tienen la misma dimensión." : "No: para sumar, las matrices deben tener la misma dimensión.", undefined, "sumar");
 }
 
-// LL.3-LL.5: sumar, restar, multiplicar por un escalar y combinaciones.
+// Sumar, restar, multiplicar por un escalar y combinaciones.
 export function matrixLinear(r: Rng, mode: "addsub" | "scalar" | "combo"): Question {
   const A = mat(2, 2, r, 6), B = mat(2, 2, r, 6);
   const k = r.pick([2, 3, -2, -1, 4]), m = r.pick([2, 3, -1]);
@@ -209,7 +209,7 @@ export function matrixLinear(r: Rng, mode: "addsub" | "scalar" | "combo"): Quest
   return intQ(r, `Calcula ${expr}. ¿Qué número queda en la fila ${i + 1}, columna ${j + 1}?`, val, why.replace(/-/g, "−"), `${matText("A", A)}\n${matText("B", B)}`.replace(/-/g, "−"), mode, [-val, val + 1]);
 }
 
-// LL.6: multiplicar dos matrices.
+// Multiplicar dos matrices.
 export function matrixMultiply(r: Rng): Question {
   const A = mat(2, 2, r, 5), B = mat(2, 2, r, 5);
   const i = r.int(0, 1), j = r.int(0, 1);
@@ -226,7 +226,7 @@ const PROPS: [string, boolean, string][] = [
   ["(A·B)·C = A·(B·C)", true, "El producto de matrices es asociativo."],
   ["A·(B + C) = A·B + A·C", true, "El producto se distribuye sobre la suma."],
 ];
-// LL.7: propiedades de las matrices.
+// Propiedades de las matrices.
 export function matrixProperties(r: Rng): Question {
   const [text, ok, why] = r.pick(PROPS);
   return fixedQ(`Si A, B y C son matrices cuadradas del mismo tamaño y k es un número, ¿se cumple siempre ${text}?`, ["Sí, siempre", "No siempre"], ok ? "Sí, siempre" : "No siempre", why, undefined, ok ? "si" : "no");

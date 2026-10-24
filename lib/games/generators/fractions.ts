@@ -11,7 +11,6 @@ function fractionOptions(r: Rng, shaded: number, parts: number) {
   return { answer, options: uniqueOptions(r, answer, cands) };
 }
 
-// K.1
 export function halvesThirdsFourths(r: Rng): Question {
   const parts = r.pick([2, 3, 4]);
   const shape = r.pick(["circle", "area"] as const);
@@ -26,7 +25,6 @@ export function halvesThirdsFourths(r: Rng): Question {
   };
 }
 
-// K.2 (círculo), K.4 (barras), K.5 (áreas)
 export function fractionOfShape(r: Rng, shape: "circle" | "bar" | "area", maxParts: number): Question {
   const parts = shape === "circle" ? r.pick([2, 3, 4]) : r.int(2, maxParts);
   const shaded = r.int(1, parts - 1);
@@ -42,7 +40,6 @@ export function fractionOfShape(r: Rng, shape: "circle" | "bar" | "area", maxPar
   };
 }
 
-// K.3
 export function fractionOfGroup(r: Rng): Question {
   const total = r.pick([2, 3, 4, 5, 6, 8]);
   const highlighted = r.int(1, total - 1);
@@ -57,7 +54,6 @@ export function fractionOfGroup(r: Rng): Question {
   };
 }
 
-// K.6 / K.7
 export function shadeFraction(r: Rng, shape: "bar" | "area"): Question {
   const parts = r.pick([2, 3, 4, 6, 8]);
   const shaded = r.int(1, parts - 1);
@@ -72,7 +68,6 @@ export function shadeFraction(r: Rng, shape: "bar" | "area"): Question {
   };
 }
 
-// K.8 / K.9
 export function fractionOnLine(r: Rng, unitOnly: boolean): Question {
   const parts = r.pick([2, 3, 4, 5, 6, 8]);
   const marked = unitOnly ? 1 : r.int(1, parts);
@@ -91,7 +86,7 @@ export function fractionOnLine(r: Rng, unitOnly: boolean): Question {
 // 2.° grado
 // ---------------------------------------------------------------------------
 
-// 2.° L.8: dos barras del mismo tamaño muestran fracciones equivalentes.
+// Dos barras del mismo tamaño muestran fracciones equivalentes.
 export function equivalentAreaModels(r: Rng): Question {
   const parts = r.pick([2, 3, 4]);
   const shaded = r.int(1, parts - 1);
@@ -107,7 +102,7 @@ export function equivalentAreaModels(r: Rng): Question {
   };
 }
 
-// 2.° L.11: la misma longitud en dos rectas con distinta división.
+// La misma longitud en dos rectas con distinta división.
 export function equivalentOnLines(r: Rng): Question {
   const parts = r.pick([2, 3, 4]);
   const k = r.int(1, parts - 1);
@@ -134,7 +129,7 @@ function lettered(r: Rng, total: number, target: number) {
   return { points, answer: points.find((p) => p.at === target)!.label };
 }
 
-// 2.° L.12: recta de 0 a 2; ¿qué punto es igual a 1?
+// Recta de 0 a 2; ¿qué punto es igual a 1?
 export function fractionEqualToOne(r: Rng): Question {
   const parts = r.pick([2, 3, 4, 5, 6, 8]);
   const { points, answer } = lettered(r, parts * 2, parts);
@@ -148,7 +143,7 @@ export function fractionEqualToOne(r: Rng): Question {
   };
 }
 
-// 2.° L.13 / L.14: ¿qué punto muestra la fracción?
+// ¿qué punto muestra la fracción?
 export function graphFraction(r: Rng, unitOnly: boolean): Question {
   const parts = r.pick([2, 3, 4, 5, 6, 8]);
   const k = unitOnly ? 1 : r.int(1, parts);

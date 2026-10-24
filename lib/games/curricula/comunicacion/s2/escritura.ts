@@ -1,27 +1,16 @@
 import { choose, order, type ChoiceItem, type OrderItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { f, pt, sorter, w } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Estrategias de escritura (IXL 8th grade ELA, O-V), con estas adaptaciones:
-//   conjunctive adverbs → conectores (no obstante, por consiguiente, asimismo, es decir)
-//   active / passive voice → voz activa, voz pasiva (ser + participio) y pasiva refleja (se + verbo)
-//   frequently confused words → haber / a ver, hay / ahí / ay, aparte / a parte, demás / de más, etc.
-//   errors in everyday use → errores frecuentes del castellano (queísmo, «habemos», «cónyugue»)
-//   Works Cited y citas en el texto (MLA) → referencias y citas en formato APA, el más usado en el Perú
+// 2.° de Secundaria · banco de escritura: organizar las ideas, tesis,
+// evidencias y contraargumentos, apelaciones y falacias, conectores (no
+// obstante, por consiguiente, asimismo, es decir), voz activa, voz pasiva
+// (ser + participio) y pasiva refleja (se + verbo), corrección (haber / a ver,
+// hay / ahí / ay, aparte / a parte, demás / de más; queísmo, «habemos»,
+// «cónyugue») e investigación con referencias APA.
 
-export const SECTIONS: Section[] = [
-  { id: "O", name: "Organizar la escritura", icon: "🗂️" },
-  { id: "P", name: "Desarrollar y apoyar argumentos", icon: "💬" },
-  { id: "Q", name: "Estilo", icon: "🎨" },
-  { id: "R", name: "Identificar evidencias en el texto", icon: "🔎" },
-  { id: "S", name: "Escribir con claridad y concisión", icon: "🧹" },
-  { id: "T", name: "Voz activa y voz pasiva", icon: "🔄" },
-  { id: "U", name: "Corregir y revisar", icon: "🔍" },
-  { id: "V", name: "Habilidades de investigación", icon: "📚" },
-];
 
-// --- O. Organizar la escritura -----------------------------------------------
+// --- Organizar la escritura -----------------------------------------------
 
 const BROAD_NARROW: OrderItem[] = [
   { seq: ["artes", "artes visuales", "pintura", "pintura peruana", "la obra de José Sabogal"] }, { seq: ["ciencias sociales", "historia", "historia republicana", "la guerra del Pacífico", "el combate de Angamos"] },
@@ -56,7 +45,7 @@ const TOPIC_SENTENCE: ChoiceItem[] = [
   pt(TOPIC, "___ Su clima seco conservó tejidos de dos mil años; sus vientos, en cambio, borraron ciudades enteras de adobe.", "El desierto costero ha protegido y destruido el patrimonio a la vez.", "Los tejidos de Paracas tienen colores muy vivos y diseños de animales marinos.", "El desierto es seco."),
 ];
 
-// --- P. Argumentos -----------------------------------------------------------
+// --- Argumentos -----------------------------------------------------------
 
 const FO = sorter(["Hecho (se puede comprobar)", "Opinión (juicio personal)"], "¿Es un hecho o una opinión?");
 const FACT_OPINION: ChoiceItem[] = [
@@ -104,7 +93,7 @@ const FALLACIES: ChoiceItem[] = [
   ...["Un famoso futbolista dice que este banco es el mejor; por eso debe serlo.", "La actriz de la novela recomienda este jarabe para la tos."].map((x) => FALLACY(x, 4)),
 ];
 
-// --- Q. Estilo -----------------------------------------------------------------
+// --- Estilo -----------------------------------------------------------------
 
 const PERSON = "¿Qué oración usa la personificación?";
 const PERSONIFICATION: ChoiceItem[] = [
@@ -129,7 +118,7 @@ const STRONG_VERB: ChoiceItem[] = [
   pt(STRONG, "Miró rápido el periódico.", "hojeó", "vio", "estuvo mirando mucho"), pt(STRONG, "Subió con dificultad la cuesta.", "trepó", "fue", "estuvo subiendo"),
 ];
 
-// --- R. Evidencias -------------------------------------------------------------
+// --- Evidencias -------------------------------------------------------------
 
 const SUPPORT_INFO: ChoiceItem[] = [
   pt("¿Qué detalle apoya la idea principal?", "Idea: El Perú es un país megadiverso.", "Alberga más de 20 000 especies de plantas.", "Su capital, Lima, fue fundada por los españoles en el año 1535.", "Es grande."),
@@ -148,7 +137,7 @@ const SUPPORT_LIT: ChoiceItem[] = [
   pt("¿Qué detalle muestra que Rosa es valiente?", "Cuando todos callaron, Rosa se levantó y denunció al compañero que robaba las loncheras.", "Se levantó y denunció al compañero.", "Todos callaron.", "Las loncheras de los alumnos eran de colores y tenían sus nombres escritos."),
 ];
 
-// --- S. Claridad y concisión -----------------------------------------------------
+// --- Claridad y concisión -----------------------------------------------------
 
 const CONJ_ADV: ChoiceItem[] = [
   f("El proyecto era costoso; ___, fue aprobado.", "no obstante", "por consiguiente", "es decir"), f("El río se desbordó; ___, evacuaron a las familias.", "por consiguiente", "no obstante", "en cambio"),
@@ -175,7 +164,7 @@ const REDUNDANCY: ChoiceItem[] = [
   pt(REDUNDANT, "Hubo un consenso general entre todos los delegados.", "Hubo consenso entre los delegados.", "Hubo un consenso general y unánime entre todos los delegados juntos.", "Consenso."),
 ];
 
-// --- T. Voz activa y pasiva ------------------------------------------------------
+// --- Voz activa y pasiva ------------------------------------------------------
 
 const VOICE = sorter(["Voz activa", "Voz pasiva"], "¿La oración está en voz activa o en voz pasiva?");
 const IDENTIFY_VOICE: ChoiceItem[] = [
@@ -194,7 +183,7 @@ const TO_ACTIVE: ChoiceItem[] = [
   pt(ACTIVE, "El ladrón fue capturado por la policía.", "La policía capturó al ladrón.", "El ladrón capturó a la policía.", "La policía fue capturada por el ladrón."),
 ];
 
-// --- U. Corregir y revisar -------------------------------------------------------
+// --- Corregir y revisar -------------------------------------------------------
 
 const CONFUSED_USE: ChoiceItem[] = [
   f("Vamos ___ si ya llegó el bus.", "a ver", "haber", "aver"), f("Debe ___ un error en la lista.", "haber", "a ver", "aber"),
@@ -241,7 +230,7 @@ const REVISIONS: ChoiceItem[] = [
   pt(REVISE, "«Pedro le prestó su libro a Juan, y él lo perdió».", "Aclarar quién lo perdió: «…a Juan, y Juan lo perdió».", "Agregar el título del libro, el autor y el año de publicación entre paréntesis.", "Quitar «su»."),
 ];
 
-// --- V. Investigación ------------------------------------------------------------
+// --- Investigación ------------------------------------------------------------
 
 const RELEVANT: ChoiceItem[] = [
   pt("¿Qué fuente es más pertinente?", "Tema: La contaminación del río Rímac.", "Un informe de la Autoridad Nacional del Agua sobre la calidad del río", "Un video de turistas que pasean por el centro de Lima y se toman fotos junto al río", "Un poema sobre el río"),
@@ -279,41 +268,41 @@ const PLAGIARISM: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["O.1", "Ordenar temas del más amplio al más específico", (r) => order(r, "Ordena los temas del más amplio al más específico.", BROAD_NARROW)],
-  ["O.2", "Organizar la información por tema", (r) => choose(r, "", BY_TOPIC)],
-  ["O.3", "Quitar la oración que no pertenece", (r) => choose(r, "", NOT_BELONG)],
-  ["O.4", "Elegir la oración temática que mejor recoge la idea principal", (r) => choose(r, "", TOPIC_SENTENCE)],
+  ["organizar-1", (r) => order(r, "Ordena los temas del más amplio al más específico.", BROAD_NARROW)],
+  ["organizar-2", (r) => choose(r, "", BY_TOPIC)],
+  ["organizar-3", (r) => choose(r, "", NOT_BELONG)],
+  ["organizar-4", (r) => choose(r, "", TOPIC_SENTENCE)],
 
-  ["P.1", "Distinguir hechos de opiniones", (r) => choose(r, "", FACT_OPINION)],
-  ["P.2", "Identificar la tesis", (r) => choose(r, "", THESES)],
-  ["P.3", "Elegir evidencias que apoyen una afirmación", (r) => choose(r, "", EVIDENCE)],
-  ["P.4", "Identificar contraargumentos", (r) => choose(r, "", COUNTERCLAIMS)],
-  ["P.5", "Identificar apelaciones al ethos, al pathos y al logos en los anuncios", (r) => choose(r, "", APPEALS)],
-  ["P.6", "Clasificar falacias lógicas", (r) => choose(r, "", FALLACIES)],
+  ["tesis-1", (r) => choose(r, "", FACT_OPINION)],
+  ["tesis-2", (r) => choose(r, "", THESES)],
+  ["tesis-3", (r) => choose(r, "", EVIDENCE)],
+  ["contraargumentos", (r) => choose(r, "", COUNTERCLAIMS)],
+  ["apelaciones", (r) => choose(r, "", APPEALS)],
+  ["falacias", (r) => choose(r, "", FALLACIES)],
 
-  ["Q.1", "Usar la personificación", (r) => choose(r, "", PERSONIFICATION)],
-  ["Q.2", "Crear oraciones variadas a partir de modelos", (r) => choose(r, "", VARIED)],
-  ["Q.3", "Mejorar la oración con un verbo más preciso", (r) => choose(r, "", STRONG_VERB)],
+  ["personificacion", (r) => choose(r, "", PERSONIFICATION)],
+  ["estilo-1", (r) => choose(r, "", VARIED)],
+  ["estilo-2", (r) => choose(r, "", STRONG_VERB)],
 
-  ["R.1", "Identificar detalles de apoyo en textos informativos", (r) => choose(r, "", SUPPORT_INFO)],
-  ["R.2", "Identificar detalles de apoyo en textos literarios", (r) => choose(r, "", SUPPORT_LIT)],
+  ["tesis-4", (r) => choose(r, "", SUPPORT_INFO)],
+  ["tesis-5", (r) => choose(r, "", SUPPORT_LIT)],
 
-  ["S.1", "Conectar ideas con conectores: no obstante, por consiguiente, asimismo, es decir", (r) => choose(r, "Completa con el mejor conector.", CONJ_ADV)],
-  ["S.2", "Usar estructuras paralelas", (r) => choose(r, "", PARALLEL)],
-  ["S.3", "Eliminar palabras o frases redundantes", (r) => choose(r, "", REDUNDANCY)],
+  ["claridad-1", (r) => choose(r, "Completa con el mejor conector.", CONJ_ADV)],
+  ["claridad-2", (r) => choose(r, "", PARALLEL)],
+  ["claridad-3", (r) => choose(r, "", REDUNDANCY)],
 
-  ["T.1", "Identificar la voz activa y la voz pasiva", (r) => choose(r, "", IDENTIFY_VOICE)],
-  ["T.2", "Reescribir la oración en voz activa", (r) => choose(r, "", TO_ACTIVE)],
+  ["voz-pasiva-1", (r) => choose(r, "", IDENTIFY_VOICE)],
+  ["voz-pasiva-2", (r) => choose(r, "", TO_ACTIVE)],
 
-  ["U.1", "Usar la palabra correcta entre las que se confunden", (r) => choose(r, "Completa la oración.", CONFUSED_USE)],
-  ["U.2", "Corregir errores con palabras que se confunden", (r) => choose(r, "", CONFUSED_FIX)],
-  ["U.3", "Corregir errores en carteles", (r) => choose(r, "", SIGNS)],
-  ["U.4", "Corregir errores del habla cotidiana", (r) => choose(r, "", EVERYDAY)],
-  ["U.5", "Proponer revisiones adecuadas", (r) => choose(r, "", REVISIONS)],
+  ["confundidas-1", (r) => choose(r, "Completa la oración.", CONFUSED_USE)],
+  ["confundidas-2", (r) => choose(r, "", CONFUSED_FIX)],
+  ["corregir-1", (r) => choose(r, "", SIGNS)],
+  ["corregir-2", (r) => choose(r, "", EVERYDAY)],
+  ["corregir-3", (r) => choose(r, "", REVISIONS)],
 
-  ["V.1", "Identificar fuentes pertinentes", (r) => choose(r, "", RELEVANT)],
-  ["V.2", "Evaluar si un titular periodístico es sesgado", (r) => choose(r, "", HEADLINES)],
-  ["V.3", "Reconocer las partes de una referencia bibliográfica (formato APA)", (r) => choose(r, "", WORKS_CITED)],
-  ["V.4", "Usar citas dentro del texto (formato APA)", (r) => choose(r, "", IN_TEXT)],
-  ["V.5", "Identificar el plagio", (r) => choose(r, "", PLAGIARISM)],
+  ["fuentes-1", (r) => choose(r, "", RELEVANT)],
+  ["fuentes-2", (r) => choose(r, "", HEADLINES)],
+  ["apa-1", (r) => choose(r, "", WORKS_CITED)],
+  ["apa-2", (r) => choose(r, "", IN_TEXT)],
+  ["fuentes-3", (r) => choose(r, "", PLAGIARISM)],
 ];

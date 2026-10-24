@@ -9,7 +9,7 @@ import { type SF, nz, pdec, psf, sdec, sdecQ, sfQ, sfadd, sfdiv, sfmul, sfshow, 
 
 type Op = "+" | "−" | "×" | "÷";
 
-// A.6: cantidades que se anulan (suman cero).
+// Cantidades que se anulan (suman cero).
 export function combineToZero(r: Rng): Question {
   const n = r.int(2, 60);
   const name = r.pick(NAMES);
@@ -41,7 +41,7 @@ function operands(r: Rng, op: Op): [number, number, number] {
   return [a, b, op === "+" ? a + b : a - b];
 }
 
-// B.13 / B.23: completar operaciones con enteros (falta un número).
+// Completar operaciones con enteros (falta un número).
 export function completeIntegerEquation(r: Rng, ops: Op[]): Question {
   const op = r.pick(ops);
   const [a, b, c] = operands(r, op);
@@ -50,7 +50,7 @@ export function completeIntegerEquation(r: Rng, ops: Op[]): Question {
   return intQ(r, "¿Qué número falta?", hideFirst ? a : b, `${sg(a)} ${op} ${par(b)} = ${sg(c)}.`, text, op);
 }
 
-// B.19: cocientes iguales de enteros. I.6: lo mismo en una situación.
+// Cocientes iguales de enteros; con `word`, lo mismo en una situación.
 export function equalQuotients(r: Rng, word = false): Question {
   const b = r.int(2, 9), q = r.int(2, 9), a = b * q;
   if (word) {
@@ -71,7 +71,7 @@ export function equalQuotients(r: Rng, word = false): Question {
   return multiQ(`Selecciona todas las expresiones que valen lo mismo que ${shown}.`, options, same.filter((x) => x !== shown), `${shown} = ${negative ? `−${q}` : q}. Un solo signo menos da negativo; dos signos menos dan positivo.`, undefined, negative ? "negativo" : "positivo");
 }
 
-// H.4: identificar números racionales.
+// Identificar números racionales.
 const RATIONAL: [string, boolean, string][] = [
   ["0,75", true, "es un decimal exacto: 3/4"], ["−8", true, "es un entero: −8/1"], ["3/5", true, "es una fracción de enteros"], ["0,333… (el 3 se repite)", true, "es un decimal periódico: 1/3"],
   ["√16", true, "vale 4"], ["2 1/3", true, "es 7/3"], ["−4,2", true, "es −42/10"], ["√25", true, "vale 5"], ["0,121212… (el 12 se repite)", true, "es un decimal periódico: 4/33"],
@@ -83,7 +83,7 @@ export function identifyRational(r: Rng): Question {
   return yesNo(`¿El número ${n} es racional (se puede escribir como fracción de dos enteros)?`, yes, `${yes ? "Sí" : "No"}: ${why}.`);
 }
 
-// H.11: clasificar números reales.
+// Clasificar números reales.
 const SETS = ["Natural", "Entero", "Racional", "Irracional"];
 const REALS: [string, number][] = [
   ["7", 0], ["12", 0], ["√9", 0], ["100", 0], ["−3", 1], ["−20", 1], ["−√4", 1], ["2/3", 2], ["−1,5", 2], ["0,25", 2], ["3 1/2", 2], ["−7/8", 2], ["√5", 3], ["π", 3], ["√11", 3], ["−√2", 3],
@@ -93,7 +93,7 @@ export function classifyReal(r: Rng): Question {
   return fixedQ(`¿Cuál es el conjunto más pequeño al que pertenece ${n}?`, SETS, SETS[i], `${n} es un número ${SETS[i].toLowerCase()}. (Naturales ⊂ enteros ⊂ racionales; los irracionales no se pueden escribir como fracción.)`, undefined, SETS[i]);
 }
 
-// I.1 / I.7: operar con decimales positivos y negativos (resultado en centésimos).
+// Operar con decimales positivos y negativos (resultado en centésimos).
 export function signedDecimals(r: Rng, ops: Op[]): Question {
   const op = r.pick(ops);
   if (op === "×") {
@@ -116,7 +116,7 @@ const randSF = (r: Rng): SF => {
 };
 const apply = (op: Op, a: SF, b: SF): SF => (op === "+" ? sfadd(a, b) : op === "−" ? sfsub(a, b) : op === "×" ? sfmul(a, b) : sfdiv(a, b));
 
-// I.2 / I.8: operar con fracciones positivas y negativas.
+// Operar con fracciones positivas y negativas.
 export function signedFractions(r: Rng, ops: Op[]): Question {
   const op = r.pick(ops);
   const a = randSF(r), b = randSF(r);
@@ -125,12 +125,12 @@ export function signedFractions(r: Rng, ops: Op[]): Question {
   return sfQ(r, "Resuelve. Da el resultado simplificado.", c, why, `${sfshow(a)} ${op} ${psf(b)} = ?`, op, [apply(op === "+" ? "−" : op === "−" ? "+" : op, a, b)]);
 }
 
-// I.3 / I.9 / I.11: racionales (decimales o fracciones).
+// Racionales (decimales o fracciones).
 export function rationalOperation(r: Rng, ops: Op[]): Question {
   return r.chance(0.5) ? signedDecimals(r, ops) : signedFractions(r, ops);
 }
 
-// I.4: aplicar las reglas de la suma y la resta.
+// Aplicar las reglas de la suma y la resta.
 export function addSubRules(r: Rng): Question {
   const a = r.int(2, 30), b = r.int(2, 30);
   const y = b === a ? b + 1 : b;
@@ -144,7 +144,7 @@ export function addSubRules(r: Rng): Question {
   return choiceQ(r, `¿Qué expresión vale lo mismo que ${shown}?`, answer, forms.map((f) => f[1]).filter((x) => x !== answer), why, undefined, "reglas");
 }
 
-// I.5: distancia entre dos números racionales en la recta numérica.
+// Distancia entre dos números racionales en la recta numérica.
 export function rationalDistance(r: Rng): Question {
   const a = nz(r, 80), b = nz(r, 80); // décimos
   if (a === b) return rationalDistance(r);
@@ -152,7 +152,7 @@ export function rationalDistance(r: Rng): Question {
   return decQ(r, `¿Qué distancia hay entre ${sdec(a * 10)} y ${sdec(b * 10)} en la recta numérica?`, d * 100, `La distancia es el valor absoluto de la resta: |${sdec(a * 10)} − ${pdec(b * 10)}| = ${sdec(d * 10)}.`, undefined, a < 0 !== b < 0 ? "lados-opuestos" : "mismo-lado", [Math.abs(a + b) * 100]);
 }
 
-// I.10: aplicar las reglas de la multiplicación y la división (signo del resultado).
+// Aplicar las reglas de la multiplicación y la división (signo del resultado).
 export function multDivRules(r: Rng): Question {
   const count = r.int(2, 4);
   const factors = Array.from({ length: count }, () => (r.chance(0.5) ? sdec(nz(r, 90) * 10) : sfshow(randSF(r))));
@@ -162,7 +162,7 @@ export function multDivRules(r: Rng): Question {
   return fixedQ("Sin calcular: ¿el resultado es positivo o negativo?", ["Positivo", "Negativo"], negatives % 2 === 0 ? "Positivo" : "Negativo", `Hay ${negatives} ${negatives === 1 ? "número negativo" : "números negativos"}: una cantidad ${negatives % 2 === 0 ? "par da resultado positivo" : "impar da resultado negativo"}.`, text, negatives % 2 === 0 ? "positivo" : "negativo");
 }
 
-// I.12 (New!): expresiones numéricas con números racionales.
+// Expresiones numéricas con números racionales.
 export function rationalExpression(r: Rng): Question {
   const form = r.int(0, 2);
   if (form === 0) {
@@ -180,14 +180,14 @@ export function rationalExpression(r: Rng): Question {
   return sfQ(r, "Calcula el valor de la expresión. Da el resultado simplificado.", value, `Primero el paréntesis: ${sfshow(sfadd(a, b))}. Luego se multiplica por ${sg(k)}: ${sfshow(value)}.`, `(${sfshow(a)} + ${psf(b)}) × ${par(k)}`, "fraccion");
 }
 
-// J.3: ecuaciones con el exponente como incógnita.
+// Ecuaciones con el exponente como incógnita.
 export function variableExponent(r: Rng): Question {
   const base = r.pick([2, 2, 3, 4, 5, 10]);
   const e = r.int(2, base === 2 ? 9 : base === 3 ? 5 : base === 10 ? 6 : 4);
   return numQ(e, "¿Cuánto vale x?", `${base}ˣ = ${fmt(base ** e)}`, `${base} multiplicado ${e} veces por sí mismo da ${fmt(base ** e)}: ${pw(String(base), e)}.`, `base-${base}`);
 }
 
-// J.4: potencias con bases negativas.
+// Potencias con bases negativas.
 export function negativeBasePower(r: Rng): Question {
   const a = r.int(2, 6), e = r.int(2, a <= 3 ? 5 : 3);
   const inside = r.chance(0.6);
@@ -196,7 +196,7 @@ export function negativeBasePower(r: Rng): Question {
 }
 
 type ExpRule = "product" | "quotient" | "power";
-// J.8 – J.10 (New!): propiedades de las potencias.
+// Propiedades de las potencias.
 export function exponentRule(r: Rng, rule: ExpRule): Question {
   const a = r.int(2, 9);
   const m = r.int(2, 9), n = r.int(2, 6);
@@ -213,7 +213,7 @@ export function exponentRule(r: Rng, rule: ExpRule): Question {
   return choiceQ(r, "Escribe como una sola potencia.", good, [pw(String(a), m + n), pw(String(a * n), m), pw(String(a), m ** 2), pw(String(a), m * n + 1)].filter((x) => x !== good), `Potencia de una potencia: se multiplican los exponentes: ${m} × ${n} = ${m * n}.`, `(${pw(String(a), m)})${pw("", n)}`, "potencia");
 }
 
-// J.11 (New!): evaluar expresiones usando las propiedades de las potencias.
+// Evaluar expresiones usando las propiedades de las potencias.
 export function exponentProperties(r: Rng): Question {
   const a = r.pick([2, 3, 5, 10]);
   const final = r.int(1, a === 2 ? 5 : a === 10 ? 4 : 3);
@@ -238,7 +238,7 @@ function standardText(m: number, e: number) {
   return `0,${"0".repeat(-e - 1)}${digits}`;
 }
 
-// J.12: notación científica.
+// Notación científica.
 export function scientificNotation(r: Rng): Question {
   const m = r.int(10, 99), e = r.pick([2, 3, 4, 5, 6, 7, -2, -3, -4, -5]);
   const sci = sciText(m, e), std = standardText(m, e);
@@ -246,7 +246,7 @@ export function scientificNotation(r: Rng): Question {
   return choiceQ(r, "Escribe el número en notación científica.", sci, [sciText(m, e + 1), sciText(m, e - 1), sciText(m, -e)].filter((x) => x !== sci), `La coma debe quedar después de la primera cifra distinta de cero; se movió ${Math.abs(e)} lugares: exponente ${sg(e)}.`, std, e > 0 ? "grande" : "pequeno");
 }
 
-// J.13: comparar números en notación científica.
+// Comparar números en notación científica.
 export function compareScientific(r: Rng): Question {
   const e1 = r.int(-5, 8);
   const e2 = r.chance(0.4) ? e1 : e1 + r.pick([-2, -1, 1, 2]);
@@ -256,13 +256,13 @@ export function compareScientific(r: Rng): Question {
   return symbolQ(v(m1, e1), v(m2, e2), sciText(m1, e1), sciText(m2, e2), e1 !== e2 ? `Primero se comparan los exponentes: ${sg(e1)} ${e1 < e2 ? "<" : ">"} ${sg(e2)}.` : `Los exponentes son iguales: se comparan ${sciText(m1, 0).split(" ")[0]} y ${sciText(m2, 0).split(" ")[0]}.`);
 }
 
-// K.1: raíces cuadradas de cuadrados perfectos.
+// Raíces cuadradas de cuadrados perfectos.
 export function perfectSquareRoot(r: Rng): Question {
   const k = r.int(1, 20);
   return r.chance(0.7) ? numQ(k, "Calcula la raíz cuadrada.", `√${k * k} = ?`, `${k} × ${k} = ${k * k}, así que √${k * k} = ${k}.`) : numQ(k, `¿Qué número positivo elevado al cuadrado da ${k * k}?`, undefined, `${k}² = ${k * k}.`);
 }
 
-// K.2: estimar raíces cuadradas.
+// Estimar raíces cuadradas.
 export function estimateSquareRoot(r: Rng): Question {
   const k = r.int(2, 14);
   const n = r.int(k * k + 1, (k + 1) * (k + 1) - 1);
@@ -274,7 +274,7 @@ export function estimateSquareRoot(r: Rng): Question {
   return numQ(nearest, `¿Cuál es el entero más cercano a √${n}?`, undefined, `${k}² = ${k * k} y ${k + 1}² = ${(k + 1) ** 2}; ${n} está más cerca de ${nearest * nearest}.`, "cercano");
 }
 
-// L.6: tasas unitarias con fracciones.
+// Tasas unitarias con fracciones.
 export function unitRateFractions(r: Rng): Question {
   const den = r.pick([2, 3, 4]);
   const qty: Frac = [r.pick([1, 3, 5, 7].filter((n) => n % den !== 0)), den];

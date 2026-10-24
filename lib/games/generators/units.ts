@@ -27,7 +27,7 @@ const UNITS: Record<UnitKind, { units: [string, string][]; pairs: [big: string, 
 
 const SYMBOLS = ["<", "=", ">"];
 
-// 3.° W.2 / W.4 / W.6: comparar unidades y cantidades.
+// Comparar unidades y cantidades.
 export function compareUnits(r: Rng, kind: UnitKind): Question {
   const U = UNITS[kind];
   const form = r.int(0, 2);
@@ -74,7 +74,7 @@ export function compareUnits(r: Rng, kind: UnitKind): Question {
   };
 }
 
-// 3.° W.3 / W.5 / W.7: convertir unidades.
+// Convertir unidades.
 export function convertUnits(r: Rng, kind: UnitKind): Question {
   const [big, small, factor] = r.pick(UNITS[kind].pairs);
   const n = r.int(1, 12);
@@ -83,7 +83,7 @@ export function convertUnits(r: Rng, kind: UnitKind): Question {
     : { kind: "number", prompt: "Convierte la medida.", visual: { kind: "text", text: `${n * factor} ${small} = ? ${big}` }, answer: n, explanation: `${factor} ${small} = 1 ${big}; ${n * factor} ÷ ${factor} = ${n} ${big}.`, tag: `${small}-a-${big}` };
 }
 
-// 3.° X.1: ¿qué objeto está en esas coordenadas?
+// ¿qué objeto está en esas coordenadas?
 export function locateObject(r: Rng): Question {
   const max = 6;
   const emojis = r.shuffle(COUNTABLES).slice(0, 4);
@@ -110,7 +110,7 @@ export function locateObject(r: Rng): Question {
   };
 }
 
-// 3.° Y.1: media (promedio) y moda.
+// Media (promedio) y moda.
 export function meanMode(r: Rng): Question {
   if (r.chance(0.5)) {
     const n = r.pick([3, 4, 5]);

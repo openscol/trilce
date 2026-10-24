@@ -9,7 +9,7 @@ import { type P, PI_NOTE, mil, nz, plane, pointQ, pt } from "./util";
 // ---------------------------------------------------------------------------
 // Rectas y ángulos
 
-// Y.6: escribir y resolver ecuaciones usando relaciones entre ángulos.
+// Escribir y resolver ecuaciones usando relaciones entre ángulos.
 export function angleEquation(r: Rng): Question {
   const a = r.int(2, 5), x = r.int(5, 25), b = r.int(1, 20);
   const expr = a * x + b;
@@ -40,7 +40,7 @@ const PAIR_WHY: Record<string, string> = {
 const PICTURE: Visual = { kind: "transversal" };
 const OBTUSE = [1, 4, 5, 8];
 
-// Y.7: identificar ángulos alternos internos y alternos externos.
+// Identificar ángulos alternos internos y alternos externos.
 export function alternateAngles(r: Rng): Question {
   const name = r.pick(["Alternos internos", "Alternos externos"]);
   const [a, b] = r.pick(PAIRS[name]);
@@ -55,7 +55,7 @@ export function alternateAngles(r: Rng): Question {
   return fixedQ(`Las dos rectas horizontales son paralelas. ¿Cómo son los ángulos ${p} y ${q}?`, options, other ? options[2] : name, other ? `Los ángulos ${p} y ${q} no están a lados distintos de la transversal y ambos dentro (o ambos fuera) de las paralelas.` : `Los ángulos ${a} y ${b} ${PAIR_WHY[name]}.`, PICTURE, other ? "ninguno" : name);
 }
 
-// Y.8: transversales de rectas paralelas: nombrar pares de ángulos.
+// Transversales de rectas paralelas: nombrar pares de ángulos.
 export function nameAnglePairs(r: Rng): Question {
   const names = Object.keys(PAIRS);
   const name = r.pick(names);
@@ -63,7 +63,7 @@ export function nameAnglePairs(r: Rng): Question {
   return fixedQ(`Las dos rectas horizontales son paralelas. ¿Qué nombre reciben los ángulos ${a} y ${b}?`, names, name, `Los ángulos ${a} y ${b} ${PAIR_WHY[name]}.`, PICTURE, name);
 }
 
-// Y.9: transversales de rectas paralelas: hallar medidas de ángulos.
+// Transversales de rectas paralelas: hallar medidas de ángulos.
 export function transversalMeasures(r: Rng): Question {
   const given = r.int(1, 8);
   let ask = r.int(1, 8);
@@ -74,7 +74,7 @@ export function transversalMeasures(r: Rng): Question {
   return numQ(measure(ask), `Las dos rectas horizontales son paralelas. Si el ángulo marcado mide ${measure(given)}°, ¿cuántos grados mide el ángulo ${ask}?`, { kind: "transversal", given: { angle: given, text: `${measure(given)}°` } }, same ? `El ángulo ${ask} es igual al marcado (correspondientes, alternos u opuestos por el vértice): ${measure(ask)}°.` : `El ángulo ${ask} es suplementario del marcado: 180° − ${measure(given)}° = ${measure(ask)}°.`, same ? "iguales" : "suplementarios");
 }
 
-// Y.10: segmentos y ángulos bisecados.
+// Segmentos y ángulos bisecados.
 export function bisected(r: Rng): Question {
   const half = r.int(3, 40);
   const form = r.int(0, 3);
@@ -93,7 +93,7 @@ export function bisected(r: Rng): Question {
 
 const RATIOS = [[1, 2, 3], [2, 3, 4], [1, 1, 2], [3, 4, 5], [2, 3, 5], [1, 3, 5], [1, 2, 6], [2, 2, 5], [4, 5, 6], [1, 4, 4], [3, 3, 4], [1, 1, 1], [2, 3, 7], [1, 5, 6]];
 
-// Z.9: hallar los ángulos de un triángulo usando razones.
+// Hallar los ángulos de un triángulo usando razones.
 export function triangleRatioAngles(r: Rng): Question {
   const ratio = r.pick(RATIOS);
   const unit = 180 / (ratio[0] + ratio[1] + ratio[2]);
@@ -103,7 +103,7 @@ export function triangleRatioAngles(r: Rng): Question {
   return numQ(sorted[i] * unit, `Los ángulos de un triángulo están en la razón ${ratio.join(" : ")}. ¿Cuántos grados mide el ángulo ${which}?`, undefined, `Las partes suman ${ratio[0] + ratio[1] + ratio[2]} y los ángulos 180°: cada parte vale ${unit}°. El ángulo ${which} mide ${sorted[i]} × ${unit}° = ${sorted[i] * unit}°.`);
 }
 
-// Z.11: hallar ángulos que faltan en cuadriláteros (paralelogramos y expresiones).
+// Hallar ángulos que faltan en cuadriláteros (paralelogramos y expresiones).
 export function quadAngles2(r: Rng): Question {
   const form = r.int(0, 2);
   const a = r.int(35, 145);
@@ -126,7 +126,7 @@ const CIRCLE_PARTS: [string, string][] = [
   ["el ángulo cuyo vértice es el centro del círculo", "Ángulo central"],
 ];
 
-// Z.13: partes de un círculo.
+// Partes de un círculo.
 export function circleParts(r: Rng): Question {
   if (r.chance(0.3)) {
     const radius = r.int(2, 30);
@@ -136,7 +136,7 @@ export function circleParts(r: Rng): Question {
   return choiceQ(r, `¿Cómo se llama ${definition}?`, name, CIRCLE_PARTS.map((p) => p[1]).filter((n) => n !== name), `${name}: ${definition}.`, undefined, "nombres");
 }
 
-// Z.14: ángulos centrales de los círculos.
+// Ángulos centrales de los círculos.
 export function centralAngles(r: Rng): Question {
   const n = r.pick([2, 3, 4, 5, 6, 8, 9, 10, 12]);
   const form = r.int(0, 2);
@@ -158,7 +158,7 @@ const BASES: [string, string, number][] = [
   ["una pirámide hexagonal", "Hexágono", 1], ["un cubo", "Cuadrado", 2],
 ];
 
-// AA.1: bases de las figuras tridimensionales.
+// Bases de las figuras tridimensionales.
 export function solidBases(r: Rng): Question {
   const [solid, shape, count] = r.pick(BASES);
   if (r.chance(0.35)) return fixedQ(`¿Cuántas bases tiene ${solid}?`, ["1", "2"], String(count), count === 2 ? "Los prismas y los cilindros tienen dos bases iguales y paralelas." : "Las pirámides y los conos tienen una sola base.", undefined, "cantidad");
@@ -178,7 +178,7 @@ const SECTIONS: [string, string][] = [
   ["Se corta un prisma rectangular (que no es un cubo) con un plano paralelo a una cara alargada.", "Rectángulo"],
 ];
 
-// AA.4: secciones transversales de figuras tridimensionales.
+// Secciones transversales de figuras tridimensionales.
 export function crossSections(r: Rng): Question {
   const [text, shape] = r.pick(SECTIONS);
   return choiceQ(r, `${text} ¿Qué forma tiene el corte?`, shape, ["Círculo", "Rectángulo", "Triángulo", "Cuadrado", "Hexágono"].filter((x) => x !== shape), `El corte tiene forma de ${shape.toLowerCase()}.`);
@@ -247,7 +247,7 @@ export function circles(r: Rng, kind: CircleKind): Question {
 // ---------------------------------------------------------------------------
 // Área de superficie y volumen
 
-// CC.3: área lateral de prismas y pirámides.
+// Área lateral de prismas y pirámides.
 export function lateralArea(r: Rng): Question {
   if (r.chance(0.5)) {
     const [l, w, h] = [r.int(2, 12), r.int(2, 9), r.int(2, 15)];
@@ -258,7 +258,7 @@ export function lateralArea(r: Rng): Question {
 }
 
 type Solid = "cylinderSurface" | "cylinderVolume" | "pyramidVolume";
-// CC.4 / CC.8 / CC.9: cilindros y pirámides.
+// Cilindros y pirámides.
 export function solidMeasure(r: Rng, kind: Solid): Question {
   const rad = r.int(1, 10), h = r.int(2, 15);
   if (kind === "cylinderSurface") {
@@ -276,7 +276,7 @@ export function solidMeasure(r: Rng, kind: Solid): Question {
 // ---------------------------------------------------------------------------
 // Dibujos a escala
 
-// DD.1 / DD.2: factor de escala, lado que falta (o ángulo que falta).
+// Factor de escala, lado que falta (o ángulo que falta).
 export function scaleFactor(r: Rng, withAngle: boolean): Question {
   const k = r.int(2, 6);
   const [a, b] = [r.int(2, 9), r.int(3, 12)];
@@ -287,7 +287,7 @@ export function scaleFactor(r: Rng, withAngle: boolean): Question {
   return numQ(angle, `La figura B es una copia a escala de la figura A, con factor de escala ${k}. Un ángulo de A mide ${angle}°. ¿Cuántos grados mide el ángulo correspondiente de B?`, undefined, `En un dibujo a escala cambian las longitudes, pero los ángulos se mantienen: ${angle}°.`, "angulo");
 }
 
-// DD.4: dibujos a escala: problemas con el factor de escala.
+// Dibujos a escala: problemas con el factor de escala.
 export function scaleFactorProblem(r: Rng): Question {
   const k = r.pick([10, 20, 25, 50, 100]), drawn = r.int(2, 12);
   const form = r.int(0, 2);
@@ -296,7 +296,7 @@ export function scaleFactorProblem(r: Rng): Question {
   return numQ(k, `Un carrito de juguete mide ${drawn} cm de largo y el carro real mide ${fmt(drawn * k)} cm. La escala es 1 : x. ¿Cuánto vale x?`, undefined, `${fmt(drawn * k)} ÷ ${drawn} = ${k}: la escala es 1 : ${k}.`, "factor");
 }
 
-// DD.5: perímetro y área: cambios de escala.
+// Perímetro y área: cambios de escala.
 export function scaleChange(r: Rng): Question {
   const k = r.int(2, 5), [l, w] = [r.int(2, 9), r.int(2, 9)];
   const form = r.int(0, 2);
@@ -309,7 +309,7 @@ export function scaleChange(r: Rng): Question {
 // Transformaciones
 
 const KINDS = ["Traslación", "Reflexión", "Rotación"];
-// EE.1: identificar reflexiones, rotaciones y traslaciones.
+// Identificar reflexiones, rotaciones y traslaciones.
 export function identifyTransformation(r: Rng): Question {
   const a = r.int(1, 7), b = r.int(1, 7);
   const cases: [string, number, string][] = [
@@ -331,7 +331,7 @@ export function identifyTransformation(r: Rng): Question {
 }
 
 type Move = "translate" | "reflectAxes" | "reflectLine" | "rotate";
-// EE.2 – EE.9: hallar la imagen de un punto (`graph`: con el plano dibujado).
+// Hallar la imagen de un punto (`graph`: con el plano dibujado).
 export function transformPoint(r: Rng, move: Move, graph: boolean): Question {
   const A: P = { x: nz(r, 4), y: nz(r, 4) };
   let image: P, text: string, why: string, tag: string;
@@ -368,7 +368,7 @@ export function transformPoint(r: Rng, move: Move, graph: boolean): Question {
 // ---------------------------------------------------------------------------
 // Congruencia y semejanza
 
-// FF.1: figuras semejantes y congruentes.
+// Figuras semejantes y congruentes.
 export function similarOrCongruent(r: Rng): Question {
   const [a, b] = [r.int(2, 6), r.int(3, 9)];
   if (a === b) return similarOrCongruent(r);
@@ -382,7 +382,7 @@ export function similarOrCongruent(r: Rng): Question {
 
 const TRIOS = ["ABC", "DEF", "PQR", "XYZ", "JKL", "MNO", "RST", "UVW"];
 
-// FF.2: enunciados de congruencia y partes correspondientes.
+// Enunciados de congruencia y partes correspondientes.
 export function congruenceStatement(r: Rng): Question {
   const [t1, t2] = r.shuffle(TRIOS).slice(0, 2);
   const i = r.int(0, 2), j = (i + 1) % 3;
@@ -394,7 +394,7 @@ export function congruenceStatement(r: Rng): Question {
   return choiceQ(r, `△${t1} ≅ △${t2}. ¿Qué ángulo corresponde a ∠${t1[i]}?`, `∠${t2[i]}`, [`∠${t2[j]}`, `∠${t2[(i + 2) % 3]}`, `∠${t1[j]}`], `Las letras van en el mismo orden: ${t1[i]} ↔ ${t2[i]}.`, undefined, "angulo");
 }
 
-// FF.3 / FF.4: medidas de lados y ángulos de figuras congruentes o semejantes.
+// Medidas de lados y ángulos de figuras congruentes o semejantes.
 export function correspondingMeasures(r: Rng, similar: boolean): Question {
   const [t1, t2] = r.shuffle(TRIOS).slice(0, 2);
   const sides = [r.int(3, 12), r.int(4, 15), r.int(5, 18)];
@@ -411,7 +411,7 @@ export function correspondingMeasures(r: Rng, similar: boolean): Question {
   return numQ(sides[j] * k, `△${t1} ∼ △${t2}. ${t1[i]}${t1[j]} = ${sides[i]} cm, ${t2[i]}${t2[j]} = ${sides[i] * k} cm y ${t1[j]}${t1[m]} = ${sides[j]} cm. ¿Cuántos centímetros mide ${t2[j]}${t2[m]}?`, undefined, `El factor de escala es ${sides[i] * k} ÷ ${sides[i]} = ${k}: ${sides[j]} × ${k} = ${sides[j] * k}.`, "lado");
 }
 
-// FF.5: figuras semejantes y medición indirecta.
+// Figuras semejantes y medición indirecta.
 export function indirectMeasurement(r: Rng): Question {
   const h = r.int(1, 3), s = r.int(1, 4), k = r.int(3, 12);
   const [thing, the, small] = r.pick([["un árbol", "el árbol", "un poste"], ["un edificio", "el edificio", "un arbolito"], ["una torre", "la torre", "una estaca"], ["un faro", "el faro", "un bastón"]]);

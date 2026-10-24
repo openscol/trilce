@@ -29,7 +29,7 @@ function pair(r: Rng, op: Bin): [number, number] {
   return [r.int(2, op === "×" ? 12 : 60), r.int(2, op === "×" ? 12 : 40)];
 }
 
-// 5.° H.1: escribir expresiones numéricas de una operación.
+// Escribir expresiones numéricas de una operación.
 export function writeExpression1(r: Rng): Question {
   const op = r.pick(OPS);
   const [a, b] = pair(r, op);
@@ -38,7 +38,7 @@ export function writeExpression1(r: Rng): Question {
   return choiceQ(r, `¿Qué expresión representa «${r.pick(ONE_OP[op])(a, b)}»?`, answer, wrong, `Se escribe ${answer} = ${apply(op, a, b)}.`, undefined, op);
 }
 
-// 5.° H.2: escribir expresiones numéricas de dos operaciones.
+// Escribir expresiones numéricas de dos operaciones.
 export function writeExpression2(r: Rng): Question {
   const a = r.int(2, 12);
   const b = r.int(2, 12);
@@ -99,14 +99,14 @@ function withParens(r: Rng, brackets: boolean): Expr {
   return r.pick(forms);
 }
 
-// 5.° H.3 / H.4 / H.5: evaluar expresiones numéricas.
+// Evaluar expresiones numéricas.
 export function evaluateExpression(r: Rng, kind: "plain" | "parens" | "brackets"): Question {
   const e = kind === "plain" ? noParens(r) : withParens(r, kind === "brackets");
   const rule = kind === "plain" ? "Primero las multiplicaciones y divisiones; luego las sumas y restas." : kind === "parens" ? "Primero lo que está entre paréntesis." : "Primero los paréntesis, luego los corchetes.";
   return numQ(e.value, "Calcula el valor de la expresión.", `${e.text} = ?`, `${rule} ${e.steps} = ${fmt(e.value)}.`, kind);
 }
 
-// 5.° H.6: identificar errores en el orden de las operaciones.
+// Identificar errores en el orden de las operaciones.
 export function orderMistake(r: Rng): Question {
   for (;;) {
     const e = r.chance(0.5) ? noParens(r) : withParens(r, false);
@@ -118,7 +118,7 @@ export function orderMistake(r: Rng): Question {
   }
 }
 
-// 5.° H.7: los mismos números con los paréntesis en lugares distintos.
+// Los mismos números con los paréntesis en lugares distintos.
 export function parensPlaces(r: Rng): Question {
   for (;;) {
     const a = r.int(2, 9);
@@ -137,7 +137,7 @@ export function parensPlaces(r: Rng): Question {
   }
 }
 
-// 5.° H.8: evaluar expresiones numéricas con fracciones (el resultado es un número natural).
+// Evaluar expresiones numéricas con fracciones (el resultado es un número natural).
 export function fractionExpression(r: Rng): Question {
   const d = r.pick([2, 3, 4, 5]);
   const n = r.int(1, d - 1);
@@ -154,7 +154,7 @@ export function fractionExpression(r: Rng): Question {
   return numQ(e.value, "Calcula el valor de la expresión.", `${e.text} = ?`, `${e.steps} = ${e.value}.`);
 }
 
-// 5.° H.9: hallar el signo que falta.
+// Hallar el signo que falta.
 export function missingSign(r: Rng): Question {
   for (;;) {
     const op = r.pick(OPS);
@@ -174,7 +174,7 @@ export function missingSign(r: Rng): Question {
   }
 }
 
-// 5.° H.10: comparar expresiones sin calcularlas.
+// Comparar expresiones sin calcularlas.
 export function compareExpressions(r: Rng): Question {
   const a = r.int(12, 90);
   const b = r.int(12, 90);
@@ -194,7 +194,7 @@ export function compareExpressions(r: Rng): Question {
   return fixedQ("Compara sin calcular. Elige el símbolo correcto.", SYMBOLS, ">", `Dividir ${fmt(total)} entre 1 lo deja igual; al dividirlo entre ${k} queda más pequeño.`, `${fmt(total)} ÷ 1  ?  ${fmt(total)} ÷ ${k}`, ">");
 }
 
-// 5.° H.11: formar el mayor cociente posible.
+// Formar el mayor cociente posible.
 export function largestQuotient(r: Rng): Question {
   for (;;) {
     const ds = r.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 3).sort((a, b) => a - b);
@@ -210,7 +210,7 @@ export function largestQuotient(r: Rng): Question {
   }
 }
 
-// 5.° I.8: problemas de varios pasos con comparación multiplicativa.
+// Problemas de varios pasos con comparación multiplicativa.
 export function compareMultiStep(r: Rng): Question {
   const [n1, n2] = twoNames(r);
   const base = r.int(6, 60);
@@ -224,7 +224,7 @@ export function compareMultiStep(r: Rng): Question {
   return numQ(base * k + extra, `${n1} tiene ${base} ${thing}. ${n2} tiene ${extra} más que ${k} veces lo de ${n1}. ¿Cuántos ${thing} tiene ${n2}?`, undefined, `${k} × ${base} = ${base * k}; ${base * k} + ${extra} = ${base * k + extra}.`, "veces-y-mas");
 }
 
-// 5.° KK.2: comparar dos patrones.
+// Comparar dos patrones.
 export function comparePatterns(r: Rng): Question {
   const a = r.int(1, 6);
   const k = r.int(2, 5);
@@ -249,7 +249,7 @@ const VAR_TEXT: Record<Bin, ((v: string, k: number) => [string, string])[]> = {
 };
 const allForms = (v: string, k: number) => [`${v} + ${k}`, `${v} − ${k}`, `${k} × ${v}`, `${v} ÷ ${k}`, `${k} − ${v}`, `${k} ÷ ${v}`];
 
-// 5.° MM.1: escribir expresiones con variables.
+// Escribir expresiones con variables.
 export function writeVariableExpression(r: Rng): Question {
   const op = r.pick(OPS);
   const v = r.pick(["n", "x", "a", "m", "p"]);
@@ -267,7 +267,7 @@ const VAR_STORIES: [(n: string, k: number) => string, string, Bin][] = [
   [(n, k) => `${n} tiene m años y su hermano tiene ${k} años menos. ¿Qué expresión indica la edad del hermano?`, "m", "−"],
 ];
 
-// 5.° MM.2: escribir expresiones con variables en problemas.
+// Escribir expresiones con variables en problemas.
 export function variableExpressionProblem(r: Rng): Question {
   const [make, v, op] = r.pick(VAR_STORIES);
   const k = r.int(2, 12);
@@ -275,7 +275,7 @@ export function variableExpressionProblem(r: Rng): Question {
   return choiceQ(r, make(r.pick(NAMES), k), answer, allForms(v, k).filter((f) => f !== answer), `La cantidad desconocida es ${v}: la expresión es ${answer}.`, undefined, op);
 }
 
-// 5.° MM.3: evaluar expresiones con variables.
+// Evaluar expresiones con variables.
 export function evaluateVariable(r: Rng): Question {
   const v = r.pick(["n", "x", "a", "m"]);
   const x = r.int(2, 12);
@@ -293,7 +293,7 @@ export function evaluateVariable(r: Rng): Question {
   return numQ(value, `Calcula el valor de la expresión cuando ${v} = ${x}.`, text, `Reemplazamos ${v} por ${x}: ${sub} = ${value}.`);
 }
 
-// 5.° MM.4: escribir ecuaciones con variables para problemas.
+// Escribir ecuaciones con variables para problemas.
 export function variableEquationProblem(r: Rng): Question {
   const n = r.pick(NAMES);
   const k = r.int(2, 12);
@@ -317,7 +317,7 @@ export function rule2(r: Rng, maxM = 4, maxB = 5): Rule2 {
 export const ruleEq = ({ m, b }: Rule2) => `y = ${m === 1 ? "x" : `${m} × x`}${b ? ` + ${b}` : ""}`;
 export const ruleY = ({ m, b }: Rule2, x: number) => m * x + b;
 
-// 5.° MM.5: hallar un valor con una ecuación de dos variables.
+// Hallar un valor con una ecuación de dos variables.
 export function twoVariableValue(r: Rng): Question {
   const rule = rule2(r, 9, 20);
   const x = r.int(1, 12);
@@ -325,7 +325,7 @@ export function twoVariableValue(r: Rng): Question {
   return numQ(x, `Usa la ecuación. ¿Cuánto vale x cuando y = ${ruleY(rule, x)}?`, ruleEq(rule), `Con x = ${x}: ${ruleEq(rule).replace("x", String(x))} = ${ruleY(rule, x)}.`, "hallar-x");
 }
 
-// 5.° MM.6: completar la tabla de una relación de dos variables.
+// Completar la tabla de una relación de dos variables.
 export function twoVariableTable(r: Rng): Question {
   const rule = rule2(r, 6, 12);
   const start = r.int(0, 4);

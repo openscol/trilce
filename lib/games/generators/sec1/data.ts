@@ -11,7 +11,7 @@ const TOPICS: [string, string[]][] = [
   ["Curso favorito", ["Matemática", "Arte", "Ciencias", "Comunicación"]],
 ];
 
-// F.4: fracciones en problemas con gráficos y tablas.
+// Fracciones en problemas con gráficos y tablas.
 export function fractionFromData(r: Rng): Question {
   const [title, labels] = r.pick(TOPICS);
   const total = r.pick([20, 24, 30, 36, 40]);
@@ -25,7 +25,7 @@ export function fractionFromData(r: Rng): Question {
   return fracQ(r, `Se encuestó a ${total} alumnos. ¿Qué fracción eligió «${labels[i]}» o «${labels[j]}»? Da la fracción simplificada.`, [counts[i] + counts[j], total], `${counts[i]} + ${counts[j]} = ${counts[i] + counts[j]} de ${total}.`, visual, "dos");
 }
 
-// GG.12: gráficos circulares y ángulos centrales.
+// Gráficos circulares y ángulos centrales.
 export function circleGraphAngles(r: Rng): Question {
   const [title, labels] = r.pick(TOPICS);
   const sets = [[50, 25, 15, 10], [40, 30, 20, 10], [35, 25, 25, 15], [45, 25, 20, 10], [30, 30, 25, 15], [50, 20, 20, 10], [40, 25, 20, 15]];
@@ -37,7 +37,7 @@ export function circleGraphAngles(r: Rng): Question {
   return numQ(percents[i], `En un gráfico circular, un sector tiene un ángulo central de ${angle}°. ¿Qué porcentaje del total representa?`, undefined, `${angle} ÷ 360 = ${percents[i]} %.`, "porcentaje");
 }
 
-// HH.8: poblaciones y muestras.
+// Poblaciones y muestras.
 const SAMPLING: [string, string, string, string[]][] = [
   ["Para saber qué almuerzo prefieren los 600 alumnos de un colegio, se pregunta a 50 de ellos.", "Los 600 alumnos del colegio", "Los 50 alumnos consultados", ["Los cocineros del colegio", "Los almuerzos del menú"]],
   ["Una fábrica produce 5 000 focos al día y revisa 100 para ver si funcionan.", "Los 5 000 focos producidos", "Los 100 focos revisados", ["Los trabajadores de la fábrica", "Los focos que fallan"]],
@@ -51,7 +51,7 @@ export function populationSample(r: Rng): Question {
   return choiceQ(r, `${story} ¿Cuál es la ${askPopulation ? "población" : "muestra"}?`, askPopulation ? population : sample, [askPopulation ? sample : population, ...others], askPopulation ? "La población es todo el grupo sobre el que se quiere saber algo." : "La muestra es la parte de la población que realmente se estudia.", undefined, askPopulation ? "poblacion" : "muestra");
 }
 
-// HH.10: hacer una estimación a partir de una muestra.
+// Hacer una estimación a partir de una muestra.
 export function estimateFromSample(r: Rng): Question {
   const n = r.pick([20, 25, 40, 50]), k = r.int(2, n - 5), scale = r.pick([4, 6, 8, 10, 20]);
   const cases = [
@@ -62,7 +62,7 @@ export function estimateFromSample(r: Rng): Question {
   return numQ(k * scale, r.pick(cases), undefined, `La proporción de la muestra se aplica al total: ${k}/${n} × ${fmt(n * scale)} = ${fmt(k * scale)}.`);
 }
 
-// HH.11: hacer inferencias a partir de varias muestras.
+// Hacer inferencias a partir de varias muestras.
 export function multipleSamples(r: Rng): Question {
   const n = 20;
   const base = r.int(5, 14);
@@ -74,7 +74,7 @@ export function multipleSamples(r: Rng): Question {
   return choiceQ(r, "Las tres muestras son aleatorias y del mismo tamaño. ¿Por qué no dan exactamente el mismo resultado?", "Porque cada muestra incluye a personas distintas", ["Porque una de las tres muestras está mal contada", "Porque la población cambió entre las muestras", "Porque las muestras aleatorias no sirven"], "Es normal que las muestras varíen un poco entre sí; por eso conviene usar varias.", visual, "variacion");
 }
 
-// HH.12: comparar poblaciones usando medidas de centro y de dispersión.
+// Comparar poblaciones usando medidas de centro y de dispersión.
 export function comparePopulations(r: Rng): Question {
   const names = r.pick([["1.° A", "1.° B"], ["Equipo Rojo", "Equipo Azul"], ["Chacra Norte", "Chacra Sur"]]);
   const mad = r.int(2, 5), k = r.int(1, 4);
@@ -99,7 +99,7 @@ const simp = ([n, d]: Frac): Frac => {
   return [n / g(n, d), d / g(n, d)];
 };
 
-// II.4: probabilidad de sucesos mutuamente excluyentes y de sucesos que se solapan.
+// Probabilidad de sucesos mutuamente excluyentes y de sucesos que se solapan.
 export function exclusiveOverlapping(r: Rng): Question {
   const n = r.pick([6, 8, 10, 12]);
   const nums = Array.from({ length: n }, (_, i) => i + 1);
@@ -130,7 +130,7 @@ function experiment(r: Rng) {
   return { total, counts, visual: table(["Color", "Veces"], COLORS.map((c, i) => [c, String(counts[i])]), `Resultados de ${total} giros de una ruleta`) };
 }
 
-// II.5 – II.7: probabilidad experimental y predicciones con datos recogidos.
+// Probabilidad experimental y predicciones con datos recogidos.
 export function experimentalProbability(r: Rng, mode: "probability" | "predict" | "both"): Question {
   const e = experiment(r);
   const i = r.int(0, 3);
@@ -140,7 +140,7 @@ export function experimentalProbability(r: Rng, mode: "probability" | "predict" 
   return numQ((e.counts[i] * times) / e.total, `Según los resultados, si la ruleta se gira ${fmt(times)} veces, ¿cuántas veces se espera que caiga en ${COLORS[i].toLowerCase()}?`, e.visual, `${e.counts[i]}/${e.total} × ${fmt(times)} = ${fmt((e.counts[i] * times) / e.total)}.`, "prediccion");
 }
 
-// II.9: espacios muestrales de sucesos compuestos.
+// Espacios muestrales de sucesos compuestos.
 export function compoundSampleSpace(r: Rng): Question {
   const letters = "ABCD".slice(0, r.int(2, 4)).split("");
   const coin = ["C", "S"]; // cara, sello
@@ -155,7 +155,7 @@ export function compoundSampleSpace(r: Rng): Question {
   return numQ(2 * b, dice ? "Se lanza una moneda y un dado. ¿Cuántos resultados tiene el espacio muestral?" : `Se lanza una moneda y se gira una ruleta con las letras ${letters.join(", ")}. ¿Cuántos resultados tiene el espacio muestral?`, undefined, `Cada resultado de la moneda (2) se combina con cada resultado ${dice ? "del dado (6)" : `de la ruleta (${b})`}: 2 × ${b} = ${2 * b}.`, "contar");
 }
 
-// II.11: sucesos compuestos: hallar el número de sumas.
+// Sucesos compuestos: hallar el número de sumas.
 export function numberOfSums(r: Rng): Question {
   const a = r.int(2, 6), b = r.int(2, 6);
   const sums = new Set<number>();
@@ -168,7 +168,7 @@ export function numberOfSums(r: Rng): Question {
   return numQ(ways, `Se giran dos ruletas: una numerada del 1 al ${a} y otra del 1 al ${b}. ¿De cuántas maneras se puede obtener una suma de ${target}?`, undefined, `Se cuentan los pares que suman ${target}: ${Array.from({ length: a }, (_, k) => k + 1).filter((i) => target - i >= 1 && target - i <= b).map((i) => `${i} + ${target - i}`).join(", ")}.`, "maneras");
 }
 
-// II.12: hallar el número de resultados: problemas.
+// Hallar el número de resultados: problemas.
 export function outcomesProblem(r: Rng): Question {
   const [a, b, c] = [r.int(2, 6), r.int(2, 5), r.int(2, 4)];
   const name = r.pick(NAMES);
@@ -183,7 +183,7 @@ export function outcomesProblem(r: Rng): Question {
   return numQ(answer, text, undefined, `Se multiplican las opciones de cada elección: ${why} = ${fmt(answer)}.`);
 }
 
-// II.13: probabilidad de sucesos compuestos.
+// Probabilidad de sucesos compuestos.
 export function compoundProbability(r: Rng): Question {
   const n = r.pick([3, 4, 5, 6, 8]);
   const k = r.int(1, n - 1);
@@ -197,7 +197,7 @@ export function compoundProbability(r: Rng): Question {
   return fracQ(r, `Se lanzan dos dados. ¿Cuál es la probabilidad de que el primero muestre ${a + 1} o menos y el segundo muestre más de ${b}?`, [(a + 1) * (6 - b), 36], `Se multiplican: ${a + 1}/6 × ${6 - b}/6 = ${(a + 1) * (6 - b)}/36.`, undefined, "dos-dados");
 }
 
-// II.14: ¿qué simulación representa la situación?
+// ¿qué simulación representa la situación?
 const SIMULATIONS: [string, string, string[]][] = [
   ["Hay 50 % de probabilidad de que llueva mañana.", "Lanzar una moneda: cara = llueve", ["Lanzar un dado: 1 = llueve", "Sacar una carta de 10: el 1 = llueve"]],
   ["Un jugador encesta 1 de cada 6 tiros.", "Lanzar un dado: 1 = encesta", ["Lanzar una moneda: cara = encesta", "Girar una ruleta de 4 partes: 1 = encesta"]],
@@ -212,7 +212,7 @@ export function chooseSimulation(r: Rng): Question {
   return choiceQ(r, `${situation} ¿Qué simulación representa bien la situación?`, good, wrong, "La simulación debe tener la misma probabilidad que la situación real.");
 }
 
-// II.15: identificar sucesos independientes y dependientes.
+// Identificar sucesos independientes y dependientes.
 const DEPENDENCE: [string, boolean][] = [
   ["Lanzar una moneda y luego lanzar un dado.", true], ["Sacar una carta de un mazo, devolverla, barajar y sacar otra.", true], ["Girar una ruleta dos veces.", true],
   ["Lanzar un dado dos veces.", true], ["Elegir un polo del ropero y elegir una fruta de la frutera.", true],
@@ -225,7 +225,7 @@ export function independentDependent(r: Rng): Question {
   return fixedQ(`${text} ¿Los dos sucesos son independientes o dependientes?`, ["Independientes", "Dependientes"], independent ? "Independientes" : "Dependientes", independent ? "El primer resultado no cambia las probabilidades del segundo." : "Después del primero quedan menos opciones: las probabilidades del segundo cambian.", undefined, independent ? "independientes" : "dependientes");
 }
 
-// II.16: probabilidad de sucesos independientes y dependientes.
+// Probabilidad de sucesos independientes y dependientes.
 export function drawTwice(r: Rng): Question {
   const red = r.int(2, 6), blue = r.int(2, 6), total = red + blue;
   const replace = r.chance(0.5);

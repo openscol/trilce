@@ -1,57 +1,21 @@
 import * as K from "../../../generators/lengua/kinder";
 import * as P from "../../../generators/lengua/phonics";
 import { choose, mix, readPassage, type ChoiceItem, type Passage } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import type { Row } from "./row";
 
-// Fundamentos de lectura (IXL Kindergarten ELA, A-Y) en castellano. Lo que
-// solo existe en inglés se cambia por su equivalente en la lectoescritura en
-// castellano:
-// - El abecedario lleva la ñ (se aprende junto con la n).
-// - Vocales cortas (short a, e...) → palabras con a, e, i, o, u.
-// - Vocales largas (long a...) → palabras que empiezan con cada vocal.
-// - Dígrafos sh/th/ck... → ch, ll, rr, qu (y la ñ).
-// - Trabadas al final (-nd, -st) → trabadas en medio de la palabra.
-// - Sonido de cada consonante → la sílaba que se escucha (sin mezclar letras
-//   que suenan igual: b/v, c/k/q, s/z, ll/y).
-// - Sight words → palabras frecuentes del castellano, en 10 grupos de 5.
+// Inicial 5 años · banco de lectoescritura inicial: conciencia fonológica
+// (rimas, sílabas, sonido inicial y final, cambiar sonidos), el abecedario con
+// la ñ, mayúsculas y minúsculas, vocales y consonantes, primeras palabras con
+// cada vocal, dígrafos (ch, ll, rr, qu, ñ), trabadas, palabras frecuentes del
+// castellano en grupos de 5 y cuentos cortos para leer. En las sílabas no se
+// mezclan letras que suenan igual (b/v, c/k/q, s/z, ll/y).
 
-export const SECTIONS: Section[] = [
-  { id: "A", name: "Aprender las letras: A–H", icon: "🔤" },
-  { id: "B", name: "Aprender las letras: I–P", icon: "🔤" },
-  { id: "C", name: "Aprender las letras: Q–Z", icon: "🔤" },
-  { id: "D", name: "Identificar letras", icon: "🔎" },
-  { id: "E", name: "Minúsculas y mayúsculas", icon: "🔠" },
-  { id: "F", name: "Reconocer palabras", icon: "👀" },
-  { id: "G", name: "Vocales y consonantes", icon: "🅰️" },
-  { id: "H", name: "Rima", icon: "🎵" },
-  { id: "I", name: "Sílabas", icon: "👏" },
-  { id: "J", name: "Unir y separar sonidos", icon: "🧩" },
-  { id: "K", name: "Cambiar sonidos", icon: "🔄" },
-  { id: "L", name: "Sonido inicial y final", icon: "🔊" },
-  { id: "M", name: "Letras y sonidos", icon: "🔡" },
-  { id: "N", name: "Las vocales", icon: "🗣️" },
-  { id: "O", name: "Palabras con a", icon: "🅰️" },
-  { id: "P", name: "Palabras con e", icon: "📗" },
-  { id: "Q", name: "Palabras con i", icon: "📘" },
-  { id: "R", name: "Palabras con o", icon: "📙" },
-  { id: "S", name: "Palabras con u", icon: "📕" },
-  { id: "T", name: "Vocales: repaso", icon: "🔠" },
-  { id: "U", name: "Dígrafos: ch, ll, rr, qu", icon: "🔗" },
-  { id: "V", name: "Trabadas", icon: "🧱" },
-  { id: "W", name: "Vocales en las palabras", icon: "🎯" },
-  { id: "X", name: "Palabras frecuentes", icon: "⭐" },
-  { id: "Y", name: "Cuentos para leer", icon: "📚" },
-];
 
-// Una letra por juego y repasos, en el orden de IXL. La ñ va con la n.
-const learn = (id: string, letter: string): Row =>
-  letter === "n"
-    ? [id, "Aprender las letras N y Ñ", (r) => K.learnLetter(r, ["n", "ñ"])]
-    : [id, `Aprender la letra ${letter.toUpperCase()}`, (r) => K.learnLetter(r, [letter])];
-const review = (id: string, from: string, to: string): Row => {
+// Una letra por generador y repasos de varias letras. La ñ va con la n.
+const learn = (key: string, letter: string): Row => [key, (r) => K.learnLetter(r, letter === "n" ? ["n", "ñ"] : [letter])];
+const review = (key: string, from: string, to: string): Row => {
   const letters = K.ALPHABET.slice(K.ALPHABET.indexOf(from), K.ALPHABET.indexOf(to) + 1);
-  return [id, `Repasar las letras ${from.toUpperCase()}–${to.toUpperCase()}`, (r) => K.learnLetter(r, letters)];
+  return [key, (r) => K.learnLetter(r, letters)];
 };
 
 function sentencesFor(list: [string, string][]): ChoiceItem[] {
@@ -208,175 +172,175 @@ const STORIES: Record<string, Passage[]> = {
   ],
 };
 
-const sentence = (list: [string, string][]): Row[2] => (r) => choose(r, "¿Qué oración corresponde al dibujo?", sentencesFor(list));
+const sentence = (list: [string, string][]): Row[1] => (r) => choose(r, "¿Qué oración corresponde al dibujo?", sentencesFor(list));
 
 export const ROWS: Row[] = [
-  learn("A.1", "a"), learn("A.2", "b"), learn("A.3", "c"), learn("A.4", "d"), review("A.5", "a", "d"),
-  learn("A.6", "e"), learn("A.7", "f"), learn("A.8", "g"), learn("A.9", "h"), review("A.10", "e", "h"), review("A.11", "a", "h"),
+  learn("letras-a-h-1", "a"), learn("letras-a-h-2", "b"), learn("letras-a-h-3", "c"), learn("letras-a-h-4", "d"), review("letras-a-h-5", "a", "d"),
+  learn("letras-a-h-6", "e"), learn("letras-a-h-7", "f"), learn("letras-a-h-8", "g"), learn("letras-a-h-9", "h"), review("letras-a-h-10", "e", "h"), review("letras-a-h-11", "a", "h"),
 
-  learn("B.1", "i"), learn("B.2", "j"), learn("B.3", "k"), learn("B.4", "l"), review("B.5", "i", "l"),
-  learn("B.6", "m"), learn("B.7", "n"), learn("B.8", "o"), learn("B.9", "p"), review("B.10", "m", "p"), review("B.11", "i", "p"),
+  learn("letras-i-p-1", "i"), learn("letras-i-p-2", "j"), learn("letras-i-p-3", "k"), learn("letras-i-p-4", "l"), review("letras-i-p-5", "i", "l"),
+  learn("letras-i-p-6", "m"), learn("letras-i-p-7", "n"), learn("letras-i-p-8", "o"), learn("letras-i-p-9", "p"), review("letras-i-p-10", "m", "p"), review("letras-i-p-11", "i", "p"),
 
-  learn("C.1", "q"), learn("C.2", "r"), learn("C.3", "s"), learn("C.4", "t"), learn("C.5", "u"), review("C.6", "q", "u"),
-  learn("C.7", "v"), learn("C.8", "w"), learn("C.9", "x"), learn("C.10", "y"), learn("C.11", "z"), review("C.12", "v", "z"), review("C.13", "q", "z"),
+  learn("letras-q-z-1", "q"), learn("letras-q-z-2", "r"), learn("letras-q-z-3", "s"), learn("letras-q-z-4", "t"), learn("letras-q-z-5", "u"), review("letras-q-z-6", "q", "u"),
+  learn("letras-q-z-7", "v"), learn("letras-q-z-8", "w"), learn("letras-q-z-9", "x"), learn("letras-q-z-10", "y"), learn("letras-q-z-11", "z"), review("letras-q-z-12", "v", "z"), review("letras-q-z-13", "q", "z"),
 
-  ["D.1", "Encontrar la letra en el abecedario: mayúsculas", (r) => K.findLetter(r, true)],
-  ["D.2", "Encontrar la letra en el abecedario: minúsculas", (r) => K.findLetter(r, false)],
-  ["D.3", "Letras que se confunden: encontrar la letra", K.confusedLetter],
-  ["D.4", "Letras que se confunden: encontrar todas las letras", K.confusedWords],
-  ["D.5", "Repasar las letras A–Z", (r) => K.learnLetter(r, K.ALPHABET)],
-  ["D.6", "Elegir la letra que escuchas", (r) => K.findLetter(r, r.chance(0.5), 4)],
+  ["buscar-letra-1", (r) => K.findLetter(r, true)],
+  ["buscar-letra-2", (r) => K.findLetter(r, false)],
+  ["buscar-letra-3", K.confusedLetter],
+  ["buscar-letra-4", K.confusedWords],
+  ["buscar-letra-5", (r) => K.learnLetter(r, K.ALPHABET)],
+  ["buscar-letra-6", (r) => K.findLetter(r, r.chance(0.5), 4)],
 
-  ["E.1", "Elegir la minúscula que corresponde: c, k, o, p, s, u, v, w, x, z", (r) => K.matchCase(r, "ckopsuvwxz", true)],
-  ["E.2", "Elegir la minúscula que corresponde: f, i, j, l, m, t, y", (r) => K.matchCase(r, "fijlmty", true)],
-  ["E.3", "Elegir la minúscula que corresponde: a, b, d, e, g, h, n, ñ, q, r", (r) => K.matchCase(r, "abdeghnñqr", true)],
-  ["E.4", "Elegir la minúscula que corresponde: repaso", (r) => K.matchCase(r, K.ALPHABET.join(""), true)],
-  ["E.5", "Encontrar todas las minúsculas", (r) => K.findCase(r, true)],
-  ["E.6", "Elegir la mayúscula que corresponde: C, K, O, P, S, U, V, W, X, Z", (r) => K.matchCase(r, "ckopsuvwxz", false)],
-  ["E.7", "Elegir la mayúscula que corresponde: F, I, J, L, M, T, Y", (r) => K.matchCase(r, "fijlmty", false)],
-  ["E.8", "Elegir la mayúscula que corresponde: A, B, D, E, G, H, N, Ñ, Q, R", (r) => K.matchCase(r, "abdeghnñqr", false)],
-  ["E.9", "Elegir la mayúscula que corresponde: repaso", (r) => K.matchCase(r, K.ALPHABET.join(""), false)],
-  ["E.10", "Encontrar todas las mayúsculas", (r) => K.findCase(r, false)],
-  ["E.11", "Ordenar las letras como en el abecedario", K.abcOrder],
+  ["mayusculas-minusculas-1", (r) => K.matchCase(r, "ckopsuvwxz", true)],
+  ["mayusculas-minusculas-2", (r) => K.matchCase(r, "fijlmty", true)],
+  ["mayusculas-minusculas-3", (r) => K.matchCase(r, "abdeghnñqr", true)],
+  ["mayusculas-minusculas-4", (r) => K.matchCase(r, K.ALPHABET.join(""), true)],
+  ["mayusculas-minusculas-5", (r) => K.findCase(r, true)],
+  ["mayusculas-minusculas-6", (r) => K.matchCase(r, "ckopsuvwxz", false)],
+  ["mayusculas-minusculas-7", (r) => K.matchCase(r, "fijlmty", false)],
+  ["mayusculas-minusculas-8", (r) => K.matchCase(r, "abdeghnñqr", false)],
+  ["mayusculas-minusculas-9", (r) => K.matchCase(r, K.ALPHABET.join(""), false)],
+  ["mayusculas-minusculas-10", (r) => K.findCase(r, false)],
+  ["abecedario", K.abcOrder],
 
-  ["F.1", "Elegir las dos palabras que son iguales", (r) => K.sameWord(r, SIMILAR_WORDS)],
-  ["F.2", "Elegir la oración que tiene bien los espacios", (r) => K.spacing(r, SENTENCES)],
-  ["F.3", "Encontrar una palabra en una oración", (r) => K.findWord(r, SENTENCES)],
+  ["palabras-iguales-1", (r) => K.sameWord(r, SIMILAR_WORDS)],
+  ["palabras-iguales-2", (r) => K.spacing(r, SENTENCES)],
+  ["palabras-iguales-3", (r) => K.findWord(r, SENTENCES)],
 
-  ["G.1", "Clasificar vocales y consonantes", P.sortLetters],
-  ["G.2", "Encontrar la vocal en la palabra", P.vowelsInWord],
+  ["vocal-consonante-1", P.sortLetters],
+  ["vocal-consonante-2", P.vowelsInWord],
 
-  ["H.1", "¿Qué palabra termina igual?", K.sameEnding],
-  ["H.2", "¿Qué dos palabras terminan igual?", K.twoSameEnding],
-  ["H.3", "Elegir el dibujo que rima con la palabra", K.rhymePicture],
-  ["H.4", "Formar un grupo de palabras que riman", P.rhymeSet],
-  ["H.5", "¿Qué palabra no rima?", P.notRhyme],
-  ["H.6", "Completar la rima", (r) => choose(r, "Completa la rima.", COUPLETS)],
+  ["rimas-1", K.sameEnding],
+  ["rimas-2", K.twoSameEnding],
+  ["rimas-3", K.rhymePicture],
+  ["completar-rima-1", P.rhymeSet],
+  ["rimas-4", P.notRhyme],
+  ["completar-rima-2", (r) => choose(r, "Completa la rima.", COUPLETS)],
 
-  ["I.1", "Unir dos partes para formar una palabra compuesta", K.joinCompound],
-  ["I.2", "Unir sílabas para formar una palabra", (r) => P.joinSyllables(r, false)],
-  ["I.3", "¿Cuántas sílabas tiene la palabra?", K.clapSyllables],
-  ["I.4", "¿Qué palabra tiene más sílabas?", K.moreSyllables],
-  ["I.5", "Clasificar por número de sílabas", P.sortBySyllables],
-  ["I.6", "Cambiar o quitar una parte de una palabra compuesta", K.changeCompound],
+  ["unir-silabas-1", K.joinCompound],
+  ["unir-silabas-2", (r) => P.joinSyllables(r, false)],
+  ["silabas-1", K.clapSyllables],
+  ["silabas-2", K.moreSyllables],
+  ["silabas-3", P.sortBySyllables],
+  ["unir-silabas-3", K.changeCompound],
 
-  ["J.1", "Unir el primer sonido con el resto para formar una palabra", K.onsetRime],
-  ["J.2", "Unir cada sonido de una palabra", P.blendSounds],
-  ["J.3", "Identificar el primer, el segundo y el último sonido de una palabra", P.identifySound],
-  ["J.4", "Ordenar los sonidos", (r) => {
+  ["unir-sonidos-1", K.onsetRime],
+  ["unir-sonidos-2", P.blendSounds],
+  ["primer-sonido-4", P.identifySound],
+  ["unir-sonidos-3", (r) => {
     const q = P.orderSounds(r);
     // Que las fichas no salgan ya en orden.
     return q.kind === "sequence" && q.tiles.every((t, i) => t === q.answer[i]) ? { ...q, tiles: [...q.tiles.slice(1), q.tiles[0]] } : q;
   }],
 
-  ["K.1", "Cambiar el primer sonido de una palabra", (r) => P.changeSound(r, P.FIRST_SOUND_PAIRS, "el primer sonido")],
-  ["K.2", "Cambiar el último sonido de una palabra", (r) => P.changeSound(r, P.LAST_SOUND_PAIRS, "el último sonido")],
-  ["K.3", "Cambiar la vocal de una palabra", (r) => P.changeSound(r, P.VOWEL_PAIRS, "la vocal")],
-  ["K.4", "Cambiar un sonido de una palabra: repaso", (r) =>
+  ["cambiar-sonidos-1", (r) => P.changeSound(r, P.FIRST_SOUND_PAIRS, "el primer sonido")],
+  ["cambiar-sonidos-2", (r) => P.changeSound(r, P.LAST_SOUND_PAIRS, "el último sonido")],
+  ["cambiar-sonidos-3", (r) => P.changeSound(r, P.VOWEL_PAIRS, "la vocal")],
+  ["cambiar-sonidos-4", (r) =>
     mix(r, [
       (q) => P.changeSound(q, P.FIRST_SOUND_PAIRS, "el primer sonido"),
       (q) => P.changeSound(q, P.LAST_SOUND_PAIRS, "el último sonido"),
       (q) => P.changeSound(q, P.VOWEL_PAIRS, "la vocal"),
     ])],
 
-  ["L.1", "¿Qué dos palabras empiezan con el mismo sonido?", P.sameStart],
-  ["L.2", "¿Qué palabra termina con el mismo sonido?", K.sameEndWord],
-  ["L.3", "¿Qué dos palabras terminan con el mismo sonido?", P.sameEnd],
+  ["primer-sonido-1", P.sameStart],
+  ["primer-sonido-2", K.sameEndWord],
+  ["primer-sonido-3", P.sameEnd],
 
-  ["M.1", "Encontrar las palabras que empiezan con un sonido", K.wordsStartingWith],
-  ["M.2", "Elegir la letra que corresponde al sonido: b, d, j, p, t", (r) => K.heardConsonant(r, ["b", "d", "j", "p", "t"])],
-  ["M.3", "Elegir la letra que corresponde al sonido: f, l, m, n, r, s", (r) => K.heardConsonant(r, ["f", "l", "m", "n", "r", "s"])],
-  ["M.4", "Elegir la letra que corresponde al sonido: c, g, ñ, ch", (r) => K.heardConsonant(r, ["c", "g", "ñ", "ch"])],
-  ["M.5", "Elegir la letra que corresponde al sonido: repaso", (r) => K.heardConsonant(r, ["b", "d", "j", "p", "t", "f", "l", "m", "n", "r", "s", "c", "g", "ñ", "ch"])],
-  ["M.6", "¿Con qué letra empieza la palabra?", (r) => P.letterAt(r, "first")],
-  ["M.7", "¿Con qué letra termina la palabra?", (r) => P.letterAt(r, "last")],
+  ["letra-sonido-1", K.wordsStartingWith],
+  ["letra-sonido-2", (r) => K.heardConsonant(r, ["b", "d", "j", "p", "t"])],
+  ["letra-sonido-3", (r) => K.heardConsonant(r, ["f", "l", "m", "n", "r", "s"])],
+  ["letra-sonido-4", (r) => K.heardConsonant(r, ["c", "g", "ñ", "ch"])],
+  ["letra-sonido-5", (r) => K.heardConsonant(r, ["b", "d", "j", "p", "t", "f", "l", "m", "n", "r", "s", "c", "g", "ñ", "ch"])],
+  ["letra-sonido-6", (r) => P.letterAt(r, "first")],
+  ["letra-sonido-7", (r) => P.letterAt(r, "last")],
 
-  ["N.1", "Encontrar la palabra con a", (r) => K.findVowelWord(r, "a")],
-  ["N.2", "Encontrar la palabra con e", (r) => K.findVowelWord(r, "e")],
-  ["N.3", "Encontrar la palabra con i", (r) => K.findVowelWord(r, "i")],
-  ["N.4", "Encontrar la palabra con o", (r) => K.findVowelWord(r, "o")],
-  ["N.5", "Encontrar la palabra con u", (r) => K.findVowelWord(r, "u")],
-  ["N.6", "Identificar la vocal que suena en una palabra", (r) => P.identifyVowel(r, "casa rana papa cama sal pan mar pez tren leche bebé kiwi oso sol ojo loro lobo mono")],
+  ["encontrar-vocal-1", (r) => K.findVowelWord(r, "a")],
+  ["encontrar-vocal-2", (r) => K.findVowelWord(r, "e")],
+  ["encontrar-vocal-3", (r) => K.findVowelWord(r, "i")],
+  ["encontrar-vocal-4", (r) => K.findVowelWord(r, "o")],
+  ["encontrar-vocal-5", (r) => K.findVowelWord(r, "u")],
+  ["encontrar-vocal-6", (r) => P.identifyVowel(r, "casa rana papa cama sal pan mar pez tren leche bebé kiwi oso sol ojo loro lobo mono")],
 
-  ["O.1", "Elegir la palabra con a que corresponde al dibujo", (r) => P.wordForPicture(r, VA)],
-  ["O.2", "Leer palabras con ma y pa", (r) => P.wordForPicture(r, "mapa papa mano pato pan mar cama")],
-  ["O.3", "Completar la palabra con a", (r) => P.completeSyllable(r, VA)],
-  ["O.4", "Elegir la oración con a que corresponde al dibujo", sentence(SENT_A)],
+  ["palabras-a-1", (r) => P.wordForPicture(r, VA)],
+  ["palabras-a-2", (r) => P.wordForPicture(r, "mapa papa mano pato pan mar cama")],
+  ["palabras-a-3", (r) => P.completeSyllable(r, VA)],
+  ["palabras-a-4", sentence(SENT_A)],
 
-  ["P.1", "Elegir el dibujo de la palabra con e", (r) => P.pictureForWord(r, VE)],
-  ["P.2", "Completar la palabra con e", (r) => P.completeSyllable(r, VE)],
-  ["P.3", "Elegir la oración con e que corresponde al dibujo", sentence(SENT_E)],
+  ["palabras-e-1", (r) => P.pictureForWord(r, VE)],
+  ["palabras-e-2", (r) => P.completeSyllable(r, VE)],
+  ["palabras-e-3", sentence(SENT_E)],
 
-  ["Q.1", "Elegir la palabra con i que corresponde al dibujo", (r) => P.wordForPicture(r, VI)],
-  ["Q.2", "Completar palabras con i", (r) => P.completeSyllable(r, VI)],
-  ["Q.3", "Elegir la oración con i que corresponde al dibujo", sentence(SENT_I)],
+  ["palabras-i-1", (r) => P.wordForPicture(r, VI)],
+  ["palabras-i-2", (r) => P.completeSyllable(r, VI)],
+  ["palabras-i-3", sentence(SENT_I)],
 
-  ["R.1", "Elegir la palabra con o que corresponde al dibujo", (r) => P.wordForPicture(r, VO)],
-  ["R.2", "Completar la palabra con o", (r) => P.completeSyllable(r, VO)],
-  ["R.3", "Elegir la oración con o que corresponde al dibujo", sentence(SENT_O)],
+  ["palabras-o-1", (r) => P.wordForPicture(r, VO)],
+  ["palabras-o-2", (r) => P.completeSyllable(r, VO)],
+  ["palabras-o-3", sentence(SENT_O)],
 
-  ["S.1", "Elegir el dibujo de la palabra con u", (r) => P.pictureForWord(r, VU)],
-  ["S.2", "Completar la palabra con u", (r) => P.completeSyllable(r, VU)],
-  ["S.3", "Elegir la oración con u que corresponde al dibujo", sentence(SENT_U)],
+  ["palabras-u-1", (r) => P.pictureForWord(r, VU)],
+  ["palabras-u-2", (r) => P.completeSyllable(r, VU)],
+  ["palabras-u-3", sentence(SENT_U)],
 
-  ["T.1", "Completar la palabra con la vocal correcta", (r) => P.completeVowel(r, SHORT)],
-  ["T.2", "Cambiar una letra para formar otra palabra", (r) => P.changeOneLetter(r, P.ONE_LETTER_PAIRS)],
-  ["T.3", "Leer palabras cortas", (r) => P.wordForPicture(r, SHORT)],
-  ["T.4", "Escribir la palabra corta", (r) => P.spellWord(r, "sol pan mar pez uva oso luna mano pato rana")],
-  ["T.5", "Completar la oración con la palabra correcta", (r) => choose(r, "Completa la oración.", SENT_SHORT)],
-  ["T.6", "Leer preguntas con palabras cortas", (r) => {
+  ["palabras-cortas-1", (r) => P.completeVowel(r, SHORT)],
+  ["palabras-cortas-2", (r) => P.changeOneLetter(r, P.ONE_LETTER_PAIRS)],
+  ["palabras-cortas-3", (r) => P.wordForPicture(r, SHORT)],
+  ["palabras-cortas-4", (r) => P.spellWord(r, "sol pan mar pez uva oso luna mano pato rana")],
+  ["palabras-cortas-5", (r) => choose(r, "Completa la oración.", SENT_SHORT)],
+  ["palabras-cortas-6", (r) => {
     const [q, yes] = r.pick(YES_NO);
     return { kind: "choice", prompt: "Lee la pregunta y responde.", visual: { kind: "text", text: q }, options: ["Sí", "No"], answer: yes ? "Sí" : "No", explanation: yes ? "La respuesta es sí." : "La respuesta es no." };
   }],
 
-  ["U.1", "Elegir el dígrafo correcto", (r) => P.completePart(r, P.DIGRAPH_START, ["ch", "ll", "rr", "qu"], "¿Qué letras faltan?")],
-  ["U.2", "Leer palabras con ch", (r) => P.wordForPicture(r, "coche leche cuchara chocolate brocha mochila")],
-  ["U.3", "Leer palabras con ll", (r) => P.wordForPicture(r, "llave lluvia llama pollo silla caballo gallina galleta")],
-  ["U.4", "Leer palabras con rr", (r) => P.wordForPicture(r, "perro zorro gorro guitarra arroz")],
-  ["U.5", "Leer palabras con qu", (r) => P.wordForPicture(r, "queso paquete raqueta mosquito bosque")],
-  ["U.6", "Leer la palabra con dígrafo: ch, ll, rr", (r) => P.wordForPicture(r, "coche leche llave pollo silla perro gorro zorro llama cuchara")],
-  ["U.7", "Leer palabras con ñ", (r) => P.wordForPicture(r, "piña araña montaña")],
-  ["U.8", "Elegir la palabra que corresponde al dibujo: rr, ll, ch, ñ, qu", (r) => P.pictureForWord(r, "perro gorro pollo silla coche leche piña araña queso bosque")],
-  ["U.9", "Escribir la palabra con dígrafo", (r) => P.spellWord(r, "coche leche llave pollo silla perro gorro zorro", "ch ll rr a e i o u")],
+  ["digrafos-1", (r) => P.completePart(r, P.DIGRAPH_START, ["ch", "ll", "rr", "qu"], "¿Qué letras faltan?")],
+  ["digrafos-2", (r) => P.wordForPicture(r, "coche leche cuchara chocolate brocha mochila")],
+  ["digrafos-3", (r) => P.wordForPicture(r, "llave lluvia llama pollo silla caballo gallina galleta")],
+  ["digrafos-4", (r) => P.wordForPicture(r, "perro zorro gorro guitarra arroz")],
+  ["digrafos-5", (r) => P.wordForPicture(r, "queso paquete raqueta mosquito bosque")],
+  ["digrafos-6", (r) => P.wordForPicture(r, "coche leche llave pollo silla perro gorro zorro llama cuchara")],
+  ["digrafos-7", (r) => P.wordForPicture(r, "piña araña montaña")],
+  ["digrafos-8", (r) => P.pictureForWord(r, "perro gorro pollo silla coche leche piña araña queso bosque")],
+  ["digrafos-9", (r) => P.spellWord(r, "coche leche llave pollo silla perro gorro zorro", "ch ll rr a e i o u")],
 
-  ["V.1", "¿Con qué trabada empieza la palabra?", (r) => K.whichBlend(r, "start")],
-  ["V.2", "¿La palabra empieza con una trabada?", (r) => P.hasBlend(r, "start")],
-  ["V.3", "Completar la palabra con la trabada inicial correcta", (r) => P.completeBlend(r, "start")],
-  ["V.4", "¿Qué trabada tiene la palabra en medio?", (r) => K.whichBlend(r, "middle")],
-  ["V.5", "¿La palabra tiene una trabada en medio?", (r) => P.hasBlend(r, "middle")],
-  ["V.6", "Completar la palabra con la trabada de en medio", (r) => P.completeBlend(r, "middle")],
+  ["trabadas-1", (r) => K.whichBlend(r, "start")],
+  ["trabadas-2", (r) => P.hasBlend(r, "start")],
+  ["trabadas-3", (r) => P.completeBlend(r, "start")],
+  ["trabadas-4", (r) => K.whichBlend(r, "middle")],
+  ["trabadas-5", (r) => P.hasBlend(r, "middle")],
+  ["trabadas-6", (r) => P.completeBlend(r, "middle")],
 
-  ["W.1", "Encontrar la palabra con la misma vocal", P.sameVowelWord],
-  ["W.2", "¿Qué dos palabras tienen la misma vocal?", P.twoSameVowel],
-  ["W.3", "Encontrar la palabra que empieza con a", (r) => K.startsWithVowel(r, "a")],
-  ["W.4", "Encontrar la palabra que empieza con e", (r) => K.startsWithVowel(r, "e")],
-  ["W.5", "Encontrar la palabra que empieza con i", (r) => K.startsWithVowel(r, "i")],
-  ["W.6", "Encontrar la palabra que empieza con o", (r) => K.startsWithVowel(r, "o")],
-  ["W.7", "Encontrar la palabra que empieza con u", (r) => K.startsWithVowel(r, "u")],
-  ["W.8", "Clasificar palabras según su vocal", P.sortByVowel],
+  ["misma-vocal-1", P.sameVowelWord],
+  ["misma-vocal-2", P.twoSameVowel],
+  ["vocal-inicial-1", (r) => K.startsWithVowel(r, "a")],
+  ["vocal-inicial-2", (r) => K.startsWithVowel(r, "e")],
+  ["vocal-inicial-3", (r) => K.startsWithVowel(r, "i")],
+  ["vocal-inicial-4", (r) => K.startsWithVowel(r, "o")],
+  ["vocal-inicial-5", (r) => K.startsWithVowel(r, "u")],
+  ["misma-vocal-3", P.sortByVowel],
 
-  ["X.1", "Elegir las dos palabras frecuentes que son iguales", (r) => K.sameWord(r, SIMILAR_SIGHT)],
-  ["X.2", "Leer palabras frecuentes, grupo 1: el, la, un, una, en", (r) => K.readSight(r, [1])],
-  ["X.3", "Leer palabras frecuentes, grupo 2: yo, mi, tu, es, de", (r) => K.readSight(r, [2])],
-  ["X.4", "Leer palabras frecuentes, grupo 3: no, sí, con, se, que", (r) => K.readSight(r, [3])],
-  ["X.5", "Leer palabras frecuentes: repaso de los grupos 1, 2 y 3", (r) => K.readSight(r, [1, 2, 3])],
-  ["X.6", "Leer palabras frecuentes, grupo 4: los, las, por, me, lo", (r) => K.readSight(r, [4])],
-  ["X.7", "Leer palabras frecuentes, grupo 5: más, muy, hay, soy, voy", (r) => K.readSight(r, [5])],
-  ["X.8", "Leer palabras frecuentes, grupo 6: ella, su, al, del, son", (r) => K.readSight(r, [6])],
-  ["X.9", "Leer palabras frecuentes: repaso de los grupos 4, 5 y 6", (r) => K.readSight(r, [4, 5, 6])],
-  ["X.10", "Leer palabras frecuentes, grupo 7: este, esta, aquí, hoy, ya", (r) => K.readSight(r, [7])],
-  ["X.11", "Leer palabras frecuentes, grupo 8: bien, mal, todo, nada, otro", (r) => K.readSight(r, [8])],
-  ["X.12", "Leer palabras frecuentes, grupo 9: para, pero, como, fue, era", (r) => K.readSight(r, [9])],
-  ["X.13", "Leer palabras frecuentes, grupo 10: tengo, quiero, veo, está, dijo", (r) => K.readSight(r, [10])],
-  ["X.14", "Leer palabras frecuentes: repaso de los grupos 7, 8, 9 y 10", (r) => K.readSight(r, [7, 8, 9, 10])],
-  ["X.15", "Leer palabras frecuentes: repaso de los grupos 1 al 10", (r) => K.readSight(r, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])],
-  ["X.16", "Completar la oración con la palabra frecuente correcta", (r) => choose(r, "Completa la oración.", SIGHT_SENTENCES)],
-  ["X.17", "Escribir la palabra frecuente", K.spellSight],
+  ["frecuentes-1-1", (r) => K.sameWord(r, SIMILAR_SIGHT)],
+  ["frecuentes-1-2", (r) => K.readSight(r, [1])],
+  ["frecuentes-1-3", (r) => K.readSight(r, [2])],
+  ["frecuentes-1-4", (r) => K.readSight(r, [3])],
+  ["frecuentes-1-5", (r) => K.readSight(r, [1, 2, 3])],
+  ["frecuentes-1-6", (r) => K.readSight(r, [4])],
+  ["frecuentes-1-7", (r) => K.readSight(r, [5])],
+  ["frecuentes-2-1", (r) => K.readSight(r, [6])],
+  ["frecuentes-2-2", (r) => K.readSight(r, [4, 5, 6])],
+  ["frecuentes-2-3", (r) => K.readSight(r, [7])],
+  ["frecuentes-2-4", (r) => K.readSight(r, [8])],
+  ["frecuentes-2-5", (r) => K.readSight(r, [9])],
+  ["frecuentes-2-6", (r) => K.readSight(r, [10])],
+  ["frecuentes-2-7", (r) => K.readSight(r, [7, 8, 9, 10])],
+  ["frecuentes-2-8", (r) => K.readSight(r, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])],
+  ["frecuentes-oracion-1", (r) => choose(r, "Completa la oración.", SIGHT_SENTENCES)],
+  ["frecuentes-oracion-2", K.spellSight],
 
-  ["Y.1", "Leer cuentos con a", (r) => readPassage(r, STORIES.a, false)],
-  ["Y.2", "Leer cuentos con e", (r) => readPassage(r, STORIES.e, false)],
-  ["Y.3", "Leer cuentos con i", (r) => readPassage(r, STORIES.i, false)],
-  ["Y.4", "Leer cuentos con o", (r) => readPassage(r, STORIES.o, false)],
-  ["Y.5", "Leer cuentos con u", (r) => readPassage(r, STORIES.u, false)],
-  ["Y.6", "Leer cuentos con todas las vocales", (r) => readPassage(r, STORIES.mix, false)],
+  ["cuentos-vocales-1", (r) => readPassage(r, STORIES.a, false)],
+  ["cuentos-vocales-2", (r) => readPassage(r, STORIES.e, false)],
+  ["cuentos-vocales-3", (r) => readPassage(r, STORIES.i, false)],
+  ["cuentos-vocales-4", (r) => readPassage(r, STORIES.o, false)],
+  ["cuentos-vocales-5", (r) => readPassage(r, STORIES.u, false)],
+  ["cuentos-vocales-6", (r) => readPassage(r, STORIES.mix, false)],
 ];

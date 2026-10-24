@@ -16,7 +16,6 @@ function distractors(t: number, o: number, max: number) {
   return list.filter((l) => l !== label(t, o) && !(max === 20 && /^[3-9]/.test(l)));
 }
 
-// J.1 / J.4
 export function modelToTensOnes(r: Rng, max: number): Question {
   const { t, o } = pick(r, max);
   return {
@@ -29,7 +28,6 @@ export function modelToTensOnes(r: Rng, max: number): Question {
   };
 }
 
-// J.2 / J.5
 export function modelToNumber(r: Rng, max: number): Question {
   const { n, t, o } = pick(r, max);
   return {
@@ -41,7 +39,6 @@ export function modelToNumber(r: Rng, max: number): Question {
   };
 }
 
-// J.3 / J.6
 export function numberToTensOnes(r: Rng, max: number): Question {
   const { n, t, o } = pick(r, max);
   return {
@@ -95,7 +92,7 @@ function modelVisual(places: (typeof PLACES)[number][], digits: number[]) {
   };
 }
 
-// 2.° I.1 - I.3: ¿qué número muestran los bloques?
+// ¿qué número muestran los bloques?
 export function placeModelNumber(r: Rng, top: TopPlace): Question {
   const { places, digits, n } = pickDigits(r, top);
   const parts = places.map((p, i) => amount(digits[i], p)).join(", ");
@@ -109,7 +106,7 @@ export function placeModelNumber(r: Rng, top: TopPlace): Question {
   };
 }
 
-// 2.° I.4 - I.6: valor de una cifra o qué cifra ocupa un lugar.
+// Valor de una cifra o qué cifra ocupa un lugar.
 export function placeValueDigit(r: Rng, top: TopPlace): Question {
   const { places, digits, n } = pickDigits(r, top);
   const at = r.int(0, places.length - 1);
@@ -138,7 +135,7 @@ export function placeValueDigit(r: Rng, top: TopPlace): Question {
   };
 }
 
-// 2.° I.7 - I.9: de forma desarrollada a número y al revés.
+// De forma desarrollada a número y al revés.
 export function convertPlaceValue(r: Rng, top: TopPlace): Question {
   const { places, digits, n } = pickDigits(r, top);
   const parts = places.map((p, i) => amount(digits[i], p));

@@ -2,7 +2,6 @@ import type { Rng } from "../rng";
 import type { Question } from "../types";
 import { COUNTABLES, numberOptions, uniqueOptions } from "./common";
 
-// L.1
 export function measureWithObjects(r: Rng): Question {
   const item = r.pick([["🖍️", "lápiz"], ["🥕", "zanahoria"], ["🪥", "cepillo"]]);
   const unit = r.pick([["📎", "clips"], ["🧱", "bloques"], ["🍪", "galletas"]]);
@@ -16,7 +15,6 @@ export function measureWithObjects(r: Rng): Question {
   };
 }
 
-// L.2
 export function measureWithRuler(r: Rng): Question {
   const length = r.int(2, 10);
   return {
@@ -28,7 +26,6 @@ export function measureWithRuler(r: Rng): Question {
   };
 }
 
-// L.3
 export function readThermometer(r: Rng): Question {
   const value = r.int(0, 10) * 5;
   return {
@@ -41,7 +38,6 @@ export function readThermometer(r: Rng): Question {
   };
 }
 
-// L.4
 export function compareLengths(r: Rng): Question {
   const a = r.int(1, 10);
   let b = r.int(1, 10);
@@ -59,7 +55,6 @@ export function compareLengths(r: Rng): Question {
   };
 }
 
-// L.5
 export function gridPosition(r: Rng): Question {
   const size = 4;
   const emojis = r.shuffle(COUNTABLES).slice(0, 4);
@@ -86,7 +81,6 @@ export function gridPosition(r: Rng): Question {
   };
 }
 
-// L.6
 export function aboveBelow(r: Rng): Question {
   const items = r.shuffle(COUNTABLES).slice(0, 5);
   const stack = items.slice(0, 4);
@@ -120,7 +114,6 @@ const TIME_FACTS: { q: string; a: string; wrong: string[] }[] = [
   { q: "¿Cuántos minutos tiene media hora?", a: "30", wrong: ["15", "60", "45", "20"] },
 ];
 
-// L.7
 export function timeUnits(r: Rng): Question {
   const f = r.pick(TIME_FACTS);
   return {
@@ -132,7 +125,6 @@ export function timeUnits(r: Rng): Question {
   };
 }
 
-// L.8
 export function coordinatePlane(r: Rng): Question {
   const max = 5;
   const emojis = r.shuffle(COUNTABLES).slice(0, 3);

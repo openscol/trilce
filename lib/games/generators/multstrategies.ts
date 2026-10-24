@@ -20,7 +20,7 @@ function factor(r: Rng, digits: number) {
   return Number(ds.join(""));
 }
 
-// 4.° J.1 / M.1: patrones al aumentar el valor posicional.
+// Patrones al aumentar el valor posicional.
 export function zeroPatterns(r: Rng, op: "×" | "÷"): Question {
   const a = r.int(2, 9);
   const b = r.int(2, 9);
@@ -31,7 +31,7 @@ export function zeroPatterns(r: Rng, op: "×" | "÷"): Question {
   return numQ(answer, "Sigue el patrón. ¿Qué número falta?", shown.join("\n"), `${op === "×" ? `${a} × ${b} = ${a * b}` : `${a * b} ÷ ${a} = ${b}`}; luego agregamos ${hidden} ${hidden === 1 ? "cero" : "ceros"}: ${fmt(answer)}.`, `${hidden}-ceros`);
 }
 
-// 4.° J.2 / K.1 / K.2: multiplicar por múltiplos de 10, 100 y 1.000.
+// Multiplicar por múltiplos de 10, 100 y 1.000.
 // `left`: cifras significativas del primer factor; `maxZeros`: ceros del segundo.
 export function multByMultiples(r: Rng, left: 1 | 2, maxZeros: number, pure = false): Question {
   const a = left === 1 ? r.int(2, 9) : r.int(11, 99);
@@ -42,7 +42,7 @@ export function multByMultiples(r: Rng, left: 1 | 2, maxZeros: number, pure = fa
   return numQ(a * b, "Resuelve la multiplicación.", `${fmt(x)} × ${fmt(y)} = ?`, `${a} × ${b / 10 ** zeros} = ${fmt(core)}; agregamos ${zeros} ${zeros === 1 ? "cero" : "ceros"}: ${fmt(a * b)}.`, `${zeros}-ceros`);
 }
 
-// 4.° K.3: problemas con dos múltiplos de diez.
+// Problemas con dos múltiplos de diez.
 export function tensProblem(r: Rng): Question {
   const a = r.int(2, 9) * 10;
   const b = r.int(2, 9) * 10;
@@ -55,7 +55,7 @@ export function tensProblem(r: Rng): Question {
   return numQ(a * b, text, undefined, `${a / 10} × ${b / 10} = ${(a * b) / 100}; agregamos dos ceros: ${fmt(a * b)}.`);
 }
 
-// 4.° J.3 / K.4: estimar productos redondeando a la cifra principal.
+// Estimar productos redondeando a la cifra principal.
 export function estimateProductBy(r: Rng, aDigits: 1 | 2, bMin: number, bMax: number): Question {
   const a = factor(r, aDigits);
   const b = factor(r, r.int(bMin, bMax));
@@ -73,7 +73,7 @@ function model(a: number, b: number, hide?: [number, number]): Visual {
 
 export type AreaMode = "identify" | "cell" | "total" | "partials" | "expanded" | "plain";
 
-// 4.° J.5 – J.16 / K.6 – K.10: multiplicar con modelos de área, forma
+// Multiplicar con modelos de área, forma
 // desarrollada y productos parciales. `aDigits` × `bDigits` cifras.
 export function areaMult(r: Rng, aDigits: 1 | 2 | 3, bMin: number, bMax: number, mode: AreaMode, teen = false): Question {
   const a = factor(r, aDigits);
@@ -113,7 +113,7 @@ export function areaMult(r: Rng, aDigits: 1 | 2 | 3, bMin: number, bMax: number,
   return numQ(partials[hidden], "¿Qué producto parcial falta?", visual, `Los productos parciales son ${sumText}; falta ${fmt(partials[hidden])}.`, tag);
 }
 
-// 4.° J.8: multiplicar con la propiedad distributiva.
+// Multiplicar con la propiedad distributiva.
 export function multDistributive(r: Rng, bMin = 2, bMax = 2): Question {
   const a = factor(r, 1);
   const b = factor(r, r.int(bMin, bMax));
@@ -121,13 +121,13 @@ export function multDistributive(r: Rng, bMin = 2, bMax = 2): Question {
   return numQ(a * b, "Multiplica usando la propiedad distributiva.", `${a} × ${fmt(b)} = ${steps} = ?`, `${parts(b).map((t) => fmt(a * t)).join(" + ")} = ${fmt(a * b)}.`);
 }
 
-// 4.° J.19: multiplicar tres números.
+// Multiplicar tres números.
 export function multThree(r: Rng): Question {
   const [a, b, c] = r.shuffle([r.int(2, 9), r.int(2, 6), r.pick([2, 3, 4, 5, 10])]);
   return numQ(a * b * c, "Resuelve la multiplicación.", `${a} × ${b} × ${c} = ?`, `${a} × ${b} = ${a * b}; ${a * b} × ${c} = ${a * b * c}. Puedes agrupar los factores como te resulte más fácil.`);
 }
 
-// 4.° L.3: comparar un producto con un número o con otro producto.
+// Comparar un producto con un número o con otro producto.
 export function multInequality(r: Rng, aDigits: 1 | 2 = 2): Question {
   const a = factor(r, aDigits);
   const b = factor(r, 2);
@@ -141,7 +141,7 @@ export function multInequality(r: Rng, aDigits: 1 | 2 = 2): Question {
   return symbolQ(p, c * d, `${a} × ${b}`, `${c} × ${d}`, `${a} × ${b} = ${fmt(p)} y ${c} × ${d} = ${fmt(c * d)}.`);
 }
 
-// 4.° L.4: usar una multiplicación conocida para completar otra.
+// Usar una multiplicación conocida para completar otra.
 export function relatedProduct(r: Rng): Question {
   const a = r.int(11, 40);
   const b = r.int(11, 30);
@@ -160,7 +160,7 @@ export function relatedProduct(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // División entre números de una cifra
 
-// 4.° M.2: dividir números que terminan en ceros.
+// Dividir números que terminan en ceros.
 export function divZeros(r: Rng, maxZeros = 3): Question {
   const d = r.int(2, 9);
   const q = r.int(2, 9);
@@ -187,13 +187,13 @@ function compatible(r: Rng) {
   return { d, q, dividend };
 }
 
-// 4.° M.3: estimar cocientes con números compatibles.
+// Estimar cocientes con números compatibles.
 export function estimateQuotientBig(r: Rng): Question {
   const { d, q, dividend } = compatible(r);
   return choiceQ(r, `Usa números compatibles para estimar ${fmt(dividend)} ÷ ${d}.`, fmt(q), [q + (q >= 100 ? 100 : 10), Math.abs(q - (q >= 100 ? 100 : 10)) || q * 3, q * 10, q / 10].map(fmt), `${fmt(dividend)} está cerca de ${fmt(d * q)}, y ${fmt(d * q)} ÷ ${d} = ${fmt(q)}.`, `${fmt(dividend)} ÷ ${d} ≈ ?`);
 }
 
-// 4.° M.4: elegir la mejor estimación.
+// Elegir la mejor estimación.
 export function betterEstimate(r: Rng): Question {
   const { d, q, dividend } = compatible(r);
   const other = r.chance(0.5) ? q * 10 : q / 10;
@@ -201,7 +201,7 @@ export function betterEstimate(r: Rng): Question {
   return fixedQ(`¿Cuál es la mejor estimación de ${fmt(dividend)} ÷ ${d}?`, options, fmt(q), `${d} × ${fmt(q)} = ${fmt(d * q)}, muy cerca de ${fmt(dividend)}. En cambio ${d} × ${fmt(other)} = ${fmt(d * other)}.`);
 }
 
-// 4.° M.5: dividir con matrices.
+// Dividir con matrices.
 export function divArray(r: Rng): Question {
   const d = r.int(2, 6);
   const q = r.int(Math.ceil(10 / d), 10);
@@ -211,7 +211,7 @@ export function divArray(r: Rng): Question {
 // Cociente partido en trozos fáciles: 96 ÷ 4 → [20, 4]; 525 ÷ 5 → [100, 5].
 const chunks = (q: number) => parts(q);
 
-// 4.° M.6 / M.11: dividir con modelos de área.
+// Dividir con modelos de área.
 export function divAreaModel(r: Rng, digits: 2 | 3): Question {
   const d = r.int(2, 9);
   const q = digits === 2 ? r.int(11, Math.floor(99 / d)) : r.int(Math.ceil(100 / d), Math.floor(999 / d));
@@ -224,7 +224,7 @@ export function divAreaModel(r: Rng, digits: 2 | 3): Question {
   return numQ(cs[hidden], `El modelo muestra ${fmt(d * q)} ÷ ${d}. ¿Qué número va en lugar de «?»?`, visual, why, "parte");
 }
 
-// 4.° M.7: dividir con la propiedad distributiva.
+// Dividir con la propiedad distributiva.
 export function divDistributive(r: Rng): Question {
   const d = r.int(2, 9);
   const q = r.int(11, Math.max(12, Math.floor(99 / d)));
@@ -232,7 +232,7 @@ export function divDistributive(r: Rng): Question {
   return numQ(q, "Divide por partes.", `${d * q} ÷ ${d} = (${cs.map((c) => `${c * d} ÷ ${d}`).join(") + (")}) = ?`, `${cs.join(" + ")} = ${q}.`);
 }
 
-// 4.° M.8 / M.9 / M.14: dividir entre una cifra. `exact`: sin residuo;
+// Dividir entre una cifra. `exact`: sin residuo;
 // si no, se pregunta el cociente o el residuo.
 export function divideBy1(r: Rng, minDigits: number, maxDigits: number, exact: boolean, maxQ?: number): Question {
   for (;;) {
@@ -252,7 +252,7 @@ export function divideBy1(r: Rng, minDigits: number, maxDigits: number, exact: b
   }
 }
 
-// 4.° M.10: completar la tabla de divisiones.
+// Completar la tabla de divisiones.
 export function divisionTable(r: Rng): Question {
   const rows = Array.from({ length: 3 }, () => {
     const d = r.int(2, 9);
@@ -273,7 +273,7 @@ export function divisionTable(r: Rng): Question {
   );
 }
 
-// 4.° M.12 / M.13: cocientes parciales.
+// Cocientes parciales.
 export function partialQuotients(r: Rng, withRemainder: boolean): Question {
   const d = r.int(2, 9);
   const q = r.int(12, r.pick([40, 150]));
@@ -293,7 +293,7 @@ export function partialQuotients(r: Rng, withRemainder: boolean): Question {
   return numQ(q, "Suma los cocientes parciales. ¿Cuál es el cociente?", text, why, "cociente");
 }
 
-// 4.° M.15: comparar un cociente con un número o con otro cociente.
+// Comparar un cociente con un número o con otro cociente.
 export function divInequality(r: Rng, maxQ = 60): Question {
   const make = (): [string, number] => {
     const d = r.int(2, 9);
@@ -309,7 +309,7 @@ export function divInequality(r: Rng, maxQ = 60): Question {
   return symbolQ(lv, rv, left, right, `${left} = ${lv} y ${right} = ${rv}.`);
 }
 
-// 4.° M.16: estimar para comparar cocientes.
+// Estimar para comparar cocientes.
 export function compareQuotients(r: Rng): Question {
   for (;;) {
     const a = compatible(r);

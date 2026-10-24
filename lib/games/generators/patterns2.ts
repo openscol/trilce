@@ -29,7 +29,7 @@ function pattern(r: Rng, kinds: ("+" | "−" | "×" | "creciente")[], len = 5): 
   return { terms: Array.from({ length: len }, (_, i) => start + (kind === "+" ? i : -i) * k), rule: `${kind === "+" ? "sumar" : "restar"} ${k}`, kind };
 }
 
-// 4.° R.1: usar una regla para completar un patrón.
+// Usar una regla para completar un patrón.
 export function ruleToPattern(r: Rng): Question {
   const p = pattern(r, ["+", "−", "×"]);
   const hidden = r.int(2, 4);
@@ -38,7 +38,7 @@ export function ruleToPattern(r: Rng): Question {
 
 const PARITY = ["Todos los números son pares", "Todos los números son impares", "Se alternan pares e impares"];
 
-// 4.° R.2 / R.3: ¿qué es verdadero sobre el patrón? (`showTerms`: se ve el patrón; si no, solo la regla).
+// ¿qué es verdadero sobre el patrón? (`showTerms`: se ve el patrón; si no, solo la regla).
 export function patternTruth(r: Rng, showTerms: boolean): Question {
   const k = r.int(2, 12);
   const start = r.int(1, 20);
@@ -48,7 +48,7 @@ export function patternTruth(r: Rng, showTerms: boolean): Question {
   return fixedQ("¿Qué es verdadero sobre este patrón?", PARITY, answer, `${why} El patrón es ${terms.join(", ")}...`, showTerms ? `${terms.join(", ")}, ...` : `Regla: sumar ${k}. Empieza en ${start}.`, k % 2 === 1 ? "alternan" : "misma-paridad");
 }
 
-// 4.° R.4: hallar el error en un patrón.
+// Hallar el error en un patrón.
 export function patternMistake(r: Rng): Question {
   const p = pattern(r, ["+", "−"], 6);
   const at = r.int(1, 5);
@@ -58,14 +58,14 @@ export function patternMistake(r: Rng): Question {
   return { kind: "choice", prompt: `Regla: ${p.rule}. Un número del patrón está equivocado. ¿Cuál es?`, visual: { kind: "text", text: shown.join("   ") }, options: shown.map(String), answer: String(wrong), explanation: `En lugar de ${wrong} debería ir ${p.terms[at]}.`, tag: p.kind };
 }
 
-// 4.° R.5 / R.6: completar un patrón creciente o de multiplicación.
+// Completar un patrón creciente o de multiplicación.
 export function completePattern2(r: Rng, kinds: ("+" | "−" | "×" | "creciente")[]): Question {
   const p = pattern(r, kinds, kinds.includes("×") ? 5 : 6);
   const last = p.terms.length - 1;
   return numQ(p.terms[last], "¿Qué número sigue en el patrón?", `${p.terms.slice(0, last).map(fmt).join("   ")}   ?`, `La regla es ${p.rule}: sigue el ${fmt(p.terms[last])}.`, p.kind);
 }
 
-// 4.° R.7: problemas con patrones numéricos.
+// Problemas con patrones numéricos.
 export function patternProblem(r: Rng): Question {
   const n = r.pick(NAMES);
   const start = r.int(2, 20);
@@ -78,14 +78,14 @@ export function patternProblem(r: Rng): Question {
   return numQ(total - (at - 1) * k, `Un tanque tiene ${total} litros el primer día. Cada día se usan ${k} litros. ¿Cuántos litros hay el día ${at}?`, undefined, `Restamos ${k} cada día: ${Array.from({ length: at }, (_, i) => total - i * k).join(", ")}.`, "resta");
 }
 
-// 4.° R.8: repaso de patrones.
+// Repaso de patrones.
 export function patternReview(r: Rng): Question {
   return r.pick([() => ruleToPattern(r), () => patternMistake(r), () => completePattern2(r, ["+", "−", "×", "creciente"]), () => patternTruth(r, true), () => patternProblem(r)])();
 }
 
 const ioVisual = (rule: IoRule, inputs: number[], hidden?: number, heads: [string, string] = ["Entrada", "Salida"]) => table(heads, inputs.map((x, i) => [fmt(x), i === hidden ? "?" : fmt(calc(rule.op, x, rule.k))]));
 
-// 4.° G.11 / R.10 / R.11: tablas de entrada y salida. `showRule`: la regla
+// Tablas de entrada y salida. `showRule`: la regla
 // se da; si no, hay que descubrirla en las otras filas.
 export function ioTable(r: Rng, ops: Op[], showRule: boolean): Question {
   const rule = ioRule(r, ops);
@@ -95,7 +95,7 @@ export function ioTable(r: Rng, ops: Op[], showRule: boolean): Question {
   return numQ(answer, showRule ? `Regla: ${ruleText(rule)}. ¿Qué número falta en la tabla?` : "Descubre la regla. ¿Qué número falta en la tabla?", ioVisual(rule, inputs, hidden), `La regla es ${ruleText(rule)}: ${fmt(inputs[hidden])} ${rule.op} ${rule.k} = ${fmt(answer)}.`, rule.op);
 }
 
-// 4.° G.12: hallar la regla de una tabla.
+// Hallar la regla de una tabla.
 export function ioFindRule(r: Rng, ops: Op[]): Question {
   for (;;) {
     const rule = ioRule(r, ops);
@@ -110,7 +110,7 @@ export function ioFindRule(r: Rng, ops: Op[]): Question {
   }
 }
 
-// 4.° R.9: escribir expresiones para los patrones de una tabla.
+// Escribir expresiones para los patrones de una tabla.
 export function ioExpression(r: Rng): Question {
   for (;;) {
     const rule = ioRule(r, ["+", "−", "×", "÷"], 9);
@@ -134,7 +134,7 @@ const TABLE_STORIES: [string, string, string][] = [
   ["Cada pulsera lleva %k cuentas.", "Pulseras", "Cuentas"],
 ];
 
-// 4.° R.12: problemas con patrones numéricos en tablas.
+// Problemas con patrones numéricos en tablas.
 export function ioWordTable(r: Rng): Question {
   const [text, a, b] = r.pick(TABLE_STORIES);
   const k = r.int(2, 12);
@@ -150,7 +150,7 @@ export function ioWordTable(r: Rng): Question {
 
 const TILES = ["🟦", "🟩", "🟧", "🟪", "🔴", "⭐"];
 
-// 4.° S.1: continuar patrones de figuras que crecen.
+// Continuar patrones de figuras que crecen.
 export function growingShapes(r: Rng): Question {
   const tile = r.pick(TILES);
   const rules: [(n: number) => number, string][] = [
@@ -168,7 +168,7 @@ export function growingShapes(r: Rng): Question {
   return numQ(f(ask), `El patrón crece. ¿Cuántas fichas tendrá la figura ${ask}?`, rows.join("\n"), `Las figuras tienen ${[1, 2, 3, 4, 5, 6].slice(0, ask).map(f).join(", ")} fichas: ${why}.`);
 }
 
-// 4.° S.2: continuar patrones de figuras que se repiten.
+// Continuar patrones de figuras que se repiten.
 export function repeatingShapes(r: Rng): Question {
   const unit = r.shuffle(TILES).slice(0, r.int(2, 3));
   const core = r.pick([unit, [...unit, unit[0]], [unit[0], ...unit]]);

@@ -1,19 +1,12 @@
 import { choose, type ChoiceItem } from "../../../generators/lengua/bank";
 import type { Rng } from "../../../rng";
-import type { Question, Section } from "../../../types";
+import type { Question } from "../../../types";
 import type { Row } from "./row";
 
-// Vocabulario (IXL Kindergarten ELA, MM-SS).
+// Inicial 5 años · banco de vocabulario oral: números, colores, ubicación,
+// palabras para preguntar, opuestos, categorías y palabras con varios
+// significados.
 
-export const SECTIONS: Section[] = [
-  { id: "MM", name: "Palabras de colores y números", icon: "🎨" },
-  { id: "NN", name: "Adjetivos y verbos", icon: "🏃" },
-  { id: "OO", name: "Palabras de ubicación", icon: "📍" },
-  { id: "PP", name: "Palabras para preguntar", icon: "❓" },
-  { id: "QQ", name: "Sinónimos y antónimos", icon: "↔️" },
-  { id: "RR", name: "Categorías", icon: "🗂️" },
-  { id: "SS", name: "Palabras con varios significados", icon: "🎭" },
-];
 
 const fromPic = (list: [string, string][]): ChoiceItem[] => list.map(([pic, a]) => ({ pic, a, d: list.map((x) => x[1]).filter((x) => x !== a) }));
 const fromText = (list: [string, string][]): ChoiceItem[] => list.map(([t, a]) => ({ t, a, d: list.map((x) => x[1]).filter((x) => x !== a) }));
@@ -126,39 +119,39 @@ const MEANINGS: [string, string][] = [
 ];
 
 export const ROWS: Row[] = [
-  ["MM.1", "Usar las palabras de los números: del uno al diez", numberWord],
-  ["MM.2", "Usar las palabras de los colores", (r) => choose(r, "¿De qué color es?", fromPic(COLORS))],
+  ["numeros-colores-1", numberWord],
+  ["numeros-colores-2", (r) => choose(r, "¿De qué color es?", fromPic(COLORS))],
 
-  ["NN.1", "Comparar dibujos usando adjetivos", (r) => {
+  ["adjetivos-verbos-1", (r) => {
     const [more, less, big, small] = r.pick(ADJECTIVES);
     const first = r.chance(0.5);
     return { kind: "choice", prompt: `¿Cuál es ${first ? big : small}?`, options: r.shuffle([more, less]), answer: first ? more : less, explanation: `${more} es ${big} y ${less} es ${small}.` };
   }],
-  ["NN.2", "Encontrar el dibujo que corresponde al verbo", (r) => {
+  ["adjetivos-verbos-2", (r) => {
     const [pic, verb] = r.pick(VERBS);
     return { kind: "choice", prompt: `¿Qué dibujo muestra la acción «${verb}»?`, options: r.shuffle([pic, ...r.shuffle(VERBS.filter((v) => v[1] !== verb)).slice(0, 3).map((v) => v[0])]), answer: pic, explanation: `${pic} muestra «${verb}».` };
   }],
 
-  ["OO.1", "Dentro y fuera, encima y debajo, al lado de y junto a", location],
-  ["OO.2", "Elegir la mejor palabra de ubicación", (r) => choose(r, "Completa la oración.", LOCATION_WORDS)],
+  ["ubicacion-1", location],
+  ["ubicacion-2", (r) => choose(r, "Completa la oración.", LOCATION_WORDS)],
 
-  ["PP.1", "¿Quién, qué, cuándo, dónde o por qué?", (r) => {
+  ["que-pregunta", (r) => {
     const [text, i] = r.pick(QUESTIONS);
     const answer = QUESTION_WORDS[i];
     return { kind: "choice", prompt: "¿Qué palabra falta en la pregunta?", visual: { kind: "text", text }, options: QUESTION_WORDS, answer, explanation: `La pregunta empieza con «¿${answer}…?».`, tag: answer };
   }],
 
-  ["QQ.1", "Relacionar antónimos con dibujos", (r) => {
+  ["opuestos-1", (r) => {
     const [w, a] = r.pick(ANTONYMS);
     return { kind: "choice", prompt: `¿Qué dibujo muestra lo contrario de «${w}»?`, options: r.shuffle([a, ...r.shuffle(ANTONYMS.map((x) => x[1]).filter((x) => x !== a)).slice(0, 3)]), answer: a, explanation: `Lo contrario de «${w}» es «${a.split(" ").slice(1).join(" ")}».` };
   }],
-  ["QQ.2", "Relacionar sinónimos", (r) => {
+  ["opuestos-2", (r) => {
     const item = r.pick(fromText(SYNONYMS));
     return choose(r, "", [{ ...item, t: undefined, p: `¿Qué palabra significa lo mismo que «${item.t}»?` }]);
   }],
 
-  ["RR.1", "Clasificar objetos en categorías", sortCategory],
-  ["RR.2", "¿Cuál no es como los demás?", oddOneOut],
+  ["categorias-1", sortCategory],
+  ["categorias-2", oddOneOut],
 
-  ["SS.1", "Palabras con varios significados, con dibujos", (r) => choose(r, "Una misma palabra nombra los dos dibujos. ¿Cuál es?", fromPic(MEANINGS))],
+  ["varios-significados", (r) => choose(r, "Una misma palabra nombra los dos dibujos. ¿Cuál es?", fromPic(MEANINGS))],
 ];

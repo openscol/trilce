@@ -2,10 +2,10 @@ import type { Rng } from "../rng";
 import type { Question, Visual } from "../types";
 import { COUNTABLES, uniqueOptions } from "./common";
 
-// Matemáticas de Inicial (5 años), según la lista de IXL Kindergarten. Los
-// niños de esta edad todavía no leen con soltura: las respuestas se eligen
-// tocando (no se escribe, salvo en los juegos de "escribir el número"), y el
-// currículo agrega el botón 🔊 a cada pregunta. Los rangos son parámetros.
+// Matemáticas de Inicial (5 años). Los niños de esta edad todavía no leen con
+// soltura: las respuestas se eligen tocando (no se escribe, salvo en los
+// juegos de "escribir el número"), y el currículo agrega el botón 🔊 a cada
+// pregunta. Los rangos son parámetros.
 
 const UNITS = ["cero", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", "once", "doce", "trece", "catorce", "quince", "dieciséis", "diecisiete", "dieciocho", "diecinueve", "veinte"];
 const TENS = ["", "", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa", "cien"];

@@ -15,7 +15,7 @@ const term = (k: number, v: string, first: boolean) => (k === 0 ? "" : `${first 
 const eq3 = (a: number, b: number, c: number, d: number) => `${term(a, "x", true)}${term(b, "y", !a)}${term(c, "z", !a && !b)} = ${sg(d)}`;
 const triple = (x: number, y: number, z: number) => `(${sg(x)}, ${sg(y)}, ${sg(z)})`;
 
-// E.12-E.14: sistemas de tres ecuaciones con tres incógnitas.
+// Sistemas de tres ecuaciones con tres incógnitas.
 export function system3(r: Rng, mode: "substitution" | "elimination" | "count"): Question {
   const x = r.int(-4, 5), y = r.int(-4, 5), z = r.int(-4, 5);
   if (mode === "count") {
@@ -53,7 +53,7 @@ export function system3(r: Rng, mode: "substitution" | "elimination" | "count"):
   return choiceQ(r, "Resuelve el sistema por eliminación.", good, [triple(y, x, z), triple(x, z, y), triple(-x, -y, -z), triple(x + 1, y, z - 1)].filter((w, i, all) => w !== good && all.indexOf(w) === i), `Se suman o restan pares de ecuaciones para eliminar la misma variable y queda un sistema de dos incógnitas: ${good}.`, rows.map((e) => eq3(e[0], e[1], e[2], e[3])).join("\n"), "eliminacion");
 }
 
-// F.5 / F.6: vértices de la región solución y programación lineal.
+// Vértices de la región solución y programación lineal.
 export function linearProgramming(r: Rng, optimize: boolean): Question {
   // Región: x ≥ 0, y ≥ 0, x + y ≤ s, x ≤ a (con a < s).
   const s = r.int(6, 12), a = r.int(2, s - 2);
@@ -71,7 +71,7 @@ export function linearProgramming(r: Rng, optimize: boolean): Question {
   return numQ(best, `Con las restricciones del recuadro, ¿cuál es el valor ${max ? "máximo" : "mínimo (sin contar el origen)"} de f = ${p}x + ${q}y?`, text, `Se evalúa f en los vértices: ${vs.map((v, i) => `${pt(v)} → ${vals[i]}`).join("; ")}.`, max ? "maximo" : "minimo");
 }
 
-// H.5 / H.6: inecuaciones de dos variables con valor absoluto (y sistemas con una recta).
+// Inecuaciones de dos variables con valor absoluto (y sistemas con una recta).
 export function absInequality2(r: Rng, system: boolean): Question {
   const h = r.int(-3, 3), k = r.int(-3, 2), a = r.pick([1, -1]);
   const above = a > 0 ? r.chance(0.5) : r.chance(0.5);
@@ -93,7 +93,7 @@ export function absInequality2(r: Rng, system: boolean): Question {
   return choiceQ(r, "¿Qué punto es solución del sistema de inecuaciones?", pt(r.pick(inside)), r.shuffle(outside).slice(0, 3).map(pt), "Debe cumplir las dos inecuaciones: reemplaza x e y en cada una.", `${text}\ny ${lineAbove ? "≥" : "≤"} ${lin(m, b)}`, "sistema");
 }
 
-// O.9 / O.10: inecuaciones cuadráticas (resolver y graficar).
+// Inecuaciones cuadráticas (resolver y graficar).
 export function quadInequality(r: Rng, graph: boolean): Question {
   const p = r.int(-6, 3), s = r.int(p + 1, 7);
   const op = r.pick(["<", "≤", ">", "≥"]);
@@ -110,7 +110,7 @@ export function quadInequality(r: Rng, graph: boolean): Question {
   return choiceQ(r, "Resuelve la inecuación.", good, [flip, good.replace(/≤/g, "<").replace(/≥/g, ">") === good ? good.replace(/</g, "≤").replace(/>/g, "≥") : good.replace(/≤/g, "<").replace(/≥/g, ">"), `${sg(-s)} ${closed ? "≤" : "<"} x ${closed ? "≤" : "<"} ${sg(-p)}`].filter((w, i, all) => w !== good && all.indexOf(w) === i), why, text, inside ? "entre" : "fuera");
 }
 
-// P.3 / P.4: sistemas recta-circunferencia y parábola-parábola.
+// Sistemas recta-circunferencia y parábola-parábola.
 export function nonlinearSystem(r: Rng, kind: "lineCircle" | "parabolas"): Question {
   if (kind === "lineCircle") {
     const [a, b, rr] = r.pick([[3, 4, 5], [0, 5, 5], [5, 0, 5], [6, 8, 10], [0, 3, 3]]);
@@ -132,7 +132,7 @@ export function nonlinearSystem(r: Rng, kind: "lineCircle" | "parabolas"): Quest
 // ---------------------------------------------------------------------------
 // Operaciones con funciones
 
-// U.3 / U.4: dividir funciones (y operaciones mixtas).
+// Dividir funciones (y operaciones mixtas).
 export function divideFunctions(r: Rng): Question {
   const a = nz(r, 5), b = nz(r, 6), k = r.int(2, 5);
   const f = polyMul([1, a], [1, b]).map((c) => c * k), g = [1, a];
@@ -140,7 +140,7 @@ export function divideFunctions(r: Rng): Question {
   return choiceQ(r, `Si f(x) = ${poly(f)} y g(x) = ${poly(g)}, ¿cuánto es (f/g)(x)? (x ≠ ${sg(-a)})`, good, [poly([k, k * a]), poly([1, b]), poly([k, -k * b]), poly([k, b])].filter((w, i, all) => w !== good && all.indexOf(w) === i), `Se factoriza f: ${k}(x ${a < 0 ? "−" : "+"} ${Math.abs(a)})(x ${b < 0 ? "−" : "+"} ${Math.abs(b)}); se cancela x ${a < 0 ? "−" : "+"} ${Math.abs(a)}.`, undefined, "dividir");
 }
 
-// U.5-U.8: composición de funciones (valor o ecuación; lineal o con cuadrática).
+// Composición de funciones (valor o ecuación; lineal o con cuadrática).
 export function composition(r: Rng, quadratic: boolean, equation: boolean): Question {
   const f = [nz(r, 4), r.int(-6, 6)], g = quadratic ? [1, 0, r.int(-5, 5)] : [nz(r, 4), r.int(-6, 6)];
   const fFirst = r.chance(0.5);
@@ -165,7 +165,7 @@ export function composition(r: Rng, quadratic: boolean, equation: boolean): Ques
 // ---------------------------------------------------------------------------
 // Funciones inversas
 
-// V.1: identificar funciones inversas.
+// Identificar funciones inversas.
 export function identifyInverse(r: Rng): Question {
   const a = r.pick([2, 3, 4, 5]), b = nz(r, 8);
   const yes = r.chance(0.5);
@@ -173,7 +173,7 @@ export function identifyInverse(r: Rng): Question {
   return yesNo(`¿Son inversas f(x) = ${lin(a, b)} y ${g}?`, yes, yes ? `f(g(x)) = x y g(f(x)) = x.` : `Al componer no se obtiene x: por ejemplo, f(g(0)) ≠ 0.`, undefined, yes ? "si" : "no");
 }
 
-// V.2 / V.3: valores de funciones inversas desde tablas o gráficos.
+// Valores de funciones inversas desde tablas o gráficos.
 export function inverseValues(r: Rng, graph: boolean): Question {
   const xs = r.shuffle([-3, -2, -1, 0, 1, 2, 3, 4]).slice(0, 5).sort((a, b) => a - b);
   const ys = r.shuffle([-4, -3, -2, -1, 0, 1, 2, 3, 4, 5]).slice(0, 5);
@@ -182,14 +182,14 @@ export function inverseValues(r: Rng, graph: boolean): Question {
   return intQ(r, `${graph ? "El gráfico muestra" : "La tabla muestra"} la función f, que es invertible. ¿Cuánto vale f⁻¹(${sg(ys[i])})?`, xs[i], `f⁻¹(${sg(ys[i])}) es el x tal que f(x) = ${sg(ys[i])}: x = ${sg(xs[i])}.`, visual, graph ? "grafico" : "tabla", [ys[i], -xs[i]]);
 }
 
-// V.4: gráficos de funciones inversas (reflexión respecto de y = x).
+// Gráficos de funciones inversas (reflexión respecto de y = x).
 export function inverseGraph(r: Rng): Question {
   const p = { x: r.int(-5, 5), y: r.int(-5, 5) };
   if (p.x === p.y) return inverseGraph(r);
   return pointQ(r, `El punto ${pt(p)} está en el gráfico de f. ¿Qué punto está seguro en el gráfico de f⁻¹?`, { x: p.y, y: p.x }, "El gráfico de la inversa es el reflejo respecto de la recta y = x: se intercambian x e y.", undefined, "intercambiar", [{ x: -p.x, y: -p.y }]);
 }
 
-// V.5: hallar funciones inversas.
+// Hallar funciones inversas.
 export function findInverse(r: Rng): Question {
   const form = r.int(0, 2);
   const a = r.pick([2, 3, 4, 5]), b = nz(r, 8);
@@ -201,7 +201,7 @@ export function findInverse(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Funciones racionales
 
-// X.1-X.3: asíntotas, valores excluidos y dominio de funciones racionales.
+// Asíntotas, valores excluidos y dominio de funciones racionales.
 export function rationalFunction(r: Rng, mode: "asymptotes" | "reciprocal" | "domain"): Question {
   const h = nz(r, 5), k = r.int(-4, 4), a = r.pick([1, 2, 3, -1, -2]);
   const f = `f(x) = ${sg(a)}/(${xMinus(h)})${k ? ` ${k < 0 ? "−" : "+"} ${Math.abs(k)}` : ""}`;
@@ -221,7 +221,7 @@ export function rationalFunction(r: Rng, mode: "asymptotes" | "reciprocal" | "do
   return choiceQ(r, `¿Cuál es el dominio de f(x) = (x ${a < 0 ? "−" : "+"} ${Math.abs(a)}) / (${poly(den)})?`, good, [`Todos los reales excepto x = ${sg(-Math.max(p, q))} y x = ${sg(-Math.min(p, q))}`, `Todos los reales excepto x = ${sg(-a)}`, "Todos los números reales"], `El denominador ${poly(den)} = ${`(${xMinus(p)})(${xMinus(q)})`} se anula en x = ${sg(p)} y x = ${sg(q)}.`, undefined, "dominio");
 }
 
-// X.4: evaluar expresiones racionales con varias variables.
+// Evaluar expresiones racionales con varias variables.
 export function evaluateRational2(r: Rng): Question {
   const x = nz(r, 5), y = nz(r, 5);
   const num = x * x - y, den = x + y;
@@ -229,7 +229,7 @@ export function evaluateRational2(r: Rng): Question {
   return intQ(r, `Calcula el valor de (x² − y) / (x + y) cuando x = ${sg(x)} e y = ${sg(y)}.`, num / den, `(${x * x} − ${y < 0 ? `(${sg(y)})` : y}) ÷ (${sg(x)} + ${y < 0 ? `(${sg(y)})` : y}) = ${sg(num)} ÷ ${sg(den)} = ${sg(num / den)}.`, undefined, "dos-variables", [-num / den, num]);
 }
 
-// X.10: simplificar fracciones complejas (algebraicas).
+// Simplificar fracciones complejas (algebraicas).
 export function complexFractionAlg(r: Rng): Question {
   const a = r.int(1, 6), b = r.int(1, 6);
   // (1/x + a) / (1/x − b) = (1 + ax) / (1 − bx)
@@ -241,7 +241,7 @@ export function complexFractionAlg(r: Rng): Question {
 // Variación
 
 const VAR_KINDS = ["Directa", "Inversa", "Conjunta", "Combinada"];
-// Y.3-Y.7: clasificar, escribir y resolver variaciones conjunta y combinada.
+// Clasificar, escribir y resolver variaciones conjunta y combinada.
 export function variation(r: Rng, mode: "classify" | "write" | "constant" | "solve"): Question {
   const k = r.int(2, 9);
   const forms: [string, number][] = [[`y = ${k}x`, 0], [`y = ${k}/x`, 1], [`y = ${k}xz`, 2], [`y = ${k}x/z`, 3], [`y = ${k}xz/w`, 3], [`xy = ${k}`, 1]];

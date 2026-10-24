@@ -18,7 +18,7 @@ function roundable(r: Rng, digits: number, unit: number) {
 const roundTo = (n: number, unit: number) => Math.round(n / unit) * unit;
 const UNIT_NAME: Record<number, string> = { 10: "decena", 100: "centena", 1000: "unidad de millar", 10000: "decena de millar", 100000: "centena de millar" };
 
-// 4.° D.1 / E.1: estimar sumas y restas redondeando a la cifra principal.
+// Estimar sumas y restas redondeando a la cifra principal.
 export function estimateSumDiff(r: Rng, op: "+" | "−", minDigits = 3, maxDigits = 5): Question {
   const digits = r.int(minDigits, maxDigits);
   const unit = 10 ** (digits - 1);
@@ -32,21 +32,21 @@ export function estimateSumDiff(r: Rng, op: "+" | "−", minDigits = 3, maxDigit
   return numQ(answer, `Redondea cada número a la ${UNIT_NAME[unit]} más cercana y luego ${op === "+" ? "suma" : "resta"}.`, `${fmt(a)} ${op} ${fmt(b)} ≈ ?`, `${fmt(a)} ≈ ${fmt(roundTo(a, unit))} y ${fmt(b)} ≈ ${fmt(roundTo(b, unit))}; ${fmt(roundTo(a, unit))} ${op} ${fmt(roundTo(b, unit))} = ${fmt(answer)}.`, UNIT_NAME[unit]);
 }
 
-// 4.° E.3: restar números de varias cifras.
+// Restar números de varias cifras.
 export function subMulti(r: Rng, minDigits = 4, maxDigits = 6): Question {
   const a = nDigits(r, r.int(minDigits, maxDigits));
   const b = r.int(10 ** (minDigits - 1), a - 1);
   return numQ(a - b, "Resuelve la resta.", `${fmt(a)} − ${fmt(b)} = ?`, `Restamos columna por columna, de derecha a izquierda: ${fmt(a)} − ${fmt(b)} = ${fmt(a - b)}.`, `${String(a).length}-cifras`);
 }
 
-// 4.° D.6: sumar tres o más números.
+// Sumar tres o más números.
 export function addSeveral(r: Rng, minDigits = 3, maxDigits = 6): Question {
   const xs = Array.from({ length: r.int(3, 4) }, () => nDigits(r, r.int(minDigits, maxDigits)));
   const total = xs.reduce((a, b) => a + b, 0);
   return numQ(total, "Resuelve la suma.", `${xs.map(fmt).join(" + ")} = ?`, `Sumamos de dos en dos o por columnas: el total es ${fmt(total)}.`, `${xs.length}-sumandos`);
 }
 
-// 4.° D.7 / E.5: hallar la cifra que falta en una suma o resta.
+// Hallar la cifra que falta en una suma o resta.
 export function missingDigit(r: Rng, op: "+" | "−", minDigits = 3, maxDigits = 5): Question {
   let a = nDigits(r, r.int(minDigits, maxDigits));
   let b = nDigits(r, r.int(minDigits, String(a).length));
@@ -65,7 +65,7 @@ export function missingDigit(r: Rng, op: "+" | "−", minDigits = 3, maxDigits =
 
 const RESULT_NAME: Record<Op, string> = { "+": "suma", "−": "diferencia", "×": "producto", "÷": "cociente" };
 
-// 4.° D.8 / E.6 / G.10 / H.8 / I.8: elegir dos números con un resultado dado.
+// Elegir dos números con un resultado dado.
 // Entre las opciones hay exactamente un par que cumple.
 export function choosePair(r: Rng, op: Op, lo: number, hi: number): Question {
   for (;;) {
@@ -95,7 +95,7 @@ export function choosePair(r: Rng, op: Op, lo: number, hi: number): Question {
   }
 }
 
-// 4.° G.6: propiedad distributiva, hallar el factor que falta.
+// Propiedad distributiva, hallar el factor que falta.
 export function distributiveMissing(r: Rng, maxTens = 9): Question {
   const a = r.int(2, 9);
   const tens = r.int(1, maxTens) * 10;
@@ -108,7 +108,7 @@ export function distributiveMissing(r: Rng, maxTens = 9): Question {
   return numQ(a, "¿Qué número falta?", `${a} × ${n} = (? × ${tens}) + (? × ${ones})`, `El mismo factor multiplica a cada parte: ${full}.`, "factor");
 }
 
-// 4.° G.7: comparar números con la multiplicación («es n veces»).
+// Comparar números con la multiplicación («es n veces»).
 export function timesAsMany(r: Rng, max = 10): Question {
   const a = r.int(2, max);
   const b = r.int(2, max);
@@ -118,7 +118,7 @@ export function timesAsMany(r: Rng, max = 10): Question {
   return numQ(a, "Completa.", `${a * b} es ? veces ${b}`, `${a * b} ÷ ${b} = ${a}.`, "veces");
 }
 
-// 4.° G.3 / H.4: tablas hasta `max`.
+// Tablas hasta `max`.
 export function multFactsTo(r: Rng, max: number): Question {
   const a = r.int(0, max);
   const b = r.int(Math.max(0, max - 4), max);
@@ -143,7 +143,7 @@ export function divMissingTo(r: Rng, max: number): Question {
   return r.chance(0.5) ? numQ(d, "¿Qué número falta?", `${d * q} ÷ ? = ${q}`, `${d * q} ÷ ${d} = ${q}.`, "divisor") : numQ(d * q, "¿Qué número falta?", `? ÷ ${d} = ${q}`, `${q} × ${d} = ${d * q}.`, "dividendo");
 }
 
-// 4.° H.3 / H.6: problemas con divisiones básicas.
+// Problemas con divisiones básicas.
 export function divFactProblem(r: Rng, max: number): Question {
   const d = r.int(2, max);
   const q = r.int(2, max);
@@ -153,7 +153,7 @@ export function divFactProblem(r: Rng, max: number): Question {
     : numQ(q, `Hay ${d * q} ${items}. Se arman grupos de ${d}. ¿Cuántos grupos se forman?`, undefined, `${d * q} ÷ ${d} = ${q}.`, "agrupar");
 }
 
-// 4.° H.7: propiedades de la división.
+// Propiedades de la división.
 export function divProperties(r: Rng): Question {
   const a = r.int(2, 99);
   const form = r.int(0, 4);
@@ -167,7 +167,7 @@ export function divProperties(r: Rng): Question {
   return trueFalse("¿Verdadero o falso?", good, good ? `${d * q} ÷ ${d} = ${q} y ${d * q} ÷ ${q} = ${d}: son de la misma familia.` : `La división no es conmutativa: ${d * q} ÷ ${d} = ${q}, pero ${d} ÷ ${d * q} no da ${q}.`, good ? `Si ${d * q} ÷ ${d} = ${q}, entonces ${d * q} ÷ ${q} = ${d}` : `${d * q} ÷ ${d} = ${d} ÷ ${d * q}`, "relaciones");
 }
 
-// 4.° I.1: sumar y restar números que terminan en ceros.
+// Sumar y restar números que terminan en ceros.
 export function addSubZeros(r: Rng): Question {
   const unit = r.pick([10, 100, 1000, 10000]);
   const a = r.int(2, 90) * unit;
@@ -189,7 +189,7 @@ function expr(r: Rng, op: Op, max: number): [string, number] {
 }
 const OPS: Op[] = ["+", "−", "×", "÷"];
 
-// 4.° I.4: ecuaciones con operaciones mixtas, ¿verdadero o falso?
+// Ecuaciones con operaciones mixtas, ¿verdadero o falso?
 export function equationTrueFalse(r: Rng): Question {
   const [left, value] = expr(r, r.pick(OPS), 100);
   if (r.chance(0.5)) {
@@ -205,7 +205,7 @@ export function equationTrueFalse(r: Rng): Question {
   }
 }
 
-// 4.° I.12 / L.3 / M.15: comparar dos expresiones con <, = o >.
+// Comparar dos expresiones con <, = o >.
 export function inequality(r: Rng, ops: Op[] = OPS, max = 100): Question {
   const [left, lv] = expr(r, r.pick(ops), max);
   if (r.chance(0.5)) {
@@ -216,7 +216,7 @@ export function inequality(r: Rng, ops: Op[] = OPS, max = 100): Question {
   return symbolQ(lv, rv, left, right, `${left} = ${fmt(lv)} y ${right} = ${fmt(rv)}.`);
 }
 
-// 4.° I.9 / I.10 / I.11: hallar dos números a partir de dos pistas.
+// Hallar dos números a partir de dos pistas.
 export function twoNumbers(r: Rng, clues: ("suma" | "diferencia" | "producto" | "cociente")[]): Question {
   for (;;) {
     const withQuotient = clues.includes("cociente");
@@ -247,7 +247,7 @@ export function twoNumbers(r: Rng, clues: ("suma" | "diferencia" | "producto" | 
   }
 }
 
-// 4.° I.16: operaciones con paréntesis.
+// Operaciones con paréntesis.
 export function parentheses(r: Rng): Question {
   const a = r.int(2, 9);
   const b = r.int(2, 12);

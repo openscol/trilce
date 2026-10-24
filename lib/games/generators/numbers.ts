@@ -2,7 +2,6 @@ import type { Rng } from "../rng";
 import type { Question } from "../types";
 import { COUNTABLES, numberOptions, uniqueOptions } from "./common";
 
-// A.1 / A.2
 export function countObjects(r: Rng, max: number, asChoice: boolean): Question {
   const count = r.int(1, max);
   const visual = { kind: "objects", emoji: r.pick(COUNTABLES), count } as const;
@@ -20,7 +19,6 @@ export function countObjects(r: Rng, max: number, asChoice: boolean): Question {
   return { kind: "number", prompt: "¿Cuántos hay? Escribe el número.", visual, answer: count, explanation };
 }
 
-// A.3 - A.6
 export function skipCount(r: Rng, steps: number[]): Question {
   const step = r.pick(steps);
   const start = step * r.int(0, step === 10 ? 4 : step === 5 ? 6 : 8);
@@ -37,7 +35,6 @@ export function skipCount(r: Rng, steps: number[]): Question {
   };
 }
 
-// A.7
 export function countingPattern(r: Rng): Question {
   const d = r.pick([1, 2, 3, 4, 5, 10]);
   const up = r.chance(0.6);
@@ -54,7 +51,6 @@ export function countingPattern(r: Rng): Question {
   };
 }
 
-// A.8
 export function readNumberLine(r: Rng): Question {
   const max = r.pick([10, 10, 20]);
   const n = r.int(0, max);
@@ -68,7 +64,6 @@ export function readNumberLine(r: Rng): Question {
   };
 }
 
-// A.9
 export function hundredsChartMissing(r: Rng): Question {
   const target = r.int(1, 100);
   const blank = new Set<number>([target]);
@@ -82,7 +77,6 @@ export function hundredsChartMissing(r: Rng): Question {
   };
 }
 
-// A.10 / A.12
 export function countUpDown(r: Rng, max: number): Question {
   const steps = max === 100 ? [1, 1, 1, 10] : [1, 10, 100];
   const step = r.pick(steps);
@@ -102,7 +96,6 @@ export function countUpDown(r: Rng, max: number): Question {
   };
 }
 
-// A.11
 export function estimateToTen(r: Rng): Question {
   let n = r.int(11, 89);
   if (n % 10 === 5) n += 1;
@@ -119,7 +112,7 @@ export function estimateToTen(r: Rng): Question {
   };
 }
 
-// A.13 (1.°: hasta 30; 2.°: hasta 100)
+// (1.°: hasta 30; 2.°: hasta 100)
 export function evenOdd(r: Rng, max = 30): Question {
   const wantEven = r.chance(0.5);
   const nums = new Set<number>();
@@ -139,7 +132,7 @@ export function evenOdd(r: Rng, max = 30): Question {
   };
 }
 
-// 2.° A.2 / A.8: un tramo de la recta (de 1 en 1 o de 10 en 10) o la recta
+// Un tramo de la recta (de 1 en 1 o de 10 en 10) o la recta
 // completa en saltos grandes.
 export function numberLineTo(r: Rng, max: 100 | 1000): Question {
   const small = max === 100 ? 1 : 10;
@@ -161,7 +154,7 @@ export function numberLineTo(r: Rng, max: 100 | 1000): Question {
   };
 }
 
-// 2.° A.9: patrones de conteo hasta 1.000.
+// Patrones de conteo hasta 1.000.
 export function countingPatternTo(r: Rng, max: number): Question {
   const d = r.pick([1, 2, 5, 10, 100]);
   const up = r.chance(0.6);

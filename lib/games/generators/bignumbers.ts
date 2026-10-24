@@ -14,7 +14,7 @@ function num(answer: number, prompt: string, text: string, explanation: string, 
   return { kind: "number", prompt, visual: { kind: "text", text }, answer, explanation, tag };
 }
 
-// 3.° A.6: contar de tanto en tanto hasta `max`.
+// Contar de tanto en tanto hasta `max`.
 export function skipCountTo(r: Rng, max: number): Question {
   const step = r.pick([2, 5, 10, 20, 25, 50, 100]);
   const start = step * r.int(0, Math.floor((max - step * 5) / step));
@@ -35,7 +35,7 @@ const isPrime = (n: number) => {
   return true;
 };
 
-// 3.° A.8: números primos y compuestos.
+// Números primos y compuestos.
 export function primeComposite(r: Rng, max = 50): Question {
   if (r.chance(0.5)) {
     const n = r.int(2, max);
@@ -66,7 +66,7 @@ export function primeComposite(r: Rng, max = 50): Question {
   };
 }
 
-// 3.° B.5: ordenar números entre `min` y `max`.
+// Ordenar números entre `min` y `max`.
 export function orderBig(r: Rng, min: number, max: number, count: number): Question {
   const set = new Set<number>();
   while (set.size < count) set.add(r.int(min, max));
@@ -85,7 +85,7 @@ export function orderBig(r: Rng, min: number, max: number, count: number): Quest
   };
 }
 
-// 3.° C.3 / C.4: secuencias con números hasta `max`.
+// Secuencias con números hasta `max`.
 export function numberSequenceTo(r: Rng, increasing: boolean, max: number): Question {
   const d = r.pick([2, 3, 4, 5, 10, 20, 25, 50, 100]);
   const span = d * 4;
@@ -101,7 +101,7 @@ export function numberSequenceTo(r: Rng, increasing: boolean, max: number): Ques
   );
 }
 
-// 3.° E.18: sumar dos números de `minDigits` a `maxDigits` cifras.
+// Sumar dos números de `minDigits` a `maxDigits` cifras.
 export function addLarge(r: Rng, minDigits = 4, maxDigits = 5): Question {
   const pick = () => {
     const digits = r.int(minDigits, maxDigits);
@@ -112,7 +112,7 @@ export function addLarge(r: Rng, minDigits = 4, maxDigits = 5): Question {
   return num(a + b, "Resuelve la suma.", `${fmt(a)} + ${fmt(b)} = ?`, `Sumamos columna por columna, de derecha a izquierda: ${fmt(a)} + ${fmt(b)} = ${fmt(a + b)}.`, `${String(Math.max(a, b)).length}-cifras`);
 }
 
-// 3.° F.15: restar números de hasta `maxDigits` cifras.
+// Restar números de hasta `maxDigits` cifras.
 export function subLarge(r: Rng, maxDigits = 4): Question {
   const a = r.int(10 ** (maxDigits - 1), 10 ** maxDigits - 1);
   const b = r.int(10 ** (maxDigits - 2), a - 1);

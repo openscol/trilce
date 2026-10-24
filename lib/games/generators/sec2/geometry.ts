@@ -13,7 +13,7 @@ import { type P, dec, pt } from "./util";
 
 const linX = (a: number, b: number) => `(${a === 1 ? "" : a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)})°`;
 
-// P.7: transversales de rectas paralelas: hallar x.
+// Transversales de rectas paralelas: hallar x.
 export function transversalSolveX(r: Rng): Question {
   const x = r.int(8, 30);
   const equal = r.chance(0.6);
@@ -28,7 +28,7 @@ export function transversalSolveX(r: Rng): Question {
   return numQ(x, `Dos rectas paralelas son cortadas por una transversal. Dos ángulos ${pair} miden ${linX(a, b)} y ${linX(c, d)}. ¿Cuánto vale x?`, undefined, `Los ángulos ${pair.split(" (")[0]} ${rule}: ${eq} → x = ${x}.`, equal ? "iguales" : "suplementarios");
 }
 
-// Q.9: teorema de la suma de los ángulos de un triángulo.
+// Teorema de la suma de los ángulos de un triángulo.
 export function triangleSumX(r: Rng): Question {
   const x = r.int(10, 30);
   const forms: [string[], number[]][] = [
@@ -43,7 +43,7 @@ export function triangleSumX(r: Rng): Question {
   return numQ(x, `Los ángulos de un triángulo miden ${shown[0]}, ${shown[1]} y ${shown[2]}. ¿Cuánto vale x?`, undefined, `Los tres ángulos suman 180°: ${labels.map((l) => (l.length > 2 && l.includes("x") ? `(${l})` : l)).join(" + ")} = 180 → x = ${x}. Los ángulos miden ${vals.join("°, ")}°.`, "suma");
 }
 
-// Q.12: teorema del ángulo exterior.
+// Teorema del ángulo exterior.
 export function exteriorAngle(r: Rng): Question {
   const a = r.int(25, 75), b = r.int(25, 75);
   if (a + b >= 170) return exteriorAngle(r);
@@ -114,7 +114,7 @@ function figureAndImage(r: Rng, moves: Move[], max = 4) {
   return null;
 }
 
-// R.3 / R.6 / R.8 / R.10 / R.14 / S.2: ¿la figura punteada es la imagen?
+// ¿la figura punteada es la imagen?
 export function graphImage(r: Rng, kinds: Move["kind"][], steps = 1): Question {
   const pickMove = (): Move => {
     const kind = r.pick(kinds);
@@ -139,7 +139,7 @@ export function graphImage(r: Rng, kinds: Move["kind"][], steps = 1): Question {
   return yesNo(`La figura A se transforma con ${text}. ¿La figura punteada B es su imagen?`, yes, `Con ${text}, los vértices de A van a ${B.map(pt).join(", ")}.`, figure(A, shown), moves.map((m) => m.kind).join("-"));
 }
 
-// R.4 / R.7 / R.9 / R.11 / S.3: coordenadas de la imagen de un vértice de la figura.
+// Coordenadas de la imagen de un vértice de la figura.
 export function imageCoordinates(r: Rng, kinds: Move["kind"][]): Question {
   const kind = r.pick(kinds);
   const m: Move = kind === "translate" ? { kind, dx: nz(r, 5), dy: nz(r, 5) } : kind === "reflect" ? { kind, axis: r.pick(["x", "y"] as const) } : kind === "rotate" ? { kind, turn: r.pick([90, 180, 270] as const) } : { kind, k: r.pick([2, 3, 0.5]) };
@@ -151,7 +151,7 @@ export function imageCoordinates(r: Rng, kinds: Move["kind"][]): Question {
   return pointQ(r, `El triángulo PQR tiene vértices P${pt(A[0])}, Q${pt(A[1])} y R${pt(A[2])}. Se aplica ${describe(m)}. ¿Cuáles son las coordenadas de ${names[i]}′?`, img, `La regla es ${rule(m)}: ${names[i]}${pt(A[i])} → ${names[i]}′${pt(img)}.`, undefined, m.kind);
 }
 
-// R.5 / R.12 / S.5: escribir la regla de la transformación.
+// Escribir la regla de la transformación.
 export function writeRule(r: Rng, kinds: Move["kind"][]): Question {
   const kind = r.pick(kinds);
   const m: Move = kind === "translate" ? { kind, dx: nz(r, 4), dy: nz(r, 4) } : kind === "reflect" ? { kind, axis: r.pick(["x", "y"] as const) } : kind === "rotate" ? { kind, turn: r.pick([90, 180, 270] as const) } : { kind, k: r.pick([2, 0.5]) };
@@ -167,7 +167,7 @@ export function writeRule(r: Rng, kinds: Move["kind"][]): Question {
 }
 
 const NAMES4 = ["Traslación", "Reflexión", "Rotación", "Dilatación"];
-// R.13: describir la transformación.
+// Describir la transformación.
 export function nameTransformation(r: Rng): Question {
   const k = r.int(0, 3);
   const m: Move = k === 0 ? { kind: "translate", dx: nz(r, 4), dy: nz(r, 3) } : k === 1 ? { kind: "reflect", axis: r.pick(["x", "y"] as const) } : k === 2 ? { kind: "rotate", turn: r.pick([90, 270] as const) } : { kind: "dilate", k: 2 };
@@ -176,7 +176,7 @@ export function nameTransformation(r: Rng): Question {
   return fixedQ("¿Qué transformación lleva la figura A a la figura B?", NAMES4, NAMES4[k], `Es ${describe(m)}.`, figure(made.A, made.B), m.kind);
 }
 
-// R.2 / R.15: elegir la sucesión de transformaciones.
+// Elegir la sucesión de transformaciones.
 export function chooseSequence(r: Rng, withRotations: boolean): Question {
   const first: Move = withRotations && r.chance(0.5) ? { kind: "rotate", turn: r.pick([90, 180, 270] as const) } : { kind: "reflect", axis: r.pick(["x", "y"] as const) };
   const second: Move = { kind: "translate", dx: nz(r, 3), dy: nz(r, 3) };
@@ -196,7 +196,7 @@ export function chooseSequence(r: Rng, withRotations: boolean): Question {
   return choiceQ(r, "¿Qué sucesión de transformaciones lleva la figura A a la figura B?", cap(text(moves)), wrong.map(cap), `Con ${text(moves)}, los vértices de A van a ${made.B.map(pt).join(", ")}.`, figure(made.A, made.B), "sucesion");
 }
 
-// R.16 / R.18 / S.10: ¿son congruentes o semejantes? (y justificar)
+// ¿son congruentes o semejantes? (y justificar)
 export function congruentOrSimilar(r: Rng, mode: "identify" | "justifyCongruent" | "justifySimilar"): Question {
   const similarMode = mode === "justifySimilar";
   const yes = r.chance(0.5);
@@ -227,7 +227,7 @@ export function congruentOrSimilar(r: Rng, mode: "identify" | "justifyCongruent"
   return choiceQ(r, `¿Las figuras A y B son ${word}?`, good, wrong.filter((w) => w !== good), yes ? `${text[0].toUpperCase()}${text.slice(1)} lleva A sobre B.` : "Un vértice no coincide con ninguna imagen de A: la forma cambió.", figure(A, B), yes ? "si" : "no");
 }
 
-// S.4: dilataciones: hallar el factor de escala.
+// Dilataciones: hallar el factor de escala.
 export function dilationFactor(r: Rng): Question {
   const k = r.pick([2, 3, 0.5]);
   const made = figureAndImage(r, [{ kind: "dilate", k }], k === 3 ? 2 : 3);
@@ -239,7 +239,7 @@ export function dilationFactor(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Semejanza
 
-// S.6: identificar triángulos semejantes (por sus lados).
+// Identificar triángulos semejantes (por sus lados).
 export function similarTriangles(r: Rng): Question {
   const base = r.pick([[3, 4, 5], [2, 3, 4], [4, 5, 6], [5, 6, 8], [3, 5, 7], [2, 4, 5]]);
   const k = r.pick([2, 3, 1.5]);
@@ -248,7 +248,7 @@ export function similarTriangles(r: Rng): Question {
   return yesNo(`Un triángulo tiene lados de ${base.join(", ")} cm y otro, de ${other.map((n) => dec(n)).join(", ")} cm. ¿Son semejantes?`, yes, yes ? `Todos los lados se multiplican por ${dec(k)}: son proporcionales.` : `${dec(other[0])} ÷ ${base[0]} = ${dec(k)}, pero ${dec(other[2])} ÷ ${base[2]} ≠ ${dec(k)}: no son proporcionales.`, undefined, yes ? "si" : "no");
 }
 
-// S.7: criterio ángulo-ángulo.
+// Criterio ángulo-ángulo.
 export function angleAngle(r: Rng): Question {
   const a = r.int(30, 80), b = r.int(30, 80);
   if (a + b >= 160 || a === b) return angleAngle(r);
@@ -258,7 +258,7 @@ export function angleAngle(r: Rng): Question {
   return yesNo(`El triángulo ABC tiene ángulos de ${a}° y ${b}°. El triángulo DEF tiene ángulos de ${x}° y ${y}°. ¿Son semejantes por el criterio ángulo-ángulo?`, yes, yes ? `El tercer ángulo de ABC mide ${c}°: ABC tiene ${a}°, ${b}° y ${c}°, y DEF tiene dos de esos ángulos.` : `ABC tiene ${a}°, ${b}° y ${c}°; DEF tiene ${x}°, ${y}° y ${180 - x - y}°: no coinciden.`, undefined, yes ? "si" : "no");
 }
 
-// S.12: lados que faltan en triángulos proporcionales (recta paralela a un lado).
+// Lados que faltan en triángulos proporcionales (recta paralela a un lado).
 export function proportionalTriangles(r: Rng): Question {
   const ad = r.int(2, 9), db = r.int(2, 9), k = r.pick([1, 2, 3]);
   const ae = ad * k, ec = db * k;
@@ -272,7 +272,7 @@ const TRIPLES = [[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [6, 8, 10], [
 const RIGHT: [number, number][] = [[12, 88], [88, 88], [12, 22]];
 const rightVisual = (a: string, b: string, c: string): Visual => ({ kind: "polygon", points: RIGHT, rightAngles: [0], sideLabels: [a, c, b] });
 
-// T.1-T.5: teorema de Pitágoras.
+// Teorema de Pitágoras.
 export function pythagorean(r: Rng, mode: "hypotenuse" | "leg" | "either" | "perimeter" | "word"): Question {
   const exact = r.chance(0.6);
   const [a, b, c] = exact ? r.pick(TRIPLES) : [r.int(2, 12), r.int(2, 12), 0];
@@ -300,7 +300,7 @@ export function pythagorean(r: Rng, mode: "hypotenuse" | "leg" | "either" | "per
   return numQ(s, `Una cancha rectangular mide ${q} m de largo y ${p} m de ancho. ¿Cuánto mide su diagonal, en metros?`, undefined, `√(${q}² + ${p}²) = √${p * p + q * q} = ${s}.`, "diagonal");
 }
 
-// T.6: recíproco del teorema de Pitágoras.
+// Recíproco del teorema de Pitágoras.
 export function pythagoreanConverse(r: Rng): Question {
   const yes = r.chance(0.5);
   const [a, b, c] = r.pick(TRIPLES);
@@ -315,7 +315,7 @@ const SOLIDS: [string, number, number, number][] = [
   ["un cubo", 6, 12, 8], ["un prisma triangular", 5, 9, 6], ["un prisma pentagonal", 7, 15, 10], ["un prisma hexagonal", 8, 18, 12],
   ["una pirámide cuadrangular", 5, 8, 5], ["una pirámide triangular", 4, 6, 4], ["una pirámide pentagonal", 6, 10, 6], ["una pirámide hexagonal", 7, 12, 7],
 ];
-// U.1: partes de las figuras tridimensionales.
+// Partes de las figuras tridimensionales.
 export function solidParts(r: Rng): Question {
   const [name, f, e, v] = r.pick(SOLIDS);
   const k = r.int(0, 2);
@@ -325,7 +325,7 @@ export function solidParts(r: Rng): Question {
   return numQ(ans, `¿${how} ${what} tiene ${name}?`, undefined, `${name[0].toUpperCase()}${name.slice(1)} tiene ${f} caras, ${e} aristas y ${v} vértices (caras + vértices − aristas = 2).`, what);
 }
 
-// U.4: sólidos semejantes.
+// Sólidos semejantes.
 export function similarSolids(r: Rng): Question {
   const dims = [r.int(2, 6), r.int(3, 8), r.int(4, 10)], k = r.int(2, 4);
   if (r.chance(0.5)) {
@@ -336,7 +336,7 @@ export function similarSolids(r: Rng): Question {
   return numQ(dims[2] * k, `Dos cilindros son semejantes. El pequeño tiene ${dims[0]} cm de radio y ${dims[2]} cm de altura; el grande tiene ${dims[0] * k} cm de radio. ¿Cuál es la altura del grande, en cm?`, undefined, `El factor de escala es ${dims[0] * k} ÷ ${dims[0]} = ${k}: ${dims[2]} × ${k} = ${dims[2] * k}.`, "medida");
 }
 
-// W.4 / W.6 / W.7 / W.8: conos y esferas (π ≈ 3,14).
+// Conos y esferas (π ≈ 3,14).
 export function roundSolid(r: Rng, kind: "coneVolume" | "coneSurface" | "sphereVolume" | "sphereSurface"): Question {
   if (kind === "coneVolume") {
     const rad = r.int(1, 9), h = 3 * r.int(1, 6);
@@ -362,7 +362,7 @@ export function roundSolid(r: Rng, kind: "coneVolume" | "coneSurface" | "sphereV
   return decQ(r, `${PI_NOTE} Una esfera tiene ${rad} cm de radio. ¿Cuál es su área de superficie, en cm²?`, 12560 * rad * rad, `A = 4 × π × r² = 4 × 3,14 × ${rad * rad} = ${mil(12560 * rad * rad)}.`, undefined, "esfera", [3140 * rad * rad, 12560 * rad]);
 }
 
-// W.9: volumen y área de sólidos semejantes.
+// Volumen y área de sólidos semejantes.
 export function similarSolidMeasures(r: Rng): Question {
   const k = r.int(2, 4), area = r.int(5, 40), vol = r.int(4, 30);
   const form = r.int(0, 2);

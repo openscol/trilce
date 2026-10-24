@@ -23,7 +23,7 @@ function decimal(r: Rng, places: 1 | 2 | 3, maxWhole = 9): number {
 }
 const anyDecimal = (r: Rng, maxWhole = 9) => decimal(r, r.pick([1, 2, 3]), maxWhole);
 
-// 5.° W.2: modelos de valor posicional para decimales (hasta milésimos).
+// Modelos de valor posicional para decimales (hasta milésimos).
 export function decimalPlaceModel3(r: Rng): Question {
   const [u, d, c, mm] = [r.int(0, 9), r.int(0, 9), r.int(0, 9), r.int(1, 9)];
   const t = u * ONE + d * T + c * H + mm;
@@ -38,7 +38,7 @@ function decimalWords(t: number) {
   return w ? `${words(w).replace(/uno$/, "un")} ${w === 1 ? "entero" : "enteros"} y ${part}` : part;
 }
 
-// 5.° W.3: decimales escritos con palabras (hasta milésimos).
+// Decimales escritos con palabras (hasta milésimos).
 export function decimalInWords3(r: Rng): Question {
   const t = anyDecimal(r, r.chance(0.5) ? 9 : 0);
   const w = Math.floor(t / ONE) * ONE;
@@ -51,7 +51,7 @@ export function decimalInWords3(r: Rng): Question {
   return choiceQ(r, `¿Cómo se lee ${d3(t)}?`, decimalWords(t), wrong, `${d3(t)} se lee «${decimalWords(t)}».`, undefined, "a-palabras");
 }
 
-// 5.° W.4: valor de una cifra en un número decimal.
+// Valor de una cifra en un número decimal.
 export function decimalDigitValue(r: Rng): Question {
   const ds = r.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 5); // decenas, unidades, décimos, centésimos, milésimos
   const text = `${ds[0]}${ds[1]},${ds[2]}${ds[3]}${ds[4]}`;
@@ -62,7 +62,7 @@ export function decimalDigitValue(r: Rng): Question {
   return choiceQ(r, `En ${text}, ¿qué valor tiene la cifra ${ds[at]}?`, label(place), [0, 1, 2, 3, 4].filter((p) => p !== place).map(label), `El ${ds[at]} está en el lugar de ${place >= 3 ? "las" : "los"} ${PLACES[place]}.`, text, PLACES[place]);
 }
 
-// 5.° W.5: relación entre los valores posicionales de los decimales.
+// Relación entre los valores posicionales de los decimales.
 export function decimalPlaceRelation(r: Rng): Question {
   const d = r.int(1, 9);
   const low = r.int(0, 2);
@@ -78,7 +78,7 @@ export function decimalPlaceRelation(r: Rng): Question {
 const terms = (t: number) => [Math.floor(t / ONE) * ONE, Math.floor((t % ONE) / T) * T, Math.floor((t % T) / H) * H, t % H].filter(Boolean);
 const asFraction = (x: number) => (x >= ONE ? String(x / ONE) : x >= T ? `${x / T}/10` : x >= H ? `${x / H}/100` : `${x}/1000`);
 
-// 5.° W.6 / W.7: forma estándar ↔ forma desarrollada (`fractions`: con fracciones).
+// Forma estándar ↔ forma desarrollada (`fractions`: con fracciones).
 export function decimalExpanded3(r: Rng, fractions: boolean): Question {
   const t = decimal(r, r.pick([2, 3, 3]), 9);
   const parts = terms(t);
@@ -90,7 +90,7 @@ export function decimalExpanded3(r: Rng, fractions: boolean): Question {
   return choiceQ(r, `¿Cuál es la forma desarrollada de ${d3(t)}?`, expanded, wrong.map(show).filter((x) => x !== expanded), `Cada cifra se escribe con su valor: ${expanded}.`, undefined, "a-desarrollada");
 }
 
-// 5.° W.8: componer y descomponer decimales de varias formas.
+// Componer y descomponer decimales de varias formas.
 export function composeDecimal(r: Rng): Question {
   const form = r.int(0, 3);
   if (form === 0) {
@@ -111,7 +111,7 @@ export function composeDecimal(r: Rng): Question {
   return numQ(c + 10, "Completa.", `${d3(t)} = ${d - 1} décimos + ? centésimos`, `Un décimo se cambia por 10 centésimos: ${d - 1} décimos + ${c + 10} centésimos = ${d3(t)}.`, "reagrupar");
 }
 
-// 5.° W.9: redondear decimales.
+// Redondear decimales.
 export function roundDecimal3(r: Rng): Question {
   const place = r.pick([ONE, T, H]);
   for (;;) {
@@ -126,7 +126,7 @@ export function roundDecimal3(r: Rng): Question {
   }
 }
 
-// 5.° W.10: rectas numéricas con decimales (centésimos o milésimos).
+// Rectas numéricas con decimales (centésimos o milésimos).
 export function decimalLine3(r: Rng): Question {
   const step = r.pick([H, 1]);
   const base = r.int(0, 9) * ONE + r.int(0, 9) * T + (step === 1 ? r.int(0, 9) * H : 0);
@@ -147,14 +147,14 @@ function closePair(r: Rng): [number, number] {
   return [a, b > 0 ? b : a + 7];
 }
 
-// 5.° X.4: comparar números decimales (hasta milésimos).
+// Comparar números decimales (hasta milésimos).
 export function compareDecimals3(r: Rng): Question {
   const [a, b] = closePair(r);
   const s = sym(a, b);
   return fixedQ("Elige el símbolo correcto.", SYMBOLS, s, s === "=" ? "Los dos números son iguales." : `Comparamos unidades, décimos, centésimos y milésimos, en ese orden: ${d3(a)} ${s} ${d3(b)}.`, `${d3(a)}  ?  ${d3(b)}`, s);
 }
 
-// 5.° X.6: ordenar números decimales (hasta milésimos).
+// Ordenar números decimales (hasta milésimos).
 export function orderDecimals3(r: Rng): Question {
   const whole = r.int(0, 9) * ONE;
   const d = r.int(1, 8);
@@ -165,7 +165,7 @@ export function orderDecimals3(r: Rng): Question {
   return orderQ(r, `Ordena los decimales de ${ascending ? "menor a mayor" : "mayor a menor"}. Tócalos en orden.`, sorted.map(d3), `El orden correcto es ${sorted.map(d3).join(" ; ")}.`, undefined, ascending ? "menor-a-mayor" : "mayor-a-menor");
 }
 
-// 5.° X.7: comparar, ordenar y redondear decimales en problemas.
+// Comparar, ordenar y redondear decimales en problemas.
 export function decimalWordCompare(r: Rng): Question {
   const names = r.shuffle(NAMES).slice(0, 3);
   const base = r.int(8, 15) * ONE;
@@ -189,7 +189,7 @@ export function decimalWordCompare(r: Rng): Question {
 // Denominadores con decimal exacto hasta los milésimos.
 const DEN_MIL: Record<number, number> = { 2: 500, 4: 250, 5: 200, 8: 125, 10: 100, 20: 50, 25: 40, 40: 25, 50: 20, 100: 10, 125: 8, 200: 5, 250: 4, 500: 2, 1000: 1 };
 
-// 5.° Y.2 / Y.3: convertir fracciones (o números mixtos) en decimales.
+// Convertir fracciones (o números mixtos) en decimales.
 export function fractionToDecimal3(r: Rng, withWhole: boolean, dens = [2, 4, 5, 8, 10, 20, 25, 50, 100, 1000]): Question {
   const d = r.pick(dens);
   const n = r.int(1, d - 1);
@@ -199,7 +199,7 @@ export function fractionToDecimal3(r: Rng, withWhole: boolean, dens = [2, 4, 5, 
   return decQ(r, `Escribe ${text} como número decimal.`, t, `${n}/${d} = ${n * DEN_MIL[d]}/1000 = ${d3(n * DEN_MIL[d])}${w ? `; con los ${w} enteros: ${d3(t)}` : ""}.`, undefined, `sobre-${d}`, [w * ONE + n * T, w * ONE + n * H, w * ONE + n, n * ONE + w * T].filter((x) => x !== t));
 }
 
-// 5.° Y.4 / Y.5: convertir decimales en fracciones (o números mixtos), simplificadas.
+// Convertir decimales en fracciones (o números mixtos), simplificadas.
 export function decimalToFraction3(r: Rng, withWhole: boolean): Question {
   const t = decimal(r, r.pick([1, 2, 2, 3]), 0) + (withWhole ? r.int(1, 9) * ONE : 0);
   const rest = t % ONE;
@@ -219,7 +219,7 @@ function fractionValue(r: Rng, withWhole: boolean): { text: string; t: number } 
   return { text: w ? `${w} ${n}/${d}` : `${n}/${d}`, t: w * ONE + n * DEN_MIL[d] };
 }
 
-// 5.° Z.2: comparar decimales y fracciones.
+// Comparar decimales y fracciones.
 export function compareDecimalFraction3(r: Rng): Question {
   const f = fractionValue(r, false);
   const other = r.chance(0.2) ? f.t : Math.max(H, f.t + r.pick([-1, 1]) * r.pick([H, 5 * H, T, 2 * T]));
@@ -228,7 +228,7 @@ export function compareDecimalFraction3(r: Rng): Question {
   return fixedQ("Elige el símbolo correcto.", SYMBOLS, s, `${f.text} = ${d3(f.t)}.`, left ? `${f.text}  ?  ${d3(other)}` : `${d3(other)}  ?  ${f.text}`, s);
 }
 
-// 5.° Z.3 / Z.4: ordenar una mezcla de decimales y fracciones (y números mixtos).
+// Ordenar una mezcla de decimales y fracciones (y números mixtos).
 export function orderMixedForms(r: Rng, withWhole: boolean): Question {
   for (;;) {
     const items = [fractionValue(r, withWhole), fractionValue(r, withWhole), { t: decimal(r, r.pick([1, 2]), withWhole ? 2 : 0), text: "" }, { t: decimal(r, 2, withWhole ? 2 : 0), text: "" }].map((x) => ({ t: x.t, text: x.text || d3(x.t) }));
@@ -242,7 +242,7 @@ export function orderMixedForms(r: Rng, withWhole: boolean): Question {
 // ---------------------------------------------------------------------------
 // Sumar y restar
 
-// 5.° AA.2 / AA.5 / AA.6: sumar y restar decimales hasta milésimos.
+// Sumar y restar decimales hasta milésimos.
 export function addSubDecimals3(r: Rng, op: "+" | "−" | "mixed"): Question {
   const o = op === "mixed" ? r.pick(["+", "−"] as const) : op;
   let a = anyDecimal(r, 20);
@@ -253,7 +253,7 @@ export function addSubDecimals3(r: Rng, op: "+" | "−" | "mixed"): Question {
   return decQ(r, "Resuelve. Alinea las comas antes de operar.", answer, `${d3(a)} ${o} ${d3(b)} = ${d3(answer)}.`, `${d3(a)} ${o} ${d3(b)} = ?`, o === "+" ? "suma" : "resta");
 }
 
-// 5.° AA.3: usar las propiedades para sumar tres decimales.
+// Usar las propiedades para sumar tres decimales.
 export function addThreeDecimalsProperties(r: Rng): Question {
   const a = r.int(1, 99) * T + r.pick([0, 0, 5 * H]);
   const round = (Math.floor(a / ONE) + r.int(1, 4)) * ONE;
@@ -263,7 +263,7 @@ export function addThreeDecimalsProperties(r: Rng): Question {
   return decQ(r, "Suma. Agrupa primero los dos números que forman un número natural.", a + b + c, `${d3(a)} + ${d3(b)} = ${d3(round)}; ${d3(round)} + ${d3(c)} = ${d3(a + b + c)}.`, `${order.map(d3).join(" + ")} = ?`);
 }
 
-// 5.° AA.7: usar la compensación para sumar y restar decimales.
+// Usar la compensación para sumar y restar decimales.
 export function compensation(r: Rng): Question {
   const k = r.pick([1, 2, 3, 5]) * H;
   const whole = r.int(2, 12) * ONE;
@@ -277,7 +277,7 @@ export function compensation(r: Rng): Question {
   return decQ(r, "Usa la compensación: lleva un número al natural más cercano y ajusta el otro.", answer, `${hint} = ${d3(answer)}.`, `${d3(a)} ${add ? "+" : "−"} ${d3(b)} = ?`, add ? "suma" : "resta", [add ? whole + b : whole - b, add ? answer + 2 * k : answer - 2 * k]);
 }
 
-// 5.° AA.13: estimar sumas y restas de decimales redondeando.
+// Estimar sumas y restas de decimales redondeando.
 export function estimateDecimalRounding(r: Rng): Question {
   for (;;) {
     const a = decimal(r, 2, 40);
@@ -299,7 +299,7 @@ function nearHalf(r: Rng): { t: number; half: number } {
   return { t, half };
 }
 
-// 5.° AA.14: estimar sumas y restas de decimales usando referencias (0; 0,5; 1).
+// Estimar sumas y restas de decimales usando referencias (0; 0,5; 1).
 export function estimateDecimalBenchmarks(r: Rng): Question {
   for (;;) {
     const a = nearHalf(r);
@@ -316,7 +316,7 @@ export function estimateDecimalBenchmarks(r: Rng): Question {
 
 const powText = (e: number, exponents: boolean) => (exponents ? pow10(e) : fmt(10 ** e));
 
-// 5.° BB.1 / BB.2 / EE.1 / EE.3 / EE.4: multiplicar o dividir un decimal por una potencia de diez.
+// Multiplicar o dividir un decimal por una potencia de diez.
 export function decimalPower(r: Rng, op: "×" | "÷" | "both", exponents: boolean): Question {
   const o = op === "both" ? r.pick(["×", "÷"] as const) : op;
   const e = r.int(1, 3);
@@ -332,7 +332,7 @@ export function decimalPower(r: Rng, op: "×" | "÷" | "both", exponents: boolea
   }
 }
 
-// 5.° BB.3 / EE.6: multiplicar o dividir por 0,1 o por 0,01.
+// Multiplicar o dividir por 0,1 o por 0,01.
 export function byTenthHundredth(r: Rng, op: "×" | "÷"): Question {
   const k = r.pick([10, 100]);
   const f = k === 10 ? "0,1" : "0,01";
@@ -346,7 +346,7 @@ export function byTenthHundredth(r: Rng, op: "×" | "÷"): Question {
   }
 }
 
-// 5.° BB.4 / EE.5: hallar el número que falta (potencia de diez).
+// Hallar el número que falta (potencia de diez).
 export function missingPower(r: Rng, op: "×" | "÷"): Question {
   const e = r.int(1, 3);
   const k = 10 ** e;
@@ -356,7 +356,7 @@ export function missingPower(r: Rng, op: "×" | "÷"): Question {
   return fixedQ("¿Qué número falta?", ["10", "100", "1000"], String(k), `La coma se movió ${e} ${e === 1 ? "lugar" : "lugares"}: es ${fmt(k)}.`, text, `${op}${k}`);
 }
 
-// 5.° EE.2: patrones de división con decimales al aumentar el valor posicional.
+// Patrones de división con decimales al aumentar el valor posicional.
 export function decimalDivisionPattern(r: Rng): Question {
   const n = r.int(2, 99) * ONE + r.pick([0, 0, 500]);
   const rows = [1, 10, 100, 1000].map((k) => ({ text: `${d3(n)} ÷ ${fmt(k)}`, value: n / k }));
@@ -372,7 +372,7 @@ export function decimalDivisionPattern(r: Rng): Question {
 const times = (a: number, b: number) => (a * b) / ONE;
 const shiftErrors = (t: number) => [t * 10, t / 10, t * 100, t / 100].filter((x) => Number.isInteger(x) && x > 0);
 
-// 5.° CC.1 / DD.1: estimar productos (se redondea cada decimal a la unidad).
+// Estimar productos (se redondea cada decimal a la unidad).
 export function estimateDecimalProduct(r: Rng, both: boolean): Question {
   for (;;) {
     const a = decimal(r, r.pick([1, 2]), 12) + ONE;
@@ -385,7 +385,7 @@ export function estimateDecimalProduct(r: Rng, both: boolean): Question {
 
 export type DecMult = "plain" | "blocks" | "distributive" | "area" | "word" | "three";
 
-// 5.° CC.2 – CC.9: multiplicar un decimal por un número natural.
+// Multiplicar un decimal por un número natural.
 export function decimalTimesWhole(r: Rng, mode: DecMult, places: 1 | 2 | "any" = "any", wholeDigits = 1): Question {
   const p = places === "any" ? r.pick([1, 2] as const) : places;
   if (mode === "blocks") {
@@ -425,14 +425,14 @@ function decimalFactors(r: Rng, places: 2 | 3, maxWhole = 6): [number, number] {
   return r.chance(0.5) ? [a, b] : [b, a];
 }
 
-// 5.° DD.2 / DD.3: multiplicar decimales menores que 1 usando cuadrículas.
+// Multiplicar decimales menores que 1 usando cuadrículas.
 export function decimalGridProduct(r: Rng): Question {
   const a = r.int(1, 9);
   const b = r.int(1, 9);
   return decQ(r, `La cuadrícula es 1 entero. Un color cubre ${d3(a * T)} y el otro ${d3(b * T)}. ¿Cuánto es ${d3(a * T)} × ${d3(b * T)}? (Mira la zona donde se cruzan.)`, a * b * H, `Se cruzan ${a} × ${b} = ${a * b} casillas de 100: ${a * b} centésimos = ${d3(a * b * H)}.`, { kind: "fracGrid", rows: 10, cols: 10, a, b }, undefined, [a * b * T, (a + b) * T, a * b]);
 }
 
-// 5.° DD.4: ¿dónde va la coma?
+// ¿dónde va la coma?
 export function decimalPointPlacement(r: Rng): Question {
   const [a, b] = decimalFactors(r, r.pick([2, 3]));
   const product = times(a, b);
@@ -441,7 +441,7 @@ export function decimalPointPlacement(r: Rng): Question {
   return decQ(r, "Usa la multiplicación de números naturales para ubicar la coma.", product, `${d3(a)} tiene ${places(a)} ${places(a) === 1 ? "cifra decimal" : "cifras decimales"} y ${d3(b)} tiene ${places(b)}: el producto tiene ${places(a) + places(b)}. ${d3(a)} × ${d3(b)} = ${d3(product)}.`, `${fmt(strip(a))} × ${fmt(strip(b))} = ${fmt(strip(a) * strip(b))}\n${d3(a)} × ${d3(b)} = ?`, undefined, shiftErrors(product));
 }
 
-// 5.° DD.5: multiplicar decimales usando modelos de área.
+// Multiplicar decimales usando modelos de área.
 export function decimalAreaModel(r: Rng): Question {
   const split = (t: number) => [Math.floor(t / ONE) * ONE, t % ONE].filter(Boolean);
   const a = decimal(r, 1, 4) + ONE;
@@ -451,14 +451,14 @@ export function decimalAreaModel(r: Rng): Question {
   return decQ(r, `Usa el modelo de área para hallar ${d3(b)} × ${d3(a)}.`, product, `Sumamos las partes: ${side.flatMap((s) => top.map((t) => d3(times(s, t)))).join(" + ")} = ${d3(product)}.`, { kind: "areaModel", top: top.map(d3), side: side.map(d3), cells: side.map((s) => top.map((t) => d3(times(s, t)))) }, undefined, shiftErrors(product));
 }
 
-// 5.° DD.6 / DD.7: multiplicar dos decimales.
+// Multiplicar dos decimales.
 export function multiplyDecimals(r: Rng, places: 2 | 3): Question {
   const [a, b] = decimalFactors(r, places);
   const product = times(a, b);
   return decQ(r, "Resuelve la multiplicación.", product, `Multiplicamos sin comas y luego contamos las cifras decimales de los dos factores: ${d3(a)} × ${d3(b)} = ${d3(product)}.`, `${d3(a)} × ${d3(b)} = ?`, places === 2 ? "centesimos" : "milesimos", shiftErrors(product));
 }
 
-// 5.° DD.8 / DD.9: comparar productos de decimales.
+// Comparar productos de decimales.
 export function compareDecimalProducts(r: Rng, places: 2 | 3): Question {
   const [a, b] = decimalFactors(r, places, 4);
   const product = times(a, b);
@@ -471,7 +471,7 @@ export function compareDecimalProducts(r: Rng, places: 2 | 3): Question {
 // ---------------------------------------------------------------------------
 // Dividir decimales
 
-// 5.° FF.1: estimar cocientes de decimales (números compatibles).
+// Estimar cocientes de decimales (números compatibles).
 export function estimateDecimalQuotient(r: Rng): Question {
   const d = r.int(2, 9);
   const q = r.int(2, 12);
@@ -481,7 +481,7 @@ export function estimateDecimalQuotient(r: Rng): Question {
 
 export type DecDiv = "plain" | "blocks" | "area" | "placeValue" | "word";
 
-// 5.° FF.2 – FF.5: dividir un decimal entre un número natural (sin agregar ceros).
+// Dividir un decimal entre un número natural (sin agregar ceros).
 export function decimalByWhole(r: Rng, mode: DecDiv): Question {
   const k = r.int(2, 9);
   if (mode === "blocks") {
@@ -512,7 +512,7 @@ export function decimalByWhole(r: Rng, mode: DecDiv): Question {
   return decQ(r, "Resuelve la división.", q, `${d3(dividend)} ÷ ${k} = ${d3(q)}, porque ${k} × ${d3(q)} = ${d3(dividend)}.`, `${d3(dividend)} ÷ ${k} = ?`, undefined, shiftErrors(q));
 }
 
-// 5.° FF.6 / FF.7: divisiones entre naturales con cociente decimal (`rounding`: no exacta, se redondea al décimo).
+// Divisiones entre naturales con cociente decimal (`rounding`: no exacta, se redondea al décimo).
 export function decimalQuotient(r: Rng, rounding: boolean): Question {
   for (;;) {
     const d = rounding ? r.pick([3, 6, 7, 9]) : r.pick([2, 4, 5, 8]);
@@ -531,7 +531,7 @@ export function decimalQuotient(r: Rng, rounding: boolean): Question {
   }
 }
 
-// 5.° FF.8: problemas de división con cociente decimal.
+// Problemas de división con cociente decimal.
 export function decimalQuotientProblem(r: Rng): Question {
   const d = r.pick([2, 4, 5, 8]);
   for (;;) {
@@ -542,7 +542,7 @@ export function decimalQuotientProblem(r: Rng): Question {
   }
 }
 
-// 5.° FF.9 – FF.11: dividir entre un decimal.
+// Dividir entre un decimal.
 export function divideByDecimal(r: Rng, mode: "placeValue" | "noZeros" | "any"): Question {
   const unit = mode === "any" ? r.pick([T, H]) : T;
   const d = r.int(2, 9) * unit + (mode === "any" && r.chance(0.3) ? ONE : 0);
@@ -563,12 +563,12 @@ export function divideByDecimal(r: Rng, mode: "placeValue" | "noZeros" | "any"):
 // ---------------------------------------------------------------------------
 // Operaciones mixtas
 
-// 5.° GG.1: sumar, restar, multiplicar y dividir decimales.
+// Sumar, restar, multiplicar y dividir decimales.
 export function mixedDecimalOps(r: Rng): Question {
   return r.pick([() => addSubDecimals3(r, "+"), () => addSubDecimals3(r, "−"), () => decimalTimesWhole(r, "plain"), () => multiplyDecimals(r, 2), () => decimalByWhole(r, "plain"), () => divideByDecimal(r, "any")])();
 }
 
-// 5.° GG.2: problemas con las cuatro operaciones y decimales.
+// Problemas con las cuatro operaciones y decimales.
 export function decimalProblem4(r: Rng): Question {
   const name = r.pick(NAMES);
   return r.pick([
@@ -587,7 +587,7 @@ export function decimalProblem4(r: Rng): Question {
   ])();
 }
 
-// 5.° GG.3: problemas de varios pasos con decimales.
+// Problemas de varios pasos con decimales.
 export function decimalMultiStep(r: Rng): Question {
   const name = r.pick(NAMES);
   const k = r.int(2, 6);
@@ -605,7 +605,7 @@ export function decimalMultiStep(r: Rng): Question {
   return decQ(r, `${name} reparte ${d3(total)} litros de jugo por igual en ${k} jarras y luego agrega ${d3(extra)} litros de agua a una de ellas. ¿Cuántos litros tiene esa jarra?`, q + extra, `${d3(total)} ÷ ${k} = ${d3(q)}; ${d3(q)} + ${d3(extra)} = ${d3(q + extra)}.`, undefined, "entre-y-mas", [q, total + extra]);
 }
 
-// 5.° GG.4: ecuaciones con operaciones mixtas, ¿verdadero o falso?
+// Ecuaciones con operaciones mixtas, ¿verdadero o falso?
 export function decimalTrueFalse(r: Rng): Question {
   const a = decimal(r, 1, 9);
   const b = decimal(r, 1, 9);
@@ -619,7 +619,7 @@ export function decimalTrueFalse(r: Rng): Question {
 
 
 
-// 6.° I.10: inecuaciones con división de decimales.
+// Inecuaciones con división de decimales.
 export function decimalDivisionInequality(r: Rng): Question {
   const d = r.int(2, 9) * T;
   const q = r.int(2, 30) * ONE;
@@ -629,7 +629,7 @@ export function decimalDivisionInequality(r: Rng): Question {
   return fixedQ("Elige el símbolo correcto.", SYMBOLS, s, `${d3(dividend)} ÷ ${d3(d)} = ${d3(q)}, y ${d3(q)} ${s} ${d3(other)}.`, `${d3(dividend)} ÷ ${d3(d)}  ?  ${d3(other)}`, s);
 }
 
-// 6.° J.4: evaluar expresiones numéricas con decimales.
+// Evaluar expresiones numéricas con decimales.
 export function decimalExpression(r: Rng): Question {
   const a = decimal(r, 1, 9);
   const b = decimal(r, 1, 6);

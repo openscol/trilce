@@ -140,7 +140,7 @@ export function compareTimes(r: Rng, maxBase: number, maxTimes = 9, forms: numbe
   return numQ(k, `${n1} tiene ${fmt(base)} ${thing} y ${n2} tiene ${fmt(base * k)}. ¿Cuántas veces lo de ${n1} tiene ${n2}?`, undefined, `${fmt(base * k)} ÷ ${fmt(base)} = ${k}.`, "cuantas-veces");
 }
 
-// 4.° G.9: ¿«n más» o «n veces»?
+// ¿«n más» o «n veces»?
 export function addOrTimes(r: Rng): Question {
   const [n1, n2] = twoNames(r);
   const thing = r.pick(["figuritas", "canicas", "stickers", "monedas"]);
@@ -163,7 +163,7 @@ export function addOrTimes(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Ecuaciones
 
-// 4.° I.13: elegir la ecuación que representa el problema.
+// Elegir la ecuación que representa el problema.
 export function writeEquation(r: Rng, ops: Op[] = ["+", "−", "×", "÷"], size: Size = { add: [20, 500] }): Question {
   const op = r.pick(ops);
   const [a, b] = operands(r, op, size);
@@ -174,7 +174,7 @@ export function writeEquation(r: Rng, ops: Op[] = ["+", "−", "×", "÷"], size
   return choiceQ(r, `${s.text} ¿Qué ecuación representa el problema?`, answer, wrong, `La operación es ${answer.replace(" = n", "")}; n = ${fmt(s.answer)}.`, undefined, op);
 }
 
-// 4.° I.14: resolver ecuaciones de un paso.
+// Resolver ecuaciones de un paso.
 export function solveEquation(r: Rng, ops: Op[] = ["+", "−", "×", "÷"], max = 200): Question {
   const op = r.pick(ops);
   const letter = r.pick(["n", "x", "a", "m"]);
@@ -196,7 +196,7 @@ export function solveEquation(r: Rng, ops: Op[] = ["+", "−", "×", "÷"], max 
   return r.chance(0.5) ? numQ(x * b, ask, `${letter} ÷ ${b} = ${x}`, `${letter} = ${x} × ${b} = ${x * b}.`, "division") : numQ(b, ask, `${x * b} ÷ ${letter} = ${x}`, `${letter} = ${x * b} ÷ ${x} = ${b}.`, "division");
 }
 
-// 4.° I.15: resolver un problema de suma o resta con su ecuación.
+// Resolver un problema de suma o resta con su ecuación.
 export function equationProblem(r: Rng, lo = 50, hi = 900): Question {
   const n = r.pick(NAMES);
   const total = r.int(lo * 2, hi);
@@ -293,7 +293,7 @@ function multi(r: Rng, kind: MultiKind, level: number): Multi {
   return divSteps(r, level === 1 ? 20 : 60);
 }
 
-// 4.° P: problemas de varios pasos. `mode`: respuesta escrita, con diagrama
+// Problemas de varios pasos. `mode`: respuesta escrita, con diagrama
 // de tiras, con la ecuación a la vista o eligiendo la ecuación.
 export function multiStep(r: Rng, kind: MultiKind, mode: "plain" | "strip" | "equation" | "chooseEquation" = "plain", level = 2): Question {
   let m = multi(r, kind, level);
@@ -312,7 +312,7 @@ export function multiStep(r: Rng, kind: MultiKind, mode: "plain" | "strip" | "eq
   return numQ(m.answer, m.text, mode === "strip" ? m.visual : mode === "equation" ? `${m.equation} = n` : undefined, why, kind);
 }
 
-// 4.° P.9 / N.2 / N.4: interpretar el residuo.
+// Interpretar el residuo.
 export function remainderProblem(r: Rng, maxQ: number): Question {
   const d = r.int(3, 9);
   const q = r.int(3, maxQ);
@@ -326,7 +326,7 @@ export function remainderProblem(r: Rng, maxQ: number): Question {
   return numQ(d - rem, `Una panadera hornea ${fmt(total)} panes y los pone en bandejas de ${d}. ¿Cuántos panes más necesita para completar la última bandeja?`, undefined, `${why} Para completar otra bandeja faltan ${d} − ${rem} = ${d - rem}.`, "faltan");
 }
 
-// 4.° P.10: ¿qué respuesta es razonable?
+// ¿qué respuesta es razonable?
 export function reasonableAnswer(r: Rng, kind: MultiKind = "any"): Question {
   const m = multi(r, kind, 2);
   const unit = 10 ** Math.max(1, String(m.answer).length - 1);
@@ -334,7 +334,7 @@ export function reasonableAnswer(r: Rng, kind: MultiKind = "any"): Question {
   return choiceQ(r, `${m.text} ¿Qué respuesta es razonable?`, `Cerca de ${fmt(est)}`, [est * 10, Math.round(est / 10), est * 3, est + 5 * unit].filter((x) => x > 0 && x !== est).map((x) => `Cerca de ${fmt(x)}`), `${m.equation} = ${fmt(m.answer)}, que está cerca de ${fmt(est)}.`);
 }
 
-// 4.° P.11: problemas con datos de más o con un dato que falta.
+// Problemas con datos de más o con un dato que falta.
 export function extraOrMissing(r: Rng): Question {
   const n = r.pick(NAMES);
   const a = r.int(3, 9);
@@ -355,7 +355,7 @@ export function extraOrMissing(r: Rng): Question {
   return choiceQ(r, `${text} ¿Qué dato falta para resolverlo?`, answer, wrong, `Sin ese dato no se puede calcular: falta saber ${answer[0].toLowerCase()}${answer.slice(1)}.`, undefined, "dato-que-falta");
 }
 
-// 4.° P.12: tantear y comprobar.
+// Tantear y comprobar.
 export function guessAndCheck(r: Rng): Question {
   if (r.chance(0.5)) {
     const hens = r.int(2, 9);

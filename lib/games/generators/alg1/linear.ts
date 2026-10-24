@@ -15,7 +15,7 @@ const cx = (k: number, v = "x") => `${coef(k)}${v}`;
 // ---------------------------------------------------------------------------
 // Ecuaciones de la recta
 
-// L.9: escribir ecuaciones en forma general (Ax + By = C, A > 0, enteros).
+// Escribir ecuaciones en forma general (Ax + By = C, A > 0, enteros).
 export function writeStandard(r: Rng): Question {
   const [mn, md] = r.pick(SLOPES), b = r.int(-6, 6);
   // y = (mn/md)x + b → −mn·x + md·y = md·b; se deja A positivo.
@@ -26,7 +26,7 @@ export function writeStandard(r: Rng): Question {
   return choiceQ(r, `Escribe ${slopeIntercept(mn, md, b)} en forma general (Ax + By = C, con coeficientes enteros).`, good, [...new Set(wrong)], `Se multiplica por ${md} y se pasa el término con x al lado izquierdo: ${good}.`, undefined, "forma-general");
 }
 
-// L.10: forma general: intersecciones con los ejes.
+// Forma general: intersecciones con los ejes.
 export function standardIntercepts(r: Rng): Question {
   const px = nz(r, 6), py = nz(r, 6);
   const g = (a: number, b: number): number => (b ? g(b, a % b) : Math.abs(a));
@@ -37,7 +37,7 @@ export function standardIntercepts(r: Rng): Question {
   return intQ(r, `¿En qué valor corta la recta ${stdText(A, B, C)} al eje ${xAxis ? "x" : "y"}?`, xAxis ? px : py, xAxis ? `Con y = 0: ${cx(A)} = ${sg(C)} → x = ${sg(px)}.` : `Con x = 0: ${cx(B).replace("x", "y")} = ${sg(C)} → y = ${sg(py)}.`, undefined, xAxis ? "corte-x" : "corte-y", [xAxis ? py : px, -(xAxis ? px : py), C]);
 }
 
-// L.15 / L.16: escribir la ecuación en forma punto-pendiente (con datos o desde el gráfico).
+// Escribir la ecuación en forma punto-pendiente (con datos o desde el gráfico).
 export function writePointSlope(r: Rng, graph: boolean): Question {
   const [mn, md, b] = randomLine(r);
   const pts = intPoints(mn, md, b).filter((p) => p.x !== 0);
@@ -51,7 +51,7 @@ export function writePointSlope(r: Rng, graph: boolean): Question {
   return choiceQ(r, `Una recta pasa por ${pt(p)} y tiene pendiente ${slopeText(mn, md)}. ¿Cuál es su ecuación en forma punto-pendiente?`, good, [...new Set(wrong)], `y − y₁ = m(x − x₁) con (x₁, y₁) = ${pt(p)} y m = ${slopeText(mn, md)}: ${good}.`, undefined, "datos");
 }
 
-// L.17: pendiente e intersecciones a partir de la ecuación.
+// Pendiente e intersecciones a partir de la ecuación.
 export function slopeAndIntercepts(r: Rng): Question {
   const px = nz(r, 6), py = nz(r, 6);
   const A = py, B = px, C = px * py;
@@ -62,7 +62,7 @@ export function slopeAndIntercepts(r: Rng): Question {
   return intQ(r, `¿En qué valor corta la recta ${eq} al eje y?`, py, `Con x = 0: y = ${sg(C)} ÷ ${par(B)} = ${sg(py)}.`, undefined, "corte-y", [px, -py]);
 }
 
-// L.18: graficar una recta: práctica mixta.
+// Graficar una recta: práctica mixta.
 export function graphLineMixed(r: Rng): Question {
   const [mn, md, b] = randomLine(r);
   const form = r.int(0, 2);
@@ -73,7 +73,7 @@ export function graphLineMixed(r: Rng): Question {
   return drawnLine(r, eq, mn, md, b, `Pasa por ${pt({ x: 0, y: b })} y tiene pendiente ${slopeText(mn, md)}.`, ["pendiente-interseccion", "punto-pendiente", "forma-general"][form]);
 }
 
-// L.20: ecuación de una recta paralela o perpendicular.
+// Ecuación de una recta paralela o perpendicular.
 export function parallelPerpLine(r: Rng): Question {
   const [mn, md] = r.pick(SLOPES), b0 = r.int(-5, 5);
   const perp = r.chance(0.5);
@@ -87,7 +87,7 @@ export function parallelPerpLine(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Conceptos de función
 
-// M.1: relaciones: pasar entre tablas, gráficos, diagramas y listas de puntos.
+// Relaciones: pasar entre tablas, gráficos, diagramas y listas de puntos.
 export function convertRelation(r: Rng): Question {
   const ps: P[] = r.shuffle([-3, -2, -1, 0, 1, 2, 3]).slice(0, 4).map((x) => ({ x, y: r.int(-4, 5) }));
   const list = (qs: P[]) => `{${qs.map(pt).join(", ")}}`;
@@ -99,7 +99,7 @@ export function convertRelation(r: Rng): Question {
   return choiceQ(r, "¿Qué lista de pares ordenados representa la relación del gráfico?", list(ps), wrong, "Cada punto del gráfico es un par (x, y).", { kind: "coordPlane", min: -6, max: 6, points: ps.map((p) => ({ ...p, emoji: "•" })) }, "grafico");
 }
 
-// M.8: evaluar una función reemplazando por una expresión.
+// Evaluar una función reemplazando por una expresión.
 export function plugExpression(r: Rng): Question {
   const a = nz(r, 5), b = nz(r, 8), k = nz(r, 4);
   const f = lin(a, b);
@@ -108,7 +108,7 @@ export function plugExpression(r: Rng): Question {
   return choiceQ(r, `Si f(x) = ${f}, ¿cuánto es f(x ${k < 0 ? "−" : "+"} ${Math.abs(k)})?`, good, [...new Set(wrong)], `Se reemplaza x por (x ${k < 0 ? "−" : "+"} ${Math.abs(k)}): ${sg(a)}(x ${k < 0 ? "−" : "+"} ${Math.abs(k)}) ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${good}.`, undefined, "expresion");
 }
 
-// M.11-M.12: hallar (o aproximar) soluciones con una tabla.
+// Hallar (o aproximar) soluciones con una tabla.
 export function tableSolutions(r: Rng, approximate: boolean): Question {
   const xs = [-2, -1, 0, 1, 2, 3, 4];
   const a = nz(r, 3), b = r.int(-4, 4), c = nz(r, 3);
@@ -132,7 +132,7 @@ const EVERYDAY: [string, (x: number, y: number) => string, (x: number, y: number
   ["T(m) es la temperatura del horno, en °C, m minutos después de encenderlo", (x, y) => `A los ${x} minutos, el horno está a ${y} °C`, (x, y) => [`A los ${y} minutos, el horno está a ${x} °C`, `La temperatura sube ${y} °C cada minuto`, `El horno tarda ${y} minutos en llegar a ${x} °C`]],
   ["P(d) es el número de páginas que Lucía ha leído después de d días", (x, y) => `Después de ${x} días, Lucía ha leído ${y} páginas`, (x, y) => [`Después de ${y} días, Lucía ha leído ${x} páginas`, `Lucía lee ${y} páginas cada día`, `Al libro le faltan ${y} páginas por leer`]],
 ];
-// M.13: interpretar funciones con lenguaje cotidiano.
+// Interpretar funciones con lenguaje cotidiano.
 export function interpretFunction(r: Rng): Question {
   const [ctx, good, wrong] = r.pick(EVERYDAY);
   const x = r.int(2, 9), y = r.int(12, 99);
@@ -140,7 +140,7 @@ export function interpretFunction(r: Rng): Question {
   return choiceQ(r, `${ctx}. ¿Qué significa ${name}(${x}) = ${y}?`, good(x, y), wrong(x, y), `Lo que va entre paréntesis es la entrada (${x}) y el resultado es la salida (${y}).`, undefined, "lenguaje");
 }
 
-// M.17: estimar la tasa de cambio promedio a partir de un gráfico.
+// Estimar la tasa de cambio promedio a partir de un gráfico.
 export function averageRate(r: Rng): Question {
   const a = r.pick([1, -1]) * r.pick([0.5, 1]), h = r.int(-2, 2), k = r.int(-4, 2);
   const f = (x: number) => a * (x - h) ** 2 + k;
@@ -154,7 +154,7 @@ export function averageRate(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Funciones lineales
 
-// N.9-N.10: dominio y rango de funciones lineales (gráficos y problemas).
+// Dominio y rango de funciones lineales (gráficos y problemas).
 export function linearDomainRange(r: Rng, word: boolean): Question {
   if (word) {
     const per = r.int(2, 6), max = r.pick([10, 12, 15, 20]), fee = r.int(5, 15);
@@ -182,7 +182,7 @@ export function linearDomainRange(r: Rng, word: boolean): Question {
   return choiceQ(r, `¿Cuál es el ${domain ? "dominio" : "rango"} de la función del gráfico?`, good, [...new Set(wrong)].filter((w) => w !== good), `${domain ? "Valores de x" : "Valores de y"} que alcanza el segmento; un círculo vacío indica que ese extremo no se incluye.`, visual, domain ? "dominio" : "rango");
 }
 
-// N.13: transformaciones de funciones lineales.
+// Transformaciones de funciones lineales.
 export function transformLinear(r: Rng): Question {
   const a = nz(r, 4), b = nz(r, 6), k = nz(r, 5);
   const f = lin(a, b);
@@ -202,7 +202,7 @@ export function transformLinear(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Sistemas: matrices aumentadas
 
-// O.12-O.13: resolver un sistema con una matriz aumentada.
+// Resolver un sistema con una matriz aumentada.
 export function augmentedMatrix(r: Rng, word: boolean): Question {
   const x = r.int(-5, 6), y = r.int(-5, 6);
   const a1 = nz(r, 4), b1 = nz(r, 4), a2 = nz(r, 4), b2 = nz(r, 4);
@@ -241,7 +241,7 @@ const randomIneq2 = (r: Rng): Ineq2 => {
   return { mn, md, b, op: r.pick(OPS2) };
 };
 
-// P.1 / P.6: ¿el par cumple la inecuación (o el sistema)?
+// ¿el par cumple la inecuación (o el sistema)?
 export function satisfiesIneq2(r: Rng, system: boolean): Question {
   const q1 = randomIneq2(r), q2 = randomIneq2(r);
   const p = { x: r.int(-5, 5), y: r.int(-5, 5) };
@@ -257,7 +257,7 @@ export function satisfiesIneq2(r: Rng, system: boolean): Question {
   return yesNo(`¿El par ${pt(p)} cumple la inecuación ${ineq2Text(q1)}?`, ok(q1), `Con x = ${sg(p.x)}, el lado derecho vale ${dec(v)}; ${sg(p.y)} ${q1.op} ${dec(v)} es ${ok(q1) ? "verdadero" : "falso"}.`, undefined, ok(q1) ? "si" : "no");
 }
 
-// P.2: despejar y en una inecuación.
+// Despejar y en una inecuación.
 export function ineqSolveY(r: Rng): Question {
   const B = r.pick([1, 2, 3, -1, -2]), A = nz(r, 5), b = r.int(-5, 5), op = r.pick(OPS2);
   const flip: Record<Ineq2["op"], Ineq2["op"]> = { "<": ">", ">": "<", "≤": "≥", "≥": "≤" };
@@ -268,7 +268,7 @@ export function ineqSolveY(r: Rng): Question {
   return choiceQ(r, `Despeja y en la inecuación ${shown}.`, good, wrong, `Se pasa ${lin(A, 0)} al otro lado y se divide entre ${sg(B)}${B < 0 ? "; como es negativo, se invierte el signo" : ""}: ${good}.`, undefined, B < 0 ? "invierte" : "no-invierte");
 }
 
-// P.3 / P.4: graficar una inecuación de dos variables / escribirla a partir del gráfico.
+// Graficar una inecuación de dos variables / escribirla a partir del gráfico.
 export function graphIneq2(r: Rng, write: boolean): Question {
   const q = randomIneq2(r);
   const why = `Borde: ${slopeIntercept(q.mn, q.md, q.b)}, ${q.op === "<" || q.op === ">" ? "punteado (no se incluye)" : "continuo (se incluye)"}; se sombrea ${q.op === ">" || q.op === "≥" ? "arriba" : "abajo"} de la recta.`;
@@ -278,7 +278,7 @@ export function graphIneq2(r: Rng, write: boolean): Question {
   return yesNo(`¿El gráfico muestra las soluciones de ${ineq2Text(q)}?`, yes, why, ineq2Visual(shown), "graficar");
 }
 
-// P.5: escribir inecuaciones de dos variables: problemas.
+// Escribir inecuaciones de dos variables: problemas.
 export function ineq2Word(r: Rng): Question {
   const p1 = r.int(2, 9), p2 = r.int(2, 9), total = r.int(40, 120);
   if (p1 === p2) return ineq2Word(r);
@@ -288,7 +288,7 @@ export function ineq2Word(r: Rng): Question {
   return choiceQ(r, `${name} tiene ${total} soles para comprar ${a} de ${p1} soles y ${b} de ${p2} soles. Si x es la cantidad de ${a} e y la de ${b}, ¿qué inecuación muestra lo que puede comprar?`, good, [`${p1}x + ${p2}y ≥ ${total}`, `${p2}x + ${p1}y ≤ ${total}`, `x + y ≤ ${total}`], `El gasto (${p1}x + ${p2}y) no puede pasar de ${total}: se usa ≤.`, undefined, "plantear");
 }
 
-// P.7: resolver sistemas de inecuaciones graficando (¿qué punto está en la región?).
+// Resolver sistemas de inecuaciones graficando (¿qué punto está en la región?).
 export function ineqSystemGraph(r: Rng): Question {
   const q1 = randomIneq2(r), q2 = randomIneq2(r);
   if (q1.mn * q2.md === q2.mn * q1.md) return ineqSystemGraph(r);
@@ -321,7 +321,7 @@ function piecewise(r: Rng): { pieces: Piece[]; c: number; text: string } {
 }
 const pieceAt = (pieces: Piece[], x: number) => pieces.find((p) => (p.to === undefined || x < p.to || (x === p.to && p.closedTo)) && (p.from === undefined || x > p.from || (x === p.from && p.closedFrom)))!;
 
-// Q.1: evaluar funciones definidas por partes.
+// Evaluar funciones definidas por partes.
 export function evaluatePiecewise(r: Rng): Question {
   const { pieces, c, text } = piecewise(r);
   const x = r.chance(0.4) ? c : r.int(-5, 5);
@@ -331,7 +331,7 @@ export function evaluatePiecewise(r: Rng): Question {
   return intQ(r, `¿Cuánto vale f(${sg(x)})?`, v, `${sg(x)} cumple la condición de la parte ${lin(p.a, p.b)}: ${lin(p.a, p.b).replace("x", `(${sg(x)})`)} = ${sg(v)}.`, text, x === c ? "borde" : "parte", [other.a * x + other.b, -v]);
 }
 
-// Q.2: graficar funciones definidas por partes.
+// Graficar funciones definidas por partes.
 export function graphPiecewise(r: Rng): Question {
   const { pieces, c, text } = piecewise(r);
   const yes = r.chance(0.5);

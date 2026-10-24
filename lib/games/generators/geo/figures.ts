@@ -22,7 +22,7 @@ const plane = (A: P[], B?: P[], extra: P[] = []): Visual => ({ kind: "coordPlane
 // ---------------------------------------------------------------------------
 // Transformaciones
 
-// H.7: rotar polígonos alrededor de un punto (que no es el origen).
+// Rotar polígonos alrededor de un punto (que no es el origen).
 export function rotateAboutPoint(r: Rng): Question {
   const C = { x: r.int(-2, 2), y: r.int(-2, 2) };
   const turn = r.pick([90, 180, 270]);
@@ -33,7 +33,7 @@ export function rotateAboutPoint(r: Rng): Question {
   return pointQ(r, `El punto P${pt(P0)} gira ${name} alrededor del punto C${pt(C)}. ¿Cuáles son las coordenadas de P′?`, img, `Desde C, P está ${sg(dx)} en x y ${sg(dy)} en y. Al girar ${name}, ese desplazamiento pasa a (${sg(img.x - C.x)}, ${sg(img.y - C.y)}): P′ = ${pt(img)}.`, { kind: "coordPlane", min: -6, max: 6, points: [{ ...C, emoji: "C" }, { ...P0, emoji: "P" }] }, `giro-${turn}`, [{ x: -P0.y, y: P0.x }, { x: -P0.x, y: -P0.y }]);
 }
 
-// H.16: hallar las reglas de una sucesión de transformaciones.
+// Hallar las reglas de una sucesión de transformaciones.
 export function sequenceRules(r: Rng): Question {
   const dx = r.int(-4, 4) || 2, dy = r.int(-4, 4) || -1;
   const axis = r.pick(["x", "y"] as const);
@@ -52,7 +52,7 @@ export function sequenceRules(r: Rng): Question {
 }
 
 const REGULAR: [string, number][] = [["un triángulo equilátero", 3], ["un cuadrado", 4], ["un pentágono regular", 5], ["un hexágono regular", 6], ["un octágono regular", 8]];
-// H.17: transformaciones que llevan un polígono sobre sí mismo.
+// Transformaciones que llevan un polígono sobre sí mismo.
 export function ontoItself(r: Rng): Question {
   const [name, n] = r.pick(REGULAR);
   const step = 360 / n;
@@ -62,7 +62,7 @@ export function ontoItself(r: Rng): Question {
   return numQ(n, `¿Cuántas reflexiones distintas (ejes de simetría) llevan ${name} sobre sí mismo?`, undefined, `Un polígono regular de ${n} lados tiene ${n} ejes de simetría.`, "reflexiones");
 }
 
-// I.3: dilataciones: longitud, perímetro y área.
+// Dilataciones: longitud, perímetro y área.
 export function dilationMeasures(r: Rng): Question {
   const k = r.pick([2, 3, 0.5, 1.5]), base = r.int(2, 12) * 2;
   const form = r.int(0, 2);
@@ -71,7 +71,7 @@ export function dilationMeasures(r: Rng): Question {
   return valQ(r, `Una figura de ${base} cm² de área se dilata con factor ${dec(k)}. ¿Cuál es el área de la imagen, en cm²?`, base * k * k, [base * k, base + k * k, base * 2 * k], `El área se multiplica por el factor al cuadrado: ${base} × ${dec(k * k)} = ${dec(base * k * k)}.`, undefined, "area");
 }
 
-// I.6: hallar el factor de escala y el centro de una dilatación.
+// Hallar el factor de escala y el centro de una dilatación.
 export function dilationCenter(r: Rng): Question {
   const C = { x: r.int(-3, 1), y: r.int(-3, 1) }, k = r.pick([2, 3]);
   const A = tri(r).map((p) => ({ x: C.x + Math.round((p.x + 3) / 2), y: C.y + Math.round((p.y + 3) / 2) }));
@@ -88,7 +88,7 @@ const DIL_FACTS: [string, boolean, string][] = [
   ["Una dilatación de factor 2 conserva las longitudes de los segmentos.", false, "Las longitudes se multiplican por 2."],
   ["Una dilatación lleva una recta a una recta perpendicular.", false, "La imagen es paralela (o la misma recta), no perpendicular."],
 ];
-// I.7: dilataciones y rectas paralelas.
+// Dilataciones y rectas paralelas.
 export function dilationParallel(r: Rng): Question {
   const [t, ok, why] = r.pick(DIL_FACTS);
   return fixedQ(`¿Es verdadera o falsa? ${t}`, ["Verdadera", "Falsa"], ok ? "Verdadera" : "Falsa", why, undefined, ok ? "verdadera" : "falsa");
@@ -97,7 +97,7 @@ export function dilationParallel(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Congruencia
 
-// K.2: resolver problemas con partes correspondientes.
+// Resolver problemas con partes correspondientes.
 export function correspondingX(r: Rng): Question {
   const x = r.int(3, 12), a = r.int(2, 5), b = r.int(1, 10) * r.pick([1, -1]), angle = r.chance(0.5);
   const val = a * x + b;
@@ -115,7 +115,7 @@ const CRIT_CASES: [string, number, string][] = [
   ["∠A ≅ ∠D, ∠B ≅ ∠E y ∠C ≅ ∠F", 5, "Tres ángulos iguales no garantizan el mismo tamaño (AAA solo da semejanza)."],
   ["AB ≅ DE, BC ≅ EF y ∠A ≅ ∠D", 5, "Dos lados y un ángulo no comprendido (LLA) no garantizan congruencia."],
 ];
-// L.2-L.8: criterios de congruencia de triángulos.
+// Criterios de congruencia de triángulos.
 export function congruenceCriterion(r: Rng, allowed: number[]): Question {
   // «No se puede asegurar» sale una de cada cuatro veces.
   const none = r.chance(0.25);
@@ -125,7 +125,7 @@ export function congruenceCriterion(r: Rng, allowed: number[]): Question {
   return fixedQ(`En △ABC y △DEF se sabe que ${given}. ¿Qué criterio prueba que △ABC ≅ △DEF?`, opts, CRITERIA[k], why, undefined, CRITERIA[k]);
 }
 
-// L.7: criterio LLL en el plano de coordenadas.
+// Criterio LLL en el plano de coordenadas.
 export function sssCoordinates(r: Rng): Question {
   const A = tri(r);
   const yes = r.chance(0.5);
@@ -140,7 +140,7 @@ export function sssCoordinates(r: Rng): Question {
   return yesNo("¿Los triángulos A y B son congruentes por LLL? (Compara las longitudes de los lados.)", same, `Lados de A: ${sa.map((v) => `√${v}`).join(", ")}; lados de B: ${sb.map((v) => `√${v}`).join(", ")}.`, plane(A, B), same ? "si" : "no");
 }
 
-// L.10: congruencia en triángulos isósceles y equiláteros.
+// Congruencia en triángulos isósceles y equiláteros.
 export function isoscelesAngles(r: Rng): Question {
   const form = r.int(0, 2);
   if (form === 0) {
@@ -160,7 +160,7 @@ export function isoscelesAngles(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Semejanza
 
-// M.2: enunciados de semejanza.
+// Enunciados de semejanza.
 export function similarityStatement(r: Rng): Question {
   const [t1, t2] = r.shuffle(["ABC", "DEF", "PQR", "XYZ", "JKL", "MNO"]).slice(0, 2);
   const perm = r.shuffle([0, 1, 2]);
@@ -170,7 +170,7 @@ export function similarityStatement(r: Rng): Question {
   return choiceQ(r, `En dos triángulos semejantes, ∠${t1[0]} ≅ ∠${corr[0]}, ∠${t1[1]} ≅ ∠${corr[1]} y ∠${t1[2]} ≅ ∠${corr[2]}. ¿Qué enunciado de semejanza es correcto?`, good, [...new Set(wrong)], "Los vértices correspondientes deben ir en el mismo orden.", undefined, "enunciado");
 }
 
-// M.6 / M.14: perímetros y áreas de figuras semejantes.
+// Perímetros y áreas de figuras semejantes.
 export function similarPerimeterArea(r: Rng, area: boolean): Question {
   const a = r.int(2, 6), b = a * r.pick([2, 3]);
   const k = b / a;
@@ -183,7 +183,7 @@ export function similarPerimeterArea(r: Rng, area: boolean): Question {
 }
 
 const SIM_RULES = ["AA", "LLL de semejanza", "LAL de semejanza", "No son semejantes"];
-// M.8: criterios de semejanza de triángulos.
+// Criterios de semejanza de triángulos.
 export function similarityRule(r: Rng): Question {
   const k = r.pick([2, 3, 1.5]);
   const [a, b, c] = r.pick([[3, 4, 5], [4, 6, 8], [2, 5, 6], [5, 7, 9]]);
@@ -199,14 +199,14 @@ export function similarityRule(r: Rng): Question {
   return fixedQ(`${given}. ¿Por qué criterio son semejantes?`, SIM_RULES, SIM_RULES[kk], why, undefined, SIM_RULES[kk]);
 }
 
-// M.11: semejanza de circunferencias.
+// Semejanza de circunferencias.
 export function similarCircles(r: Rng): Question {
   const r1 = r.int(2, 9), r2 = r1 * r.int(2, 4);
   if (r.chance(0.4)) return fixedQ("¿Todas las circunferencias son semejantes?", ["Sí, siempre", "Solo si tienen el mismo centro", "No, nunca"], "Sí, siempre", "Una traslación lleva un centro al otro y una dilatación de factor r₂ ÷ r₁ ajusta el tamaño.", undefined, "siempre");
   return numQ(r2 / r1, `Una circunferencia de radio ${r1} cm se transforma en otra de radio ${r2} cm con una traslación y una dilatación. ¿Cuál es el factor de escala?`, undefined, `${r2} ÷ ${r1} = ${r2 / r1}.`, "factor");
 }
 
-// M.13: semejanza y alturas en triángulos rectángulos (media geométrica).
+// Semejanza y alturas en triángulos rectángulos (media geométrica).
 export function rightAltitude(r: Rng): Question {
   const [p, q] = r.pick([[4, 9], [1, 4], [4, 16], [9, 16], [2, 8], [3, 12], [1, 9], [4, 25]]);
   const h = Math.sqrt(p * q);
@@ -220,7 +220,7 @@ export function rightAltitude(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Propiedades de triángulos
 
-// N.1: segmentos medios de triángulos.
+// Segmentos medios de triángulos.
 export function midsegment(r: Rng): Question {
   const base = r.int(4, 20) * 2;
   if (r.chance(0.5)) return numQ(base / 2, `D y E son los puntos medios de AB y AC en △ABC. Si BC = ${base}, ¿cuánto mide DE?`, undefined, `El segmento medio es paralelo al tercer lado y mide la mitad: ${base} ÷ 2 = ${base / 2}.`, "mitad");
@@ -228,7 +228,7 @@ export function midsegment(r: Rng): Question {
   return numQ(x, `D y E son los puntos medios de AB y AC. DE = ${a}x + ${b} y BC = ${2 * (a * x + b)}. ¿Cuánto vale x?`, undefined, `DE = BC ÷ 2 = ${a * x + b} → ${a}x + ${b} = ${a * x + b} → x = ${x}.`, "ecuacion");
 }
 
-// N.2: triángulos y bisectrices (mediatrices y bisectrices de ángulos).
+// Triángulos y bisectrices (mediatrices y bisectrices de ángulos).
 export function bisectorTheorems(r: Rng): Question {
   const x = r.int(2, 9), a = r.int(2, 5), c = r.int(1, a - 1), b = r.int(1, 8);
   const d = (a - c) * x + b;
@@ -243,7 +243,7 @@ const SEGMENTS: [string, string][] = [
   ["Mediatriz", "Es perpendicular a un lado y pasa por su punto medio."],
 ];
 const CENTERS: [string, string][] = [["Baricentro", "las medianas"], ["Ortocentro", "las alturas"], ["Incentro", "las bisectrices"], ["Circuncentro", "las mediatrices"]];
-// N.3 / N.6 / N.7: medianas, alturas, bisectrices, mediatrices y sus puntos notables.
+// Medianas, alturas, bisectrices, mediatrices y sus puntos notables.
 export function triangleSegments(r: Rng, centers = false): Question {
   if (centers) {
     const [c, lines] = r.pick(CENTERS);
@@ -255,7 +255,7 @@ export function triangleSegments(r: Rng, centers = false): Question {
   return fixedQ(`¿Cómo se llama el segmento que cumple esto? ${def}`, SEGMENTS.map((s) => s[0]), name, def, undefined, name);
 }
 
-// N.4: relaciones entre ángulos y lados de un triángulo.
+// Relaciones entre ángulos y lados de un triángulo.
 export function angleSide(r: Rng): Question {
   const angles = r.shuffle([r.int(30, 50), r.int(55, 75), 0]);
   const zero = angles.indexOf(0);
@@ -267,7 +267,7 @@ export function angleSide(r: Rng): Question {
   return fixedQ(`En △ABC, m∠A = ${angles[0]}°, m∠B = ${angles[1]}° y m∠C = ${angles[2]}°. ¿Cuál es el lado ${big ? "más largo" : "más corto"}?`, opp, opp[idx], `El lado ${big ? "más largo" : "más corto"} está opuesto al ángulo ${big ? "mayor" : "menor"} (∠${names[idx]}).`, undefined, big ? "mayor" : "menor");
 }
 
-// N.8: hallar el baricentro de un triángulo.
+// Hallar el baricentro de un triángulo.
 export function centroid(r: Rng): Question {
   const G = { x: r.int(-4, 4), y: r.int(-4, 4) };
   const A = { x: G.x + r.int(-3, 3), y: G.y + r.int(-3, 3) }, B = { x: G.x + r.int(-3, 3), y: G.y + r.int(-3, 3) };
@@ -279,7 +279,7 @@ export function centroid(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Cuadriláteros
 
-// O.6-O.12: propiedades de paralelogramos, rombos, rectángulos, trapecios y cometas.
+// Propiedades de paralelogramos, rombos, rectángulos, trapecios y cometas.
 export function quadProperty(r: Rng, kind: "parallelogram" | "rhombus" | "rectangle" | "trapezoid" | "kite" | "mixed"): Question {
   const k = kind === "mixed" ? r.pick(["parallelogram", "rhombus", "rectangle", "trapezoid", "kite"] as const) : kind;
   const x = r.int(3, 12);
@@ -328,13 +328,13 @@ const PARALLELOGRAM_TESTS: [string, boolean][] = [
   ["Las diagonales son perpendiculares.", false],
   ["Dos lados consecutivos son congruentes.", false],
 ];
-// O.7: probar que un cuadrilátero es un paralelogramo.
+// Probar que un cuadrilátero es un paralelogramo.
 export function provingParallelogram(r: Rng): Question {
   const [t, ok] = r.pick(PARALLELOGRAM_TESTS);
   return yesNo(`¿Basta esta condición para asegurar que un cuadrilátero es un paralelogramo? ${t}`, ok, ok ? "Sí: es uno de los criterios de paralelogramo." : "No: hay cuadriláteros que lo cumplen sin ser paralelogramos (por ejemplo, un trapecio isósceles o una cometa).", undefined, ok ? "si" : "no");
 }
 
-// O.13: clasificar figuras en el plano de coordenadas (justificando con pendientes y longitudes).
+// Clasificar figuras en el plano de coordenadas (justificando con pendientes y longitudes).
 export function classifyOnPlane(r: Rng): Question {
   const kind = r.int(0, 3);
   const a = r.int(2, 4), b = r.int(1, 3);

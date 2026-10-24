@@ -11,7 +11,7 @@ const SUPS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
 const sup = (n: number) => [...String(n)].map((c) => SUPS[Number(c)]).join("");
 const root = (n: number) => (n === 2 ? "√" : n === 3 ? "∛" : n === 4 ? "∜" : `${sup(n)}√`);
 
-// R.1 / R.2 / R.6: raíces de enteros, de racionales y raíces enésimas.
+// Raíces de enteros, de racionales y raíces enésimas.
 export function nthRoot(r: Rng, kind: "integer" | "rational" | "nth"): Question {
   const n = kind === "nth" ? r.pick([3, 4, 5]) : r.pick([2, 3, 4]);
   const k = r.int(2, n === 5 ? 3 : n === 4 ? 4 : 6);
@@ -26,7 +26,7 @@ export function nthRoot(r: Rng, kind: "integer" | "rational" | "nth"): Question 
   return intQ(r, `¿Cuánto es ${root(n)}${neg ? `(−${k ** n})` : k ** n}?`, neg ? -k : k, `${neg ? `(−${k})` : k}${sup(n)} = ${neg ? "−" : ""}${k ** n}.`, undefined, kind, [k * n, neg ? k : -k]);
 }
 
-// R.3: raíces con calculadora.
+// Raíces con calculadora.
 export function rootCalculator(r: Rng): Question {
   const n = r.pick([2, 3, 4, 5]), x = r.int(2, 500);
   const v = Math.round(x ** (1 / n) * 100) / 100;
@@ -34,7 +34,7 @@ export function rootCalculator(r: Rng): Question {
   return valQ(r, `Usa una calculadora. ¿Cuánto es ${root(n)}${x}? Redondea a la centésima.`, v, [Math.round((x / n) * 100) / 100, Math.round(Math.sqrt(x) * 100) / 100 === v ? v + 0.1 : Math.round(Math.sqrt(x) * 100) / 100, Math.round((v + 0.01) * 100) / 100], `${root(n)}${x} = ${x}^(1/${n}) ≈ ${dec(v)}.`, undefined, "calculadora");
 }
 
-// R.4 / R.5: simplificar radicales con variables (raíces cuadradas y cúbicas).
+// Simplificar radicales con variables (raíces cuadradas y cúbicas).
 export function radicalVars(r: Rng, cube: boolean): Question {
   const n = cube ? 3 : 2;
   const k = r.int(2, cube ? 3 : 5), m = r.pick(cube ? [2, 3, 1] : [2, 3, 5, 1]), e = r.int(n + 1, 3 * n + 2);
@@ -47,7 +47,7 @@ export function radicalVars(r: Rng, cube: boolean): Question {
   return choiceQ(r, `Simplifica ${root(n)}(${k ** n * m}x${sup(e)}). (Supón x ≥ 0.)`, good, [...new Set(wrong)], `${root(n)}${k ** n} = ${k} y x${sup(e)} = (x${sup(out)})${sup(n)}${rest ? ` · x${rest > 1 ? sup(rest) : ""}` : ""}.`, undefined, cube ? "cubica" : "cuadrada");
 }
 
-// T.8: ecuaciones con exponentes racionales.
+// Ecuaciones con exponentes racionales.
 export function rationalExpEquation(r: Rng): Question {
   const [p, q] = r.pick([[3, 2], [2, 3], [3, 4], [4, 3], [5, 2], [2, 5]]);
   const base = r.int(2, q === 2 ? 5 : 3);
@@ -62,7 +62,7 @@ const LOGB = [2, 3, 4, 5, 10];
 const subN = (b: number | string) => [...String(b)].map((c) => "₀₁₂₃₄₅₆₇₈₉"[Number(c)] ?? c).join("");
 const log = (b: number | string) => (b === 10 ? "log" : b === "e" ? "ln" : `log${subN(b)}`);
 
-// AA.1-AA.3: convertir entre forma exponencial y logarítmica.
+// Convertir entre forma exponencial y logarítmica.
 export function convertLog(r: Rng, kind: "rational" | "natural" | "all"): Question {
   const toLog = r.chance(0.5);
   if (kind === "natural") {
@@ -88,7 +88,7 @@ export function convertLog(r: Rng, kind: "rational" | "natural" | "all"): Questi
   return choiceQ(r, `¿Cómo se escribe ${goodLog} en forma exponencial?`, `${bShow}^${eShow} = ${val}`, [`${eShow}^${bShow} = ${val}`, `${bShow}^${vP} = ${sg(e)}`, `${vP}^${eShow} = ${bShow}`], "log_b c = a equivale a bᵃ = c.", undefined, "a-exp");
 }
 
-// AA.4 / AA.5: evaluar logaritmos (y logaritmos naturales).
+// Evaluar logaritmos (y logaritmos naturales).
 export function evaluateLog(r: Rng, natural: boolean): Question {
   if (natural) {
     const e = r.int(-3, 6);
@@ -100,7 +100,7 @@ export function evaluateLog(r: Rng, natural: boolean): Question {
   return intQ(r, `¿Cuánto vale ${log(b)} ${val}?`, e, `${b}${e < 0 ? `⁻${sup(-e)}` : sup(e)} = ${val}, así que ${log(b)} ${val} = ${sg(e)}.`, undefined, "evaluar", [-e, b * e || 1]);
 }
 
-// AA.6 / AA.7: cambio de base y logaritmos con calculadora.
+// Cambio de base y logaritmos con calculadora.
 export function changeOfBase(r: Rng, calculator: boolean): Question {
   const b = r.pick([2, 3, 5, 6, 7]), x = r.int(3, 90);
   const v = Math.round((Math.log(x) / Math.log(b)) * 100) / 100;
@@ -114,13 +114,13 @@ const PROPS: [string, string, string[]][] = [
   ["log_b(Mᵏ) = k · log_b M", "Propiedad de la potencia", ["Propiedad del producto", "Propiedad del cociente", "Cambio de base"]],
   ["log_b M = log M / log b", "Cambio de base", ["Propiedad del producto", "Propiedad del cociente", "Propiedad de la potencia"]],
 ];
-// AA.8: identificar propiedades de los logaritmos.
+// Identificar propiedades de los logaritmos.
 export function logProperties(r: Rng): Question {
   const [eq, good, wrong] = r.pick(PROPS);
   return choiceQ(r, `¿Qué propiedad se usa en ${eq}?`, good, wrong, `${eq}: ${good.toLowerCase()}.`, undefined, "propiedad");
 }
 
-// AA.9-AA.12: propiedades del producto, cociente y potencia (expandir o condensar).
+// Propiedades del producto, cociente y potencia (expandir o condensar).
 export function logRule(r: Rng, rule: "product" | "quotient" | "power" | "mixed"): Question {
   const ru = rule === "mixed" ? r.pick(["product", "quotient", "power"] as const) : rule;
   const b = r.pick(LOGB), m = r.int(2, 9), n = r.int(2, 9), k = r.int(2, 5);
@@ -130,7 +130,7 @@ export function logRule(r: Rng, rule: "product" | "quotient" | "power" | "mixed"
   return choiceQ(r, `Escribe sin exponentes dentro del logaritmo: ${L(`x${sup(k)}`)}`, `${k} · ${L("x")}`, [`${L(`${k}x`)}`, `(${L("x")})${sup(k)}`, `${L("x")} + ${k}`], `Potencia: log(Mᵏ) = k · log M.`, undefined, "potencia");
 }
 
-// AA.13: evaluar logaritmos usando propiedades.
+// Evaluar logaritmos usando propiedades.
 export function logEvaluate(r: Rng): Question {
   const b = r.pick([2, 3, 5]), a = r.int(1, 3), c = r.int(1, 3);
   const form = r.int(0, 2);
@@ -141,7 +141,7 @@ export function logEvaluate(r: Rng): Question {
   return numQ(k, `¿Cuánto vale log ${p} + log ${q}?`, undefined, `log ${p} + log ${q} = log ${p * q} = ${k}.`, "producto");
 }
 
-// BB.1 / BB.2: funciones logarítmicas (dominio, rango y gráfico).
+// Funciones logarítmicas (dominio, rango y gráfico).
 export function logFunction(r: Rng, graph: boolean): Question {
   const h = r.int(-3, 3), k = r.int(-3, 3), b = r.pick([2, 3]);
   const f = `f(x) = ${log(b)}${h ? `(x ${h < 0 ? "+" : "−"} ${Math.abs(h)})` : " x"}${k ? ` ${k < 0 ? "−" : "+"} ${Math.abs(k)}` : ""}`;
@@ -159,7 +159,7 @@ export function logFunction(r: Rng, graph: boolean): Question {
 // ---------------------------------------------------------------------------
 // Ecuaciones exponenciales y logarítmicas
 
-// CC.1-CC.3: ecuaciones exponenciales (misma base, logaritmos comunes o naturales).
+// Ecuaciones exponenciales (misma base, logaritmos comunes o naturales).
 export function expEquation(r: Rng, mode: "base" | "common" | "natural"): Question {
   if (mode === "base") {
     const b = r.pick([2, 3, 5]), a = r.int(2, 3), x = r.int(-2, 4);
@@ -177,7 +177,7 @@ export function expEquation(r: Rng, mode: "base" | "common" | "natural"): Questi
   return valQ(r, `Resuelve ${b}^x = ${v}. Redondea a la milésima.`, x, [Math.round((Math.log(b) / Math.log(v)) * 1000) / 1000, Math.round((v / b) * 1000) / 1000, Math.round(Math.log10(v) * 1000) / 1000], `Se aplica log: x = log ${v} ÷ log ${b} ≈ ${dec(x)}.`, undefined, "comun");
 }
 
-// CC.4 / CC.5: interés compuesto (periódico o continuo).
+// Interés compuesto (periódico o continuo).
 export function interestExp(r: Rng, continuous: boolean): Question {
   const P = r.pick([1000, 2000, 5000, 8000]), rate = r.pick([2, 3, 4, 5, 6]), t = r.int(2, 10);
   const name = r.pick(NAMES);
@@ -190,7 +190,7 @@ export function interestExp(r: Rng, continuous: boolean): Question {
   return valQ(r, `${name} deposita ${soles(P * 100)} al ${rate} % anual compuesto anualmente. ¿En cuántos años se duplicará su dinero (${soles(target * 100)})? Redondea a la décima.`, years, [Math.round((100 / rate) * 10) / 10, Math.round((72 / rate) * 10) / 10 === years ? years + 1 : Math.round((72 / rate) * 10) / 10, Math.round(years * 2 * 10) / 10], `${P}(1,0${rate})^t = ${target} → t = log 2 ÷ log 1,0${rate} ≈ ${dec(years)}.`, undefined, "duplicar");
 }
 
-// CC.6 / CC.7: ecuaciones logarítmicas.
+// Ecuaciones logarítmicas.
 export function logEquation(r: Rng, level: 1 | 2): Question {
   const b = r.pick([2, 3, 5, 10]);
   if (level === 1) {

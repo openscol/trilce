@@ -8,7 +8,7 @@ const FRUIT: [string, string][] = [["🍎", "manzanas"], ["🍊", "naranjas"], [
 type Form = "colon" | "fraction" | "a";
 const write = (a: number, b: number, form: Form) => (form === "colon" ? `${a}:${b}` : form === "fraction" ? `${a}/${b}` : `${a} a ${b}`);
 
-// 6.° S.1 – S.4 / S.6: escribir una razón a partir de un dibujo.
+// Escribir una razón a partir de un dibujo.
 export function writeRatio(r: Rng, forms: Form[], partToWhole = false): Question {
   const [x, y] = r.shuffle(FRUIT).slice(0, 2);
   const [a, b] = distinct(r, 2, 2, 9);
@@ -20,7 +20,7 @@ export function writeRatio(r: Rng, forms: Form[], partToWhole = false): Question
   return choiceQ(r, whole ? `Escribe ${how} la razón de ${x[1]} al total de frutas.` : `Escribe ${how} la razón de ${x[1]} a ${y[1]}.`, answer, wrong, whole ? `Hay ${a} ${x[1]} y ${a + b} frutas en total: ${answer}. El orden importa.` : `Hay ${a} ${x[1]} y ${b} ${y[1]}: ${answer}. El orden importa.`, { kind: "bag", items: [{ emoji: x[0], count: a }, { emoji: y[0], count: b }] }, whole ? "parte-todo" : "parte-parte");
 }
 
-// 6.° S.6: ¿qué modelo representa la razón? (todas las opciones tienen la misma cantidad de frutas).
+// ¿qué modelo representa la razón? (todas las opciones tienen la misma cantidad de frutas).
 export function ratioModel(r: Rng): Question {
   const [x, y] = r.shuffle(FRUIT).slice(0, 2);
   const [a, b] = distinct(r, 2, 1, 7);
@@ -33,7 +33,7 @@ export function ratioModel(r: Rng): Question {
   return { kind: "choice", prompt: `¿Qué modelo muestra una razón de ${a} a ${b} entre ${x[1]} y ${y[1]}?`, options: r.shuffle(options), answer: draw(a, b), explanation: `Debe haber ${a} ${x[0]} y ${b} ${y[0]}, en ese orden: ${a}:${b}.` };
 }
 
-// 6.° S.5: escribir una razón en problemas.
+// Escribir una razón en problemas.
 export function ratioProblem(r: Rng): Question {
   const [a, b] = distinct(r, 2, 2, 20);
   const form = r.pick<Form>(["colon", "fraction", "a"]);
@@ -59,7 +59,7 @@ function ratioPair(r: Rng, maxK = 9): [number, number, number] {
   }
 }
 
-// 6.° S.7 / S.19: razones equivalentes y proporciones (sí o no).
+// Razones equivalentes y proporciones (sí o no).
 export function equivalentRatios(r: Rng, proportion = false): Question {
   const [a, b, k] = ratioPair(r);
   const yes = r.chance(0.5);
@@ -70,7 +70,7 @@ export function equivalentRatios(r: Rng, proportion = false): Question {
   return yesNo(proportion ? `¿Las razones ${l} y ${rt} forman una proporción?` : `¿Las razones ${l} y ${rt} son equivalentes?`, yes, `Productos cruzados: ${a} × ${d} = ${a * d} y ${b} × ${c} = ${b * c}: ${yes ? "son iguales" : "no son iguales"}.`);
 }
 
-// 6.° S.8 / S.20: escribir una razón equivalente / resolver la proporción.
+// Escribir una razón equivalente / resolver la proporción.
 export function solveProportion(r: Rng, asFraction = false): Question {
   const [a, b, k] = ratioPair(r, 12);
   const sep = asFraction ? "/" : ":";
@@ -82,7 +82,7 @@ export function solveProportion(r: Rng, asFraction = false): Question {
 
 const TABLE_THEMES: [string, string, string][] = [["Tazas de arroz", "Tazas de agua", "Para cocinar arroz"], ["Kilos", "Soles", "Precio de la papa"], ["Horas", "Kilómetros", "Recorrido en bicicleta"], ["Cajas", "Lápices", "Lápices por caja"], ["Jarras", "Limones", "Limonada"]];
 
-// 6.° S.9 / S.14: tablas de razones.
+// Tablas de razones.
 export function ratioTable(r: Rng): Question {
   const [a, b] = ratioPair(r);
   const [h1, h2, title] = r.pick(TABLE_THEMES);
@@ -92,7 +92,7 @@ export function ratioTable(r: Rng): Question {
   return numQ(top ? ks[hidden] * a : ks[hidden] * b, "Completa la tabla de razones equivalentes.", table([h1, h2], ks.map((k, i) => [i === hidden && top ? "?" : String(k * a), i === hidden && !top ? "?" : String(k * b)]), title), `La razón es ${a}:${b}; en esa fila se multiplica por ${ks[hidden]}: ${ks[hidden] * a} y ${ks[hidden] * b}.`);
 }
 
-// 6.° S.10 / S.18: problemas de razones equivalentes.
+// Problemas de razones equivalentes.
 export function equivalentRatioProblem(r: Rng): Question {
   const [a, b, k] = ratioPair(r, 12);
   const name = r.pick(NAMES);
@@ -106,7 +106,7 @@ export function equivalentRatioProblem(r: Rng): Question {
   return numQ(answer, text, undefined, `${why}.`);
 }
 
-// 6.° S.11 / S.12: tasas unitarias.
+// Tasas unitarias.
 export function unitRates(r: Rng, word = true): Question {
   const k = r.int(2, 12);
   const unit = r.int(2, 60);
@@ -122,7 +122,7 @@ export function unitRates(r: Rng, word = true): Question {
   return numQ(unit, text, undefined, `${fmt(unit * k)} ÷ ${k} = ${unit} ${label}.`);
 }
 
-// 6.° S.13: calcular velocidad, distancia o tiempo.
+// Calcular velocidad, distancia o tiempo.
 export function speedDistanceTime(r: Rng): Question {
   const v = r.int(3, 90);
   const t = r.int(2, 9);
@@ -134,7 +134,7 @@ export function speedDistanceTime(r: Rng): Question {
   return numQ(t, `${who} avanza a ${v} km por hora. ¿Cuántas horas tarda en recorrer ${fmt(d)} km?`, undefined, `Tiempo = distancia ÷ velocidad = ${fmt(d)} ÷ ${v} = ${t} horas.`, "tiempo");
 }
 
-// 6.° S.15: usar diagramas de cintas para resolver problemas de razones.
+// Usar diagramas de cintas para resolver problemas de razones.
 export function tapeDiagram(r: Rng): Question {
   const [a, b] = ratioPair(r);
   const each = r.int(2, 12);
@@ -146,7 +146,7 @@ export function tapeDiagram(r: Rng): Question {
   return numQ((a + b) * each, `La razón de ${x.toLowerCase()} a ${y.toLowerCase()} es ${a}:${b}. Si «${y.toLowerCase()}» son ${b * each}, ¿cuántos hay en total?`, visual, `${b * each} ÷ ${b} = ${each} por casilla; ${a + b} × ${each} = ${(a + b) * each}.`, "hallar-total");
 }
 
-// 6.° S.16 / S.17: comparar razones y tasas en problemas.
+// Comparar razones y tasas en problemas.
 export function compareRates(r: Rng, rates: boolean): Question {
   for (;;) {
     const [ka, kb] = distinct(r, 2, 2, 9);
@@ -164,7 +164,7 @@ export function compareRates(r: Rng, rates: boolean): Question {
   }
 }
 
-// 6.° S.21: dibujos a escala.
+// Dibujos a escala.
 export function scaleDrawing(r: Rng): Question {
   const scale = r.pick([2, 5, 10, 20, 50, 100]);
   const cm = r.int(2, 15);
@@ -173,7 +173,7 @@ export function scaleDrawing(r: Rng): Question {
   return numQ(cm, `En ${thing}, 1 cm representa ${scale} ${unit}. Una distancia real de ${fmt(cm * scale)} ${unit}, ¿cuántos centímetros mide en el dibujo?`, undefined, `${fmt(cm * scale)} ÷ ${scale} = ${cm} cm.`, "a-dibujo");
 }
 
-// 6.° S (checkpoints): repasos de razones y de tasas unitarias.
+// Repasos de razones y de tasas unitarias.
 export function ratioReview(r: Rng): Question {
   return r.pick([() => writeRatio(r, ["colon", "fraction", "a"], true), () => ratioProblem(r), () => equivalentRatios(r), () => solveProportion(r), () => ratioTable(r), () => equivalentRatioProblem(r), () => tapeDiagram(r)])();
 }
@@ -181,7 +181,7 @@ export function unitRateReview(r: Rng): Question {
   return r.pick([() => unitRates(r), () => speedDistanceTime(r), () => compareRates(r, true), () => unitPriceDecimal(r)])();
 }
 
-// 6.° X.3: precios por unidad con decimales (precio por kilo, por litro...).
+// Precios por unidad con decimales (precio por kilo, por litro...).
 export function unitPriceDecimal(r: Rng): Question {
   const qty = r.pick([500, 1500, 2500, 250, 750, 2000, 4000]);
   const perUnit = r.int(2, 24) * 1000;
@@ -208,7 +208,7 @@ function relation(r: Rng, proportional: boolean): { pts: Pt[]; k: number; b: num
 const graph = (pts: Pt[]): Visual => ({ kind: "coordPlane", max: 12, points: pts.map((p) => ({ ...p, emoji: "•" })), connect: "open" });
 const xy = (pts: Pt[]) => table(["x", "y"], pts.map((p) => [String(p.x), String(p.y)]));
 
-// 6.° T.1 – T.3: identificar relaciones proporcionales en gráficos y tablas.
+// Identificar relaciones proporcionales en gráficos y tablas.
 export function isProportional(r: Rng, show: "graph" | "table" | "both"): Question {
   const yes = r.chance(0.5);
   const rel = relation(r, yes);
@@ -218,7 +218,7 @@ export function isProportional(r: Rng, show: "graph" | "table" | "both"): Questi
   return yesNo(mode === "graph" ? "¿El gráfico muestra una relación proporcional?" : show === "both" ? "Si graficas estos puntos, ¿se ve una relación proporcional (una recta que pasa por el origen)?" : "¿La tabla muestra una relación proporcional?", constant, why, mode === "graph" ? graph(rel.pts) : xy(rel.pts), mode);
 }
 
-// 6.° T.4: interpretar gráficos de relaciones proporcionales.
+// Interpretar gráficos de relaciones proporcionales.
 export function interpretProportional(r: Rng): Question {
   const rel = relation(r, true);
   const visual = graph(rel.pts);

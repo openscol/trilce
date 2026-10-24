@@ -27,7 +27,7 @@ function complexQ(r: Rng, prompt: string, ans: C, why: string, visual?: string, 
   return choiceQ(r, prompt, good, [...new Set(wrong)].filter((w) => w !== good), why, visual, tag);
 }
 
-// K.1: introducción a los números complejos.
+// Introducción a los números complejos.
 export function complexIntro(r: Rng): Question {
   const z = rc(r);
   const form = r.int(0, 2);
@@ -42,7 +42,7 @@ export function complexIntro(r: Rng): Question {
   return fixedQ("¿Cuánto vale i²?", ["−1", "1", "i", "−i"], "−1", "Por definición, i = √(−1), así que i² = −1.", undefined, "i2");
 }
 
-// K.2-K.6: operaciones con números complejos.
+// Operaciones con números complejos.
 export function complexOp(r: Rng, ops: ("+" | "−" | "×" | "÷")[]): Question {
   const op = r.pick(ops);
   const p = rc(r), q = rc(r);
@@ -55,21 +55,21 @@ export function complexOp(r: Rng, ops: ("+" | "−" | "×" | "÷")[]): Question 
   return complexQ(r, "Calcula. Escribe el resultado en la forma a + bi.", ans, `Se multiplican numerador y denominador por el conjugado ${cx([d[0], -d[1]])}: el denominador queda ${d[0] ** 2 + d[1] ** 2}.`, `(${cx(n)}) ÷ (${cx(d)})`, "cociente");
 }
 
-// K.3: conjugados.
+// Conjugados.
 export function complexConjugate(r: Rng): Question {
   const z = rc(r);
   if (r.chance(0.5)) return complexQ(r, `¿Cuál es el conjugado de ${cx(z)}?`, [z[0], -z[1]], "El conjugado de a + bi es a − bi.", undefined, "conjugado");
   return numQ(z[0] ** 2 + z[1] ** 2, `¿Cuánto es (${cx(z)})(${cx([z[0], -z[1]])})?`, undefined, `(a + bi)(a − bi) = a² + b² = ${z[0] ** 2} + ${z[1] ** 2} = ${z[0] ** 2 + z[1] ** 2}.`, "producto-conjugado");
 }
 
-// K.7: valor absoluto (módulo) de un número complejo.
+// Valor absoluto (módulo) de un número complejo.
 export function complexAbs(r: Rng): Question {
   const [a, b, c] = r.pick([[3, 4, 5], [5, 12, 13], [6, 8, 10], [8, 15, 17], [0, 7, 7]]);
   const z: C = [a * r.pick([1, -1]), b * r.pick([1, -1])];
   return numQ(c, `¿Cuál es el valor absoluto de ${cx(z)}?`, undefined, `|a + bi| = √(a² + b²) = √(${a * a} + ${b * b}) = ${c}.`, "modulo");
 }
 
-// K.8: potencias de i.
+// Potencias de i.
 export function powersOfI(r: Rng): Question {
   const n = r.int(5, 99);
   const vals = ["1", "i", "−1", "−i"];
@@ -81,7 +81,7 @@ export function powersOfI(r: Rng): Question {
 
 const evalP = (p: number[], x: number) => p.reduce((s, c) => s * x + c, 0);
 
-// L.5 / L.7: división sintética (cociente o valor del polinomio por el teorema del resto).
+// División sintética (cociente o valor del polinomio por el teorema del resto).
 export function synthetic(r: Rng, evaluate: boolean): Question {
   const a = nz(r, 4);
   const q = [r.int(1, 3), r.int(-5, 5), r.int(-5, 5)];
@@ -97,7 +97,7 @@ const pascalRow = (n: number) => Array.from({ length: n + 1 }, (_, k) => {
   for (let i = 0; i < k; i++) c = (c * (n - i)) / (i + 1);
   return c;
 });
-// L.8-L.11: triángulo de Pascal y teorema del binomio.
+// Triángulo de Pascal y teorema del binomio.
 export function binomialTheorem(r: Rng, mode: "pascal" | "pascalBinomial" | "coef" | "term"): Question {
   const n = r.int(3, 7);
   const row = pascalRow(n);
@@ -115,7 +115,7 @@ export function binomialTheorem(r: Rng, mode: "pascal" | "pascalBinomial" | "coe
 // ---------------------------------------------------------------------------
 // Factorización
 
-// M.8: suma y diferencia de cubos.
+// Suma y diferencia de cubos.
 export function cubes(r: Rng): Question {
   const a = r.pick([1, 1, 2, 3]), b = r.int(1, 5), sum = r.chance(0.5);
   const p = [a ** 3, 0, 0, (sum ? 1 : -1) * b ** 3];
@@ -128,7 +128,7 @@ export function cubes(r: Rng): Question {
 // ---------------------------------------------------------------------------
 // Funciones cuadráticas por tres puntos
 
-// N.15: escribir una función cuadrática a partir de tres puntos.
+// Escribir una función cuadrática a partir de tres puntos.
 export function quadThreePoints(r: Rng): Question {
   const a = nz(r, 2), b = r.int(-4, 4), c = r.int(-5, 5);
   const f = (x: number) => a * x * x + b * x + c;
@@ -143,7 +143,7 @@ export function quadThreePoints(r: Rng): Question {
 
 const fromRoots = (roots: number[], lead = 1) => roots.reduce((p, x) => polyMul(p, [1, -x]), [lead]);
 
-// Q.1: teorema del factor.
+// Teorema del factor.
 export function factorTheorem(r: Rng): Question {
   const roots = [nz(r, 4), nz(r, 4), r.int(-4, 4)];
   const p = fromRoots(roots);
@@ -152,7 +152,7 @@ export function factorTheorem(r: Rng): Question {
   return yesNo(`¿(${xMinus(a)}) es un factor de P(x) = ${poly(p)}?`, yes, `P(${sg(a)}) = ${sg(evalP(p, a))}: ${yes ? "como es 0, sí es factor." : "como no es 0, no es factor."}`, undefined, yes ? "si" : "no");
 }
 
-// Q.2: ceros de polinomios factorizados (y multiplicidad).
+// Ceros de polinomios factorizados (y multiplicidad).
 export function zerosFactored(r: Rng): Question {
   const a = nz(r, 5), b = nz(r, 5), mult = r.pick([1, 2, 3]);
   if (a === b) return zerosFactored(r);
@@ -162,14 +162,14 @@ export function zerosFactored(r: Rng): Question {
   return choiceQ(r, `¿Cuáles son los ceros de ${f}?`, `x = ${sg(lo)} y x = ${sg(hi)}`, [`x = ${sg(-hi)} y x = ${sg(-lo)}`, `x = ${sg(lo)} y x = ${sg(-hi)}`, `x = ${sg(mult)} y x = ${sg(hi)}`].filter((w) => w !== `x = ${sg(lo)} y x = ${sg(hi)}`), "Cada factor (x − r) se anula en x = r.", undefined, "ceros");
 }
 
-// Q.3: escribir un polinomio a partir de sus ceros.
+// Escribir un polinomio a partir de sus ceros.
 export function polyFromZeros(r: Rng): Question {
   const roots = [nz(r, 3), nz(r, 3), r.int(-3, 3)];
   const good = `P(x) = ${poly(fromRoots(roots))}`;
   return choiceQ(r, `¿Qué polinomio de grado 3 (coeficiente principal 1) tiene ceros ${roots.map(sg).join(", ")}?`, good, [`P(x) = ${poly(fromRoots(roots.map((x) => -x)))}`, `P(x) = ${poly(fromRoots([roots[0], -roots[1], roots[2]]))}`, `P(x) = ${poly(fromRoots(roots).map((c, i) => (i === 3 ? -c : c)))}`].filter((w, i, all) => w !== good && all.indexOf(w) === i), `P(x) = ${roots.map((x) => `(${xMinus(x)})`).join("")}; se multiplica.`, undefined, "ceros");
 }
 
-// Q.4 / Q.5: factorizar dado un cero y resolver ecuaciones cúbicas y cuárticas.
+// Factorizar dado un cero y resolver ecuaciones cúbicas y cuárticas.
 export function solvePolynomial(r: Rng, quartic: boolean): Question {
   if (quartic) {
     const p = r.int(1, 4), q = r.int(1, 5);
@@ -186,7 +186,7 @@ export function solvePolynomial(r: Rng, quartic: boolean): Question {
   return choiceQ(r, `Resuelve la ecuación. (Una solución es x = ${sg(roots[0])}.)`, good, [`x = ${s.map((x) => sg(-x)).reverse().join(", ")}`, `x = ${sg(s[0])}, ${sg(s[1])}`, `x = ${[s[0], s[1], -s[2]].map(sg).join(", ")}`], `Se divide entre (${xMinus(roots[0])}) y se factoriza el cociente cuadrático.`, `${poly(fromRoots(roots))} = 0`, "cubica");
 }
 
-// Q.6: teorema de la raíz racional.
+// Teorema de la raíz racional.
 export function rationalRoot(r: Rng): Question {
   const lead = r.pick([1, 2, 3]), c = r.pick([2, 3, 4, 6]);
   const divs = (n: number) => Array.from({ length: n }, (_, i) => i + 1).filter((d) => n % d === 0);
@@ -201,7 +201,7 @@ export function rationalRoot(r: Rng): Question {
   return choiceQ(r, `Según el teorema de la raíz racional, ¿cuáles son las posibles raíces racionales de P(x) = ${poly([lead, nz(r, 4), nz(r, 5), c])}?`, good, wrong, `Son ±(divisores de ${c}) ÷ (divisores de ${lead}).`, undefined, "raiz-racional");
 }
 
-// Q.7 / Q.8: teoremas de las raíces conjugadas (complejas e irracionales).
+// Teoremas de las raíces conjugadas (complejas e irracionales).
 export function conjugateRoots(r: Rng, irrational: boolean): Question {
   const a = r.int(-5, 5), b = r.int(1, 6);
   if (irrational) {
@@ -215,7 +215,7 @@ export function conjugateRoots(r: Rng, irrational: boolean): Question {
   return choiceQ(r, `Un polinomio con coeficientes reales tiene la raíz ${cx(z)}. ¿Qué otro número también debe ser raíz?`, cx([a, -b]), [cx([-a, b]), cx([-a, -b]), cx([b, a])].filter((w, i, all) => w !== cx([a, -b]) && all.indexOf(w) === i), "Las raíces complejas de un polinomio con coeficientes reales vienen en pares conjugados.", undefined, "compleja");
 }
 
-// Q.9: regla de los signos de Descartes.
+// Regla de los signos de Descartes.
 export function descartes(r: Rng): Question {
   const p = [1, ...Array.from({ length: 4 }, () => nz(r, 6))];
   const changes = (q: number[]) => q.filter((c) => c !== 0).reduce((n, c, i, all) => (i && Math.sign(c) !== Math.sign(all[i - 1]) ? n + 1 : n), 0);
@@ -228,7 +228,7 @@ export function descartes(r: Rng): Question {
   return choiceQ(r, `Según la regla de los signos de Descartes, ¿cuántas raíces reales ${ask ? "positivas" : "negativas"} puede tener P(x) = ${poly(p)}?`, good, [`${k + 1}`, `${k}`, `${k + 2} o ${k}`, opts.length > 1 ? `${opts[1]}` : `${k + 1} o ${k - 1 < 0 ? 0 : k - 1}`].filter((w, i, all) => w !== good && all.indexOf(w) === i), ask ? `P(x) tiene ${pos} cambios de signo: ${good} raíces positivas (se resta de 2 en 2).` : `P(−x) tiene ${neg} cambios de signo: ${good} raíces negativas.`, undefined, ask ? "positivas" : "negativas");
 }
 
-// Q.10 / Q.11: teorema fundamental del álgebra y raíces de polinomios.
+// Teorema fundamental del álgebra y raíces de polinomios.
 export function fundamentalTheorem(r: Rng, find: boolean): Question {
   if (!find) {
     const n = r.int(2, 8);
@@ -241,7 +241,7 @@ export function fundamentalTheorem(r: Rng, find: boolean): Question {
   return choiceQ(r, `¿Cuáles son las raíces de P(x) = ${poly(p)}?`, good, [`x = ${sg(a)}, x = ${b} y x = −${b}`, `x = ${sg(-a)}, x = ${b === 1 ? "" : b}i y x = −${b === 1 ? "" : b}i`, `x = ${sg(a)} solamente`], `Por agrupación: P(x) = (${xMinus(a)})(x² + ${b * b}); x² = −${b * b} da x = ±${b === 1 ? "" : b}i.`, undefined, "raices");
 }
 
-// Q.12-Q.15: gráficos de polinomios (cúbicas, comportamiento en los extremos, ceros, dominio y rango).
+// Gráficos de polinomios (cúbicas, comportamiento en los extremos, ceros, dominio y rango).
 export function polyGraph(r: Rng, mode: "cubic" | "end" | "zeros" | "match" | "domain"): Question {
   const lead = r.pick([1, -1]) * r.pick([0.5, 0.25]);
   const roots = r.shuffle([-3, -2, -1, 0, 1, 2, 3]).slice(0, 3).sort((a, b) => a - b);
@@ -271,7 +271,7 @@ export function polyGraph(r: Rng, mode: "cubic" | "end" | "zeros" | "match" | "d
   return choiceQ(r, "¿Qué función corresponde al gráfico?", good, [...new Set(wrong)], `Los ceros son ${roots.map(sg).join(", ")} y por la derecha ${lead > 0 ? "sube" : "baja"} (coeficiente principal ${lead > 0 ? "positivo" : "negativo"}).`, visual, mode);
 }
 
-// Q.16: funciones pares e impares.
+// Funciones pares e impares.
 export function evenOdd(r: Rng): Question {
   const cases: [string, number][] = [["f(x) = x⁴ − 3x²", 0], ["f(x) = x³ + 2x", 1], ["f(x) = x² + x", 2], ["f(x) = |x|", 0], ["f(x) = 5x", 1], ["f(x) = x³ + 1", 2], ["f(x) = 2x⁶ + 7", 0], ["f(x) = x⁵ − x³", 1]];
   const [f, k] = r.pick(cases);

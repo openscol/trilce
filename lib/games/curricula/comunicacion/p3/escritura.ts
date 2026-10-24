@@ -1,20 +1,11 @@
 import { choose, order, pickInSentence, type ChoiceItem, type OrderItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { f, pt, s, sorter, w } from "./helpers";
 import type { Row } from "./row";
 
-// Estrategias de escritura (IXL 3rd grade ELA, W-DD).
+// 3.° de Primaria · banco de escritura: organizar las ideas, la oración
+// temática, el propósito, conectores, hechos y opiniones, detalles,
+// variedad de oraciones y corrección.
 
-export const SECTIONS: Section[] = [
-  { id: "W", name: "Organizar la escritura", icon: "🗂️" },
-  { id: "X", name: "Oraciones temáticas", icon: "🎯" },
-  { id: "Y", name: "Propósito del escritor", icon: "✍️" },
-  { id: "Z", name: "Conectores", icon: "🔗" },
-  { id: "AA", name: "Escribir opiniones", icon: "💬" },
-  { id: "BB", name: "Detalles descriptivos", icon: "🎨" },
-  { id: "CC", name: "Variedad de oraciones", icon: "🔀" },
-  { id: "DD", name: "Corregir y revisar", icon: "🔍" },
-];
 
 const SENTENCE_ORDER: OrderItem[] = [
   { seq: ["Ayer fuimos de paseo al río.", "Primero armamos la carpa.", "Luego nadamos y almorzamos.", "Al atardecer volvimos a casa."] },
@@ -245,37 +236,37 @@ const SIGNS: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["W.1", "Poner las oraciones en orden", (r) => order(r, "Ordena las oraciones.", SENTENCE_ORDER)],
-  ["W.2", "Ordenar de lo más general a lo más específico", (r) => order(r, "Ordena de lo más general a lo más específico.", GENERAL_SPECIFIC)],
-  ["W.3", "Organizar la información por tema", (r) => choose(r, "", BY_TOPIC)],
+  ["organizar-1", (r) => order(r, "Ordena las oraciones.", SENTENCE_ORDER)],
+  ["organizar-2", (r) => order(r, "Ordena de lo más general a lo más específico.", GENERAL_SPECIFIC)],
+  ["organizar-3", (r) => choose(r, "", BY_TOPIC)],
 
-  ["X.1", "Seleccionar el detalle que no apoya la oración temática", (r) => choose(r, "", NOT_SUPPORT)],
-  ["X.2", "Elegir oraciones temáticas para párrafos narrativos", (r) => choose(r, "", TOPIC_NARRATIVE)],
-  ["X.3", "Elegir oraciones temáticas para párrafos expositivos", (r) => choose(r, "", TOPIC_EXPOSITORY)],
+  ["oracion-tematica-1", (r) => choose(r, "", NOT_SUPPORT)],
+  ["oracion-tematica-2", (r) => choose(r, "", TOPIC_NARRATIVE)],
+  ["oracion-tematica-3", (r) => choose(r, "", TOPIC_EXPOSITORY)],
 
-  ["Y.1", "Elegir el texto que corresponde al propósito del escritor", (r) => choose(r, "", MATCH_PURPOSE)],
+  ["proposito-escritor", (r) => choose(r, "", MATCH_PURPOSE)],
 
-  ["Z.1", "Identificar palabras de orden en el tiempo", (r) => pickInSentence(r, "Selecciona las palabras que indican orden o momento en el tiempo.", TIME_IN)],
-  ["Z.2", "Usar palabras de orden en el tiempo", (r) => choose(r, "Completa la oración.", TIME_USE)],
-  ["Z.3", "Usar conjunciones coordinantes: y, e, o, u, ni, pero, sino", (r) => choose(r, "Completa la oración.", COORD)],
-  ["Z.4", "Usar conjunciones subordinantes: porque, si, cuando, aunque, mientras", (r) => choose(r, "Completa la oración.", SUBORD)],
-  ["Z.5", "Elegir el mejor conector", (r) => choose(r, "Completa con el mejor conector.", TRANSITION)],
-  ["Z.6", "Usar conectores para completar un texto", (r) => choose(r, "Completa el texto.", LINK_PASSAGE)],
+  ["conectores-1", (r) => pickInSentence(r, "Selecciona las palabras que indican orden o momento en el tiempo.", TIME_IN)],
+  ["conectores-2", (r) => choose(r, "Completa la oración.", TIME_USE)],
+  ["conectores-3", (r) => choose(r, "Completa la oración.", COORD)],
+  ["conectores-4", (r) => choose(r, "Completa la oración.", SUBORD)],
+  ["conectores-5", (r) => choose(r, "Completa con el mejor conector.", TRANSITION)],
+  ["conectores-6", (r) => choose(r, "Completa el texto.", LINK_PASSAGE)],
 
-  ["AA.1", "Distinguir hechos de opiniones", (r) => choose(r, "", FACT_OPINION)],
-  ["AA.2", "Identificar la opinión que expresa el autor", (r) => choose(r, "", AUTHOR_OPINION)],
-  ["AA.3", "Elegir razones que apoyen una opinión", (r) => choose(r, "", REASONS)],
-  ["AA.4", "Completar el texto de opinión con un ejemplo", (r) => choose(r, "", OPINION_EXAMPLE)],
-  ["AA.5", "Completar el texto de opinión con una razón", (r) => choose(r, "", OPINION_REASON)],
-  ["AA.6", "Completar el cuadro de opinión, razón y ejemplo", (r) => choose(r, "", OPINION_TABLE)],
+  ["opinion-1", (r) => choose(r, "", FACT_OPINION)],
+  ["opinion-2", (r) => choose(r, "", AUTHOR_OPINION)],
+  ["opinion-3", (r) => choose(r, "", REASONS)],
+  ["opinion-4", (r) => choose(r, "", OPINION_EXAMPLE)],
+  ["opinion-5", (r) => choose(r, "", OPINION_REASON)],
+  ["opinion-6", (r) => choose(r, "", OPINION_TABLE)],
 
-  ["BB.1", "Agregar detalles descriptivos a las oraciones", (r) => choose(r, "", DESCRIPTIVE)],
-  ["BB.2", "Mostrar las emociones y los rasgos de los personajes", (r) => choose(r, "", EMOTIONS)],
-  ["BB.3", "Mejorar la oración con un verbo más preciso", (r) => choose(r, "", STRONG_VERB)],
+  ["detalles-1", (r) => choose(r, "", DESCRIPTIVE)],
+  ["detalles-2", (r) => choose(r, "", EMOTIONS)],
+  ["detalles-3", (r) => choose(r, "", STRONG_VERB)],
 
-  ["CC.1", "Unir oraciones: sujetos y predicados", (r) => choose(r, "", COMBINE_SP)],
-  ["CC.2", "Unir oraciones agregando detalles clave", (r) => choose(r, "", COMBINE_DETAILS)],
-  ["CC.3", "Crear oraciones variadas a partir de modelos", (r) => choose(r, "", VARIED)],
+  ["variar-1", (r) => choose(r, "", COMBINE_SP)],
+  ["variar-2", (r) => choose(r, "", COMBINE_DETAILS)],
+  ["variar-3", (r) => choose(r, "", VARIED)],
 
-  ["DD.1", "Corregir errores en carteles", (r) => choose(r, "", SIGNS)],
+  ["corregir", (r) => choose(r, "", SIGNS)],
 ];

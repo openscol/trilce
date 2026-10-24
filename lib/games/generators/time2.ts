@@ -23,7 +23,7 @@ const UNITS: [big: string, bigPlural: string, small: string, factor: number][] =
 ];
 const amount = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
-// 4.° FF.1: convertir unidades de tiempo.
+// Convertir unidades de tiempo.
 export function convertTime(r: Rng): Question {
   const [big, bigs, small, factor] = r.pick(UNITS);
   const n = r.int(2, factor === 60 ? 9 : 12);
@@ -40,7 +40,7 @@ const MIXED: [big: string, small: string, factor: number, bigName: string][] = [
   ["días", "h", 24, "día"],
 ];
 
-// 4.° FF.2: convertir unidades de tiempo mixtas.
+// Convertir unidades de tiempo mixtas.
 export function convertMixedTime(r: Rng): Question {
   const [big, small, factor, name] = r.pick(MIXED);
   const a = r.int(2, 6);
@@ -53,7 +53,7 @@ export function convertMixedTime(r: Rng): Question {
 
 const spanOptions = (r: Rng, answer: number, extra: number[] = []) => [...new Set([...extra, answer + 60, answer - 60, answer + 10, answer - 10, answer + 30, answer + 100 - 60])].filter((x) => x > 0 && x !== answer).map(span);
 
-// 4.° FF.3: sumar y restar unidades de tiempo mixtas.
+// Sumar y restar unidades de tiempo mixtas.
 export function addSubMixedTime(r: Rng): Question {
   const a = r.int(1, 5) * 60 + r.int(1, 11) * 5;
   const b = r.int(1, 3) * 60 + r.int(1, 11) * 5;
@@ -73,7 +73,7 @@ function interval(r: Rng) {
 
 const ACTIVITIES = ["la clase de natación", "el partido de fútbol", "la película", "el ensayo de danza", "el viaje en bus", "el taller de arte", "la visita al museo"];
 
-// 4.° FF.4 / FF.5: tiempo transcurrido (`words`: con problema).
+// Tiempo transcurrido (`words`: con problema).
 export function elapsedTime(r: Rng, words: boolean): Question {
   const { start, length, end } = interval(r);
   const activity = r.pick(ACTIVITIES);
@@ -82,7 +82,7 @@ export function elapsedTime(r: Rng, words: boolean): Question {
   return choiceQ(r, prompt, span(length), spanOptions(r, length, [length + 40, Math.abs(length - 40) || 20]), why);
 }
 
-// 4.° FF.6: hallar la hora de inicio o de fin (varios pasos).
+// Hallar la hora de inicio o de fin (varios pasos).
 export function startEndTime(r: Rng): Question {
   const { start, length, end } = interval(r);
   const name = r.pick(NAMES);
@@ -94,7 +94,7 @@ export function startEndTime(r: Rng): Question {
   return choiceQ(r, `Una función de teatro empieza a las ${clock(start)} Tiene dos partes de ${span(length)} cada una y un intermedio de ${brk} min. ¿A qué hora termina?`, clock(start + 2 * length + brk), times(start + 2 * length + brk), `${span(length)} + ${brk} min + ${span(length)} = ${span(2 * length + brk)}; termina a las ${clock(start + 2 * length + brk)}`, undefined, "dos-partes");
 }
 
-// 4.° FF.7: tiempo transcurrido en un horario.
+// Tiempo transcurrido en un horario.
 export function readSchedule(r: Rng): Question {
   const names = r.shuffle(["Matemática", "Comunicación", "Recreo", "Arte", "Ciencia", "Educación Física", "Inglés"]).slice(0, 4);
   let t = r.int(7, 9) * 60 + r.int(0, 3) * 15;
@@ -113,7 +113,7 @@ export function readSchedule(r: Rng): Question {
   return choiceQ(r, "¿Cuánto tiempo pasa desde que empieza la primera actividad hasta que termina la última?", span(total), spanOptions(r, total, [total + 15, total - 15]), `De ${clock(rows[0].start)} a ${clock(rows[3].end)} pasan ${span(total)}.`, visual, "total");
 }
 
-// 4.° FF.8: horarios de transporte.
+// Horarios de transporte.
 export function transportSchedule(r: Rng): Question {
   const stops = r.shuffle(["Lima", "Ica", "Huaral", "Chincha", "Cañete", "Barranca", "Huacho"]).slice(0, 4);
   let t = r.int(6, 10) * 60 + r.int(0, 11) * 5;
@@ -137,7 +137,7 @@ export function transportSchedule(r: Rng): Question {
 
 const ZONES: [city: string, offset: number][] = [["Bogotá", 0], ["Ciudad de México", -1], ["Santiago de Chile", 1], ["Buenos Aires", 2], ["São Paulo", 2], ["Madrid", 7], ["Londres", 6], ["Tokio", 14], ["Nueva York", 1], ["Los Ángeles", -2]];
 
-// 4.° FF.9: husos horarios (la diferencia con Lima se da en el enunciado).
+// Husos horarios (la diferencia con Lima se da en el enunciado).
 export function timeZones(r: Rng): Question {
   const [city, offset] = r.pick(ZONES.filter(([, o]) => o !== 0));
   const lima = r.int(6, 20) * 60 + r.pick([0, 15, 30, 45]);
@@ -151,7 +151,7 @@ export function timeZones(r: Rng): Question {
   return choiceQ(r, `${rel} Si en ${fromLima ? "Lima" : city} son las ${clock(shown)}, ¿qué hora es en ${fromLima ? city : "Lima"}?`, clock(answer), wrong, `${clock(shown)} ${fromLima === offset > 0 ? "+" : "−"} ${Math.abs(offset)} h = ${clock(answer)}`, undefined, offset > 0 ? "adelantada" : "atrasada");
 }
 
-// 4.° FF.10: fracciones de unidades de tiempo.
+// Fracciones de unidades de tiempo.
 export function timeFractions(r: Rng): Question {
   const [whole, unit, total, dens] = r.pick<[string, string, number, number[]]>([["hora", "minutos", 60, [2, 3, 4, 5, 6, 10]], ["minuto", "segundos", 60, [2, 3, 4, 6]], ["día", "horas", 24, [2, 3, 4, 6, 8]], ["año", "meses", 12, [2, 3, 4, 6]]]);
   const d = r.pick(dens);

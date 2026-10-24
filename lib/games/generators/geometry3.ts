@@ -20,7 +20,7 @@ function vary(r: Rng, pts: Pt[]): Pt[] {
   return r.chance(0.5) ? turn(flipped) : flipped;
 }
 
-// 4.° JJ.2: perímetro, hallar el lado que falta.
+// Perímetro, hallar el lado que falta.
 export function perimeterMissingSide(r: Rng): Question {
   const u = unitOf(r);
   if (r.chance(0.5)) {
@@ -44,7 +44,7 @@ function dims(r: Rng, max = 20) {
   return { w, h, area: w * h, perim: 2 * (w + h) };
 }
 
-// 4.° JJ.3 / KK.2: perímetro o área de rectángulos con fórmulas.
+// Perímetro o área de rectángulos con fórmulas.
 export function rectFormula(r: Rng, what: "perimetro" | "area"): Question {
   const u = unitOf(r);
   const square = r.chance(0.25);
@@ -57,7 +57,7 @@ export function rectFormula(r: Rng, what: "perimetro" | "area"): Question {
 
 const PLACES = ["un jardín", "un patio", "una cancha", "un huerto", "una piscina", "un salón", "una alfombra", "un terreno"];
 
-// 4.° JJ.4 / KK.4 / LL.4: problemas de perímetro y de área.
+// Problemas de perímetro y de área.
 export function rectProblem(r: Rng, what: "perimetro" | "area" | "both"): Question {
   const kind = what === "both" ? r.pick(["perimetro", "area"] as const) : what;
   const { w, h, area, perim } = dims(r, 25);
@@ -73,7 +73,7 @@ export function rectProblem(r: Rng, what: "perimetro" | "area" | "both"): Questi
     : numQ(area, `El piso de ${place} rectangular mide ${w} m por ${h} m. Cada loseta cubre 1 m². ¿Cuántas losetas se necesitan?`, undefined, `Área: ${w} × ${h} = ${area} m², o sea ${area} losetas.`, "area");
 }
 
-// 4.° KK.1: crear rectángulos con un área dada.
+// Crear rectángulos con un área dada.
 export function rectanglesWithArea(r: Rng): Question {
   for (;;) {
     const { w, h, area } = dims(r, 12);
@@ -84,7 +84,7 @@ export function rectanglesWithArea(r: Rng): Question {
   }
 }
 
-// 4.° KK.3: hallar el área o el lado que falta de un rectángulo.
+// Hallar el área o el lado que falta de un rectángulo.
 export function areaOrSide(r: Rng): Question {
   const u = unitOf(r);
   const { w, h, area } = dims(r);
@@ -109,7 +109,7 @@ function lShape(r: Rng): { W: number; H: number; a: number; b: number; points: P
   return { W, H, a, b, points, area: W * H - a * b, perim: 2 * (W + H), cut: [P(W - a, b), P(W - a, H)] as [Pt, Pt] };
 }
 
-// 4.° KK.5 / LL.5: área (o perímetro) de figuras compuestas.
+// Área (o perímetro) de figuras compuestas.
 export function complexFigure(r: Rng, what: "area" | "perimetro" | "both", words = false): Question {
   const kind = what === "both" ? r.pick(["area", "perimetro"] as const) : what;
   const f = lShape(r);
@@ -124,7 +124,7 @@ export function complexFigure(r: Rng, what: "area" | "perimetro" | "both", words
   return numQ(f.perim, `${intro}¿Cuál es el perímetro de la figura, en ${u}?`, visual, `Sumamos todos los lados: ${f.W - f.a} + ${f.b} + ${f.a} + ${f.H - f.b} + ${f.W} + ${f.H} = ${f.perim} ${u}.`, "perimetro");
 }
 
-// 4.° KK.6: área entre dos rectángulos.
+// Área entre dos rectángulos.
 export function areaBetween(r: Rng): Question {
   const W = r.int(8, 20);
   const H = r.int(6, 15);
@@ -134,7 +134,7 @@ export function areaBetween(r: Rng): Question {
   return numQ(W * H - w * h, `${outer} rectangular mide ${W} ${u} por ${H} ${u}. Dentro hay ${inner} rectangular de ${w} ${u} por ${h} ${u}. ¿Cuál es el área de la parte que queda libre, en ${u}²?`, undefined, `Área grande: ${W} × ${H} = ${W * H}; área pequeña: ${w} × ${h} = ${w * h}; ${W * H} − ${w * h} = ${W * H - w * h} ${u}².`);
 }
 
-// 4.° LL.1: comparar área y perímetro de rectángulos y cuadrados.
+// Comparar área y perímetro de rectángulos y cuadrados.
 export function compareAreaPerimeter(r: Rng): Question {
   for (;;) {
     const a = dims(r, 12);
@@ -151,7 +151,7 @@ export function compareAreaPerimeter(r: Rng): Question {
 
 const SAME = ["La misma área", "El mismo perímetro", "Las dos cosas", "Ninguna de las dos"];
 
-// 4.° LL.2: rectángulos con el mismo perímetro o la misma área.
+// Rectángulos con el mismo perímetro o la misma área.
 export function samePerimeterOrArea(r: Rng): Question {
   for (;;) {
     const a = dims(r, 12);
@@ -171,7 +171,7 @@ export function samePerimeterOrArea(r: Rng): Question {
   }
 }
 
-// 4.° LL.3 / LL.6: relación entre área y perímetro (dado uno y un lado, hallar el otro).
+// Relación entre área y perímetro (dado uno y un lado, hallar el otro).
 export function areaPerimeterRelation(r: Rng, words = false): Question {
   const { w, h, area, perim } = dims(r, 15);
   const fromArea = r.chance(0.5);
@@ -180,7 +180,7 @@ export function areaPerimeterRelation(r: Rng, words = false): Question {
   return numQ(area, `${subject} tiene ${perim} m de perímetro y ${w} m de largo. ¿Cuál es su área, en m²?`, undefined, `Largo + ancho = ${perim} ÷ 2 = ${w + h}; ancho = ${h} m. Área: ${w} × ${h} = ${area} m².`, "de-perimetro-a-area");
 }
 
-// 4.° LL.7: con el mismo perímetro, ¿qué rectángulo tiene más área?
+// Con el mismo perímetro, ¿qué rectángulo tiene más área?
 export function perimeterAreaProblem(r: Rng): Question {
   const half = r.int(6, 14);
   const ws = r.shuffle(Array.from({ length: Math.floor(half / 2) }, (_, i) => i + 1)).slice(0, 3);
@@ -190,7 +190,7 @@ export function perimeterAreaProblem(r: Rng): Question {
   return fixedQ(`${r.pick(NAMES)} tiene ${half * 2} m de cerca para un corral rectangular. ¿Con qué medidas el corral tiene ${more ? "mayor" : "menor"} área?`, options, `${half - best} m por ${best} m`, `Todos tienen ${half * 2} m de perímetro. Áreas: ${ws.map((w) => `${half - w} × ${w} = ${(half - w) * w}`).join("; ")} m².`, undefined, more ? "mayor" : "menor");
 }
 
-// 4.° LL.8: usar el área y el perímetro para calcular costos.
+// Usar el área y el perímetro para calcular costos.
 export function costProblem(r: Rng): Question {
   const { w, h, area, perim } = dims(r, 12);
   const price = r.int(2, 9);
@@ -210,14 +210,14 @@ const FIGURES: Record<"punto" | "recta" | "segmento" | "semirrecta" | "angulo", 
   angulo: ["Ángulo", "Un ángulo lo forman dos semirrectas que salen del mismo punto."],
 };
 
-// 4.° MM.1: puntos, rectas, segmentos, semirrectas y ángulos.
+// Puntos, rectas, segmentos, semirrectas y ángulos.
 export function pointsLinesRays(r: Rng): Question {
   const key = r.pick(Object.keys(FIGURES) as (keyof typeof FIGURES)[]);
   const labels = r.pick([["A", "B", "C"], ["P", "Q", "R"], ["M", "N", "O"], ["D", "E", "F"], ["R", "S", "T"]]);
   return fixedQ("¿Qué muestra el dibujo?", Object.values(FIGURES).map(([n]) => n), FIGURES[key][0], FIGURES[key][1], { kind: "geoFigure", figure: key, rotation: r.pick([0, 0, 20, -20, 40, -35]), labels }, key);
 }
 
-// 4.° MM.3: ¿las rectas son paralelas, perpendiculares o secantes? (sí o no).
+// ¿las rectas son paralelas, perpendiculares o secantes? (sí o no).
 export function lineRelationYesNo(r: Rng): Question {
   const relations = ["paralelas", "perpendiculares", "secantes"] as const;
   const shown = r.pick(relations);
@@ -239,7 +239,7 @@ const POLYS: { name: string; points: Pt[]; right: number[]; sides: number }[] = 
   { name: "figura en L", points: [[10, 8], [50, 8], [50, 52], [92, 52], [92, 92], [10, 92]], right: [0, 1, 3, 4, 5], sides: 6 },
 ];
 
-// 4.° MM.4: lados y ángulos de polígonos.
+// Lados y ángulos de polígonos.
 export function sidesAndAngles(r: Rng): Question {
   const p = r.pick(POLYS);
   const visual: Visual = { kind: "polygon", points: p.points, rightAngles: p.right };
@@ -253,7 +253,7 @@ const ANGLE_TYPES = ["Agudo", "Recto", "Obtuso", "Llano", "Cóncavo"];
 const angleType = (deg: number) => (deg < 90 ? "Agudo" : deg === 90 ? "Recto" : deg < 180 ? "Obtuso" : deg === 180 ? "Llano" : "Cóncavo");
 const ANGLE_WHY: Record<string, string> = { Agudo: "mide menos de 90°", Recto: "mide exactamente 90°", Obtuso: "mide más de 90° y menos de 180°", Llano: "mide exactamente 180°", Cóncavo: "mide más de 180°" };
 
-// 4.° NN.2: ángulos agudos, rectos, obtusos, llanos y cóncavos.
+// Ángulos agudos, rectos, obtusos, llanos y cóncavos.
 export function classifyAngle5(r: Rng): Question {
   const type = r.pick(ANGLE_TYPES);
   const deg = type === "Agudo" ? r.pick([20, 35, 50, 65, 80]) : type === "Recto" ? 90 : type === "Obtuso" ? r.pick([105, 120, 135, 150, 165]) : type === "Llano" ? 180 : r.pick([210, 240, 270, 300, 330]);
@@ -262,7 +262,7 @@ export function classifyAngle5(r: Rng): Question {
 
 const TURN_PARTS = [2, 3, 4, 5, 6, 8, 9, 10, 12];
 
-// 4.° NN.3 / NN.4: ángulos como fracciones de una vuelta.
+// Ángulos como fracciones de una vuelta.
 export function angleFraction(r: Rng, toDegrees: boolean): Question {
   const parts = r.pick(TURN_PARTS);
   const k = toDegrees && r.chance(0.6) ? 1 : r.int(1, parts - 1);
@@ -274,7 +274,7 @@ export function angleFraction(r: Rng, toDegrees: boolean): Question {
 
 const TURNS: [string, number][] = [["un cuarto de vuelta", 90], ["media vuelta", 180], ["tres cuartos de vuelta", 270], ["una vuelta completa", 360]];
 
-// 4.° NN.5: ángulos de 90°, 180°, 270° y 360°.
+// Ángulos de 90°, 180°, 270° y 360°.
 export function quarterTurns(r: Rng): Question {
   const [name, deg] = r.pick(TURNS);
   const form = r.int(0, 2);
@@ -285,7 +285,7 @@ export function quarterTurns(r: Rng): Question {
   return fixedQ(`El minutero gira del ${start} al ${end} en el sentido del reloj${deg === 360 ? " (pasa por todos los números)" : ""}. ¿Cuántos grados giró?`, ["90°", "180°", "270°", "360°"], `${deg}°`, `De un número al siguiente hay 30°. Giró ${deg / 30} espacios: ${deg}°.`, undefined, "reloj");
 }
 
-// 4.° NN.6: medir ángulos en un círculo.
+// Medir ángulos en un círculo.
 export function angleOnCircle(r: Rng): Question {
   const parts = r.pick([4, 6, 8, 9, 10, 12]);
   const k = r.int(1, parts - 1);
@@ -293,7 +293,7 @@ export function angleOnCircle(r: Rng): Question {
   return numQ(each * k, `El círculo (360°) está dividido en ${parts} ángulos iguales. ¿Cuántos grados mide el ángulo sombreado?`, { kind: "fraction", shape: "circle", parts, shaded: k }, `Cada parte mide 360 ÷ ${parts} = ${each}°; ${k} ${k === 1 ? "parte" : "partes"}: ${each * k}°.`, `${parts}-partes`);
 }
 
-// 4.° NN.7 / NN.8: medir (o comprobar) ángulos con un transportador.
+// Medir (o comprobar) ángulos con un transportador.
 export function protractor(r: Rng, check: boolean): Question {
   const deg = r.int(1, 17) * 10;
   const visual: Visual = { kind: "angle", degrees: deg, rotation: 0, protractor: true };
@@ -305,7 +305,7 @@ export function protractor(r: Rng, check: boolean): Question {
   return yesNo(`${r.pick(NAMES)} debía dibujar un ángulo de ${said}°. ¿Lo dibujó bien?`, good, `El ángulo dibujado mide ${deg}°.`, visual, good ? "si" : "no");
 }
 
-// 4.° NN.9: estimar medidas de ángulos.
+// Estimar medidas de ángulos.
 export function estimateAngle(r: Rng): Question {
   const sets = [[20, 70, 110, 160], [30, 90, 140, 170], [45, 80, 120, 175], [15, 60, 100, 150]];
   const options = r.pick(sets);
@@ -313,7 +313,7 @@ export function estimateAngle(r: Rng): Question {
   return fixedQ("Sin transportador: ¿cuál es la mejor estimación de la medida del ángulo?", options.map((x) => `${x}°`), `${deg}°`, `Compáralo con un ángulo recto (90°): este mide cerca de ${deg}°.`, { kind: "angle", degrees: deg, rotation: r.pick([0, 0, 25, 180]) }, angleType(deg).toLowerCase());
 }
 
-// 4.° NN.10: ángulos adyacentes.
+// Ángulos adyacentes.
 export function adjacentAngles(r: Rng): Question {
   const a = r.int(2, 16) * 5;
   const b = r.int(2, Math.floor((175 - a) / 5)) * 5;
@@ -321,7 +321,7 @@ export function adjacentAngles(r: Rng): Question {
   return numQ(b, `Un ángulo de ${a + b}° está dividido en dos ángulos adyacentes. Uno mide ${a}°. ¿Cuántos grados mide el otro?`, undefined, `${a + b} − ${a} = ${b}°.`, "restar");
 }
 
-// 4.° NN.11: problemas con medidas de ángulos.
+// Problemas con medidas de ángulos.
 export function angleProblem(r: Rng): Question {
   const form = r.int(0, 3);
   if (form === 0) {
@@ -342,7 +342,7 @@ export function angleProblem(r: Rng): Question {
   return numQ(180 - turned, `Una puerta puede abrirse hasta 180°. Ya está abierta ${turned}°. ¿Cuántos grados más puede abrirse?`, undefined, `180 − ${turned} = ${180 - turned}°.`, "restar");
 }
 
-// 4.° NN.12: hallar un ángulo desconocido.
+// Hallar un ángulo desconocido.
 export function unknownAngle(r: Rng): Question {
   const [total, name] = r.pick<[number, string]>([[90, "un ángulo recto"], [180, "un ángulo llano"], [360, "una vuelta completa"]]);
   const a = r.int(2, total / 5 - 4) * 5;
@@ -354,7 +354,7 @@ export function unknownAngle(r: Rng): Question {
   return numQ(total - a, `Dos ángulos forman juntos ${name} (${total}°). Uno mide ${a}°. ¿Cuánto mide el otro?`, `${a}° + x = ${total}°`, `${total} − ${a} = ${total - a}°.`, String(total));
 }
 
-// 4.° OO.1 / OO.2: clasificar triángulos solo por ángulos o solo por lados.
+// Clasificar triángulos solo por ángulos o solo por lados.
 export function classifyTriangleBy(r: Rng, by: "lados" | "angulos"): Question {
   for (;;) {
     const q = classifyTriangle(r);
@@ -378,13 +378,13 @@ const ALL_NAMES = ["Cuadrilátero", "Paralelogramo", "Rectángulo", "Rombo", "Cu
 const quadVisual = (q: Quad, r: Rng): Visual => ({ kind: "polygon", points: vary(r, q.points), rightAngles: q.right });
 const quadFacts = (q: Quad) => `${q.parallel === 0 ? "No tiene lados paralelos" : q.parallel === 1 ? "Tiene un solo par de lados paralelos" : "Tiene dos pares de lados paralelos"}, ${q.equalSides ? "sus cuatro lados son iguales" : "sus lados no son todos iguales"} y ${q.right.length === 4 ? "tiene cuatro ángulos rectos" : "no tiene ángulos rectos"}.`;
 
-// 4.° PP.1: lados paralelos en cuadriláteros.
+// Lados paralelos en cuadriláteros.
 export function parallelSides(r: Rng): Question {
   const q = r.pick(QUADS);
   return numQ(q.parallel, "¿Cuántos pares de lados paralelos tiene este cuadrilátero?", quadVisual(q, r), `${quadFacts(q)}`, q.name.toLowerCase());
 }
 
-// 4.° PP.2: lados y ángulos de cuadriláteros.
+// Lados y ángulos de cuadriláteros.
 export function quadSidesAngles(r: Rng): Question {
   const q = r.pick(QUADS);
   const form = r.int(0, 2);
@@ -400,7 +400,7 @@ const FAMILY_WHY: Record<string, string> = {
   Rombo: "Un rombo tiene los cuatro lados iguales.",
 };
 
-// 4.° PP.3 – PP.6: identificar paralelogramos, trapecios, rectángulos o rombos.
+// Identificar paralelogramos, trapecios, rectángulos o rombos.
 export function identifyQuad(r: Rng, family: "Paralelogramo" | "Trapecio" | "Rectángulo" | "Rombo"): Question {
   const yes = r.chance(0.5);
   const q = r.pick(QUADS.filter((x) => x.names.includes(family) === yes));
@@ -408,13 +408,13 @@ export function identifyQuad(r: Rng, family: "Paralelogramo" | "Trapecio" | "Rec
   return yesNo(`¿Esta figura es ${plural}?`, yes, `${FAMILY_WHY[family]} ${quadFacts(q).replace(/^Tiene/, "Esta figura tiene").replace(/^No tiene/, "Esta figura no tiene")}`, quadVisual(q, r), q.name.toLowerCase());
 }
 
-// 4.° PP.7: clasificar cuadriláteros (el nombre más preciso).
+// Clasificar cuadriláteros (el nombre más preciso).
 export function classifyQuad(r: Rng): Question {
   const q = r.pick(QUADS);
   return fixedQ("¿Cuál es el nombre más preciso de este cuadrilátero?", QUADS.map((x) => x.name), q.name, quadFacts(q), quadVisual(q, r), q.name.toLowerCase());
 }
 
-// 4.° PP.8: elegir todos los nombres de un cuadrilátero.
+// Elegir todos los nombres de un cuadrilátero.
 export function allQuadNames(r: Rng): Question {
   const q = r.pick(QUADS.filter((x) => x.names.length > 1));
   return multiQ("Selecciona todos los nombres que le corresponden a esta figura.", ALL_NAMES, q.names, `${quadFacts(q)} Por eso es: ${q.names.join(", ").toLowerCase()}.`, quadVisual(q, r), q.name.toLowerCase());
@@ -422,7 +422,7 @@ export function allQuadNames(r: Rng): Question {
 
 const OTHER_NAMES = ["Paralelogramo", "Rectángulo", "Rombo", "Trapecio"];
 
-// 4.° PP.9: nombrar cuadriláteros de más de una forma.
+// Nombrar cuadriláteros de más de una forma.
 export function quadOtherNames(r: Rng): Question {
   const q = r.pick(QUADS.filter((x) => x.names.length > 2));
   const one = q.name.toLowerCase();
@@ -441,7 +441,7 @@ const DRAW: [string, string][] = [
   ["ningún par de lados paralelos", "Trapezoide"],
 ];
 
-// 4.° PP.10: dibujar cuadriláteros (¿qué figura hay que dibujar?).
+// Dibujar cuadriláteros (¿qué figura hay que dibujar?).
 export function drawQuad(r: Rng): Question {
   const [text, answer] = r.pick(DRAW);
   return fixedQ(`${r.pick(NAMES)} debe dibujar un cuadrilátero con ${text}. ¿Qué figura debe dibujar?`, QUADS.map((x) => x.name), answer, `Con ${text} se obtiene ${QUADS.find((x) => x.name === answer)!.article}.`, undefined, answer.toLowerCase());
@@ -467,7 +467,7 @@ const SYM_SHAPES: Sym[] = [
 ];
 const AXIS: Record<"v" | "h" | "d", [string, [Pt, Pt]]> = { v: ["vertical", [[50, -6], [50, 106]]], h: ["horizontal", [[-10, 50], [110, 50]]], d: ["diagonal", [[4, 4], [96, 96]]] };
 
-// 4.° QQ.1: identificar ejes de simetría.
+// Identificar ejes de simetría.
 export function isSymmetryLine(r: Rng): Question {
   const yes = r.chance(0.5);
   const cases = SYM_SHAPES.flatMap((s) => (["v", "h", "d"] as const).map((a) => ({ s, a, ok: !!s.axes[a] }))).filter((c) => c.ok === yes);
@@ -475,7 +475,7 @@ export function isSymmetryLine(r: Rng): Question {
   return yesNo("¿La línea punteada es un eje de simetría de la figura?", yes, yes ? "Sí: al doblar por la línea, las dos partes coinciden exactamente." : "No: al doblar por la línea, las dos partes no coinciden.", { kind: "polygon", points: s.points, dashed: [AXIS[a][1]] }, AXIS[a][0]);
 }
 
-// 4.° QQ.2: trazar ejes de simetría (¿en qué dirección va el eje?).
+// Trazar ejes de simetría (¿en qué dirección va el eje?).
 export function symmetryDirection(r: Rng): Question {
   const single = SYM_SHAPES.filter((s) => s.count === 1);
   const none = SYM_SHAPES.filter((s) => s.count === 0);
@@ -488,7 +488,7 @@ export function symmetryDirection(r: Rng): Question {
   return fixedQ("Vas a trazar el eje de simetría de esta figura. ¿En qué dirección va?", ["Vertical", "Horizontal", "No tiene eje de simetría"], answer, s.count === 0 ? "Ninguna línea divide la figura en dos partes que coincidan." : `El eje es ${answer.toLowerCase()}: divide la figura en dos mitades que coinciden.`, { kind: "polygon", points: turned ? turn(base) : base }, answer.toLowerCase());
 }
 
-// 4.° QQ.3: contar ejes de simetría.
+// Contar ejes de simetría.
 export function countSymmetryLines(r: Rng): Question {
   const s = r.pick(SYM_SHAPES);
   return numQ(s.count, `¿Cuántos ejes de simetría tiene este ${s.name}?`.replace("este flecha", "esta flecha").replace("este casa", "esta figura con forma de casa"), { kind: "polygon", points: s.points }, `Un ${s.name} tiene ${s.count} ${s.count === 1 ? "eje" : "ejes"} de simetría.`.replace("Un flecha", "Esta flecha").replace("Un casa", "Esta figura"), s.name);

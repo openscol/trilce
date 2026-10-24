@@ -17,7 +17,7 @@ const m = ([n, d]: Frac) => mixed(n, d);
 const fdiv = (a: Frac, b: Frac): Frac => fmul(a, [b[1], b[0]]);
 const text = (f: Frac) => (f[1] === 1 ? String(f[0]) : f[0] > f[1] ? m(f) : fr(f));
 
-// 6.° L.4: estimar productos de fracciones y números naturales.
+// Estimar productos de fracciones y números naturales.
 export function estimateFractionProduct(r: Rng): Question {
   for (;;) {
     const d = r.pick([7, 8, 9, 10, 11, 12, 15, 20]);
@@ -36,7 +36,7 @@ function operand(r: Rng, kind: DivOperand): Frac {
   return kind === "whole" ? [r.int(2, 9), 1] : kind === "mixed" ? mixedNum(r) : kind === "unit" ? [1, r.int(2, 9)] : proper(r);
 }
 
-// 6.° M.3 – M.12: dividir fracciones, números naturales y números mixtos.
+// Dividir fracciones, números naturales y números mixtos.
 export function divideFractions(r: Rng, kinds: [DivOperand, DivOperand][], ctx: "plain" | "word" | "recipe" = "plain"): Question {
   for (;;) {
     const [ka, kb] = r.pick(kinds);
@@ -65,7 +65,7 @@ export function divideFractions(r: Rng, kinds: [DivOperand, DivOperand][], ctx: 
   }
 }
 
-// 6.° M.4 / M.6 / M.9 / M.11: dividir usando modelos (¿cuántas veces cabe?).
+// Dividir usando modelos (¿cuántas veces cabe?).
 export function divideModel(r: Rng, total_: "whole" | "fraction" | "mixed", word = false): Question {
   let d = 2;
   let piece = 1;
@@ -87,7 +87,7 @@ export function divideModel(r: Rng, total_: "whole" | "fraction" | "mixed", word
   return numQ(count, prompt, visual, why);
 }
 
-// 6.° M.8: estimar cocientes al dividir números mixtos.
+// Estimar cocientes al dividir números mixtos.
 export function estimateMixedQuotient(r: Rng): Question {
   for (;;) {
     const b = mixedNum(r, [3, 4, 5, 6, 8], 5);
@@ -100,7 +100,7 @@ export function estimateMixedQuotient(r: Rng): Question {
   }
 }
 
-// 6.° N.3: evaluar expresiones numéricas con fracciones.
+// Evaluar expresiones numéricas con fracciones.
 export function fractionExpression6(r: Rng): Question {
   for (;;) {
     const a = proper(r, [2, 3, 4, 6]);
@@ -122,7 +122,7 @@ export function fractionExpression6(r: Rng): Question {
 const route = (from: string, to: string) => `De ${from} a ${to}`.replace("De el ", "Del ").replace(" a el ", " al ");
 const PLACES = ["la plaza", "el colegio", "el mercado", "el parque", "la biblioteca", "el estadio", "la posta"];
 
-// 6.° H.6 / K.9: mapas con distancias decimales o fraccionarias.
+// Mapas con distancias decimales o fraccionarias.
 export function mapDistances(r: Rng, kind: "decimal" | "fraction"): Question {
   const stops = r.shuffle(PLACES).slice(0, 4);
   const legs = [0, 1, 2].map(() => (kind === "decimal" ? r.int(3, 48) * 100 + r.pick([0, 50, 25, 75]) : 0));

@@ -1,28 +1,17 @@
 import { choose, order, type ChoiceItem, type OrderItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { f, pt, sorter, w } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Estrategias de escritura (IXL 9th grade ELA, Q-Y), con estas adaptaciones:
-//   conjunctive adverbs → conectores (no obstante, por ende, asimismo, en otras palabras)
-//   double / illogical comparisons → «más mejor», «más superior», comparar «el clima de Lima con Arequipa»
-//   confused pronouns and contractions → tilde diacrítica (él/el, tú/tu, mí/mi, sé/se, qué/que)
-//   commonly misspelled words → palabras que suelen escribirse mal en castellano
-//   Works Cited y citas en el texto (MLA) → referencias y citas en formato APA, el más usado en el Perú
+// 3.° de Secundaria · banco de escritura: organizar las ideas, tesis,
+// evidencias, análisis y contraargumentos, falacias, apelaciones, conectores
+// (no obstante, por ende, asimismo, en otras palabras), comparaciones mal
+// hechas («más mejor», «más superior», comparar «el clima de Lima con
+// Arequipa»), paralelismo, voz activa y pasiva, tilde diacrítica (él/el,
+// tú/tu, mí/mi, sé/se, qué/que), palabras que suelen escribirse mal y
+// referencias y citas en formato APA.
 
-export const SECTIONS: Section[] = [
-  { id: "Q", name: "Organizar la escritura", icon: "🗂️" },
-  { id: "R", name: "Oraciones temáticas y tesis", icon: "🎯" },
-  { id: "S", name: "Desarrollar y apoyar argumentos", icon: "💬" },
-  { id: "T", name: "Estrategias persuasivas", icon: "📣" },
-  { id: "U", name: "Estilo", icon: "🎨" },
-  { id: "V", name: "Escribir con claridad y concisión", icon: "🧹" },
-  { id: "W", name: "Voz activa y voz pasiva", icon: "🔄" },
-  { id: "X", name: "Corregir y revisar", icon: "🔍" },
-  { id: "Y", name: "Habilidades de investigación", icon: "📚" },
-];
 
-// --- Q. Organizar la escritura -----------------------------------------------
+// --- Organizar la escritura -----------------------------------------------
 
 const BROAD_NARROW: OrderItem[] = [
   { seq: ["derechos humanos", "derechos civiles", "libertad de expresión", "libertad de prensa", "el periodismo de investigación en el Perú"] }, { seq: ["literatura", "literatura latinoamericana", "novela peruana", "novela urbana", "«La ciudad y los perros»"] },
@@ -37,7 +26,7 @@ const BY_TOPIC: ChoiceItem[] = [
   pt("Preparas un informe sobre el Niño costero. ¿En qué sección va este dato?", "«Las lluvias destruyeron más de 200 puentes».", "Consecuencias", "Causas", "Prevención"), pt("Preparas un informe sobre el Niño costero. ¿En qué sección va este dato?", "«Elaborar mapas de riesgo y prohibir construir en quebradas».", "Prevención", "Causas", "Consecuencias"),
 ];
 
-// --- R. Oraciones temáticas y tesis -------------------------------------------------
+// --- Oraciones temáticas y tesis -------------------------------------------------
 
 const TOPIC = "¿Qué oración temática resume mejor la idea principal del párrafo?";
 const TOPIC_SENTENCE: ChoiceItem[] = [
@@ -58,7 +47,7 @@ const THESES: ChoiceItem[] = [
   w(THESIS, "Proteger las lomas costeras es urgente, porque son ecosistemas únicos que la expansión urbana está destruyendo.", "Las lomas costeras son ecosistemas que florecen en invierno gracias a la neblina que llega desde el mar.", "Las lomas son verdes."),
 ];
 
-// --- S. Argumentos -----------------------------------------------------------
+// --- Argumentos -----------------------------------------------------------
 
 const FO = sorter(["Hecho (se puede comprobar)", "Opinión (juicio personal)"], "¿Es un hecho o una opinión?");
 const FACT_OPINION: ChoiceItem[] = [
@@ -121,7 +110,7 @@ const FALLACIES: ChoiceItem[] = [
   ...["Millones de personas usan esa aplicación; tiene que ser segura.", "Todo el mundo lo hace; no puede estar mal."].map((x) => FALLACY(x, 5)),
 ];
 
-// --- T. Estrategias persuasivas ------------------------------------------------
+// --- Estrategias persuasivas ------------------------------------------------
 
 const APPEAL = sorter(["Ethos (credibilidad)", "Pathos (emoción)", "Logos (lógica y datos)"], "¿A qué apela el anuncio?");
 const APPEALS: ChoiceItem[] = [
@@ -138,7 +127,7 @@ const USE_APPEAL: ChoiceItem[] = [
   w("Quieres convencer a tu municipio de construir una ciclovía. ¿Qué oración usa el ethos?", "Como ingeniera de tránsito con quince años de experiencia, puedo afirmar que la ciclovía es viable.", "Piensa en los niños que podrían ir seguros en bicicleta al colegio cada mañana, sin miedo a los autos ni a las combis.", "Las ciclovías son buenas."),
 ];
 
-// --- U. Estilo -----------------------------------------------------------------
+// --- Estilo -----------------------------------------------------------------
 
 const PERSON = "¿Qué oración usa la personificación?";
 const PERSONIFICATION: ChoiceItem[] = [
@@ -148,7 +137,7 @@ const PERSONIFICATION: ChoiceItem[] = [
   w(PERSON, "La ciudad se despertó bostezando entre la neblina.", "La ciudad amaneció cubierta por una neblina espesa y gris.", "Amaneció."), w(PERSON, "El volcán guardaba su furia en silencio.", "El volcán estaba inactivo, aunque podía hacer erupción en cualquier momento.", "Hay volcán."),
 ];
 
-// --- V. Claridad y concisión -----------------------------------------------------
+// --- Claridad y concisión -----------------------------------------------------
 
 const CONJ_ADV: ChoiceItem[] = [
   f("La propuesta era ambiciosa; ___, fue aprobada por unanimidad.", "no obstante", "por ende", "en otras palabras"), f("Faltó presupuesto; ___, se suspendió la obra.", "por ende", "no obstante", "asimismo"),
@@ -184,7 +173,7 @@ const REDUNDANCY: ChoiceItem[] = [
   pt(REDUNDANT, "Es una novedad nueva en el mercado.", "Es una novedad en el mercado.", "Es una novedad nueva y reciente que llegó hace poco al mercado.", "Es nuevo."),
 ];
 
-// --- W. Voz activa y pasiva ------------------------------------------------------
+// --- Voz activa y pasiva ------------------------------------------------------
 
 const VOICE = sorter(["Voz activa", "Voz pasiva"], "¿La oración está en voz activa o en voz pasiva?");
 const IDENTIFY_VOICE: ChoiceItem[] = [
@@ -201,7 +190,7 @@ const TO_ACTIVE: ChoiceItem[] = [
   pt(ACTIVE, "Los resultados fueron analizados por los científicos.", "Los científicos analizaron los resultados.", "Los resultados analizaron a los científicos del instituto.", "Los científicos fueron analizados."),
 ];
 
-// --- X. Corregir y revisar -------------------------------------------------------
+// --- Corregir y revisar -------------------------------------------------------
 
 const CONFUSED_USE: ChoiceItem[] = [
   f("No sé ___ decir.", "qué", "que", "qe"), f("Dijo ___ vendría mañana.", "que", "qué", "qé"),
@@ -256,7 +245,7 @@ const REVISIONS: ChoiceItem[] = [
   pt(REVISE, "«Las bicicletas son buenas. Por consiguiente, Lima tiene mucho tráfico».", "Corregir la relación lógica: «Lima tiene mucho tráfico; por eso, conviene usar bicicleta».", "Agregar más datos sobre las marcas de bicicletas más vendidas en Lima.", "Quitar «Lima»."),
 ];
 
-// --- Y. Investigación ------------------------------------------------------------
+// --- Investigación ------------------------------------------------------------
 
 const REF = "Referencia: Vargas Llosa, M. (1963). La ciudad y los perros. Seix Barral.";
 const UNDERSTAND_REF: ChoiceItem[] = [
@@ -287,45 +276,45 @@ const PLAGIARISM: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["Q.1", "Ordenar temas del más amplio al más específico", (r) => order(r, "Ordena los temas del más amplio al más específico.", BROAD_NARROW)],
-  ["Q.2", "Organizar la información por tema", (r) => choose(r, "", BY_TOPIC)],
+  ["organizar-1", (r) => order(r, "Ordena los temas del más amplio al más específico.", BROAD_NARROW)],
+  ["organizar-2", (r) => choose(r, "", BY_TOPIC)],
 
-  ["R.1", "Elegir la oración temática que mejor recoge la idea principal", (r) => choose(r, "", TOPIC_SENTENCE)],
-  ["R.2", "Identificar la tesis", (r) => choose(r, "", THESES)],
+  ["organizar-3", (r) => choose(r, "", TOPIC_SENTENCE)],
+  ["organizar-4", (r) => choose(r, "", THESES)],
 
-  ["S.1", "Distinguir hechos de opiniones", (r) => choose(r, "", FACT_OPINION)],
-  ["S.2", "Distinguir evidencias sólidas y débiles para apoyar una afirmación", (r) => choose(r, "", STRONG_WEAK)],
-  ["S.3", "Elegir la mejor evidencia para apoyar una afirmación", (r) => choose(r, "", EVIDENCE)],
-  ["S.4", "Identificar la evidencia de apoyo en un texto", (r) => choose(r, "", IN_TEXT_EVIDENCE)],
-  ["S.5", "Evaluar respuestas a los contraargumentos", (r) => choose(r, "", COUNTERCLAIMS)],
-  ["S.6", "Elegir el análisis que conecta lógicamente la evidencia con la afirmación", (r) => choose(r, "", ANALYSES)],
-  ["S.7", "Usar transiciones lógicas entre afirmaciones, evidencias, análisis y contraargumentos", (r) => choose(r, "", TRANSITIONS)],
-  ["S.8", "Clasificar falacias lógicas", (r) => choose(r, "", FALLACIES)],
+  ["evidencias-1", (r) => choose(r, "", FACT_OPINION)],
+  ["evidencias-2", (r) => choose(r, "", STRONG_WEAK)],
+  ["evidencias-3", (r) => choose(r, "", EVIDENCE)],
+  ["evidencias-4", (r) => choose(r, "", IN_TEXT_EVIDENCE)],
+  ["analisis-1", (r) => choose(r, "", COUNTERCLAIMS)],
+  ["analisis-2", (r) => choose(r, "", ANALYSES)],
+  ["analisis-3", (r) => choose(r, "", TRANSITIONS)],
+  ["falacias", (r) => choose(r, "", FALLACIES)],
 
-  ["T.1", "Identificar apelaciones al ethos, al pathos y al logos en los anuncios", (r) => choose(r, "", APPEALS)],
-  ["T.2", "Usar apelaciones al ethos, al pathos y al logos en textos persuasivos", (r) => choose(r, "", USE_APPEAL)],
+  ["persuasion-1", (r) => choose(r, "", APPEALS)],
+  ["persuasion-2", (r) => choose(r, "", USE_APPEAL)],
 
-  ["U.1", "Usar la personificación", (r) => choose(r, "", PERSONIFICATION)],
+  ["personificacion", (r) => choose(r, "", PERSONIFICATION)],
 
-  ["V.1", "Conectar ideas con conectores: no obstante, por ende, asimismo, en otras palabras", (r) => choose(r, "Completa con el mejor conector.", CONJ_ADV)],
-  ["V.2", "Evitar comparaciones dobles, ilógicas o poco claras", (r) => choose(r, "", COMPARISONS)],
-  ["V.3", "Identificar oraciones con estructura paralela", (r) => choose(r, "", PARALLEL_ID)],
-  ["V.4", "Usar estructuras paralelas", (r) => choose(r, "", PARALLEL)],
-  ["V.5", "Eliminar palabras o frases redundantes", (r) => choose(r, "", REDUNDANCY)],
+  ["claridad-1", (r) => choose(r, "Completa con el mejor conector.", CONJ_ADV)],
+  ["claridad-2", (r) => choose(r, "", COMPARISONS)],
+  ["claridad-3", (r) => choose(r, "", PARALLEL_ID)],
+  ["claridad-4", (r) => choose(r, "", PARALLEL)],
+  ["claridad-5", (r) => choose(r, "", REDUNDANCY)],
 
-  ["W.1", "Identificar la voz activa y la voz pasiva", (r) => choose(r, "", IDENTIFY_VOICE)],
-  ["W.2", "Reescribir la oración en voz activa", (r) => choose(r, "", TO_ACTIVE)],
+  ["voz-pasiva-1", (r) => choose(r, "", IDENTIFY_VOICE)],
+  ["voz-pasiva-2", (r) => choose(r, "", TO_ACTIVE)],
 
-  ["X.1", "Usar la palabra correcta: tilde diacrítica", (r) => choose(r, "Completa la oración.", CONFUSED_USE)],
-  ["X.2", "Identificar y corregir errores con la tilde diacrítica", (r) => choose(r, "", CONFUSED_FIX)],
-  ["X.3", "Identificar y corregir errores con pronombres y contracciones (al, del, él)", (r) => choose(r, "", PRON_CONTR)],
-  ["X.4", "Corregir errores con palabras que suelen escribirse mal", (r) => choose(r, "", MISSPELLED)],
-  ["X.5", "Corregir errores en carteles", (r) => choose(r, "", SIGNS)],
-  ["X.6", "Corregir errores del habla cotidiana", (r) => choose(r, "", EVERYDAY)],
-  ["X.7", "Proponer revisiones adecuadas", (r) => choose(r, "", REVISIONS)],
+  ["diacritica-1", (r) => choose(r, "Completa la oración.", CONFUSED_USE)],
+  ["diacritica-2", (r) => choose(r, "", CONFUSED_FIX)],
+  ["mal-escritas-1", (r) => choose(r, "", PRON_CONTR)],
+  ["mal-escritas-2", (r) => choose(r, "", MISSPELLED)],
+  ["corregir-1", (r) => choose(r, "", SIGNS)],
+  ["corregir-2", (r) => choose(r, "", EVERYDAY)],
+  ["corregir-3", (r) => choose(r, "", REVISIONS)],
 
-  ["Y.1", "Entender una referencia bibliográfica (formato APA)", (r) => choose(r, "", UNDERSTAND_REF)],
-  ["Y.2", "Reconocer las partes de una referencia bibliográfica (formato APA)", (r) => choose(r, "", WORKS_CITED)],
-  ["Y.3", "Usar citas dentro del texto (formato APA)", (r) => choose(r, "", IN_TEXT)],
-  ["Y.4", "Identificar el plagio", (r) => choose(r, "", PLAGIARISM)],
+  ["apa-1", (r) => choose(r, "", UNDERSTAND_REF)],
+  ["apa-2", (r) => choose(r, "", WORKS_CITED)],
+  ["apa-3", (r) => choose(r, "", IN_TEXT)],
+  ["apa-4", (r) => choose(r, "", PLAGIARISM)],
 ];

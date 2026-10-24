@@ -6,7 +6,7 @@ import { NAMES, choiceQ, fixedQ, fmt, numQ, table } from "./kit";
 // historial crediticio, cómo pagar los estudios y relación entre ocupación,
 // estudios e ingresos.
 
-// 6.° LL.1: comparar cuentas bancarias.
+// Comparar cuentas bancarias.
 export function compareAccounts(r: Rng): Question {
   for (;;) {
     const [feeA, feeB] = [r.int(0, 6) * 2, r.int(0, 6) * 2];
@@ -36,7 +36,7 @@ const CARDS: [string, string][] = [
   ["Usarla bien ayuda a tener buen historial crediticio.", "Tarjeta de crédito"],
 ];
 
-// 6.° LL.3: tarjetas de débito y tarjetas de crédito.
+// Tarjetas de débito y tarjetas de crédito.
 export function debitOrCredit(r: Rng): Question {
   const [text, answer] = r.pick(CARDS);
   return fixedQ("¿De qué tarjeta se habla?", ["Tarjeta de débito", "Tarjeta de crédito"], answer, answer === "Tarjeta de débito" ? "La de débito usa tu propio dinero." : "La de crédito usa dinero prestado, que luego se devuelve.", text, answer.toLowerCase());
@@ -55,7 +55,7 @@ const CREDIT: [string, string, string[]][] = [
   ["¿Qué es una central de riesgo?", "Una entidad que reúne los historiales", ["Una tienda de electrodomésticos", "Un tipo de cuenta de ahorros", "Una oficina de impuestos"]],
 ];
 
-// 6.° LL.4: reportes de crédito.
+// Reportes de crédito.
 export function creditReports(r: Rng): Question {
   const [prompt, answer, wrong] = r.pick(CREDIT);
   return choiceQ(r, prompt, answer, wrong, `${answer}.`);
@@ -76,7 +76,7 @@ const COLLEGE: [string, string][] = [
   ["En vacaciones, el estudiante gana dinero para sus cuotas.", "Trabajo"],
 ];
 
-// 6.° LL.5: cómo pagar los estudios superiores.
+// Cómo pagar los estudios superiores.
 export function payingForCollege(r: Rng): Question {
   const [text, answer] = r.pick(COLLEGE);
   return fixedQ("¿Qué forma de pagar los estudios se describe?", ["Beca", "Préstamo educativo", "Ahorros", "Trabajo"], answer, answer === "Beca" ? "La beca no se devuelve." : answer === "Préstamo educativo" ? "El préstamo se devuelve, casi siempre con intereses." : answer === "Ahorros" ? "Es dinero propio guardado con anticipación." : "Es dinero que se gana trabajando mientras se estudia.", text, answer.toLowerCase());
@@ -84,7 +84,7 @@ export function payingForCollege(r: Rng): Question {
 
 const JOBS: [string, number][] = [["Auxiliar de almacén", 0], ["Técnico electricista", 3], ["Enfermera", 5], ["Contador", 5], ["Ingeniera civil", 5], ["Médico", 7], ["Chef", 3], ["Programadora", 4], ["Profesor", 5], ["Mecánico", 2]];
 
-// 6.° LL.6: ocupaciones, estudios e ingresos.
+// Ocupaciones, estudios e ingresos.
 export function occupationsIncome(r: Rng): Question {
   const picked = r.shuffle(JOBS).slice(0, 4).sort((a, b) => a[1] - b[1]);
   const incomes = picked.map(([, years]) => (12 + years * r.int(3, 5) + r.int(0, 3)) * 100);

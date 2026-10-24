@@ -19,7 +19,7 @@ function choice(r: Rng, prompt: string, answer: string, distractors: string[], e
   return { kind: "choice", prompt, visual, options: uniqueOptions(r, answer, distractors.filter((d) => d !== answer)), answer, explanation, tag };
 }
 
-// 3.° R.1: leer un decimal (décimos) en una recta entre dos enteros.
+// Leer un decimal (décimos) en una recta entre dos enteros.
 export function decimalOnLine(r: Rng): Question {
   const base = r.int(0, 9);
   const k = r.int(1, 9);
@@ -34,7 +34,7 @@ export function decimalOnLine(r: Rng): Question {
   );
 }
 
-// 3.° R.2: la misma marca como fracción y como decimal.
+// La misma marca como fracción y como decimal.
 export function fractionAsDecimalLine(r: Rng): Question {
   const k = r.int(1, 9);
   const visual = { kind: "fractionLine" as const, parts: 10, marked: k };
@@ -43,7 +43,7 @@ export function fractionAsDecimalLine(r: Rng): Question {
     : choice(r, `El punto marca 0,${k}. ¿Qué fracción es?`, `${k}/10`, [`${k}/100`, `10/${k}`, `1/${k}`, `${k}/1`], `0,${k} son ${k} décimos: ${k}/10.`, visual, "decimal-a-fraccion");
 }
 
-// 3.° R.3: modelos de décimos (barra) y centésimos (cuadrícula).
+// Modelos de décimos (barra) y centésimos (cuadrícula).
 export function decimalModel(r: Rng): Question {
   if (r.chance(0.5)) {
     const k = r.int(1, 9);
@@ -61,7 +61,7 @@ export function decimalModel(r: Rng): Question {
     : choice(r, "La cuadrícula tiene 100 casillas. ¿Qué fracción está sombreada?", `${n}/100`, [`${n}/10`, `${100 - n}/100`, u === 0 ? `${t}/100` : `${t}/10`, `100/${n}`], `Hay ${n} de 100 casillas sombreadas: ${n}/100.`, visual, "centesimos");
 }
 
-// 3.° R.4: valor posicional en decimales.
+// Valor posicional en decimales.
 export function decimalPlaceValue(r: Rng): Question {
   const digits = r.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 4);
   const [d, u, t, c] = digits;
@@ -79,7 +79,7 @@ export function decimalPlaceValue(r: Rng): Question {
   return choice(r, `En ${text}, ¿qué valor tiene la cifra ${p.digit}?`, `${p.digit} ${p.name}`, places.map((x) => `${p.digit} ${x.name}`), `El ${p.digit} está en el lugar de ${/^(decenas|unidades)$/.test(p.name) ? "las" : "los"} ${p.name}.`, { kind: "text", text }, p.name);
 }
 
-// 3.° R.5: redondear decimales a la unidad o al décimo.
+// Redondear decimales a la unidad o al décimo.
 export function roundDecimal(r: Rng): Question {
   if (r.chance(0.5)) {
     const whole = r.int(0, 30);
@@ -94,7 +94,7 @@ export function roundDecimal(r: Rng): Question {
   return choice(r, `Redondea ${dec(n)} al décimo más cercano.`, dec(rounded, 1), [dec(down === rounded ? down + 10 : down, 1), dec(rounded + 10, 1), dec(Math.max(0, rounded - 10), 1), `${Math.round(n / 100)},0`], `El centésimo es ${n % 10}: ${n % 10 >= 5 ? "se sube el décimo" : "el décimo se queda"}. Resultado: ${dec(rounded, 1)}.`, { kind: "text", text: dec(n) }, "al-decimo");
 }
 
-// 3.° R.6: decimales equivalentes (0,5 = 0,50).
+// Decimales equivalentes (0,5 = 0,50).
 export function equivalentDecimals(r: Rng): Question {
   const whole = r.int(0, 9);
   const t = r.int(1, 9);
@@ -109,7 +109,7 @@ export function equivalentDecimals(r: Rng): Question {
   return { kind: "choice", prompt: `¿${short} y ${other} son iguales?`, options: ["Sí", "No"], answer: same ? "Sí" : "No", explanation: same ? `${t} décimos son ${t}0 centésimos: ${short} = ${long}.` : `${short} son ${t} décimos; ${other} son ${t} centésimos. No son iguales.` };
 }
 
-// 3.° R.7: forma estándar ↔ forma expandida con fracciones.
+// Forma estándar ↔ forma expandida con fracciones.
 export function decimalExpanded(r: Rng): Question {
   const w = r.int(1, 9);
   const t = r.int(1, 9);
@@ -123,7 +123,7 @@ export function decimalExpanded(r: Rng): Question {
   return choice(r, `¿Qué número decimal es ${exp(w, t, c)}?`, std, [`${w},${c}${t}`, `${t},${w}${c}`, `${w}${t},${c}`, `${w},0${t}`].filter((x) => x !== std), `${w} unidades, ${t} décimos y ${c} centésimos: ${std}.`, undefined, "a-estandar");
 }
 
-// 3.° S.1: comparar décimos que se ven en la misma recta.
+// Comparar décimos que se ven en la misma recta.
 export function compareDecimalsLine(r: Rng): Question {
   const base = r.int(0, 9);
   const a = r.int(1, 9);
@@ -143,7 +143,7 @@ export function compareDecimalsLine(r: Rng): Question {
   };
 }
 
-// 3.° S.2: comparar un decimal con una fracción en la recta de 0 a 1.
+// Comparar un decimal con una fracción en la recta de 0 a 1.
 export function compareDecimalFraction(r: Rng): Question {
   const fracs: [string, number][] = [["1/2", 5], ["1/5", 2], ["2/5", 4], ["3/5", 6], ["4/5", 8], ["3/10", 3], ["7/10", 7], ["9/10", 9], ["1/10", 1]];
   const [fr, at] = r.pick(fracs);
@@ -164,7 +164,7 @@ export function compareDecimalFraction(r: Rng): Question {
   };
 }
 
-// 3.° S.3: ordenar decimales (con uno y dos decimales).
+// Ordenar decimales (con uno y dos decimales).
 export function orderDecimals(r: Rng): Question {
   const whole = r.int(0, 9);
   const set = new Map<number, string>();
@@ -193,7 +193,7 @@ export function orderDecimals(r: Rng): Question {
   };
 }
 
-// 3.° T.1 - T.3: sumar y restar decimales.
+// Sumar y restar decimales.
 export function addSubDecimals(r: Rng, op: "+" | "−" | "mixed"): Question {
   const o = op === "mixed" ? r.pick<"+" | "−">(["+", "−"]) : op;
   const places: 1 | 2 = r.chance(0.5) ? 1 : 2;
@@ -215,7 +215,7 @@ export function addSubDecimals(r: Rng, op: "+" | "−" | "mixed"): Question {
   );
 }
 
-// 3.° T.4: estimar redondeando a la unidad.
+// Estimar redondeando a la unidad.
 export function estimateDecimals(r: Rng): Question {
   const pick = () => {
     const whole = r.int(1, 20);

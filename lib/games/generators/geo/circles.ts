@@ -17,7 +17,7 @@ const piText = (n: number, d: number) => {
 const g = (a: number, b: number): number => (b ? g(b, a % b) : Math.abs(a));
 const ANGLES = [30, 45, 60, 90, 120, 135, 150, 180, 210, 240, 270, 300];
 
-// W.2: ángulos centrales y medidas de arcos.
+// Ángulos centrales y medidas de arcos.
 export function arcMeasures(r: Rng): Question {
   const a = r.int(30, 160);
   const form = r.int(0, 2);
@@ -27,14 +27,14 @@ export function arcMeasures(r: Rng): Question {
   return numQ(a + b, `Los arcos AB y BC son adyacentes; el arco AB mide ${a}° y el arco BC, ${b}°. ¿Cuánto mide el arco ABC?`, undefined, `Postulado de la suma de arcos: ${a}° + ${b}° = ${a + b}°.`, "suma");
 }
 
-// W.3: entender la longitud de arco y el área de un sector (fracción de la circunferencia).
+// Entender la longitud de arco y el área de un sector (fracción de la circunferencia).
 export function arcFraction(r: Rng): Question {
   const a = r.pick(ANGLES);
   const k = g(a, 360);
   return choiceQ(r, `Un sector circular tiene un ángulo central de ${a}°. ¿Qué fracción de la circunferencia (y del círculo) representa?`, frac(a, 360), [frac(a, 180), frac(360 - a, 360), frac(a, 100) === frac(a, 360) ? "1/2" : frac(a, 100)].filter((w, i, all) => all.indexOf(w) === i && w !== frac(a, 360)), `${a}° ÷ 360° = ${a / k}/${360 / k}: la longitud del arco y el área del sector son esa fracción del total.`, undefined, "fraccion");
 }
 
-// W.4 / W.7: longitud de arco y área de sectores (en términos de π).
+// Longitud de arco y área de sectores (en términos de π).
 export function arcSector(r: Rng, area: boolean): Question {
   const a = r.pick(ANGLES), rr = r.int(2, 12);
   const good = area ? piText(a * rr * rr, 360) : piText(a * 2 * rr, 360);
@@ -42,14 +42,14 @@ export function arcSector(r: Rng, area: boolean): Question {
   return choiceQ(r, `Una circunferencia tiene radio ${rr} cm. ¿Cuál es ${area ? "el área del sector" : "la longitud del arco"} de ${a}°? Deja la respuesta en términos de π (en ${area ? "cm²" : "cm"}).`, good, [...new Set(wrong)].filter((w) => w !== good), area ? `Área = (${a}/360) × π × ${rr}² = ${good}.` : `Longitud = (${a}/360) × 2π × ${rr} = ${good}.`, undefined, area ? "sector" : "arco");
 }
 
-// W.5: convertir entre radianes y grados.
+// Convertir entre radianes y grados.
 export function radiansDegrees(r: Rng): Question {
   const a = r.pick([...ANGLES, 360, 225, 315]);
   if (r.chance(0.5)) return choiceQ(r, `¿Cuántos radianes son ${a}°?`, piText(a, 180), [piText(a, 360), piText(180, a), piText(a, 90)].filter((w, i, all) => w !== piText(a, 180) && all.indexOf(w) === i), `Se multiplica por π/180: ${a} × π/180 = ${piText(a, 180)}.`, undefined, "a-radianes");
   return numQ(a, `¿Cuántos grados son ${piText(a, 180)} radianes?`, undefined, `Se multiplica por 180/π: ${piText(a, 180)} × 180/π = ${a}°.`, "a-grados");
 }
 
-// W.6: radianes y longitud de arco (s = rθ).
+// Radianes y longitud de arco (s = rθ).
 export function radianArc(r: Rng): Question {
   const rr = r.int(2, 12);
   if (r.chance(0.5)) {
@@ -60,7 +60,7 @@ export function radianArc(r: Rng): Question {
   return valQ(r, `En una circunferencia de radio ${rr} cm, un ángulo central de ${dec(th)} radianes abarca un arco. ¿Cuánto mide el arco, en cm?`, rr * th, [rr / th, rr + th, rr * th * 2], `s = r × θ = ${rr} × ${dec(th)} = ${dec(rr * th)}.`, undefined, "decimal");
 }
 
-// W.9: arcos y cuerdas.
+// Arcos y cuerdas.
 export function arcsChords(r: Rng): Question {
   if (r.chance(0.5)) {
     const x = r.int(3, 12), a = r.int(2, 5), c = r.int(1, a - 1), b = r.int(1, 9);
@@ -70,7 +70,7 @@ export function arcsChords(r: Rng): Question {
   return numQ(2 * half, `Una circunferencia tiene radio ${rr}. Una cuerda está a ${d} unidades del centro. ¿Cuánto mide la cuerda?`, undefined, `La perpendicular desde el centro biseca la cuerda: la mitad mide √(${rr}² − ${d}²) = ${half}; la cuerda mide ${2 * half}.`, "distancia");
 }
 
-// W.10: rectas tangentes.
+// Rectas tangentes.
 export function tangentLines(r: Rng): Question {
   const [rr, t, d] = r.pick([[3, 4, 5], [5, 12, 13], [6, 8, 10], [8, 15, 17], [7, 24, 25], [9, 12, 15]]);
   if (r.chance(0.5)) return numQ(t, `Desde un punto P exterior a una circunferencia de radio ${rr} se traza una tangente que toca la circunferencia en T. P está a ${d} del centro. ¿Cuánto mide PT?`, undefined, `La tangente es perpendicular al radio: PT = √(${d}² − ${rr}²) = ${t}.`, "pitagoras");
@@ -78,13 +78,13 @@ export function tangentLines(r: Rng): Question {
   return numQ(x, `Desde un punto P se trazan dos tangentes a una circunferencia, que la tocan en A y en B. PA = ${a}x + ${b} y PB = ${a * x + b}. ¿Cuánto vale x?`, undefined, "Las dos tangentes trazadas desde un mismo punto exterior miden lo mismo: PA = PB.", "dos-tangentes");
 }
 
-// W.11: perímetro de polígonos con una circunferencia inscrita.
+// Perímetro de polígonos con una circunferencia inscrita.
 export function inscribedCirclePerimeter(r: Rng): Question {
   const [a, b, c] = [r.int(2, 9), r.int(2, 9), r.int(2, 9)];
   return numQ(2 * (a + b + c), `Una circunferencia está inscrita en un triángulo. Desde los vértices A, B y C, las tangentes hasta los puntos de contacto miden ${a}, ${b} y ${c}. ¿Cuál es el perímetro del triángulo?`, undefined, `Cada vértice aporta dos tangentes iguales: 2 × (${a} + ${b} + ${c}) = ${2 * (a + b + c)}.`, "tangentes");
 }
 
-// W.12-W.15: ángulos inscritos, triángulos rectángulos inscritos y cuadriláteros inscritos.
+// Ángulos inscritos, triángulos rectángulos inscritos y cuadriláteros inscritos.
 export function inscribedAngles(r: Rng, kind: "angle" | "rightTriangle" | "quad1" | "quad2"): Question {
   if (kind === "angle") {
     const arc = r.int(20, 170) * 2 > 340 ? 160 : r.int(10, 85) * 2;
@@ -105,7 +105,7 @@ export function inscribedAngles(r: Rng, kind: "angle" | "rightTriangle" | "quad1
   return numQ(x, `El cuadrilátero ABCD está inscrito en una circunferencia. m∠A = (${a}x + ${b})° y m∠C = ${C}°. ¿Cuánto vale x?`, undefined, `∠A y ∠C son opuestos: ${a}x + ${b} + ${C} = 180 → x = ${x}.`, "ecuacion");
 }
 
-// W.16: ángulos formados por cuerdas, secantes y tangentes.
+// Ángulos formados por cuerdas, secantes y tangentes.
 export function chordAngles(r: Rng): Question {
   const inside = r.chance(0.5);
   const a = r.int(20, 120), b = r.int(20, 120);
@@ -118,7 +118,7 @@ export function chordAngles(r: Rng): Question {
   return numQ((far - near) / 2, `Dos secantes se cortan fuera de una circunferencia. Abarcan un arco lejano de ${far}° y un arco cercano de ${near}°. ¿Cuánto mide el ángulo?`, undefined, `Ángulo exterior = semidiferencia de los arcos: (${far}° − ${near}°) ÷ 2 = ${(far - near) / 2}°.`, "exterior");
 }
 
-// W.17: segmentos formados por cuerdas, secantes y tangentes.
+// Segmentos formados por cuerdas, secantes y tangentes.
 export function chordSegments(r: Rng): Question {
   const form = r.int(0, 2);
   if (form === 0) {
@@ -144,7 +144,7 @@ const circleVisual = (c: Circ, extra: { x: number; y: number }[] = []): Visual =
 const randomCirc = (r: Rng): Circ => ({ h: r.int(-4, 4), k: r.int(-4, 4), r: r.int(1, 4) });
 const generalForm = (c: Circ) => `x² + y²${c.h ? ` ${-2 * c.h < 0 ? "−" : "+"} ${Math.abs(2 * c.h)}x` : ""}${c.k ? ` ${-2 * c.k < 0 ? "−" : "+"} ${Math.abs(2 * c.k)}y` : ""}${c.h * c.h + c.k * c.k - c.r * c.r ? ` ${c.h * c.h + c.k * c.k - c.r * c.r < 0 ? "−" : "+"} ${Math.abs(c.h * c.h + c.k * c.k - c.r * c.r)}` : ""} = 0`;
 
-// Y.1-Y.3, Y.8: centro, radio, ¿el punto está en la circunferencia?, propiedades desde la forma general.
+// Centro, radio, ¿el punto está en la circunferencia?, propiedades desde la forma general.
 export function circleProps(r: Rng, mode: "center" | "radius" | "onCircle" | "general"): Question {
   const c = randomCirc(r);
   const eq = mode === "general" ? generalForm(c) : circleEq(c);
@@ -161,7 +161,7 @@ export function circleProps(r: Rng, mode: "center" | "radius" | "onCircle" | "ge
   return yesNo(`¿El punto ${pt(P)} está sobre la circunferencia ${eq}?`, yes, `Al reemplazar: ${lhs} ${yes ? "=" : "≠"} ${c.r * c.r}.`, undefined, yes ? "si" : "no");
 }
 
-// Y.4-Y.7: escribir ecuaciones de circunferencias.
+// Escribir ecuaciones de circunferencias.
 export function circleEquation(r: Rng, mode: "pythagoras" | "graph" | "properties" | "convert"): Question {
   const c = randomCirc(r);
   const good = circleEq(c);
@@ -181,7 +181,7 @@ export function circleEquation(r: Rng, mode: "pythagoras" | "graph" | "propertie
   return choiceQ(r, `Los extremos de un diámetro de una circunferencia son ${pt(A)} y ${pt(B)}. ¿Cuál es su ecuación?`, good, opts, `El centro es el punto medio ${pt({ x: c.h, y: c.k })} y el radio es la mitad del diámetro (${c.r}): ${good}.`, undefined, "diametro");
 }
 
-// Y.9 / Y.10: graficar circunferencias (forma estándar o general).
+// Graficar circunferencias (forma estándar o general).
 export function graphCircle(r: Rng, general: boolean): Question {
   const c = randomCirc(r);
   const yes = r.chance(0.5);
@@ -204,7 +204,7 @@ const PS = [1, 2, -1, -2, 0.25, -0.25, 0.5, -0.5];
 const randomPara = (r: Rng): Para => ({ h: r.int(-3, 3), k: r.int(-3, 3), p: r.pick(PS) });
 const paraVisual = (q: Para): Visual => ({ kind: "coordPlane", min: -8, max: 8, points: [{ x: q.h, y: q.k, emoji: "•" }], curves: [{ points: Array.from({ length: 161 }, (_, i) => { const x = -8 + i * 0.1; return { x, y: (x - q.h) ** 2 / (4 * q.p) + q.k }; }) }] });
 
-// Z.1-Z.3, Z.8: vértice, foco, directriz y eje de una parábola (también desde la forma general).
+// Vértice, foco, directriz y eje de una parábola (también desde la forma general).
 export function parabolaProps(r: Rng, mode: "vertex" | "focus" | "axis" | "general"): Question {
   const q = randomPara(r);
   const m = mode === "general" ? r.pick(["vertex", "focus", "axis"] as const) : mode;
@@ -216,7 +216,7 @@ export function parabolaProps(r: Rng, mode: "vertex" | "focus" | "axis" | "gener
   return choiceQ(r, `¿Cuál es la directriz de la parábola ${eq}?`, `y = ${dec(q.k - q.p)}`, [`y = ${dec(q.k + q.p)}`, `x = ${dec(q.h - q.p)}`, `y = ${dec(q.k - 2 * q.p)}`], `p = ${dec(q.p)}; la directriz es y = k − p = ${dec(q.k - q.p)}.`, undefined, "directriz");
 }
 
-// Z.4-Z.7: escribir ecuaciones de parábolas en forma de vértice.
+// Escribir ecuaciones de parábolas en forma de vértice.
 export function parabolaEquation(r: Rng, mode: "graph" | "focus" | "properties" | "convert"): Question {
   const q = mode === "graph" ? { ...randomPara(r), p: r.pick([0.25, -0.25, 0.5, -0.5]) } : randomPara(r);
   const good = paraEq(q);
@@ -229,7 +229,7 @@ export function parabolaEquation(r: Rng, mode: "graph" | "focus" | "properties" 
   return choiceQ(r, `Escribe y = ${poly([a, -2 * a * q.h, a * q.h * q.h + q.k]).replace(/(\d+\.\d+)/g, (n) => dec(Number(n)))} en forma de vértice.`, good, opts, `Se saca factor común ${paraA(q)} y se completa el cuadrado: ${good}.`, undefined, "convertir");
 }
 
-// Z.9: graficar parábolas.
+// Graficar parábolas.
 export function graphParabola(r: Rng): Question {
   const q = { ...randomPara(r), p: r.pick([0.25, -0.25, 0.5, -0.5]) };
   const yes = r.chance(0.5);

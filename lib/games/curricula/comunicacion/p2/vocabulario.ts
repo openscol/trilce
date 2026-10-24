@@ -1,25 +1,14 @@
 import { choose, chooseAll, mix, order, pickAll, type ChoiceItem, type MultiItem, type OrderItem } from "../../../generators/lengua/bank";
 import type { Rng } from "../../../rng";
-import type { Question, Section } from "../../../types";
+import type { Question } from "../../../types";
 import type { Row } from "./row";
 
-// Vocabulario (IXL 2nd grade ELA, OO-WW). Los prefijos y sufijos del inglés
-// (pre-, re-, mis-, -ful, -less) pasan a los del castellano (pre-, re-, des-,
-// -oso, in-).
+// 2.° de Primaria · banco de vocabulario: prefijos pre-, re-, des-, in- y
+// sufijo -oso, palabras compuestas, categorías, sinónimos y antónimos,
+// homófonos, matices, expresiones, contexto y uso del diccionario.
 
-export const SECTIONS: Section[] = [
-  { id: "OO", name: "Prefijos y sufijos", icon: "🧩" },
-  { id: "PP", name: "Palabras compuestas", icon: "🔗" },
-  { id: "QQ", name: "Categorías", icon: "🗂️" },
-  { id: "RR", name: "Sinónimos y antónimos", icon: "↔️" },
-  { id: "SS", name: "Homófonos y palabras con varios significados", icon: "🔀" },
-  { id: "TT", name: "Matices de significado", icon: "🌈" },
-  { id: "UU", name: "Expresiones y frases hechas", icon: "💬" },
-  { id: "VV", name: "Pistas del contexto", icon: "🔎" },
-  { id: "WW", name: "Uso del diccionario", icon: "📖" },
-];
 
-// --- OO. Prefijos y sufijos -----------------------------------------------------------
+// --- Prefijos y sufijos -----------------------------------------------------------
 
 const ENDINGS: ChoiceItem[] = [
   { say: "cantando", t: "cant___", a: "ando", d: ["aba", "ado", "amos"] },
@@ -78,7 +67,7 @@ const SUFFIX_MEANING: ChoiceItem[] = [
   { p: "¿Qué significa «injusto»?", a: "Que no es justo", d: ["Muy justo", "Justo otra vez", "Casi justo"] },
 ];
 
-// --- PP. Palabras compuestas ----------------------------------------------------------
+// --- Palabras compuestas ----------------------------------------------------------
 
 const COMPOUND_PIC: ChoiceItem[] = [
   { pic: "☂️", t: "para + ___", a: "aguas", d: ["sol", "brisas", "caídas"] },
@@ -113,7 +102,7 @@ const COMPOUND_USE: ChoiceItem[] = [
   { t: "Sube la escalera agarrado del ___.", a: "pasamanos", d: ["lavamanos", "pasatiempo", "sacacorchos"] },
 ];
 
-// --- QQ. Categorías ---------------------------------------------------------------------
+// --- Categorías ---------------------------------------------------------------------
 
 const CATEGORIES: Record<string, string[]> = {
   "los animales": ["puma", "cóndor", "alpaca", "delfín", "tortuga", "zorro"],
@@ -142,7 +131,7 @@ const ODD_ONE: ChoiceItem[] = [
   { p: "¿Qué palabra no es como las demás?", a: "correr", d: ["enero", "marzo", "julio"] },
 ];
 
-// --- RR. Sinónimos y antónimos ------------------------------------------------------------
+// --- Sinónimos y antónimos ------------------------------------------------------------
 
 const SYNONYMS: ChoiceItem[] = [
   { p: "¿Qué palabra significa lo mismo que «contento»?", a: "alegre", d: ["triste", "cansado", "serio"] },
@@ -206,7 +195,7 @@ const SAME_MEANING: ChoiceItem[] = [
   { p: "¿Qué oración significa lo mismo?", t: "El cuarto no está limpio.", a: "El cuarto está sucio.", d: ["El cuarto está ordenado.", "El cuarto está vacío.", "El cuarto es pequeño."] },
 ];
 
-// --- SS. Homófonos y varios significados -------------------------------------------------------
+// --- Homófonos y varios significados -------------------------------------------------------
 
 const HOMOPHONE_PIC: ChoiceItem[] = [
   { pic: "🌊", a: "ola", d: ["hola", "olla", "hora"] },
@@ -252,7 +241,7 @@ const MULTI_MEANING: ChoiceItem[] = [
   { pic: "🔥", p: "«Llama» tiene varios significados. ¿Cuál muestra el dibujo?", a: "Fuego que sube", d: ["Animal de los Andes", "Del verbo llamar", "Planta del campo"] },
 ];
 
-// --- TT. Matices de significado ------------------------------------------------------------------
+// --- Matices de significado ------------------------------------------------------------------
 
 const SHADES_PIC: ChoiceItem[] = [
   { pic: "😡", a: "furioso", d: ["molesto", "tranquilo", "serio"] },
@@ -295,7 +284,7 @@ const SHADES: OrderItem[] = [
   { p: "Ordena de menos a más enojo.", seq: ["tranquilo", "molesto", "enojado", "furioso"] },
 ];
 
-// --- UU. Expresiones -----------------------------------------------------------------------------
+// --- Expresiones -----------------------------------------------------------------------------
 
 const IDIOMS: ChoiceItem[] = [
   { p: "¿Qué dibujo muestra lo que significa «llueve a cántaros»?", a: "⛈️ Llueve muchísimo", d: ["🏺 Caen jarras del cielo", "☀️ Hace mucho sol", "💧 Cae una gotita"] },
@@ -308,7 +297,7 @@ const IDIOMS: ChoiceItem[] = [
   { p: "¿Qué dibujo muestra lo que significa «estar hecho una sopa»?", a: "💦 Estar muy mojado", d: ["🍲 Cocinar una sopa", "🥄 Tener una cuchara", "🔥 Estar muy caliente"] },
 ];
 
-// --- VV. Contexto ----------------------------------------------------------------------------------
+// --- Contexto ----------------------------------------------------------------------------------
 
 const CONTEXT: ChoiceItem[] = [
   { p: "¿Qué significa la palabra en MAYÚSCULAS?", t: "Después de correr tanto, el perro estaba EXHAUSTO y se echó a dormir.", a: "muy cansado", d: ["muy sucio", "muy contento", "muy asustado"] },
@@ -321,7 +310,7 @@ const CONTEXT: ChoiceItem[] = [
   { p: "¿Qué significa la palabra en MAYÚSCULAS?", t: "El río estaba CAUDALOSO después de tantas lluvias.", a: "con mucha agua", d: ["casi seco", "muy sucio", "muy quieto"] },
 ];
 
-// --- WW. Diccionario ------------------------------------------------------------------------------
+// --- Diccionario ------------------------------------------------------------------------------
 
 // Grupos de palabras para ordenar según la primera, segunda o tercera letra.
 const ABC: Record<1 | 2 | 3, string[][]> = {
@@ -373,44 +362,44 @@ const DICTIONARY: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["OO.1", "Completar la palabra con la terminación que escuchas", (r) => choose(r, "Toca 🔊, escucha y completa la palabra.", ENDINGS)],
-  ["OO.2", "Identificar la palabra base, el prefijo y el sufijo", (r) => choose(r, "", PARTS)],
-  ["OO.3", "Determinar el significado de palabras con pre-, re- y des-", (r) => choose(r, "", PREFIX_MEANING)],
-  ["OO.4", "Usar los prefijos pre-, re- y des-", (r) => choose(r, "Completa la oración.", PREFIX_USE)],
-  ["OO.5", "Determinar el significado de palabras con -oso y con in-", (r) => choose(r, "", SUFFIX_MEANING)],
-  ["OO.6", "Prefijos y sufijos: repaso", (r) => mix(r, [(q) => choose(q, "", PARTS), (q) => choose(q, "", PREFIX_MEANING), (q) => choose(q, "", SUFFIX_MEANING), (q) => choose(q, "Completa la oración.", PREFIX_USE)])],
+  ["prefijos-sufijos-1", (r) => choose(r, "Toca 🔊, escucha y completa la palabra.", ENDINGS)],
+  ["prefijos-sufijos-2", (r) => choose(r, "", PARTS)],
+  ["prefijos-sufijos-3", (r) => choose(r, "", PREFIX_MEANING)],
+  ["prefijos-sufijos-4", (r) => choose(r, "Completa la oración.", PREFIX_USE)],
+  ["prefijos-sufijos-5", (r) => choose(r, "", SUFFIX_MEANING)],
+  ["prefijos-sufijos-6", (r) => mix(r, [(q) => choose(q, "", PARTS), (q) => choose(q, "", PREFIX_MEANING), (q) => choose(q, "", SUFFIX_MEANING), (q) => choose(q, "Completa la oración.", PREFIX_USE)])],
 
-  ["PP.1", "Formar palabras compuestas con dibujos", (r) => choose(r, "¿Qué palabra falta para formar la palabra compuesta del dibujo?", COMPOUND_PIC)],
-  ["PP.2", "Formar palabras compuestas", (r) => choose(r, "", COMPOUND_FORM)],
-  ["PP.3", "Formar y usar palabras compuestas", (r) => choose(r, "Completa la oración.", COMPOUND_USE)],
+  ["compuestas-1", (r) => choose(r, "¿Qué palabra falta para formar la palabra compuesta del dibujo?", COMPOUND_PIC)],
+  ["compuestas-2", (r) => choose(r, "", COMPOUND_FORM)],
+  ["compuestas-3", (r) => choose(r, "Completa la oración.", COMPOUND_USE)],
 
-  ["QQ.1", "Clasificar palabras en categorías", sortCategory],
-  ["QQ.2", "¿Qué palabra no es como las demás?", (r) => choose(r, "", ODD_ONE)],
+  ["categorias-1", sortCategory],
+  ["categorias-2", (r) => choose(r, "", ODD_ONE)],
 
-  ["RR.1", "Elegir el sinónimo", (r) => choose(r, "", SYNONYMS)],
-  ["RR.2", "Encontrar sinónimos en contexto", (r) => choose(r, "", SYN_CONTEXT)],
-  ["RR.3", "Elegir el antónimo", (r) => choose(r, "", ANTONYMS)],
-  ["RR.4", "¿Qué oración usa un antónimo?", (r) => choose(r, "", ANT_SENTENCE)],
-  ["RR.5", "Encontrar antónimos en contexto", (r) => choose(r, "", ANT_CONTEXT)],
-  ["RR.6", "¿Qué oración tiene el mismo significado?", (r) => choose(r, "", SAME_MEANING)],
+  ["sinonimos-antonimos-1", (r) => choose(r, "", SYNONYMS)],
+  ["sinonimos-antonimos-2", (r) => choose(r, "", SYN_CONTEXT)],
+  ["sinonimos-antonimos-3", (r) => choose(r, "", ANTONYMS)],
+  ["sinonimos-antonimos-4", (r) => choose(r, "", ANT_SENTENCE)],
+  ["sinonimos-antonimos-5", (r) => choose(r, "", ANT_CONTEXT)],
+  ["sinonimos-antonimos-6", (r) => choose(r, "", SAME_MEANING)],
 
-  ["SS.1", "Homófonos con dibujos", (r) => choose(r, "¿Qué palabra corresponde al dibujo?", HOMOPHONE_PIC)],
-  ["SS.2", "Identificar homófonos", (r) => choose(r, "", HOMOPHONE_ID)],
-  ["SS.3", "Usar el homófono correcto", (r) => choose(r, "Completa la oración.", HOMOPHONE_USE)],
-  ["SS.4", "Palabras con varios significados, con dibujos", (r) => choose(r, "", MULTI_MEANING)],
+  ["homofonos-1", (r) => choose(r, "¿Qué palabra corresponde al dibujo?", HOMOPHONE_PIC)],
+  ["homofonos-2", (r) => choose(r, "", HOMOPHONE_ID)],
+  ["homofonos-3", (r) => choose(r, "Completa la oración.", HOMOPHONE_USE)],
+  ["varios-significados-1", (r) => choose(r, "", MULTI_MEANING)],
 
-  ["TT.1", "Matices de significado con dibujos", (r) => choose(r, "¿Qué palabra describe mejor el dibujo?", SHADES_PIC)],
-  ["TT.2", "Encontrar palabras de significado parecido", (r) => chooseAll(r, "", RELATED)],
-  ["TT.3", "Describir la diferencia entre palabras parecidas", (r) => choose(r, "", DIFFERENCE)],
-  ["TT.4", "Ordenar palabras parecidas según su significado", (r) => order(r, "", SHADES)],
+  ["matices-1", (r) => choose(r, "¿Qué palabra describe mejor el dibujo?", SHADES_PIC)],
+  ["matices-2", (r) => chooseAll(r, "", RELATED)],
+  ["matices-3", (r) => choose(r, "", DIFFERENCE)],
+  ["matices-4", (r) => order(r, "", SHADES)],
 
-  ["UU.1", "Elegir el dibujo que corresponde a la expresión", (r) => choose(r, "", IDIOMS)],
+  ["expresiones", (r) => choose(r, "", IDIOMS)],
 
-  ["VV.1", "Usar el contexto para identificar el significado de una palabra", (r) => choose(r, "", CONTEXT)],
+  ["varios-significados-2", (r) => choose(r, "", CONTEXT)],
 
-  ["WW.1", "Ordenar alfabéticamente según la primera letra", (r) => abcOrder(r, 1)],
-  ["WW.2", "Ordenar alfabéticamente según las dos primeras letras", (r) => abcOrder(r, 2)],
-  ["WW.3", "Ordenar alfabéticamente según las tres primeras letras", (r) => abcOrder(r, 3)],
-  ["WW.4", "Usar las palabras guía", (r) => choose(r, "", GUIDE_WORDS)],
-  ["WW.5", "Usar las entradas del diccionario", (r) => choose(r, "", DICTIONARY)],
+  ["orden-alfabetico-1", (r) => abcOrder(r, 1)],
+  ["orden-alfabetico-2", (r) => abcOrder(r, 2)],
+  ["orden-alfabetico-3", (r) => abcOrder(r, 3)],
+  ["diccionario-1", (r) => choose(r, "", GUIDE_WORDS)],
+  ["diccionario-2", (r) => choose(r, "", DICTIONARY)],
 ];

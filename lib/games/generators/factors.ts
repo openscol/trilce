@@ -29,7 +29,7 @@ function why(n: number, d: number) {
   return `Un número es divisible entre ${d} si ${RULE[d]}. ${n}${detail} ${ok ? "sí" : "no"} lo cumple.`;
 }
 
-// 4.° F.1: criterios de divisibilidad.
+// Criterios de divisibilidad.
 export function divisibilityRules(r: Rng, divisors: number[] = [2, 3, 5, 9, 10], max = 999): Question {
   if (r.chance(0.5)) {
     const d = r.pick(divisors);
@@ -45,7 +45,7 @@ export function divisibilityRules(r: Rng, divisors: number[] = [2, 3, 5, 9, 10],
   }
 }
 
-// 4.° F.2: problemas de divisibilidad.
+// Problemas de divisibilidad.
 export function divisibilityProblem(r: Rng, divisors: number[] = [2, 3, 5, 9, 10]): Question {
   const d = r.pick(divisors);
   const yes = r.chance(0.5);
@@ -60,7 +60,7 @@ export function divisibilityProblem(r: Rng, divisors: number[] = [2, 3, 5, 9, 10
   return yesNo(text, yes, `${why(n, d)}${yes ? "" : ` ${n % d === 1 ? "Sobra" : "Sobran"} ${n % d}.`}`, undefined, `entre-${d}`);
 }
 
-// 4.° F.3: comprender los factores y los pares de factores.
+// Comprender los factores y los pares de factores.
 export function understandFactors(r: Rng): Question {
   const rows = r.int(2, 6);
   const cols = r.int(rows === 2 ? 3 : rows, 9);
@@ -76,7 +76,7 @@ export function understandFactors(r: Rng): Question {
   return yesNo(`¿${candidate} es un factor de ${n}?`, yes, yes ? `Sí: ${candidate} × ${n / candidate} = ${n}.` : `No: ${n} ÷ ${candidate} no es exacta (sobran ${n % candidate}).`, undefined, "es-factor");
 }
 
-// 4.° F.4: identificar factores.
+// Identificar factores.
 export function identifyFactors(r: Rng, max = 60): Question {
   for (;;) {
     const n = r.int(8, max);
@@ -90,7 +90,7 @@ export function identifyFactors(r: Rng, max = 60): Question {
   }
 }
 
-// 4.° F.5: hallar todos los pares de factores.
+// Hallar todos los pares de factores.
 export function factorPairs(r: Rng, max = 72): Question {
   for (;;) {
     const n = r.int(12, max);
@@ -113,7 +113,7 @@ export function factorPairs(r: Rng, max = 72): Question {
   }
 }
 
-// 4.° F.6 / F.7: elegir los múltiplos de un número hasta `maxK`.
+// Elegir los múltiplos de un número hasta `maxK`.
 export function chooseMultiples(r: Rng, maxK: number): Question {
   const k = r.int(2, maxK);
   const good = distinct(r, r.int(2, 4), 1, 12).map((m) => m * k);
@@ -122,7 +122,7 @@ export function chooseMultiples(r: Rng, maxK: number): Question {
   return multiQ(`Selecciona todos los múltiplos de ${k}.`, options, good.map(String), `Los múltiplos de ${k} se obtienen multiplicando por ${k}: ${good.sort((a, b) => a - b).map((g) => `${k} × ${g / k} = ${g}`).join("; ")}.`, undefined, `de-${k}`);
 }
 
-// 4.° F.8: clasificar múltiplos en un diagrama de Venn.
+// Clasificar múltiplos en un diagrama de Venn.
 export function vennMultiples(r: Rng): Question {
   const [a, b] = r.pick([[2, 3], [2, 5], [3, 4], [3, 5], [2, 7], [4, 5], [4, 6], [3, 10], [6, 9]]);
   const zones = ["solo-a", "ambos", "solo-b", "ninguno"] as const;

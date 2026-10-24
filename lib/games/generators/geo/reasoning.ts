@@ -3,9 +3,9 @@ import type { Question } from "../../types";
 import { choiceQ, fixedQ, table } from "../kit";
 
 // Geometría: lógica (condicionales, recíprocos, tablas de verdad), pasos de
-// construcciones con regla y compás, y razones de demostraciones. Las
-// construcciones y demostraciones de IXL piden arrastrar o dibujar; aquí se
-// practican eligiendo el paso siguiente o la razón que justifica cada paso.
+// construcciones con regla y compás, y razones de demostraciones. Como en
+// pantalla no se dibuja, se practican eligiendo el paso siguiente o la razón
+// que justifica cada paso.
 
 // ---------------------------------------------------------------------------
 // Lógica
@@ -30,14 +30,14 @@ const CONDS: Cond[] = [
 const ifThen = (h: string, c: string) => `Si ${h}, entonces ${c}.`;
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 
-// A.1: hipótesis y conclusión.
+// Hipótesis y conclusión.
 export function hypothesisConclusion(r: Rng): Question {
   const c = r.pick(CONDS);
   const hyp = r.chance(0.5);
   return choiceQ(r, `En el condicional «${ifThen(c[0], c[5])}», ¿cuál es la ${hyp ? "hipótesis" : "conclusión"}?`, hyp ? cap(c[0]) : cap(c[5]), hyp ? [cap(c[5]), cap(c[2]), cap(c[7])] : [cap(c[0]), cap(c[7]), cap(c[2])], "La hipótesis es lo que va después de «si»; la conclusión, lo que va después de «entonces».", undefined, hyp ? "hipotesis" : "conclusion");
 }
 
-// A.2: contraejemplos (con opciones del mismo tema que no lo son).
+// Contraejemplos (con opciones del mismo tema que no lo son).
 const COUNTER: [string, string, string[]][] = [
   ["Si un número es primo, entonces es impar.", "El 2: es primo y no es impar.", ["El 3: es primo y es impar.", "El 9: no es primo y es impar.", "El 4: no es primo y no es impar."]],
   ["Si un animal es un ave, entonces puede volar.", "El pingüino: es un ave y no puede volar.", ["La paloma: es un ave y puede volar.", "El murciélago: no es un ave y puede volar.", "El perro: no es un ave y no puede volar."]],
@@ -52,13 +52,13 @@ export function counterexample(r: Rng): Question {
   return choiceQ(r, `¿Cuál es un contraejemplo de «${st}»?`, good, wrong, "Un contraejemplo cumple la hipótesis pero no la conclusión.", undefined, "contraejemplo");
 }
 
-// A.3: condicionales (¿verdadero o falso?).
+// Condicionales (¿verdadero o falso?).
 export function conditionalTruth(r: Rng): Question {
   const c = r.pick(CONDS);
   return fixedQ(`¿El condicional «${ifThen(c[0], c[5])}» es verdadero o falso?`, ["Verdadero", "Falso"], c[8] ? "Verdadero" : "Falso", c[8] ? "Siempre que se cumple la hipótesis, se cumple la conclusión." : `Es falso: hay un contraejemplo. ${c[10]}`, undefined, c[8] ? "verdadero" : "falso");
 }
 
-// A.4: negaciones.
+// Negaciones.
 export function negation(r: Rng): Question {
   const c = r.pick(CONDS);
   const useP = r.chance(0.5);
@@ -68,7 +68,7 @@ export function negation(r: Rng): Question {
 }
 
 const KINDS = ["recíproco", "inverso", "contrarrecíproco"];
-// A.5: recíproco, inverso y contrarrecíproco.
+// Recíproco, inverso y contrarrecíproco.
 export function converseInverse(r: Rng): Question {
   const c = r.pick(CONDS);
   const k = r.int(0, 2);
@@ -78,7 +78,7 @@ export function converseInverse(r: Rng): Question {
   return fixedQ(`El ${KINDS[k]} de «${ifThen(c[0], c[5])}» es «${forms[k]}». ¿Es verdadero o falso?`, ["Verdadero", "Falso"], truth ? "Verdadero" : "Falso", k === 2 ? "El contrarrecíproco tiene el mismo valor de verdad que el condicional original." : "El recíproco y el inverso tienen el mismo valor de verdad entre sí (no necesariamente el del original).", undefined, KINDS[k]);
 }
 
-// A.6: bicondicionales.
+// Bicondicionales.
 export function biconditional(r: Rng): Question {
   const c = r.pick(CONDS);
   const ok = c[8] && c[9];
@@ -89,7 +89,7 @@ type Op = "∧" | "∨" | "→" | "↔";
 const evalOp = (op: Op, p: boolean, q: boolean) => (op === "∧" ? p && q : op === "∨" ? p || q : op === "→" ? !p || q : p === q);
 const VF = (b: boolean) => (b ? "V" : "F");
 const OP_NAME: Record<Op, string> = { "∧": "p ∧ q (p y q)", "∨": "p ∨ q (p o q)", "→": "p → q (si p, entonces q)", "↔": "p ↔ q (p si y solo si q)" };
-// A.7 / A.8: tablas de verdad y valores de verdad.
+// Tablas de verdad y valores de verdad.
 export function truthTable(r: Rng, table7: boolean): Question {
   const op = r.pick(["∧", "∨", "→", "↔"] as Op[]);
   const neg = r.chance(0.3);

@@ -6,7 +6,6 @@ function num(answer: number, prompt: string, text: string, explanation: string, 
   return { kind: "number", prompt, visual: { kind: "text", text }, answer, explanation, tag };
 }
 
-// E.1
 export function takeawayPictureEquation(r: Rng): Question {
   const total = r.int(3, 10);
   const removed = r.int(1, total - 1);
@@ -22,7 +21,6 @@ export function takeawayPictureEquation(r: Rng): Question {
   };
 }
 
-// E.2 / E.5
 export function subFacts(r: Rng, max: number): Question {
   const big = max > 10 && r.chance(0.75);
   const a = big ? r.int(11, max) : r.int(2, Math.min(max, 10));
@@ -30,7 +28,6 @@ export function subFacts(r: Rng, max: number): Question {
   return num(a - b, "Resuelve la resta.", `${a} − ${b} = ?`, `${a} − ${b} = ${a - b}.`, big ? "pasa-de-10" : "hasta-10");
 }
 
-// E.4
 export function subMissing(r: Rng, max: number): Question {
   const a = r.int(3, max);
   const c = r.int(0, a - 1);
@@ -40,7 +37,6 @@ export function subMissing(r: Rng, max: number): Question {
     : num(a, "¿Qué número falta?", `? − ${b} = ${c}`, `${a} − ${b} = ${c}.`);
 }
 
-// E.7
 export function relatedSub(r: Rng, max: number): Question {
   const a = r.int(4, max);
   const b = r.int(1, a - 1);
@@ -53,7 +49,6 @@ export function relatedSub(r: Rng, max: number): Question {
   );
 }
 
-// E.8 / E.9
 export function subTwoDigitOne(r: Rng, borrow: boolean): Question {
   for (;;) {
     const a = r.int(11, 99);
@@ -65,7 +60,6 @@ export function subTwoDigitOne(r: Rng, borrow: boolean): Question {
   }
 }
 
-// E.10 / E.11
 export function subTwoTwo(r: Rng, borrow: boolean): Question {
   for (;;) {
     const a = r.int(20, 99);
@@ -77,20 +71,17 @@ export function subTwoTwo(r: Rng, borrow: boolean): Question {
   }
 }
 
-// F.1
 export function subDoubles(r: Rng): Question {
   const a = r.int(1, 9);
   return num(a, "Resta los dobles.", `${a * 2} − ${a} = ?`, `${a} + ${a} = ${a * 2}, así que ${a * 2} − ${a} = ${a}.`);
 }
 
-// F.2
 export function subTens(r: Rng): Question {
   const a = r.int(2, 10) * 10;
   const b = r.int(1, a / 10) * 10;
   return num(a - b, "Resta los múltiplos de 10.", `${a} − ${b} = ?`, `${a / 10} decenas − ${b / 10} decenas = ${(a - b) / 10} decenas: ${a - b}.`);
 }
 
-// F.3
 export function subMultipleOfTen(r: Rng): Question {
   for (;;) {
     const n = r.int(21, 99);
@@ -100,20 +91,19 @@ export function subMultipleOfTen(r: Rng): Question {
   }
 }
 
-// G.1 - G.10
 export function subK(r: Rng, k: number): Question {
   const n = r.int(k, Math.min(18, k + 10));
   return num(n - k, `Resta ${k}.`, `${n} − ${k} = ?`, `${n} − ${k} = ${n - k}.`);
 }
 
-// 2.° F.6: restar un número de una cifra a uno de 10 a 18.
+// Restar un número de una cifra a uno de 10 a 18.
 export function subOneDigitFromTeen(r: Rng): Question {
   const a = r.int(10, 18);
   const b = r.int(1, 9);
   return num(a - b, "Resuelve la resta.", `${a} − ${b} = ?`, `${a} − ${b} = ${a - b}.`, a - b < 10 ? "pasa-de-10" : "sin-pasar-de-10");
 }
 
-// 2.° G.7: completar una resta de dos cifras.
+// Completar una resta de dos cifras.
 export function subMissingTwoDigit(r: Rng): Question {
   const a = r.int(30, 99);
   const b = r.int(10, a - 10);
@@ -123,14 +113,12 @@ export function subMissingTwoDigit(r: Rng): Question {
     : num(a, "¿Qué número falta?", `? − ${b} = ${c}`, `${c} + ${b} = ${a}.`);
 }
 
-// 2.° G.8
 export function subHundreds(r: Rng): Question {
   const a = r.int(2, 10) * 100;
   const b = r.int(1, a / 100) * 100;
   return num(a - b, "Resta los múltiplos de 100.", `${a} − ${b} = ?`, `${a / 100} centenas − ${b / 100} centenas = ${(a - b) / 100} centenas: ${a - b}.`);
 }
 
-// 2.° G.9
 export function subThreeDigit(r: Rng): Question {
   const a = r.int(200, 999);
   const b = r.chance(0.5) ? r.int(10, 99) : r.int(100, a - 1);

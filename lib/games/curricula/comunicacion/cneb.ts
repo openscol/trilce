@@ -19,7 +19,7 @@ export function cnebCurriculum(
   wrap: (key: string, gen: Gen) => Gen = (_, gen) => gen
 ): Curriculum {
   const bank = new Map<string, Gen>();
-  for (const b of blocks) for (const [key, , generate] of b.ROWS) bank.set(key, wrap(key, generate));
+  for (const b of blocks) for (const [key, generate] of b.ROWS) bank.set(key, wrap(key, generate));
   const skills: Skill[] = games.map(([id, section, title, keys, extended]) => {
     const gens = keys.map((k) => {
       const gen = bank.get(k);

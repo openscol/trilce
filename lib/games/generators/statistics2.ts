@@ -32,14 +32,14 @@ function show(r: Rng, xs: number[], display: MeanDisplay): Visual {
   return { kind: "text", text: r.shuffle(xs).join("   ") };
 }
 
-// 5.° OO.2 / OO.9: hallar la media.
+// Hallar la media.
 export function findMean(r: Rng, display: MeanDisplay = "list"): Question {
   const n = display === "linePlot" ? r.pick([4, 5, 6]) : r.pick([3, 4, 5, 6]);
   const xs = display === "linePlot" ? meanData(r, n, 1, 7) : display === "bar" ? meanData(r, Math.min(n, 5), 2, 20) : meanData(r, n, 2, 40);
   return numQ(sum(xs) / xs.length, "¿Cuál es la media (promedio) de los datos?", show(r, xs, display), `Sumamos y dividimos entre la cantidad de datos: ${xs.join(" + ")} = ${sum(xs)}; ${sum(xs)} ÷ ${xs.length} = ${sum(xs) / xs.length}.`, "media");
 }
 
-// 5.° OO.5: media, hallar el dato que falta.
+// Media, hallar el dato que falta.
 export function meanMissing(r: Rng): Question {
   const xs = meanData(r, r.pick([3, 4, 5]), 2, 30);
   const mean = sum(xs) / xs.length;
@@ -47,14 +47,14 @@ export function meanMissing(r: Rng): Question {
   return numQ(xs[hidden], `La media de estos datos es ${mean}. ¿Qué dato falta?`, xs.map((x, i) => (i === hidden ? "?" : String(x))).join("   "), `La suma debe ser ${mean} × ${xs.length} = ${mean * xs.length}; los datos conocidos suman ${sum(xs) - xs[hidden]}; falta ${mean * xs.length} − ${sum(xs) - xs[hidden]} = ${xs[hidden]}.`);
 }
 
-// 5.° OO.6: mediana, hallar el dato que falta.
+// Mediana, hallar el dato que falta.
 export function medianMissing(r: Rng): Question {
   const sorted = distinct(r, 5, 2, 40).sort((a, b) => a - b);
   const median = sorted[2];
   return numQ(median, `Estos cinco datos están ordenados de menor a mayor y su mediana es ${median}. ¿Qué dato falta?`, sorted.map((x, i) => (i === 2 ? "?" : String(x))).join("   "), `Con cinco datos ordenados, la mediana es el tercero (el del centro): ${median}.`);
 }
 
-// 5.° OO.7: rango, hallar el dato que falta.
+// Rango, hallar el dato que falta.
 export function rangeMissing(r: Rng): Question {
   const sorted = distinct(r, 5, 5, 50).sort((a, b) => a - b);
   const range = sorted[4] - sorted[0];
@@ -63,7 +63,7 @@ export function rangeMissing(r: Rng): Question {
   return numQ(sorted[at], `Estos datos están ordenados de menor a mayor y su rango es ${range}. ¿Qué dato falta?`, sorted.map((x, i) => (i === at ? "?" : String(x))).join("   "), hideMax ? `El mayor es el menor más el rango: ${sorted[0]} + ${range} = ${sorted[4]}.` : `El menor es el mayor menos el rango: ${sorted[4]} − ${range} = ${sorted[0]}.`, hideMax ? "mayor" : "menor");
 }
 
-// 5.° NN.2: crear diagramas de puntos con decimales (¿cuántas X van?).
+// Crear diagramas de puntos con decimales (¿cuántas X van?).
 export function createDecimalPlot(r: Rng): Question {
   const [title, unit] = r.pick([["Largo de las hojas (cm)", "cm"], ["Peso de los paquetes (kg)", "kg"], ["Tiempo de la carrera (s)", "s"], ["Lluvia de cada día (cm)", "cm"]]);
   const start = r.int(1, 9) * 1000 + r.int(0, 5) * 100;

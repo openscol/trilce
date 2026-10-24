@@ -1,32 +1,18 @@
 import { choose, readPassage, type ChoiceItem } from "../../../generators/lengua/bank";
-import type { Section } from "../../../types";
 import { pt, read } from "../p3/helpers";
 import type { Row } from "../p3/row";
 
-// Lecturas (IXL 9th grade ELA: J-P).
-// J. Los textos históricos son discursos y escritos peruanos (San Martín,
-// Bolognesi, González Prada, Mariátegui), resumidos y con las frases más
-// célebres citadas tal como se conocen.
-// L. «Novel study»: en lugar de To Kill a Mockingbird, «La ciudad y los perros»
-// (Mario Vargas Llosa), que también trata la justicia y el encubrimiento.
-// Los pasajes son resúmenes propios, no citas textuales.
-// M. «Drama study» solo tiene un ítem «Coming soon» y se omite.
-// N. «Nonfiction book study»: en lugar de Night (Elie Wiesel), el informe de la
-// Comisión de la Verdad y Reconciliación y la memoria del conflicto armado
-// interno, con textos informativos propios.
-// O. Documentos de trabajo: correos, memorandos, cartas y avisos de
-// instituciones peruanas ficticias.
+// 3.° de Secundaria · banco de lecturas largas. Los textos históricos son
+// discursos y escritos peruanos (San Martín, Bolognesi, González Prada,
+// Mariátegui), resumidos y con las frases más célebres citadas tal como se
+// conocen. Estudio de la novela «La ciudad y los perros» (Mario Vargas Llosa)
+// con resúmenes propios, no citas textuales; el informe de la Comisión de la
+// Verdad y Reconciliación y la memoria del conflicto armado interno, con
+// textos propios; y documentos de trabajo (correos, memorandos, cartas y
+// avisos) de instituciones peruanas ficticias.
 
-export const SECTIONS: Section[] = [
-  { id: "J", name: "Analizar textos informativos", icon: "📰" },
-  { id: "K", name: "Analizar argumentos", icon: "⚖️" },
-  { id: "L", name: "Estudio de una novela", icon: "📚" },
-  { id: "N", name: "Estudio de una obra de no ficción", icon: "📓" },
-  { id: "O", name: "Documentos de trabajo", icon: "💼" },
-  { id: "P", name: "Organizadores gráficos", icon: "🗺️" },
-];
 
-// --- J. Textos históricos e informativos ------------------------------------------
+// --- Textos históricos e informativos ------------------------------------------
 
 const HISTORIC_1 = [
   read("La proclamación de la independencia (1821)", "🇵🇪", "El 28 de julio de 1821, en la plaza de Armas de Lima, José de San Martín proclamó: «El Perú es desde este momento libre e independiente por la voluntad general de los pueblos y por la justicia de su causa que Dios defiende». Luego, agitando la bandera, gritó tres veces: «¡Viva la patria! ¡Viva la libertad! ¡Viva la independencia!». La proclamación era breve, pero cada palabra estaba elegida para dar legitimidad al nuevo país.",
@@ -69,7 +55,7 @@ const DEVELOPMENT_2 = [
     ["¿Qué quiere demostrar el autor?", "Que la anemia es también un problema social y económico", "Que la anemia solo afecta a los adultos mayores que viven en las ciudades", "Nada"]),
 ];
 
-// --- K. Argumentos -----------------------------------------------------------------
+// --- Argumentos -----------------------------------------------------------------
 
 const ARGS_1 = [
   read("¿Voto a los 16?", "🗳️", "Los jóvenes de 16 años deberían poder votar. A esa edad ya trabajan muchos, pagan impuestos y pueden ser juzgados por la ley; es justo que también elijan a quienes deciden sobre sus vidas. Además, países como Argentina y Brasil ya lo permiten, y la participación juvenil ha sido alta. Se dirá que no están preparados. Pero la preparación no se mide por la edad: muchos adultos votan sin informarse. Lo que hace falta es educación cívica en el colegio, no excluir a una generación entera.",
@@ -92,7 +78,7 @@ const ARGS_2 = [
     ["¿Qué tipo de razonamiento predomina?", "Comparación de costos y beneficios", "Narración de una historia personal", "Ataque personal"]),
 ];
 
-// --- L. «La ciudad y los perros» ------------------------------------------------------
+// --- «La ciudad y los perros» ------------------------------------------------------
 
 const PERROS = [
   [
@@ -117,7 +103,7 @@ const PERROS = [
   ],
 ];
 
-// --- N. Memoria del conflicto armado interno ----------------------------------------
+// --- Memoria del conflicto armado interno ----------------------------------------
 
 const CVR = [
   [
@@ -142,7 +128,7 @@ const CVR = [
   ],
 ];
 
-// --- O. Documentos de trabajo -------------------------------------------------------
+// --- Documentos de trabajo -------------------------------------------------------
 
 const EMAILS = [
   read("Correo: reunión de coordinación", "📧", "De: Patricia Ramos (Coordinación Académica)\nPara: Docentes de secundaria\nAsunto: Reunión de coordinación – jueves 14\n\nEstimados colegas:\nLes recuerdo que el jueves 14, a las 3:30 p. m., nos reuniremos en la sala de profesores para planificar la feria de ciencias. Por favor, traigan la lista de proyectos de sus secciones. Quienes no puedan asistir, envíenme la lista por este medio antes del miércoles.\n\nSaludos cordiales,\nPatricia",
@@ -165,7 +151,7 @@ const LETTERS = [
     ["¿Por qué se usa «Agradecemos su comprensión»?", "Para mantener una relación cordial ante una molestia", "Para pedir dinero a los vecinos", "Para despedirse de un amigo"]),
 ];
 
-// --- P. Organizadores gráficos --------------------------------------------------------
+// --- Organizadores gráficos --------------------------------------------------------
 
 const ORGANIZERS: ChoiceItem[] = [
   pt("¿Qué tipo de organizador gráfico es?", "En el centro, «Conflicto armado interno»; alrededor, «causas», «actores», «víctimas» y «consecuencias», cada uno con ejemplos.", "Mapa conceptual", "Línea de tiempo", "Diagrama de Venn"),
@@ -177,22 +163,22 @@ const ORGANIZERS: ChoiceItem[] = [
 ];
 
 export const ROWS: Row[] = [
-  ["J.1", "Analizar estrategias retóricas en textos históricos: grupo 1", (r) => readPassage(r, HISTORIC_1, false)],
-  ["J.2", "Analizar estrategias retóricas en textos históricos: grupo 2", (r) => readPassage(r, HISTORIC_2, false)],
-  ["J.3", "Analizar el desarrollo de textos informativos: grupo 1", (r) => readPassage(r, DEVELOPMENT_1, false)],
-  ["J.4", "Analizar el desarrollo de textos informativos: grupo 2", (r) => readPassage(r, DEVELOPMENT_2, false)],
+  ["retorica-historica-1", (r) => readPassage(r, HISTORIC_1, false)],
+  ["retorica-historica-2", (r) => readPassage(r, HISTORIC_2, false)],
+  ["desarrollo-1", (r) => readPassage(r, DEVELOPMENT_1, false)],
+  ["desarrollo-2", (r) => readPassage(r, DEVELOPMENT_2, false)],
 
-  ["K.1", "Seguir el desarrollo de un argumento: grupo 1", (r) => readPassage(r, ARGS_1, false)],
-  ["K.2", "Seguir el desarrollo de un argumento: grupo 2", (r) => readPassage(r, ARGS_2, false)],
+  ["argumentos-1", (r) => readPassage(r, ARGS_1, false)],
+  ["argumentos-2", (r) => readPassage(r, ARGS_2, false)],
 
-  ["L.1", "Analizar pasajes de «La ciudad y los perros»: parte 1", (r) => readPassage(r, PERROS[0], false)],
-  ["L.2", "Analizar pasajes de «La ciudad y los perros»: parte 2", (r) => readPassage(r, PERROS[1], false)],
+  ["ciudad-perros-1", (r) => readPassage(r, PERROS[0], false)],
+  ["ciudad-perros-2", (r) => readPassage(r, PERROS[1], false)],
 
-  ["N.1", "Analizar textos sobre el Informe de la CVR y la memoria del conflicto armado: parte 1", (r) => readPassage(r, CVR[0], false)],
-  ["N.2", "Analizar textos sobre el Informe de la CVR y la memoria del conflicto armado: parte 2", (r) => readPassage(r, CVR[1], false)],
+  ["cvr-1", (r) => readPassage(r, CVR[0], false)],
+  ["cvr-2", (r) => readPassage(r, CVR[1], false)],
 
-  ["O.1", "Leer correos y memorandos de trabajo", (r) => readPassage(r, EMAILS, false)],
-  ["O.2", "Leer cartas y avisos formales", (r) => readPassage(r, LETTERS, false)],
+  ["trabajo-1", (r) => readPassage(r, EMAILS, false)],
+  ["trabajo-2", (r) => readPassage(r, LETTERS, false)],
 
-  ["P.1", "Leer organizadores gráficos", (r) => choose(r, "", ORGANIZERS)],
+  ["organizadores", (r) => choose(r, "", ORGANIZERS)],
 ];

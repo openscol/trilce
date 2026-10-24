@@ -18,7 +18,7 @@ function uniqueDigits(r: Rng, len: number): number[] {
 }
 const toNumber = (ds: number[]) => Number(ds.join(""));
 
-// 4.° A.2: nombre de la posición de una cifra.
+// Nombre de la posición de una cifra.
 export function placeName(r: Rng, maxDigits: number): Question {
   const ds = uniqueDigits(r, r.int(4, maxDigits));
   const n = toNumber(ds);
@@ -27,7 +27,7 @@ export function placeName(r: Rng, maxDigits: number): Question {
   return choiceQ(r, `¿En qué posición está la cifra ${ds[at]} en el número ${fmt(n)}?`, place, PLACE.slice(0, Math.max(5, ds.length)), `En ${fmt(n)}, la cifra ${ds[at]} está en las ${place}.`, fmt(n), place);
 }
 
-// 4.° A.3: valor de una cifra.
+// Valor de una cifra.
 export function digitValue(r: Rng, maxDigits: number): Question {
   const ds = uniqueDigits(r, r.int(4, maxDigits));
   const n = toNumber(ds);
@@ -37,7 +37,7 @@ export function digitValue(r: Rng, maxDigits: number): Question {
   return numQ(ds[at] * 10 ** p, `¿Cuál es el valor de la cifra ${ds[at]} en el número ${fmt(n)}?`, fmt(n), `La cifra ${ds[at]} está en las ${PLACE[p]}: vale ${fmt(ds[at] * 10 ** p)}.`, PLACE[p]);
 }
 
-// 4.° A.4: cada posición vale 10 veces la que está a su derecha.
+// Cada posición vale 10 veces la que está a su derecha.
 export function placeRelation(r: Rng): Question {
   const d = r.int(1, 9);
   const low = r.int(0, 3);
@@ -51,7 +51,7 @@ export function placeRelation(r: Rng): Question {
   return numQ(a, `¿Qué número es ${fmt(answer)} veces ${fmt(b)}?`, `${fmt(answer)} × ${fmt(b)} = ?`, `Al multiplicar por ${fmt(answer)}, la cifra ${d} se mueve ${jump} ${jump === 1 ? "posición" : "posiciones"} a la izquierda: ${fmt(a)}.`, `x${answer}`);
 }
 
-// 4.° A.5: 10 o 100 veces un número.
+// 10 o 100 veces un número.
 export function timesTenHundred(r: Rng): Question {
   const k = r.pick([10, 100]);
   const n = r.int(2, r.pick([99, 999, 4000]));
@@ -71,7 +71,7 @@ function sparse(r: Rng, maxDigits: number, minDigits = 4) {
   return { n, terms };
 }
 
-// 4.° A.6: forma estándar ↔ forma desarrollada.
+// Forma estándar ↔ forma desarrollada.
 export function expandedForm(r: Rng, maxDigits: number): Question {
   const { n, terms } = sparse(r, maxDigits);
   const expanded = terms.map(fmt).join(" + ");
@@ -85,7 +85,7 @@ export function expandedForm(r: Rng, maxDigits: number): Question {
   return choiceQ(r, `¿Cuál es la forma desarrollada de ${fmt(n)}?`, expanded, wrong.map((w) => w.map(fmt).join(" + ")), `Cada cifra se escribe con su valor: ${expanded}.`, undefined, "a-desarrollada");
 }
 
-// 4.° A.7 / A.9: convertir entre palabras y cifras.
+// Convertir entre palabras y cifras.
 export function wordsDigits(r: Rng, minDigits: number, maxDigits: number): Question {
   const { n } = sparse(r, maxDigits, minDigits);
   const max = 10 ** maxDigits - 1;
@@ -100,7 +100,7 @@ export function wordsDigits(r: Rng, minDigits: number, maxDigits: number): Quest
 
 const SPARE_WORDS = ["cien", "diez", "cuarenta", "sesenta", "quinientos", "dos", "siete", "veinte", "ochenta", "novecientos", "tres", "millón"];
 
-// 4.° A.8: escribir el nombre del número tocando sus palabras en orden.
+// Escribir el nombre del número tocando sus palabras en orden.
 export function spellNumber(r: Rng, max: number): Question {
   const len = r.int(3, String(max).length);
   const ds = Array.from({ length: len }, () => 0);
@@ -123,7 +123,7 @@ export function spellNumber(r: Rng, max: number): Question {
   };
 }
 
-// 4.° A.10: problemas de valor posicional.
+// Problemas de valor posicional.
 export function placeWordProblem(r: Rng, maxDigits: number): Question {
   const ds = uniqueDigits(r, r.int(4, maxDigits));
   const n = toNumber(ds);
@@ -146,7 +146,7 @@ export function placeWordProblem(r: Rng, maxDigits: number): Question {
 const SIMPLE = [["unidad", "unidades"], ["decena", "decenas"], ["centena", "centenas"], ["millar", "millares"]];
 const qty = (q: number, p: number) => `${fmt(q)} ${SIMPLE[p][q === 1 ? 0 : 1]}`;
 
-// 4.° A.11: convertir entre posiciones (30 centenas = 300 decenas).
+// Convertir entre posiciones (30 centenas = 300 decenas).
 export function convertPlaces(r: Rng): Question {
   const hi = r.int(1, 3);
   const lo = r.int(0, hi - 1);
@@ -156,7 +156,7 @@ export function convertPlaces(r: Rng): Question {
   return numQ(b, "Completa la igualdad.", `${qty(a, pa)} = ? ${SIMPLE[pb][1]}`, `${qty(a, pa)} = ${fmt(big * 10 ** hi)} = ${qty(b, pb)}.`, `${SIMPLE[pa][1]}-a-${SIMPLE[pb][1]}`);
 }
 
-// 4.° A.12: repaso.
+// Repaso.
 export function placeReview(r: Rng, maxDigits: number): Question {
   return r.pick([() => placeName(r, maxDigits), () => digitValue(r, maxDigits), () => expandedForm(r, maxDigits), () => convertPlaces(r), () => placeRelation(r)])();
 }
@@ -172,7 +172,7 @@ function closePair(r: Rng, maxDigits: number): [number, number] {
   return [a, b > 0 && b !== a ? b : a + 1];
 }
 
-// 4.° B.1 / B.2: comparar números grandes.
+// Comparar números grandes.
 export function compareBig(r: Rng, maxDigits: number): Question {
   const [a, b] = closePair(r, maxDigits);
   return symbolQ(a, b, fmt(a), fmt(b), a === b ? "Los dos números son iguales." : `Comparamos cifra por cifra desde la izquierda: ${fmt(Math.max(a, b))} es mayor que ${fmt(Math.min(a, b))}.`);
@@ -186,7 +186,7 @@ const TABLE_THEMES: [title: string, column: string, rows: string[]][] = [
   ["Libros por biblioteca", "Libros", ["Central", "Municipal", "Escolar", "Del parque", "Universitaria"]],
 ];
 
-// 4.° B.3: comparar números en tablas.
+// Comparar números en tablas.
 export function compareTable(r: Rng, maxDigits: number): Question {
   const [title, column, names] = r.pick(TABLE_THEMES);
   const len = r.int(4, maxDigits);
@@ -207,7 +207,7 @@ export function compareTable(r: Rng, maxDigits: number): Question {
   };
 }
 
-// 4.° B.5: hallar la lista ordenada.
+// Hallar la lista ordenada.
 export function findOrder(r: Rng, maxDigits: number): Question {
   const len = r.int(4, maxDigits);
   const base = r.int(10 ** (len - 1), 10 ** len - 10 ** (len - 1));
@@ -242,13 +242,13 @@ const roundWhy = (n: number, p: number, unit: number) => {
   return `Miramos la cifra de la derecha (${next}): como es ${next >= 5 ? "5 o más, redondeamos hacia arriba" : "menor que 5, redondeamos hacia abajo"}. ${fmt(n)} ≈ ${fmt(roundTo(n, unit))}.`;
 };
 
-// 4.° C.1 / C.2: redondear a una posición dada (hasta 10^maxPlace).
+// Redondear a una posición dada (hasta 10^maxPlace).
 export function roundBig(r: Rng, maxPlace: number, maxDigits: number): Question {
   const { n, p, unit, answer } = roundCase(r, maxPlace, maxDigits);
   return numQ(answer, `Redondea ${fmt(n)} a la ${PLACE_ONE[p]} más cercana.`, fmt(n), roundWhy(n, p, unit), PLACE_ONE[p]);
 }
 
-// 4.° C.3: redondear al lugar de una cifra del número.
+// Redondear al lugar de una cifra del número.
 export function roundToDigit(r: Rng, maxDigits: number): Question {
   for (;;) {
     const ds = uniqueDigits(r, r.int(4, maxDigits));
@@ -261,7 +261,7 @@ export function roundToDigit(r: Rng, maxDigits: number): Question {
   }
 }
 
-// 4.° C.4: tablas de entrada y salida con una regla de redondeo.
+// Tablas de entrada y salida con una regla de redondeo.
 export function roundingTable(r: Rng, maxPlace: number): Question {
   const p = r.int(1, maxPlace);
   const unit = 10 ** p;
@@ -278,7 +278,7 @@ export function roundingTable(r: Rng, maxPlace: number): Question {
   );
 }
 
-// 4.° C.5: acertijos de redondeo.
+// Acertijos de redondeo.
 export function roundingPuzzle(r: Rng, maxPlace: number): Question {
   const p = r.int(1, maxPlace);
   const unit = 10 ** p;

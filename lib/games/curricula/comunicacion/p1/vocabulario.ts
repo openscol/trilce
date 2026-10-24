@@ -2,21 +2,13 @@ import { choose, chooseAll, order, pickAll, type ChoiceItem, type MultiItem, typ
 import { uniqueOptions } from "../../../generators/common";
 import { WORDS } from "../../../generators/lengua/words";
 import type { Rng } from "../../../rng";
-import type { Question, Section } from "../../../types";
+import type { Question } from "../../../types";
 import type { Row } from "./row";
 
-// Vocabulario (IXL 1st grade ELA, LL-SS).
+// 1.° de Primaria · banco de vocabulario: categorías, sinónimos y antónimos,
+// palabras con varios significados, matices, prefijos y sufijos, pistas del
+// contexto y orden alfabético.
 
-export const SECTIONS: Section[] = [
-  { id: "LL", name: "Sustantivos y adjetivos", icon: "🏷️" },
-  { id: "MM", name: "Categorías", icon: "🗂️" },
-  { id: "NN", name: "Sinónimos y antónimos", icon: "↔️" },
-  { id: "OO", name: "Palabras con varios significados", icon: "🔀" },
-  { id: "PP", name: "Matices de significado", icon: "🌈" },
-  { id: "QQ", name: "Prefijos y sufijos", icon: "🧩" },
-  { id: "RR", name: "Pistas del contexto", icon: "🔎" },
-  { id: "SS", name: "Orden alfabético", icon: "🔤" },
-];
 
 const NOUN_FOR_PICTURE: ChoiceItem[] = [
   { pic: "🐶", t: "El ___ mueve la cola.", a: "perro", d: ["gato", "conejo", "pato"] },
@@ -214,27 +206,27 @@ function abcWords(r: Rng): Question {
 }
 
 export const ROWS: Row[] = [
-  ["LL.1", "Completar la oración con un sustantivo según el dibujo", (r) => choose(r, "Completa la oración según el dibujo.", NOUN_FOR_PICTURE)],
-  ["LL.2", "Comparar dibujos usando adjetivos", (r) => choose(r, "Completa la oración según el dibujo.", COMPARE_ADJ)],
-  ["LL.3", "Usar palabras de números", numberWords],
+  ["sustantivos-adjetivos-1", (r) => choose(r, "Completa la oración según el dibujo.", NOUN_FOR_PICTURE)],
+  ["sustantivos-adjetivos-2", (r) => choose(r, "Completa la oración según el dibujo.", COMPARE_ADJ)],
+  ["sustantivos-adjetivos-3", numberWords],
 
-  ["MM.1", "Clasificar palabras en categorías", sortCategory],
-  ["MM.2", "¿Qué palabra no es como las demás?", oddOneOut],
+  ["categorias-1", sortCategory],
+  ["categorias-2", oddOneOut],
 
-  ["NN.1", "Elegir sinónimos", (r) => choose(r, "", SYNONYMS)],
-  ["NN.2", "Elegir antónimos", (r) => choose(r, "", ANTONYMS)],
+  ["sinonimos-antonimos-1", (r) => choose(r, "", SYNONYMS)],
+  ["sinonimos-antonimos-2", (r) => choose(r, "", ANTONYMS)],
 
-  ["OO.1", "Palabras con varios significados", (r) => choose(r, "¿Qué significa la palabra en esta oración?", MULTI_MEANING)],
+  ["varios-significados-1", (r) => choose(r, "¿Qué significa la palabra en esta oración?", MULTI_MEANING)],
 
-  ["PP.1", "Encontrar palabras de significado parecido", (r) => chooseAll(r, "", RELATED)],
-  ["PP.2", "Distinguir palabras de significado parecido", (r) => choose(r, "", DIFFERENCE)],
-  ["PP.3", "Ordenar palabras según su significado", (r) => order(r, "", SHADES)],
+  ["matices-1", (r) => chooseAll(r, "", RELATED)],
+  ["matices-2", (r) => choose(r, "", DIFFERENCE)],
+  ["matices-3", (r) => order(r, "", SHADES)],
 
-  ["QQ.1", "Usar palabras con prefijos y sufijos", (r) => choose(r, "Completa la oración.", AFFIX_USE)],
-  ["QQ.2", "Entender palabras con prefijos y sufijos", (r) => choose(r, "", AFFIX_MEANING)],
+  ["prefijos-sufijos-1", (r) => choose(r, "Completa la oración.", AFFIX_USE)],
+  ["prefijos-sufijos-2", (r) => choose(r, "", AFFIX_MEANING)],
 
-  ["RR.1", "Usar el contexto para entender una palabra", (r) => choose(r, "", CONTEXT)],
+  ["varios-significados-2", (r) => choose(r, "", CONTEXT)],
 
-  ["SS.1", "Ordenar letras alfabéticamente", abcLetters],
-  ["SS.2", "Ordenar palabras alfabéticamente", abcWords],
+  ["orden-alfabetico-1", abcLetters],
+  ["orden-alfabetico-2", abcWords],
 ];
