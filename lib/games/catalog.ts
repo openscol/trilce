@@ -6,10 +6,9 @@ import { MATEMATICAS_P5 } from "./curricula/matematicas/p5";
 import { MATEMATICAS_P6 } from "./curricula/matematicas/p6";
 import { MATEMATICAS_S1 } from "./curricula/matematicas/s1";
 import { MATEMATICAS_S2 } from "./curricula/matematicas/s2";
-import { MATEMATICAS_A1 } from "./curricula/matematicas/a1";
-import { MATEMATICAS_A2 } from "./curricula/matematicas/a2";
-import { MATEMATICAS_GE } from "./curricula/matematicas/ge";
-import { MATEMATICAS_PC } from "./curricula/matematicas/pc";
+import { MATEMATICAS_S3 } from "./curricula/matematicas/s3";
+import { MATEMATICAS_S4 } from "./curricula/matematicas/s4";
+import { MATEMATICAS_S5 } from "./curricula/matematicas/s5";
 import { MATEMATICAS_I5 } from "./curricula/matematicas/i5";
 import { COMUNICACION_I5 } from "./curricula/comunicacion/i5";
 import { COMUNICACION_P1 } from "./curricula/comunicacion/p1";
@@ -41,7 +40,7 @@ import type { Curriculum, Section, Skill } from "./types";
 // Una categoría creada desde la app sin contenido aquí se muestra como
 // "Próximamente". Agregar un grado = un archivo en curricula/ + una línea aquí.
 const CURRICULA: Record<string, Partial<Record<GradeKey, Curriculum>>> = {
-  matematicas: { i5: MATEMATICAS_I5, p1: MATEMATICAS_P1, p2: MATEMATICAS_P2, p3: MATEMATICAS_P3, p4: MATEMATICAS_P4, p5: MATEMATICAS_P5, p6: MATEMATICAS_P6, s1: MATEMATICAS_S1, s2: MATEMATICAS_S2, a1: MATEMATICAS_A1, a2: MATEMATICAS_A2, ge: MATEMATICAS_GE, pc: MATEMATICAS_PC },
+  matematicas: { i5: MATEMATICAS_I5, p1: MATEMATICAS_P1, p2: MATEMATICAS_P2, p3: MATEMATICAS_P3, p4: MATEMATICAS_P4, p5: MATEMATICAS_P5, p6: MATEMATICAS_P6, s1: MATEMATICAS_S1, s2: MATEMATICAS_S2, s3: MATEMATICAS_S3, s4: MATEMATICAS_S4, s5: MATEMATICAS_S5 },
   comunicacion: { i5: COMUNICACION_I5, p1: COMUNICACION_P1, p2: COMUNICACION_P2, p3: COMUNICACION_P3, p4: COMUNICACION_P4, p5: COMUNICACION_P5, p6: COMUNICACION_P6, s1: COMUNICACION_S1, s2: COMUNICACION_S2, s3: COMUNICACION_S3 },
   // Computación: cada grado suma los apartados Programación y software,
   // Scratch e IA, y juega partidas de 15 preguntas.

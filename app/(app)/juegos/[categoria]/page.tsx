@@ -107,7 +107,7 @@ export default async function CategoriaPage(props: PageProps<"/juegos/[categoria
           </section>
         ))}
 
-      {!byTopic && LEVELS.filter((l) => !("extra" in l) || GRADES.some((g) => g.level === l.key && skillCount(category.slug, g.key, mode) > 0)).map(({ key: level, name }) => (
+      {!byTopic && LEVELS.map(({ key: level, name }) => (
         <section key={level} className="flex flex-col gap-3">
           <h2 className="text-sm font-medium uppercase text-muted-foreground">{name}</h2>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
