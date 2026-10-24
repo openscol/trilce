@@ -14,6 +14,7 @@ const TOPICS: Record<string, Competency[]> = {
       name: "Resuelve problemas de cantidad",
       icon: "🔢",
       topics: [
+        { id: "clasificar", name: "Agrupar y clasificar", icon: "🗂️" },
         { id: "numeros", name: "Números y valor posicional", icon: "🔢" },
         { id: "suma-resta", name: "Suma y resta", icon: "➕" },
         { id: "multiplicacion-division", name: "Multiplicación y división", icon: "✖️" },
