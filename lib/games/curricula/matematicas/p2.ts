@@ -1,175 +1,133 @@
 import * as G from "../../generators";
+import * as K from "../../generators/kinder";
+import * as C from "../../generators/cneb/p2";
 import type { Curriculum, Section, Skill } from "../../types";
 
-// Matemáticas · 2.° de Primaria (IXL 2.º de primaria). Mismos generadores que
-// 1.°, con la dificultad de este grado (rangos hasta 1.000, tablas, etc.).
+// Matemáticas · 2.° de Primaria, organizado según el CNEB: las cuatro
+// competencias de matemática y, dentro de cada una, los temas que piden los
+// desempeños de 2.° grado (números hasta 100, problemas de agregar, quitar,
+// juntar, separar, comparar e igualar, doble y mitad, patrones, cuerpos que
+// ruedan, tablas de conteo, posible e imposible...). Las secciones marcadas
+// «para ir más allá» amplían lo que pide el CNEB para este grado.
+//
+// Cada juego mezcla varias formas de preguntar la misma idea (`mix`): son
+// menos juegos que antes, pero cada uno más completo.
+
+type Gen = Skill["generate"];
+const mix = (...gens: Gen[]): Gen => (r) => r.pick(gens)(r);
+
 const SECTIONS: Section[] = [
-  { id: "A", name: "Contar y patrones de números", icon: "🔢" },
-  { id: "B", name: "Comparar y ordenar", icon: "⚖️" },
-  { id: "C", name: "Patrones", icon: "🎨" },
-  { id: "D", name: "Sumar: un dígito", icon: "➕" },
-  { id: "E", name: "Sumar: varios dígitos", icon: "➕" },
-  { id: "F", name: "Restar: un dígito", icon: "➖" },
-  { id: "G", name: "Restar: varios dígitos", icon: "➖" },
-  { id: "H", name: "Operaciones mixtas", icon: "🔀" },
-  { id: "I", name: "Valor posicional", icon: "🧱" },
-  { id: "J", name: "Geometría", icon: "🔷" },
-  { id: "K", name: "Medidas y posiciones", icon: "📏" },
-  { id: "L", name: "Fracciones", icon: "🍕" },
-  { id: "M", name: "Multiplicar", icon: "✖️" },
-  { id: "N", name: "División", icon: "➗" },
-  { id: "O", name: "Probabilidad", icon: "🎲" },
+  // Resuelve problemas de cantidad
+  { id: "numeros", name: "Números hasta 100", icon: "🔢", topic: "numeros" },
+  { id: "numeros-1000", name: "Números hasta 1 000 (para ir más allá)", icon: "🔢", topic: "numeros" },
+  { id: "suma-resta", name: "Sumar y restar", icon: "➕", topic: "suma-resta" },
+  { id: "problemas", name: "Problemas de suma y resta", icon: "🧠", topic: "suma-resta" },
+  { id: "multiplicar", name: "Primeros pasos para multiplicar (para ir más allá)", icon: "✖️", topic: "multiplicacion-division" },
+  { id: "mitades", name: "Fracciones (para ir más allá)", icon: "🍕", topic: "fracciones" },
+  { id: "dinero", name: "Soles y compras", icon: "💰", topic: "dinero" },
+  { id: "tiempo-masa", name: "El tiempo y el peso", icon: "⏱️", topic: "tiempo-masa" },
+  // Resuelve problemas de regularidad, equivalencia y cambio
+  { id: "patrones", name: "Patrones", icon: "🎨", topic: "patrones" },
+  { id: "igualdades", name: "Igualdades", icon: "⚖️", topic: "igualdades" },
+  // Resuelve problemas de forma, movimiento y localización
+  { id: "figuras", name: "Figuras planas", icon: "🔷", topic: "figuras" },
+  { id: "cuerpos", name: "Cuerpos geométricos", icon: "🧊", topic: "cuerpos" },
+  { id: "ubicacion", name: "¿Dónde está?", icon: "🧭", topic: "ubicacion" },
+  { id: "longitud", name: "Medir longitudes", icon: "📏", topic: "longitud-area" },
+  // Resuelve problemas de gestión de datos e incertidumbre
+  { id: "datos", name: "Tablas y gráficos", icon: "📊", topic: "graficos" },
+  { id: "azar", name: "¿Puede pasar?", icon: "🎲", topic: "probabilidad" },
 ];
 
-type Row = [id: string, title: string, generate: Skill["generate"]];
+type Row = [id: string, section: string, title: string, generate: Gen];
 
 const ROWS: Row[] = [
-  ["A.1", "Contar hacia delante y hacia atrás: hasta 100", (r) => G.countUpDown(r, 100)],
-  ["A.2", "Rectas numéricas: hasta 100", (r) => G.numberLineTo(r, 100)],
-  ["A.3", "Tabla de las centenas", G.hundredsChartMissing],
-  ["A.4", "Contar de tanto en tanto: hasta 100", (r) => G.skipCount(r, [2, 3, 4, 5, 10])],
-  ["A.5", "Contar según patrones: hasta 100", G.countingPattern],
-  ["A.6", "Estimar hasta la decena más cercana", G.estimateToTen],
-  ["A.7", "Contar hacia delante y hacia atrás: hasta 1.000", (r) => G.countUpDown(r, 1000)],
-  ["A.8", "Rectas numéricas: hasta 1.000", (r) => G.numberLineTo(r, 1000)],
-  ["A.9", "Contar según patrones: hasta 1.000", (r) => G.countingPatternTo(r, 1000)],
-  ["A.10", "Seleccionar los números pares o impares", (r) => G.evenOdd(r, 100)],
+  ["contar-100", "numeros", "Cuenta hacia adelante y hacia atrás", (r) => G.countUpDown(r, 100)],
+  ["recta-100", "numeros", "¿Qué número marca la recta?", mix((r) => G.numberLineTo(r, 100), G.readNumberLine)],
+  ["saltos", "numeros", "Cuenta dando saltos de 2, de 5 y de 10", mix((r) => G.skipCount(r, [2, 5, 10]), G.countingPattern)],
+  ["tablero-100", "numeros", "Los números escondidos del tablero del 100", G.hundredsChartMissing],
+  ["par-impar", "numeros", "¿Par o impar?", (r) => G.evenOdd(r, 100)],
+  ["decenas-unidades", "numeros", "Decenas y unidades", mix((r) => G.modelToTensOnes(r, 99), (r) => G.modelToNumber(r, 99), (r) => G.numberToTensOnes(r, 99), (r) => G.placeValueDigit(r, "tens"))],
+  ["canjes", "numeros", "Canjea 10 unidades por una decena", mix((r) => G.convertPlaceValue(r, "tens"), (r) => G.placeModelNumber(r, "tens"))],
+  ["comparar-100", "numeros", "¿Mayor, menor o igual? Ordena los números", mix((r) => G.compareSymbol(r, 100), (r) => G.orderNumbers(r, 100, 4))],
+  ["redondear", "numeros", "¿A qué decena está más cerca?", G.estimateToTen],
+  ["ordinales", "numeros", "Del primero al vigésimo", C.ordinal20],
+  ["doble-mitad", "numeros", "El doble y la mitad", (r) => C.doubleHalf(r, 50)],
 
-  ["B.1", "Comparar números: hasta 100", (r) => G.compareSymbol(r, 100)],
-  ["B.2", "Ordenar números: hasta 100", (r) => G.orderNumbers(r, 100, 4)],
-  ["B.3", "Comparar números: hasta 1.000", (r) => G.compareSymbol(r, 1000)],
-  ["B.4", "Ordenar números: hasta 1.000", (r) => G.orderNumbers(r, 1000, 5)],
+  ["centenas", "numeros-1000", "Centenas, decenas y unidades", mix((r) => G.placeModelNumber(r, "hundreds"), (r) => G.placeValueDigit(r, "hundreds"), (r) => G.convertPlaceValue(r, "hundreds"))],
+  ["contar-1000", "numeros-1000", "Cuenta, ubica y compara hasta 1 000", mix((r) => G.countUpDown(r, 1000), (r) => G.numberLineTo(r, 1000), (r) => G.compareSymbol(r, 1000), (r) => G.orderNumbers(r, 1000, 5), (r) => G.countingPatternTo(r, 1000))],
 
-  ["C.1", "Completar un patrón", G.completePattern],
-  ["C.2", "Crear un patrón", G.createPattern],
-  ["C.3", "Secuencias numéricas crecientes", (r) => G.numberSequence(r, true)],
-  ["C.4", "Secuencias numéricas decrecientes", (r) => G.numberSequence(r, false)],
+  ["calculo-20", "suma-resta", "Cálculo rápido hasta 20", mix(G.mixedFacts, (r) => G.addFacts(r, 18), (r) => G.subFacts(r, 18))],
+  ["dobles", "suma-resta", "Dobles y casi dobles", mix(G.doubles, (r) => G.doublesNear(r, 1), (r) => G.doublesNear(r, -1), G.subDoubles)],
+  ["completar-10", "suma-resta", "Completa la decena", mix(G.makeTen, (r) => G.addMissing(r, 10))],
+  ["numero-escondido", "suma-resta", "El número escondido", mix((r) => G.addMissing(r, 18), (r) => G.subMissing(r, 18), G.completeEquation)],
+  ["familias", "suma-resta", "Familias de operaciones", mix(G.factFamily, G.relatedMixed)],
+  ["diez-mas-menos", "suma-resta", "Diez más, diez menos", mix(G.tenMoreOrLess, G.addSubMultipleOfTen, G.addTens, G.subTens)],
+  ["sumas-dos-cifras", "suma-resta", "Sumas con números de dos cifras", mix((r) => G.addTwoDigitOne(r, false), (r) => G.addTwoDigitOne(r, true), (r) => G.addTwoTwo(r, false), (r) => G.addTwoTwo(r, true))],
+  ["restas-dos-cifras", "suma-resta", "Restas con números de dos cifras", mix((r) => G.subTwoDigitOne(r, false), (r) => G.subTwoDigitOne(r, true), (r) => G.subTwoTwo(r, false), (r) => G.subTwoTwo(r, true))],
+  ["sumar-o-restar", "suma-resta", "¿Sumo o resto?", G.addSubTwoDigit],
+  ["aproximar", "suma-resta", "Calcula más o menos cuánto da", mix((r) => G.estimateTwoDigit(r, "+"), (r) => G.estimateTwoDigit(r, "−"))],
+  ["centenas-suma-resta", "suma-resta", "Sumas y restas con centenas (para ir más allá)", mix(G.addHundreds, G.subHundreds, G.addThreeDigit, G.subThreeDigit, G.addSubThreeDigit)],
 
-  ["D.1", "Seleccionar la suma que coincide con el dibujo", G.addPictureEquation],
-  ["D.2", "Operaciones de suma: hasta 10", (r) => G.addFacts(r, 10)],
-  ["D.3", "Conseguir un número con sumas: hasta 10", (r) => G.makeTargetNumber(r, 10, "+")],
-  ["D.4", "Completar sumas: hasta 10", (r) => G.addMissing(r, 10)],
-  ["D.5", "Completar sumas hasta llegar a 10", G.makeTen],
-  ["D.6", "Sumar los dobles", G.doubles],
-  ["D.7", "Sumar usando dobles más uno", (r) => G.doublesNear(r, 1)],
-  ["D.8", "Sumar usando dobles menos uno", (r) => G.doublesNear(r, -1)],
-  ["D.9", "Operaciones de suma: hasta 18", (r) => G.addFacts(r, 18)],
-  ["D.10", "Conseguir un número con sumas: hasta 18", (r) => G.makeTargetNumber(r, 18, "+")],
-  ["D.11", "Completar sumas: hasta 18", (r) => G.addMissing(r, 18)],
-  ["D.12", "Operaciones relacionadas de suma", (r) => G.relatedAdd(r, 18)],
-  ["D.13", "Propiedades de la suma", G.additionProperties],
-  ["D.14", "Identificar las sumas repetidas en matrices: hasta 10", (r) => G.arrayRepeatedAddition(r, 10)],
-  ["D.15", "Identificar las sumas repetidas en matrices: hasta 25", (r) => G.arrayRepeatedAddition(r, 25)],
+  ["agregar-quitar", "problemas", "Problemas de agregar y quitar", (r) => C.paev(r, ["agregar", "quitar"])],
+  ["juntar-separar", "problemas", "Problemas de juntar y separar", (r) => C.paev(r, ["juntar", "separar"])],
+  ["comparar", "problemas", "Problemas de comparar: ¿cuántos más? ¿cuántos menos?", (r) => C.paev(r, ["comparar"])],
+  ["igualar", "problemas", "Problemas de igualar", (r) => C.paev(r, ["igualar"])],
+  ["problemas-mezcla", "problemas", "Resuelve problemas de todo tipo", (r) => C.paev(r, ["agregar", "quitar", "juntar", "separar", "comparar", "igualar"])],
 
-  ["E.1", "Sumar múltiplos de 10", G.addTens],
-  ["E.2", "Sumar un número de una cifra a uno de dos sin reagrupar", (r) => G.addTwoDigitOne(r, false)],
-  ["E.3", "Sumar un número de una cifra a uno de dos reagrupando", (r) => G.addTwoDigitOne(r, true)],
-  ["E.4", "Sumar números de dos cifras sin reagrupar", (r) => G.addTwoTwo(r, false)],
-  ["E.5", "Sumar números de dos cifras reagrupando", (r) => G.addTwoTwo(r, true)],
-  ["E.6", "Conseguir un número con sumas: hasta 99", (r) => G.makeTargetNumber(r, 99, "+")],
-  ["E.7", "Completar sumas", G.addMissingTwoDigit],
-  ["E.8", "Sumar múltiplos de 100", G.addHundreds],
-  ["E.9", "Sumar números de tres cifras", G.addThreeDigit],
-  ["E.10", "Estimar sumas", (r) => G.estimateTwoDigit(r, "+")],
+  ["grupos-iguales", "multiplicar", "Grupos iguales y sumas repetidas", mix(G.multEqualGroups, (r) => G.arrayRepeatedAddition(r, 25), G.multArrays)],
+  ["tablas-2-5-10", "multiplicar", "Las tablas del 2, del 5 y del 10", (r) => G.multFacts(r, [2, 5, 10])],
+  ["repartir", "multiplicar", "Reparte en partes iguales", mix(G.divArrays, (r) => G.divFacts(r, [2, 5, 10]))],
 
-  ["F.1", "Seleccionar la resta que coincide con el dibujo", G.takeawayPictureEquation],
-  ["F.2", "Restar números de una cifra", (r) => G.subFacts(r, 9)],
-  ["F.3", "Conseguir un número con restas: hasta 10", (r) => G.makeTargetNumber(r, 10, "−")],
-  ["F.4", "Completar la resta: números hasta 10", (r) => G.subMissing(r, 10)],
-  ["F.5", "Restar dobles", G.subDoubles],
-  ["F.6", "Restar un número de una cifra a uno de dos: números hasta 18", G.subOneDigitFromTeen],
-  ["F.7", "Conseguir un número con restas: hasta 18", (r) => G.makeTargetNumber(r, 18, "−")],
-  ["F.8", "Completar la resta: números hasta 18", (r) => G.subMissing(r, 18)],
-  ["F.9", "Operaciones relacionadas de resta", (r) => G.relatedSub(r, 18)],
+  ["partes-iguales", "mitades", "Mitades, tercios y cuartos", mix(G.halvesThirdsFourths, (r) => G.fractionOfShape(r, "circle", 4), G.fractionOfGroup)],
+  ["pintar-partes", "mitades", "Pinta la parte que se pide", mix((r) => G.shadeFraction(r, "bar"), (r) => G.shadeFraction(r, "area"))],
+  ["fracciones-recta", "mitades", "Fracciones en la recta numérica", mix((r) => G.fractionOnLine(r, true), (r) => G.fractionOnLine(r, false), (r) => G.graphFraction(r, true), (r) => G.graphFraction(r, false))],
+  ["fracciones-equivalentes", "mitades", "Fracciones que valen lo mismo", mix(G.equivalentAreaModels, G.equivalentOnLines, G.fractionEqualToOne)],
 
-  ["G.1", "Restar múltiplos de 10", G.subTens],
-  ["G.2", "Restar un número de una cifra a uno de dos, sin llevadas", (r) => G.subTwoDigitOne(r, false)],
-  ["G.3", "Restar un número de una cifra a uno de dos, con llevadas", (r) => G.subTwoDigitOne(r, true)],
-  ["G.4", "Restar números de dos cifras, sin llevadas", (r) => G.subTwoTwo(r, false)],
-  ["G.5", "Restar números de dos cifras, con llevadas", (r) => G.subTwoTwo(r, true)],
-  ["G.6", "Conseguir un número con restas: hasta 99", (r) => G.makeTargetNumber(r, 99, "−")],
-  ["G.7", "Completar la resta", G.subMissingTwoDigit],
-  ["G.8", "Restar múltiplos de 100", G.subHundreds],
-  ["G.9", "Restas con un número de tres cifras", G.subThreeDigit],
-  ["G.10", "Estimar restas", (r) => G.estimateTwoDigit(r, "−")],
+  ["contar-soles", "dinero", "¿Cuántos soles hay?", C.countSoles],
+  ["bodega", "dinero", "De compras en la bodega", C.shopProblem],
 
-  ["H.1", "Operaciones de suma y resta: hasta 20", G.mixedFacts],
-  ["H.2", "Conseguir un número con sumas o restas: hasta 20", (r) => G.mixedTargets(r, 20)],
-  ["H.3", "Sumar o restar dobles", G.doublesMixed],
-  ["H.4", "Familias de operaciones", G.factFamily],
-  ["H.5", "Operaciones relacionadas de suma y resta: hasta 20", G.relatedMixed],
-  ["H.6", "Completar la suma o la resta: hasta 20", G.completeEquation],
-  ["H.7", "Diez más o diez menos", G.tenMoreOrLess],
-  ["H.8", "Sumar o restar un múltiplo de 10", G.addSubMultipleOfTen],
-  ["H.9", "Sumar o restar números de hasta dos cifras", G.addSubTwoDigit],
-  ["H.10", "Conseguir un número con sumas o restas: hasta 100", (r) => G.mixedTargets(r, 100)],
-  ["H.11", "Sumar o restar un múltiplo de 100", G.addSubHundreds],
-  ["H.12", "Sumar o restar números de hasta tres cifras", G.addSubThreeDigit],
+  ["calendario", "tiempo-masa", "Días, semanas y meses", mix(C.calendar, G.timeUnits)],
+  ["reloj", "tiempo-masa", "¿Qué hora es?", (r) => K.clockK(r, "read")],
+  ["pesa-mas", "tiempo-masa", "¿Qué pesa más?", (r) => K.measure(r, "heavy")],
 
-  ["I.1", "Modelos de valor posicional: decenas y unidades", (r) => G.placeModelNumber(r, "tens")],
-  ["I.2", "Modelos de valor posicional: hasta las centenas", (r) => G.placeModelNumber(r, "hundreds")],
-  ["I.3", "Modelos de valor posicional: hasta los millares", (r) => G.placeModelNumber(r, "thousands")],
-  ["I.4", "Valor posicional: decenas y unidades", (r) => G.placeValueDigit(r, "tens")],
-  ["I.5", "Valor posicional: hasta las centenas", (r) => G.placeValueDigit(r, "hundreds")],
-  ["I.6", "Valor posicional: hasta los millares", (r) => G.placeValueDigit(r, "thousands")],
-  ["I.7", "Convertir a un número o desde un número: decenas y unidades", (r) => G.convertPlaceValue(r, "tens")],
-  ["I.8", "Convertir a un número o desde un número: hasta las centenas", (r) => G.convertPlaceValue(r, "hundreds")],
-  ["I.9", "Convertir a un número o desde un número: hasta los millares", (r) => G.convertPlaceValue(r, "thousands")],
+  ["patrones-repeticion", "patrones", "Patrones que se repiten", mix(G.completePattern, G.createPattern)],
+  ["patrones-numeros", "patrones", "Patrones que crecen y que decrecen", mix((r) => G.numberSequence(r, true), (r) => G.numberSequence(r, false))],
+  ["regla-patron", "patrones", "Descubre la regla del patrón", C.patternRule],
 
-  ["J.1", "Seleccionar figuras de dos dimensiones", G.selectShapes2d],
-  ["J.2", "Comparar lados y vértices", G.compareSidesVertices],
-  ["J.3", "Seleccionar figuras tridimensionales", G.selectSolids],
-  ["J.4", "Comparar aristas, vértices y caras", G.compareSolidParts],
-  ["J.5", "Figuras de objetos de la vida diaria", G.everydayObjects],
-  ["J.6", "Identificar figuras trazadas a partir de cuerpos sólidos", G.tracedShapes],
-  ["J.7", "Identificar las caras de figuras tridimensionales", G.solidFaces],
-  ["J.8", "Desarrollos de figuras tridimensionales", G.netOfSolid],
+  ["balanza", "igualdades", "La balanza en equilibrio", (r) => C.balance(r, 20)],
+  ["igual-o-no", "igualdades", "¿Es verdadera la igualdad?", (r) => C.equalOrNot(r, 20)],
+  ["propiedades", "igualdades", "Cambia el orden y suma igual", G.additionProperties],
 
-  ["K.1", "Medir con objetos", G.measureWithObjects],
-  ["K.2", "Medir con una regla", G.measureWithRuler],
-  ["K.3", "Leer un termómetro", G.readThermometer],
-  ["K.4", "Relacionar unidades de tiempo", G.timeUnits],
-  ["K.5", "Ubicación en una cuadrícula", G.gridPosition],
-  ["K.6", "Encima y debajo", G.aboveBelow],
-  ["K.7", "Objetos en un plano de coordenadas", G.coordinatePlane],
+  ["reconocer-figuras", "figuras", "Reconoce las figuras", mix(G.selectShapes2d, G.identifyShape2d)],
+  ["lados-vertices", "figuras", "Lados y vértices", G.compareSidesVertices],
 
-  ["L.1", "Mitades, tercios, cuartos", G.halvesThirdsFourths],
-  ["L.2", "Fracciones simples: partes de un todo", (r) => G.fractionOfShape(r, "circle", 4)],
-  ["L.3", "Fracciones simples: partes de un grupo", G.fractionOfGroup],
-  ["L.4", "Comprender las fracciones: barras de fracciones", (r) => G.fractionOfShape(r, "bar", 8)],
-  ["L.5", "Comprender las fracciones: modelos con áreas", (r) => G.fractionOfShape(r, "area", 8)],
-  ["L.6", "Mostrar fracciones: barras de fracciones", (r) => G.shadeFraction(r, "bar")],
-  ["L.7", "Mostrar fracciones: modelos con áreas", (r) => G.shadeFraction(r, "area")],
-  ["L.8", "Hallar fracciones equivalentes usando modelos de áreas", G.equivalentAreaModels],
-  ["L.9", "Fracciones de rectas numéricas: fracciones unitarias", (r) => G.fractionOnLine(r, true)],
-  ["L.10", "Fracciones de rectas numéricas", (r) => G.fractionOnLine(r, false)],
-  ["L.11", "Representar fracciones equivalentes en rectas numéricas", G.equivalentOnLines],
-  ["L.12", "Representar fracciones equivalentes a 1 en rectas numéricas", G.fractionEqualToOne],
-  ["L.13", "Representar fracciones unitarias en rectas numéricas", (r) => G.graphFraction(r, true)],
-  ["L.14", "Representar fracciones en rectas numéricas", (r) => G.graphFraction(r, false)],
+  ["ruedan", "cuerpos", "¿Rueda o no rueda?", C.rollsOrNot],
+  ["reconocer-cuerpos", "cuerpos", "Reconoce los cuerpos geométricos", mix(G.selectSolids, G.identifySolid)],
+  ["caras-vertices", "cuerpos", "Caras, aristas y vértices", mix(G.compareSolidParts, G.solidFaces)],
+  ["cuerpos-entorno", "cuerpos", "Formas que hay a mi alrededor", mix(G.everydayObjects, G.tracedShapes)],
+  ["desarrollos", "cuerpos", "Arma el cuerpo con su molde", G.netOfSolid],
 
-  ["M.1", "Multiplicaciones sobre grupos iguales", G.multEqualGroups],
-  ["M.2", "Multiplicaciones sobre matrices", G.multArrays],
-  ["M.3", "Operaciones de multiplicación para el 2, el 3 y el 4", (r) => G.multFacts(r, [2, 3, 4])],
-  ["M.4", "Operaciones de multiplicación: hasta 5", (r) => G.multFacts(r, [0, 1, 2, 3, 4, 5], 5)],
-  ["M.5", "Operaciones de multiplicación para el 2, el 3, el 4, el 5 y el 10", (r) => G.multFacts(r, [2, 3, 4, 5, 10])],
-  ["M.6", "Operaciones de multiplicación para el 6, el 7, el 8 y el 9", (r) => G.multFacts(r, [6, 7, 8, 9])],
-  ["M.7", "Operaciones de multiplicación: hasta 10", (r) => G.multFacts(r, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])],
+  ["arriba-abajo", "ubicacion", "Arriba, abajo y al lado", mix(G.aboveBelow, G.gridPosition)],
+  ["cuadricula", "ubicacion", "Ubica objetos en la cuadrícula", G.coordinatePlane],
 
-  ["N.1", "Divisiones sobre matrices", G.divArrays],
-  ["N.2", "Operaciones de división para el 2, el 3 y el 4", (r) => G.divFacts(r, [2, 3, 4])],
-  ["N.3", "Operaciones de división: divisores hasta 5", (r) => G.divFacts(r, [1, 2, 3, 4, 5])],
-  ["N.4", "Operaciones de división para el 1, el 2, el 4, el 5 y el 10", (r) => G.divFacts(r, [1, 2, 4, 5, 10])],
-  ["N.5", "Operaciones de división para el 6, el 7, el 8 y el 9", (r) => G.divFacts(r, [6, 7, 8, 9])],
-  ["N.6", "Operaciones de división: divisores hasta 10", (r) => G.divFacts(r, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])],
+  ["medir-objetos", "longitud", "Mide con clips, lápices y pasos", G.measureWithObjects],
+  ["mas-largo", "longitud", "¿Cuál es más largo? Mide con la regla", mix(G.compareLengths, G.measureWithRuler)],
 
-  ["O.1", "Más probable, menos probable e igual de probable", G.moreLikely],
-  ["O.2", "Seguro, probable, improbable e imposible", G.certainOrImpossible],
+  ["tabla-conteo", "datos", "Tablas de conteo", C.tallyTable],
+  ["pictogramas", "datos", "Pictogramas", (r) => K.graph(r, "interpret")],
+  ["barras", "datos", "Gráficos de barras", (r) => G.interpretBarGraph(r, 1)],
+
+  ["posible-imposible", "azar", "¿Posible o imposible?", C.possibleImpossible],
+  ["mas-probable", "azar", "¿Qué es más probable? (para ir más allá)", mix(G.moreLikely, G.certainOrImpossible)],
 ];
 
-const SKILLS: Skill[] = ROWS.map(([id, title, generate]) => {
-  const section = id.split(".")[0];
-  return { id, section, title, icon: SECTIONS.find((s) => s.id === section)!.icon, generate };
-});
+const SKILLS: Skill[] = ROWS.map(([id, section, title, generate]) => ({
+  id,
+  section,
+  title,
+  icon: SECTIONS.find((s) => s.id === section)!.icon,
+  generate,
+}));
 
 export const MATEMATICAS_P2: Curriculum = { sections: SECTIONS, skills: SKILLS };

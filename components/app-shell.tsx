@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -15,6 +15,7 @@ import {
   LayoutDashboardIcon,
   LogOutIcon,
   MenuIcon,
+  PanelLeftIcon,
   ReceiptTextIcon,
   SettingsIcon,
   ShieldIcon,
@@ -33,6 +34,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -114,17 +117,67 @@ function navForRole(
   return FAMILY_NAV;
 }
 
+type SidebarMode = "expanded" | "collapsed" | "hover";
+
+const SIDEBAR_MODE_KEY = "trilce.sidebar-mode";
+
+const SIDEBAR_MODES: { value: SidebarMode; label: string }[] = [
+  { value: "expanded", label: "Expandida" },
+  { value: "collapsed", label: "Contraída" },
+  { value: "hover", label: "Expandir al pasar el cursor" },
+];
+
+function isSidebarMode(value: unknown): value is SidebarMode {
+  return SIDEBAR_MODES.some((m) => m.value === value);
+}
+
+// Modo de la barra lateral, recordado en este navegador.
+const sidebarListeners = new Set<() => void>();
+
+function readSidebarMode(): SidebarMode {
+  try {
+    const saved = localStorage.getItem(SIDEBAR_MODE_KEY);
+    return isSidebarMode(saved) ? saved : "expanded";
+  } catch {
+    return "expanded";
+  }
+}
+
+function subscribeSidebarMode(listener: () => void) {
+  sidebarListeners.add(listener);
+  window.addEventListener("storage", listener);
+  return () => {
+    sidebarListeners.delete(listener);
+    window.removeEventListener("storage", listener);
+  };
+}
+
+function setSidebarMode(value: unknown) {
+  if (!isSidebarMode(value)) return;
+  try {
+    localStorage.setItem(SIDEBAR_MODE_KEY, value);
+  } catch {
+    // Sin almacenamiento disponible: el modo simplemente no se recuerda.
+  }
+  sidebarListeners.forEach((l) => l());
+}
+
+const itemClass =
+  "flex items-center gap-2 overflow-hidden rounded-lg border-l-2 border-transparent px-3 py-2 text-sm whitespace-nowrap text-secondary-foreground transition-colors";
+
 function NavLinks({
   items,
   pathname,
+  collapsed = false,
   onNavigate,
 }: {
   items: NavItem[];
   pathname: string;
+  collapsed?: boolean;
   onNavigate?: () => void;
 }) {
   return (
-    <nav className="flex flex-1 flex-col gap-1 p-2">
+    <nav className="flex flex-1 flex-col gap-1 overflow-x-hidden overflow-y-auto p-2">
       {items.map((item) => {
         const active = pathname.startsWith(item.matchPrefix ?? item.href);
         return (
@@ -132,19 +185,37 @@ function NavLinks({
             key={item.href}
             href={item.href}
             onClick={onNavigate}
+            title={collapsed ? item.label : undefined}
             className={cn(
-              "flex items-center gap-2 rounded-lg border-l-2 border-transparent px-3 py-2 text-sm text-secondary-foreground transition-colors",
+              itemClass,
               active
                 ? "border-l-primary bg-accent text-accent-foreground"
                 : "hover:bg-accent hover:text-accent-foreground"
             )}
           >
-            <item.icon className="size-4" />
-            {item.label}
+            <item.icon className="size-4 shrink-0" />
+            {!collapsed && item.label}
           </Link>
         );
       })}
     </nav>
+  );
+}
+
+function SignOutButton({ collapsed = false }: { collapsed?: boolean }) {
+  return (
+    <button
+      type="button"
+      onClick={() => signOut()}
+      title={collapsed ? "Cerrar Sesión" : undefined}
+      className={cn(
+        itemClass,
+        "w-full text-left hover:bg-destructive/10 hover:text-destructive"
+      )}
+    >
+      <LogOutIcon className="size-4 shrink-0" />
+      {!collapsed && "Cerrar Sesión"}
+    </button>
   );
 }
 
@@ -168,14 +239,81 @@ export function AppShell({
   // En pantallas angostas el menú vive en un panel que se abre con ☰.
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Control de la barra lateral (como en Supabase).
+  const sidebarMode = useSyncExternalStore(subscribeSidebarMode, readSidebarMode, () => "expanded" as const);
+  const [hovered, setHovered] = useState(false);
+  const [controlOpen, setControlOpen] = useState(false);
+
+  const sidebarExpanded =
+    sidebarMode === "expanded" ||
+    (sidebarMode === "hover" && (hovered || controlOpen));
+
   return (
     <div className="flex min-h-screen">
-      <aside className="hidden w-56 shrink-0 flex-col border-r border-border bg-card md:flex print:hidden">
-        <div className="flex h-14 items-center border-b border-border px-4">
-          <span className="text-sm font-medium">Trilce</span>
-        </div>
-        <NavLinks items={navItems} pathname={pathname} />
-      </aside>
+      {/* El contenedor reserva el ancho; en modo "al pasar el cursor" la
+          barra se expande por encima del contenido sin desplazarlo. */}
+      <div
+        className={cn(
+          "sticky top-0 z-40 hidden h-screen shrink-0 transition-[width] duration-200 md:block print:hidden",
+          sidebarMode === "expanded" ? "w-56" : "w-14"
+        )}
+      >
+        <aside
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          className={cn(
+            "absolute inset-y-0 left-0 flex flex-col overflow-hidden border-r border-border bg-card transition-[width] duration-200",
+            sidebarExpanded ? "w-56" : "w-14"
+          )}
+        >
+          <div className="flex h-14 shrink-0 items-center border-b border-border px-4">
+            <span className="text-sm font-medium whitespace-nowrap">
+              {sidebarExpanded ? "Trilce" : "T"}
+            </span>
+          </div>
+          <NavLinks
+            items={navItems}
+            pathname={pathname}
+            collapsed={!sidebarExpanded}
+          />
+          <div className="flex shrink-0 flex-col gap-1 border-t border-border p-2">
+            <SignOutButton collapsed={!sidebarExpanded} />
+            <DropdownMenu open={controlOpen} onOpenChange={setControlOpen}>
+              <DropdownMenuTrigger
+                render={
+                  <button
+                    type="button"
+                    aria-label="Control de la barra lateral"
+                    title="Control de la barra lateral"
+                    className={cn(
+                      itemClass,
+                      "w-full text-left hover:bg-accent hover:text-accent-foreground"
+                    )}
+                  />
+                }
+              >
+                <PanelLeftIcon className="size-4 shrink-0" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="top" align="start" className="w-64">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>Control de la barra lateral</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuRadioGroup
+                    value={sidebarMode}
+                    onValueChange={setSidebarMode}
+                  >
+                    {SIDEBAR_MODES.map((m) => (
+                      <DropdownMenuRadioItem key={m.value} value={m.value}>
+                        {m.label}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </aside>
+      </div>
 
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
         <SheetContent side="left" className="w-64 gap-0 bg-card p-0 md:hidden">
@@ -183,6 +321,9 @@ export function AppShell({
             <SheetTitle className="text-sm font-medium">Trilce</SheetTitle>
           </div>
           <NavLinks items={navItems} pathname={pathname} onNavigate={() => setMenuOpen(false)} />
+          <div className="border-t border-border p-2">
+            <SignOutButton />
+          </div>
         </SheetContent>
       </Sheet>
 
@@ -231,14 +372,6 @@ export function AppShell({
                 <DropdownMenuItem render={<Link href="/mi-cuenta" />}>
                   <SettingsIcon />
                   Configuración
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  variant="destructive"
-                  onClick={() => signOut()}
-                >
-                  <LogOutIcon />
-                  Cerrar sesión
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -110,7 +110,7 @@ export default async function ProgresoPage(props: PageProps<"/juegos/progreso">)
                 <Link key={r.skillId} href={skillHref(r.skillId)} className="flex items-center justify-between gap-3 rounded-2xl border border-border p-4 hover:bg-accent">
                   <span className="flex flex-col gap-0.5">
                     <span className="text-sm font-medium">
-                      <span className="font-mono text-xs text-muted-foreground">{getSkill(r.skillId)?.id ?? r.skillId}</span> {skillTitle(r.skillId)}
+                      {skillTitle(r.skillId)}
                       <span className="text-xs font-normal text-muted-foreground"> · {getSkill(r.skillId)?.gradeLabel}</span>
                     </span>
                     {r.weakTags.length > 0 && (
@@ -162,7 +162,7 @@ export default async function ProgresoPage(props: PageProps<"/juegos/progreso">)
                 return (
                   <div key={m.id} className="rounded-2xl border border-border p-3 text-sm">
                     <p className="text-xs text-muted-foreground">
-                      <span className="font-mono">{getSkill(m.skill_id)?.id ?? m.skill_id}</span> {skillTitle(m.skill_id)} · {getSkill(m.skill_id)?.gradeLabel}
+                      {skillTitle(m.skill_id)} · {getSkill(m.skill_id)?.gradeLabel}
                     </p>
                     <p>
                       {q?.prompt} {q?.visual?.kind === "text" && <span className="whitespace-pre font-medium">{q.visual.text}</span>}

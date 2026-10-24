@@ -59,7 +59,6 @@ function isLongTile(tile: string) {
 
 export function SkillPlayer({
   skillUid,
-  skillId,
   title,
   sectionName,
   gradeLabel,
@@ -221,7 +220,7 @@ export function SkillPlayer({
           {gradeLabel}
         </Link>
         <p className="text-xs text-muted-foreground">
-          {skillId} · {sectionName}
+          {sectionName}
         </p>
         <h1 className="text-lg font-medium">{title}</h1>
       </div>

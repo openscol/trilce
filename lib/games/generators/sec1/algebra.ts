@@ -63,7 +63,7 @@ export function proportional(r: Rng, mode: PropMode): Question {
   const k = graph ? r.int(1, 4) : r.int(2, 12);
   const xs = graph ? [0, 1, 2, 3].filter((x) => k * x <= 12) : [1, 2, 3, 4, 5].map((x) => x * r.pick([1, 1, 2])).filter((x, i, all) => all.indexOf(x) === i).slice(0, 4).sort((p, q) => p - q);
   const pts = xs.map((x) => ({ x, y: k * x }));
-  const visual: Visual = graph ? plane1(pts) : table(["x", "y"], pts.map((p) => [String(p.x), String(p.y)]));
+  const visual: Visual = graph ? plane1(pts) : table(["x", "y"], pts.map((p) => [sg(p.x), sg(p.y)]));
   const sample = pts[pts.length - 1];
   if (mode === "kTable" || mode === "kGraph") {
     return numQ(k, graph ? "El gráfico muestra una relación proporcional. ¿Cuál es la constante de proporcionalidad?" : "La tabla muestra una relación proporcional. ¿Cuál es la constante de proporcionalidad?", visual, `En cada par, y ÷ x da lo mismo: ${sample.y} ÷ ${sample.x} = ${k}.`, "constante");
@@ -220,7 +220,7 @@ export function likeTermsExponents(r: Rng): Question {
   if (a + c === 0 || b + d === 0) return likeTermsExponents(r);
   const good = join(a + c, b + d);
   const text = `${sq(a)} + ${b}x ${c < 0 ? "−" : "+"} ${Math.abs(c) === 1 ? "" : Math.abs(c)}x² ${d < 0 ? "−" : "+"} ${Math.abs(d) === 1 ? "" : Math.abs(d)}x`;
-  return choiceQ(r, "Reduce los términos semejantes.", good, [join(a + b, c + d), join(a - c, b + d), join(a + c, b - d), `${sg(a + b + c + d)}x³`].filter((x) => x !== good), `Solo se juntan términos con la misma potencia: los de x² dan ${sq(a + c)} y los de x dan ${lin(b + d, 0)}.`, text);
+  return choiceQ(r, "Reduce los términos semejantes.", good, [join(a + b, c + d), join(a - c, b + d), join(a + c, b - d), lin(a + b + c + d || 1, 0).replace("x", "x³")].filter((x) => x !== good), `Solo se juntan términos con la misma potencia: los de x² dan ${sq(a + c)} y los de x dan ${lin(b + d, 0)}.`, text);
 }
 
 // S.14: expresiones lineales equivalentes en problemas.
@@ -263,11 +263,11 @@ export function twoStepEquation(r: Rng, kind: TwoStep): Question {
     return numQ(x, "Resuelve la ecuación. ¿Cuánto vale x?", `${a}(x ${minus ? "−" : "+"} ${b}) = ${a * inner}`, `Se divide entre ${a}: x ${minus ? "−" : "+"} ${b} = ${inner}. ${minus ? `Se suma ${b}` : `Se resta ${b}`}: x = ${x}.`);
   }
   if (kind === "integers") {
-    const k = nz(r, 9), v = nz(r, 12), t = nz(r, 20);
+    const k = r.int(2, 9) * r.pick([-1, 1]), v = nz(r, 12), t = nz(r, 20);
     return intQ(r, "Resuelve la ecuación. ¿Cuánto vale x?", v, `Se ${t < 0 ? `suma ${-t}` : `resta ${t}`}: ${sg(k)}x = ${sg(k * v)}. Se divide entre ${sg(k)}: x = ${sg(v)}.`, `${lin(k, t)} = ${sg(k * v + t)}`);
   }
   if (kind === "decimals") {
-    const k = r.int(2, 25), t = r.int(1, 60); // décimos
+    const k = r.pick([2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 15, 16, 18, 22, 25]), t = r.int(1, 60); // décimos
     const c = k * x + t;
     return numQ(x, "Resuelve la ecuación. ¿Cuánto vale x?", `${d2(k * 10)}x + ${d2(t * 10)} = ${d2(c * 10)}`, `Se resta ${d2(t * 10)}: ${d2(k * 10)}x = ${d2(k * x * 10)}. Se divide entre ${d2(k * 10)}: x = ${x}.`);
   }
@@ -283,7 +283,7 @@ export function twoStepEquation(r: Rng, kind: TwoStep): Question {
     const [story, what] = r.pick(STORIES)(a, b, c, r.pick(NAMES));
     if (kind === "word") return numQ(x, `${story} ¿Cuál es ${what}?`, undefined, `${a}x + ${b} = ${c} → ${a}x = ${a * x} → x = ${x}.`);
     const good = `${a}x + ${b} = ${c}`;
-    return choiceQ(r, `${story} Si x es ${what}, ¿qué ecuación lo representa?`, good, [`${b}x + ${a} = ${c}`, `${a}x − ${b} = ${c}`, `${a}(x + ${b}) = ${c}`, `${a + b}x = ${c}`].filter((e) => e !== good), `Lo que cambia con x se multiplica (${a}x) y lo fijo se suma (${b}).`);
+    return choiceQ(r, `${story} Si x es ${what}, ¿qué ecuación lo representa?`, good, [`${lin(b, a)} = ${c}`, `${a}x − ${b} = ${c}`, `${a}(x + ${b}) = ${c}`, `${a + b}x = ${c}`].filter((e) => e !== good), `Lo que cambia con x se multiplica (${a}x) y lo fijo se suma (${b}).`);
   }
   if (kind === "likeTerms") {
     const c = r.int(2, 7);
@@ -444,7 +444,7 @@ export function rateOfChange(r: Rng, mode: RateMode): Question {
     const step = graph ? 1 : r.pick([1, 2, 5]);
     const xs = [0, 1, 2, 3].map((i) => i * step).filter((x) => !graph || (start + k * x >= 0 && start + k * x <= 12));
     const pts = xs.map((x) => ({ x, y: start + k * x }));
-    const visual = graph ? plane1(pts) : table([xName, yName], pts.map((p) => [String(p.x), String(p.y)]));
+    const visual = graph ? plane1(pts) : table([xName, yName], pts.map((p) => [sg(p.x), sg(p.y)]));
     return intQ(r, graph ? "¿Cuál es la tasa de cambio constante de la recta (cuánto cambia y por cada unidad de x)?" : `¿Cuál es la tasa de cambio constante, en ${per}?`, k, `Entre dos puntos: (${pts[1].y} − ${pts[0].y}) ÷ (${pts[1].x} − ${pts[0].x}) = ${sg(k)}.`, visual, k > 0 ? "aumenta" : "disminuye", [k * step, start]);
   }
   const values = [r.int(5, 30)];

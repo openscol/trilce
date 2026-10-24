@@ -4,11 +4,13 @@ import { ArrowLeftIcon } from "lucide-react";
 import { requireAppContext } from "@/lib/auth/context";
 import { createClient } from "@/lib/supabase/server";
 import { GRADES, LEVELS, gradeKeyFor } from "@/lib/games/grades";
-import { skillCount } from "@/lib/games/catalog";
+import { skillCount, topicCount } from "@/lib/games/catalog";
+import { getCompetencies } from "@/lib/games/topics";
 import { cn } from "@/lib/utils";
 
 export default async function CategoriaPage(props: PageProps<"/juegos/[categoria]">) {
   const { categoria } = await props.params;
+  const { vista } = await props.searchParams;
   const ctx = await requireAppContext();
   const supabase = await createClient();
 
@@ -20,6 +22,9 @@ export default async function CategoriaPage(props: PageProps<"/juegos/[categoria
     .eq("active", true)
     .maybeSingle();
   if (!category) notFound();
+
+  const competencies = getCompetencies(category.slug);
+  const byTopic = vista === "temas" && competencies.length > 0;
 
   // Al alumno se le resalta su propio grado.
   let ownGrade: string | undefined;
@@ -38,10 +43,65 @@ export default async function CategoriaPage(props: PageProps<"/juegos/[categoria
         <h1 className="text-lg font-medium">
           {category.icon} {category.name}
         </h1>
-        <p className="text-sm text-muted-foreground">Elige el grado.</p>
+        <p className="text-sm text-muted-foreground">{byTopic ? "Elige el tema." : "Elige el grado."}</p>
       </div>
 
-      {LEVELS.map(({ key: level, name }) => (
+      {competencies.length > 0 && (
+        <div className="flex w-fit rounded-lg border border-border p-0.5 text-sm">
+          {[
+            { label: "Por grados", href: `/juegos/${category.slug}`, active: !byTopic },
+            { label: "Por temas", href: `/juegos/${category.slug}?vista=temas`, active: byTopic },
+          ].map((tab) => (
+            <Link
+              key={tab.label}
+              href={tab.href}
+              className={cn(
+                "rounded-md px-3 py-1 font-medium transition-colors",
+                tab.active ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {tab.label}
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {byTopic &&
+        competencies.map((c) => (
+          <section key={c.id} className="flex flex-col gap-3">
+            <div className="flex flex-col">
+              <h2 className="text-sm font-medium uppercase text-muted-foreground">
+                {c.icon} {c.short}
+              </h2>
+              <p className="text-xs text-muted-foreground">{c.name}</p>
+            </div>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {c.topics.map((t) => {
+                const count = topicCount(category.slug, t.id);
+                const body = (
+                  <>
+                    <span className="text-sm">
+                      {t.icon} {t.name}
+                    </span>
+                    <span className="shrink-0 text-xs text-muted-foreground">{count > 0 ? `${count} juegos` : "Próximamente"}</span>
+                  </>
+                );
+                const cls = "flex items-center justify-between gap-2 rounded-xl border border-border p-3";
+                return count > 0 ? (
+                  <Link key={t.id} href={`/juegos/${category.slug}/temas/${t.id}`} className={cn(cls, "transition-colors hover:bg-accent")}>
+                    {body}
+                  </Link>
+                ) : (
+                  <div key={t.id} className={cn(cls, "opacity-50")}>
+                    {body}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        ))}
+
+      {!byTopic && LEVELS.filter((l) => !("extra" in l) || GRADES.some((g) => g.level === l.key && skillCount(category.slug, g.key) > 0)).map(({ key: level, name }) => (
         <section key={level} className="flex flex-col gap-3">
           <h2 className="text-sm font-medium uppercase text-muted-foreground">{name}</h2>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">

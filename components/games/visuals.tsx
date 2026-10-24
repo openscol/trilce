@@ -182,6 +182,20 @@ function NumberLine({ v }: { v: Extract<Visual, { kind: "numberLine" }> }) {
         </>
       )}
       {v.marked !== undefined && <circle cx={x(v.marked)} cy={45} r={8} className={cn("stroke-foreground", v.ray && !v.ray.closed ? "fill-background" : "fill-brand-green")} strokeWidth={2} />}
+      {v.segments?.map((seg, i) => {
+        const a = seg.from === undefined ? pad - 12 : x(seg.from);
+        const b = seg.to === undefined ? W - pad + 12 : x(seg.to);
+        return (
+          <g key={`seg${i}`}>
+            <line x1={a} x2={b} y1={45} y2={45} className="stroke-brand-green-text" strokeWidth={6} strokeLinecap="round" />
+            {seg.from === undefined && <path d="M2 45 l12 -8 v16 z" className="fill-brand-green-text" />}
+            {seg.to === undefined && <path d={`M${W - 2} 45 l-12 -8 v16 z`} className="fill-brand-green-text" />}
+            {seg.from !== undefined && <circle cx={a} cy={45} r={8} className={cn("stroke-foreground", seg.closedFrom ? "fill-brand-green" : "fill-background")} strokeWidth={2} />}
+            {seg.to !== undefined && <circle cx={b} cy={45} r={8} className={cn("stroke-foreground", seg.closedTo ? "fill-brand-green" : "fill-background")} strokeWidth={2} />}
+          </g>
+        );
+      })}
+      {v.dots?.map((d, i) => <circle key={`dot${i}`} cx={x(d)} cy={45} r={8} className="fill-brand-green stroke-foreground" strokeWidth={2} />)}
     </svg>
   );
 }
@@ -583,6 +597,8 @@ function CoordPlane({ v }: { v: Extract<Visual, { kind: "coordPlane" }> }) {
   const px = (x: number) => o + (x - min) * s;
   const py = (y: number) => size - o - (y - min) * s;
   const label = (n: number) => (n < 0 ? `−${-n}` : n);
+  // Id del recorte estable (sin hooks): un hash del contenido del plano.
+  const clipId = `cp${[...JSON.stringify(v)].reduce((h, ch) => (Math.imul(h, 31) + ch.charCodeAt(0)) | 0, 7) >>> 0}`;
   return (
     <svg viewBox={`0 0 ${size} ${size}`} className={min < 0 ? "size-80" : "size-72"}>
       {Array.from({ length: span + 1 }, (_, k) => {
@@ -600,8 +616,68 @@ function CoordPlane({ v }: { v: Extract<Visual, { kind: "coordPlane" }> }) {
           </g>
         );
       })}
+      <defs>
+        <clipPath id={clipId}>
+          <rect x={px(min)} y={py(v.max)} width={s * span} height={s * span} />
+        </clipPath>
+        <marker id={`${clipId}a0`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" className="fill-brand-green-text" />
+        </marker>
+        <marker id={`${clipId}a1`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" className="fill-sky-500" />
+        </marker>
+      </defs>
+      {v.regions?.map((region, i) => (
+        <polygon key={`r${i}`} clipPath={`url(#${clipId})`} points={region.points.map((p) => `${px(p.x)},${py(p.y)}`).join(" ")} className="fill-sky-400/25" />
+      ))}
       <line x1={px(min)} x2={px(v.max)} y1={py(0)} y2={py(0)} className="stroke-foreground" strokeWidth={2} />
       <line x1={px(0)} x2={px(0)} y1={py(min)} y2={py(v.max)} className="stroke-foreground" strokeWidth={2} />
+      {v.curves?.map((c, i) => (
+        <g key={`c${i}`}>
+          <polyline clipPath={`url(#${clipId})`} points={c.points.map((p) => `${px(p.x)},${py(p.y)}`).join(" ")} className={cn("fill-none", (c.color ?? (i === 0 ? "green" : "sky")) === "green" ? "stroke-brand-green-text" : "stroke-sky-500")} strokeWidth={3} strokeDasharray={c.dashed ? "8 5" : undefined} strokeLinejoin="round" strokeLinecap="round" />
+          {c.label && (() => {
+            const inside = c.points.filter((p) => p.x >= min && p.x <= v.max && p.y >= min && p.y <= v.max);
+            const end = inside[inside.length - 1] ?? c.points[c.points.length - 1];
+            return <text x={px(end.x) - 6} y={py(end.y) - 8} textAnchor="end" className={cn("text-[14px] font-medium", i === 0 ? "fill-brand-green-text" : "fill-sky-600")}>{c.label}</text>;
+          })()}
+        </g>
+      ))}
+      {v.shapes?.map((shape, i) => (
+        <g key={`s${i}`}>
+          <polygon
+            points={shape.points.map((p) => `${px(p.x)},${py(p.y)}`).join(" ")}
+            className={cn("stroke-foreground", shape.dashed ? "fill-sky-400/15" : "fill-brand-green/25")}
+            strokeWidth={2}
+            strokeDasharray={shape.dashed ? "6 4" : undefined}
+          />
+          {shape.label && (
+            <text x={px(shape.points[0].x) - 8} y={py(shape.points[0].y) - 8} textAnchor="end" className="fill-foreground text-[15px] font-medium">
+              {shape.label}
+            </text>
+          )}
+        </g>
+      ))}
+      {v.lines?.map((l, i) => (
+        <g key={`l${i}`}>
+          <line
+            clipPath={`url(#${clipId})`}
+            x1={px(l.from.x)}
+            y1={py(l.from.y)}
+            x2={px(l.to.x)}
+            y2={py(l.to.y)}
+            className={(l.color ?? (i === 0 ? "green" : "sky")) === "green" ? "stroke-brand-green-text" : "stroke-sky-500"}
+            strokeWidth={3}
+            strokeDasharray={l.dashed ? "8 5" : undefined}
+            strokeLinecap="round"
+            markerEnd={l.arrow ? `url(#${clipId}a${(l.color ?? (i === 0 ? "green" : "sky")) === "green" ? 0 : 1})` : undefined}
+          />
+          {l.label && (
+            <text x={px(l.to.x)} y={py(l.to.y) + (l.to.y > l.from.y ? 18 : -8)} textAnchor="middle" className={cn("text-[14px] font-medium", i === 0 ? "fill-brand-green-text" : "fill-sky-600")}>
+              {l.label}
+            </text>
+          )}
+        </g>
+      ))}
       {v.connect && v.points.length > 1 && (
         <polyline points={[...v.points, ...(v.connect === "closed" ? [v.points[0]] : [])].map((p) => `${px(p.x)},${py(p.y)}`).join(" ")} className="fill-none stroke-brand-green-text" strokeWidth={3} strokeLinejoin="round" />
       )}
@@ -617,7 +693,44 @@ function CoordPlane({ v }: { v: Extract<Visual, { kind: "coordPlane" }> }) {
           <text key={i} x={px(p.x)} y={py(p.y) + 8} textAnchor="middle" className="text-[24px]">{p.emoji}</text>
         )
       )}
+      {v.openPoints?.map((p, i) => (
+        <circle key={`o${i}`} cx={px(p.x)} cy={py(p.y)} r={6} className="fill-background stroke-foreground" strokeWidth={2} />
+      ))}
     </svg>
+  );
+}
+
+function ScatterPlot({ v }: { v: Extract<Visual, { kind: "scatterPlot" }> }) {
+  const W = 420, H = 320, left = 52, bottom = 46, top = 16, right = 16;
+  const px = (x: number) => left + (x / v.xMax) * (W - left - right);
+  const py = (y: number) => H - bottom - (y / v.yMax) * (H - bottom - top);
+  const ticks = (max: number, step: number) => Array.from({ length: Math.floor(max / step) + 1 }, (_, i) => i * step);
+  return (
+    <div className="flex flex-col items-center gap-1">
+      {v.title && <p className="text-base font-medium">{v.title}</p>}
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-md">
+        {ticks(v.xMax, v.xStep).map((t) => (
+          <g key={`x${t}`}>
+            <line x1={px(t)} x2={px(t)} y1={py(0)} y2={py(v.yMax)} className="stroke-foreground/15" />
+            <text x={px(t)} y={py(0) + 18} textAnchor="middle" className="fill-foreground text-[12px]">{t}</text>
+          </g>
+        ))}
+        {ticks(v.yMax, v.yStep).map((t) => (
+          <g key={`y${t}`}>
+            <line x1={px(0)} x2={px(v.xMax)} y1={py(t)} y2={py(t)} className="stroke-foreground/15" />
+            <text x={px(0) - 8} y={py(t) + 4} textAnchor="end" className="fill-foreground text-[12px]">{t}</text>
+          </g>
+        ))}
+        <line x1={px(0)} x2={px(v.xMax)} y1={py(0)} y2={py(0)} className="stroke-foreground" strokeWidth={2} />
+        <line x1={px(0)} x2={px(0)} y1={py(0)} y2={py(v.yMax)} className="stroke-foreground" strokeWidth={2} />
+        <text x={(px(0) + px(v.xMax)) / 2} y={H - 6} textAnchor="middle" className="fill-foreground text-[13px]">{v.xLabel}</text>
+        <text x={14} y={(py(0) + py(v.yMax)) / 2} textAnchor="middle" transform={`rotate(-90 14 ${(py(0) + py(v.yMax)) / 2})`} className="fill-foreground text-[13px]">{v.yLabel}</text>
+        {v.line && <line x1={px(v.line.from.x)} y1={py(v.line.from.y)} x2={px(v.line.to.x)} y2={py(v.line.to.y)} className="stroke-sky-500" strokeWidth={3} strokeLinecap="round" />}
+        {v.points.map((p, i) => (
+          <circle key={i} cx={px(p.x)} cy={py(p.y)} r={5} className="fill-brand-green stroke-foreground" strokeWidth={1.5} />
+        ))}
+      </svg>
+    </div>
   );
 }
 
@@ -1442,6 +1555,8 @@ export function VisualView({ visual }: { visual: Visual }) {
       );
     case "coordPlane":
       return <CoordPlane v={visual} />;
+    case "scatterPlot":
+      return <ScatterPlot v={visual} />;
     case "shapes":
       return <Labeled names={visual.names} render={(n) => <Shape2d name={n} />} />;
     case "solids":

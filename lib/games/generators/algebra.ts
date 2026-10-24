@@ -18,7 +18,7 @@ const lin = (k: number, v: string, c: number) => (c === 0 ? term(k, v) : `${term
 export function writeVariableExpression2(r: Rng): Question {
   const v = r.pick(VARS);
   const k = r.int(2, 9);
-  const c = r.int(1, 12);
+  const c = r.int(2, 12);
   const forms: [string, string, string[]][] = [
     [`${c} más que ${k} veces ${v}`, `${k}${v} + ${c}`, [`${k}(${v} + ${c})`, `${c}${v} + ${k}`, `${k}${v} − ${c}`]],
     [`${c} menos que ${k} veces ${v}`, `${k}${v} − ${c}`, [`${c} − ${k}${v}`, `${k}(${v} − ${c})`, `${k}${v} + ${c}`]],

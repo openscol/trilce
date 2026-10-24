@@ -6,7 +6,19 @@ export type Visual =
   | { kind: "takeaway"; emoji: string; total: number; removed: number }
   // `ray`: dibuja desde `marked` una semirrecta (solución de una inecuación);
   // `closed` = punto relleno (≤, ≥). Los números negativos se rotulan con «−».
-  | { kind: "numberLine"; min: number; max: number; step: number; labelEvery: number; marked?: number; ray?: { closed: boolean; dir: "left" | "right" } }
+  // `segments`: intervalos sombreados (sin `from` = desde −∞, sin `to` = hasta +∞), con
+  // extremos abiertos o cerrados; `dots`: varios puntos marcados (soluciones sueltas).
+  | {
+      kind: "numberLine";
+      min: number;
+      max: number;
+      step: number;
+      labelEvery: number;
+      marked?: number;
+      ray?: { closed: boolean; dir: "left" | "right" };
+      segments?: { from?: number; to?: number; closedFrom?: boolean; closedTo?: boolean }[];
+      dots?: number[];
+    }
   // Recta de 0 a `wholes` (1 por defecto) dividida en `parts` partes por unidad.
   // `marked` y `points[].at` se miden en partes desde 0.
   // `labels`: textos de los dos extremos (para rectas de decimales, p. ej. ["3", "4"]).
@@ -30,7 +42,24 @@ export type Visual =
   | { kind: "stack"; items: string[] }
   // `connect`: une los puntos en orden con segmentos («closed» cierra la figura).
   // `min` negativo: plano con los cuatro cuadrantes (por defecto empieza en 0).
-  | { kind: "coordPlane"; max: number; min?: number; points: { x: number; y: number; emoji: string }[]; connect?: "open" | "closed" }
+  // `lines`: rectas o segmentos de un punto a otro (las rectas se dan con sus extremos en el borde
+  // del plano); `shapes`: polígonos cerrados, p. ej. una figura y su imagen (la imagen, punteada).
+  | {
+      kind: "coordPlane";
+      max: number;
+      min?: number;
+      points: { x: number; y: number; emoji: string }[];
+      connect?: "open" | "closed";
+      // `arrow`: dibuja una punta de flecha en `to` (vectores).
+      // `color`: fija el color (si no, la primera es verde y las demás celestes).
+      lines?: { from: { x: number; y: number }; to: { x: number; y: number }; dashed?: boolean; label?: string; arrow?: boolean; color?: "green" | "sky" }[];
+      shapes?: { points: { x: number; y: number }[]; dashed?: boolean; label?: string }[];
+      // Álgebra: curvas (parábolas, exponenciales…) como polilíneas recortadas al plano,
+      // regiones sombreadas (inecuaciones) y puntos abiertos (extremos excluidos).
+      curves?: { points: { x: number; y: number }[]; dashed?: boolean; label?: string; color?: "green" | "sky" }[];
+      regions?: { points: { x: number; y: number }[] }[];
+      openPoints?: { x: number; y: number }[];
+    }
   | { kind: "shapes"; names: string[] }
   | { kind: "solids"; names: string[] }
   | { kind: "pattern"; items: string[] }
@@ -103,6 +132,21 @@ export type Visual =
   // Dos rectas paralelas cortadas por una transversal, con los ocho ángulos
   // numerados (1-4 arriba, 5-8 abajo). `given`: ángulo cuya medida se muestra.
   | { kind: "transversal"; given?: { angle: number; text: string } }
+  // --- 2.° de secundaria en adelante ---
+  // Diagrama de dispersión: ejes de 0 a `xMax`/`yMax` con marcas cada `xStep`/`yStep`;
+  // `line`: recta de ajuste (de un extremo al otro).
+  | {
+      kind: "scatterPlot";
+      title?: string;
+      xLabel: string;
+      yLabel: string;
+      xMax: number;
+      yMax: number;
+      xStep: number;
+      yStep: number;
+      points: { x: number; y: number }[];
+      line?: { from: { x: number; y: number }; to: { x: number; y: number } };
+    }
   // Un dibujo grande (emoji) con texto opcional debajo.
   | { kind: "picture"; emoji: string; caption?: string }
   // Lectura: cuento o texto informativo, con título y dibujo opcionales.
@@ -158,7 +202,9 @@ export type Skill = {
   generate: (r: import("./rng").Rng) => Question;
 };
 
-export type Section = { id: string; name: string; icon: string };
+// `topic`: tema de la vista «por temas» (lib/games/topics.ts). Solo lo tienen
+// los grados ya organizados según el CNEB.
+export type Section = { id: string; name: string; icon: string; topic?: string };
 
 // Juegos de una categoría (matemáticas, comunicación...) para un grado.
 // `sessionLength`: si se define, cada partida termina tras esa cantidad de

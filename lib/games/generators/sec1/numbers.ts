@@ -219,10 +219,10 @@ export function exponentProperties(r: Rng): Question {
   const final = r.int(1, a === 2 ? 5 : a === 10 ? 4 : 3);
   if (r.chance(0.5)) {
     const m = r.int(2, 6), n = r.int(2, 6), k = m + n - final;
-    return numQ(a ** final, "Usa las propiedades de las potencias y calcula.", `${pw(String(a), m)} × ${pw(String(a), n)} ÷ ${pw(String(a), k)}`, `${m} + ${n} − ${k} = ${final}: ${pw(String(a), final)} = ${fmt(a ** final)}.`, "producto-cociente");
+    return numQ(a ** final, "Usa las propiedades de las potencias y calcula.", `${pw(String(a), m)} × ${pw(String(a), n)} ÷ ${pw(String(a), k)}`, `${m} + ${n} − ${par(k)} = ${final}: ${pw(String(a), final)} = ${fmt(a ** final)}.`, "producto-cociente");
   }
   const m = r.int(2, 4), n = r.int(2, 3), k = m * n - final;
-  return numQ(a ** final, "Usa las propiedades de las potencias y calcula.", `(${pw(String(a), m)})${pw("", n)} ÷ ${pw(String(a), k)}`, `${m} × ${n} − ${k} = ${final}: ${pw(String(a), final)} = ${fmt(a ** final)}.`, "potencia-cociente");
+  return numQ(a ** final, "Usa las propiedades de las potencias y calcula.", `(${pw(String(a), m)})${pw("", n)} ÷ ${pw(String(a), k)}`, `${m} × ${n} − ${par(k)} = ${final}: ${pw(String(a), final)} = ${fmt(a ** final)}.`, "potencia-cociente");
 }
 
 const SUPM = "⁰¹²³⁴⁵⁶⁷⁸⁹";
