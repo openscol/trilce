@@ -72,7 +72,9 @@ export async function createPost(input: PostInput): Promise<Result> {
   return undefined;
 }
 
-export async function updatePost(postId: string, patch: { body?: string; pinned?: boolean; commentsEnabled?: boolean }): Promise<Result> {
+// imagePaths es la lista final de imágenes: las que ya tenía y se conservan, más las
+// nuevas ya subidas a la carpeta de la publicación. Las que falten se borran.
+export async function updatePost(postId: string, patch: { body?: string; pinned?: boolean; commentsEnabled?: boolean; imagePaths?: string[] }): Promise<Result> {
   const { viewer, supabase } = await session();
   if (!viewer) return { error: "No tienes permiso." };
 
@@ -85,9 +87,39 @@ export async function updatePost(postId: string, patch: { body?: string; pinned?
   if (patch.pinned !== undefined) update.pinned_at = patch.pinned ? new Date().toISOString() : null;
   if (patch.commentsEnabled !== undefined) update.comments_enabled = patch.commentsEnabled;
 
+  let removed: string[] = [];
+  let added: string[] = [];
+  let nextPosition = 0;
+  if (patch.imagePaths) {
+    const paths = [...new Set(patch.imagePaths)];
+    if (paths.length > MAX_POST_IMAGES) return { error: `Máximo ${MAX_POST_IMAGES} imágenes por publicación.` };
+    const [{ data: post }, { data: current }] = await Promise.all([
+      supabase.from("feed_posts").select("body, youtube_id").eq("id", postId).maybeSingle(),
+      supabase.from("feed_post_images").select("path, position").eq("post_id", postId),
+    ]);
+    if (!post) return { error: "No se pudo guardar el cambio." };
+    const currentPaths = new Set((current ?? []).map((i) => i.path));
+    removed = [...currentPaths].filter((p) => !paths.includes(p));
+    added = paths.filter((p) => !currentPaths.has(p));
+    const folder = `${viewer.schoolId}/${postId}/`;
+    if (added.some((p) => !p.startsWith(folder))) return { error: "Una de las imágenes no es válida." };
+    if (!(update.body ?? post.body) && !post.youtube_id && paths.length === 0) return { error: "La publicación no puede quedar vacía: deja algo de texto o una imagen." };
+    nextPosition = Math.max(-1, ...(current ?? []).map((i) => i.position)) + 1;
+  }
+
   // RLS deja editar al autor y a la administración; fijar, solo a la administración (trigger).
   const { data, error } = await supabase.from("feed_posts").update(update).eq("id", postId).select("id");
   if (error || !data?.length) return { error: dbMessage(error, "No se pudo guardar el cambio.") };
+
+  if (added.length) {
+    const { error: imageError } = await supabase.from("feed_post_images").insert(added.map((path, i) => ({ post_id: postId, path, position: nextPosition + i })));
+    if (imageError) return { error: "No se pudieron guardar las imágenes." };
+  }
+  if (removed.length) {
+    const { error: removeError } = await supabase.from("feed_post_images").delete().eq("post_id", postId).in("path", removed);
+    if (removeError) return { error: "No se pudieron quitar las imágenes." };
+    await supabase.storage.from("feed").remove(removed);
+  }
 
   revalidatePath("/dashboard");
   return undefined;

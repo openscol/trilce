@@ -4,13 +4,14 @@ import { useState, useTransition } from "react";
 import { ChevronLeftIcon, ChevronRightIcon, MessageCircleIcon, MoreHorizontalIcon, PinIcon, ThumbsUpIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { MAX_POST_LENGTH, REACTIONS, ROLE_LABEL, totalReactions, type FeedPost, type FeedReaction, type FeedViewer } from "@/lib/feed";
+import { REACTIONS, ROLE_LABEL, totalReactions, type FeedPost, type FeedReaction, type FeedViewer } from "@/lib/feed";
 import { deletePost, reactToPost, updatePost } from "@/app/(app)/dashboard/feed-actions";
 import { InitialsAvatar } from "./avatar";
 import { Comments } from "./comments";
+import { LinkifiedText } from "./linkified-text";
+import { PostEditor } from "./post-editor";
 
 // Pinta el fondo del contenedor con el color promedio de los bordes izquierdo y
 // derecho de la imagen, que es donde queda el espacio en una foto vertical.
@@ -48,7 +49,7 @@ export function PostCard({ post, viewer }: { post: FeedPost; viewer: FeedViewer 
   const [expanded, setExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [commentCount, setCommentCount] = useState(post.comment_count);
-  const [editing, setEditing] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -115,7 +116,7 @@ export function PostCard({ post, viewer }: { post: FeedPost; viewer: FeedViewer 
               <MoreHorizontalIcon />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setEditing(post.body)}>Editar texto</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setEditing(true)}>Editar</DropdownMenuItem>
               {viewer.isAdmin && <DropdownMenuItem onClick={() => run(() => updatePost(post.id, { pinned: !post.pinned }))}>{post.pinned ? "Dejar de fijar" : "Fijar arriba"}</DropdownMenuItem>}
               <DropdownMenuItem onClick={() => run(() => updatePost(post.id, { commentsEnabled: !post.comments_enabled }))}>{post.comments_enabled ? "Desactivar comentarios" : "Activar comentarios"}</DropdownMenuItem>
               <DropdownMenuItem
@@ -131,22 +132,21 @@ export function PostCard({ post, viewer }: { post: FeedPost; viewer: FeedViewer 
         )}
       </header>
 
-      {editing !== null ? (
-        <div className="flex flex-col gap-2">
-          <Textarea value={editing} onChange={(e) => setEditing(e.target.value)} maxLength={MAX_POST_LENGTH} rows={4} aria-label="Texto de la publicación" />
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" size="sm" onClick={() => setEditing(null)}>
-              Cancelar
-            </Button>
-            <Button size="sm" disabled={pending} onClick={() => run(() => updatePost(post.id, { body: editing }), () => setEditing(null))}>
-              Guardar
-            </Button>
-          </div>
-        </div>
+      {editing ? (
+        <PostEditor
+          post={post}
+          viewer={viewer}
+          onDone={(saved) => {
+            setEditing(false);
+            if (saved) router.refresh();
+          }}
+        />
       ) : (
         post.body && (
           <div>
-            <p className={cn("text-sm whitespace-pre-wrap break-words", long && !expanded && "line-clamp-3")}>{post.body}</p>
+            <p className={cn("text-sm whitespace-pre-wrap break-words", long && !expanded && "line-clamp-3")}>
+              <LinkifiedText text={post.body} />
+            </p>
             {long && (
               <button type="button" onClick={() => setExpanded((v) => !v)} className="text-sm font-medium text-muted-foreground hover:text-foreground">
                 {expanded ? "Ver menos" : "Ver más"}
