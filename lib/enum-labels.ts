@@ -87,6 +87,7 @@ export const PLATFORM_STAFF_ROLE_LABELS: Record<string, string> = {
 export const STAFF_TYPE_LABELS: Record<string, string> = {
   docente: "Docente",
   administrativo: "Administrativo",
+  auxiliar: "Auxiliar",
 };
 
 export const RELATIONSHIP_LABELS: Record<string, string> = {

@@ -8,6 +8,7 @@ import { LEVEL_LABELS } from "@/lib/enum-labels";
 import { longDate, parseDateParam, tally, todayInLima, type AttendanceStatus } from "@/lib/attendance";
 import { DatePicker } from "./date-picker";
 import { LinkStudentsButton } from "./link-students-button";
+import { loadMySections } from "@/lib/my-sections";
 
 export default async function AsistenciaPage(props: PageProps<"/asistencia">) {
   const ctx = await requireAppContext();
@@ -21,31 +22,7 @@ export default async function AsistenciaPage(props: PageProps<"/asistencia">) {
   }
 
   const supabase = await createClient();
-  const { data: allGroups } = await supabase
-    .from("class_groups")
-    .select("id, level, grade, section")
-    .eq("school_id", ctx.schoolId!)
-    .eq("academic_year", year)
-    .order("level", { ascending: true })
-    .order("grade", { ascending: true })
-    .order("section", { ascending: true });
-
-  // El docente solo ve sus secciones: donde dicta un curso o las que tiene
-  // asignadas. Es un filtro de pantalla; el permiso real está en RLS
-  // (can_take_attendance, 97_asistencia.sql), con la misma regla.
-  let groups = allGroups ?? [];
-  if (!isAdmin) {
-    const [{ data: offerings }, { data: assigned }] = await Promise.all([
-      supabase.from("course_offerings").select("class_group_id").eq("teacher_id", ctx.targetId ?? ""),
-      supabase.from("staff_assigned_sections").select("level, grade, section").eq("staff_id", ctx.targetId ?? ""),
-    ]);
-    const taught = new Set((offerings ?? []).map((o) => o.class_group_id));
-    groups = groups.filter(
-      (g) =>
-        taught.has(g.id) ||
-        (assigned ?? []).some((a) => a.level === g.level && a.grade === g.grade && (a.section === null || a.section === g.section))
-    );
-  }
+  const groups = await loadMySections(supabase, ctx, year);
 
   // Con una sola sección no hay nada que elegir: se va directo a la cuadrícula.
   if (!isAdmin && groups.length === 1 && !searchParams.fecha) redirect(`/asistencia/${groups[0].id}`);

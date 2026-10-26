@@ -9,7 +9,10 @@ import {
   CalendarDaysIcon,
   CircleDollarSignIcon,
   ClipboardListIcon,
+  ClipboardXIcon,
+  FileTextIcon,
   Gamepad2Icon,
+  TrophyIcon,
   ScanLineIcon,
   IdCardIcon,
   LayoutDashboardIcon,
@@ -22,6 +25,7 @@ import {
   UsersRoundIcon,
   UserRoundIcon,
   UsersIcon,
+  Volume2Icon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -49,71 +53,90 @@ type NavItem = {
   icon: React.ComponentType<{ className?: string }>;
 };
 
-const STAFF_NAV: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
-  { href: "/alumnos", label: "Alumnos", icon: UsersIcon },
-  { href: "/apoderados", label: "Apoderados", icon: UserRoundIcon },
-  { href: "/personal", label: "Personal", icon: IdCardIcon },
-  { href: "/horario", label: "Horario", icon: CalendarDaysIcon },
+// El menú va por secciones (como en Supabase): con veinte opciones en una sola
+// lista no se encuentra nada.
+type NavSection = { label?: string; items: NavItem[] };
+
+const DASHBOARD: NavItem = { href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon };
+const ALUMNOS: NavItem = { href: "/alumnos", label: "Alumnos", icon: UsersIcon };
+const HORARIO: NavItem = { href: "/horario", label: "Horario", icon: CalendarDaysIcon };
+const ACCOUNT_ITEM: NavItem = { href: "/mi-cuenta", label: "Mi Cuenta", icon: ShieldIcon };
+
+const CLASSROOM: NavItem[] = [
+  HORARIO,
   { href: "/asistencia", label: "Asistencia", icon: CalendarCheckIcon },
+  { href: "/faltas", label: "Registro de faltas", icon: ClipboardXIcon },
+  { href: "/semaforo", label: "Semáforo de ruido", icon: Volume2Icon },
+];
+
+const LEARNING: NavItem[] = [
   { href: "/cuestionarios", label: "Cuestionarios", icon: ClipboardListIcon },
   { href: "/examenes", label: "Exámenes", icon: ScanLineIcon },
   { href: "/juegos", label: "Juegos", icon: Gamepad2Icon },
-  { href: "/cobros", label: "Cobros", icon: ReceiptTextIcon },
+  { href: "/ranking", label: "Ranking de jugadores", icon: TrophyIcon },
+  { href: "/fichas", label: "Fichas", icon: FileTextIcon },
+];
+
+function staffNav(isAdmin: boolean): NavSection[] {
+  return [
+    { items: [DASHBOARD] },
+    {
+      label: "Comunidad",
+      items: [
+        ALUMNOS,
+        { href: "/apoderados", label: "Apoderados", icon: UserRoundIcon },
+        { href: "/personal", label: "Personal", icon: IdCardIcon },
+        ...(isAdmin ? [{ href: "/miembros", label: "Miembros", icon: UsersRoundIcon }] : []),
+      ],
+    },
+    { label: "Aula", items: CLASSROOM },
+    { label: "Aprendizaje", items: LEARNING },
+    {
+      label: "Tesorería",
+      items: [
+        { href: "/cobros", label: "Cobros", icon: ReceiptTextIcon },
+        { href: "/registrar-pago", label: "Registrar Pago", icon: CircleDollarSignIcon },
+      ],
+    },
+    {
+      label: "Ajustes",
+      items: [{ href: "/configuracion/precios", matchPrefix: "/configuracion", label: "Configuración", icon: SettingsIcon }, ACCOUNT_ITEM],
+    },
+  ];
+}
+
+const DOCENTE_NAV: NavSection[] = [
+  { items: [DASHBOARD, ALUMNOS] },
+  { label: "Aula", items: CLASSROOM },
+  { label: "Aprendizaje", items: LEARNING },
+  { label: "Ajustes", items: [ACCOUNT_ITEM] },
+];
+
+const FAMILY_NAV: NavSection[] = [
+  { items: [DASHBOARD] },
   {
-    href: "/registrar-pago",
-    label: "Registrar Pago",
-    icon: CircleDollarSignIcon,
+    label: "Colegio",
+    items: [
+      HORARIO,
+      { href: "/faltas", label: "Faltas y permisos", icon: ClipboardXIcon },
+      { href: "/examenes", label: "Exámenes", icon: ScanLineIcon },
+      { href: "/juegos", label: "Juegos", icon: Gamepad2Icon },
+      { href: "/ranking", label: "Ranking de jugadores", icon: TrophyIcon },
+    ],
   },
-  {
-    href: "/configuracion/precios",
-    matchPrefix: "/configuracion",
-    label: "Configuración",
-    icon: SettingsIcon,
-  },
+  { label: "Ajustes", items: [ACCOUNT_ITEM] },
 ];
 
-const DOCENTE_NAV: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
-  { href: "/alumnos", label: "Alumnos", icon: UsersIcon },
-  { href: "/horario", label: "Horario", icon: CalendarDaysIcon },
-  { href: "/asistencia", label: "Asistencia", icon: CalendarCheckIcon },
-  { href: "/cuestionarios", label: "Cuestionarios", icon: ClipboardListIcon },
-  { href: "/examenes", label: "Exámenes", icon: ScanLineIcon },
-  { href: "/juegos", label: "Juegos", icon: Gamepad2Icon },
+const PLATFORM_NAV: NavSection[] = [
+  { items: [{ href: "/plataforma", label: "Colegios", icon: BuildingIcon }] },
+  { label: "Ajustes", items: [ACCOUNT_ITEM] },
 ];
 
-const FAMILY_NAV: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
-  { href: "/horario", label: "Horario", icon: CalendarDaysIcon },
-  { href: "/examenes", label: "Exámenes", icon: ScanLineIcon },
-  { href: "/juegos", label: "Juegos", icon: Gamepad2Icon },
-];
-
-const PLATFORM_NAV: NavItem[] = [
-  { href: "/plataforma", label: "Colegios", icon: BuildingIcon },
-];
-
-const ACCOUNT_ITEM: NavItem = {
-  href: "/mi-cuenta",
-  label: "Mi Cuenta",
-  icon: ShieldIcon,
-};
-
-function navForRole(
-  role: AppContext["role"],
-  isPlatformStaff: boolean
-): NavItem[] {
+function navForRole(role: AppContext["role"], isPlatformStaff: boolean): NavSection[] {
   if (isPlatformStaff) return PLATFORM_NAV;
-  if (role === "admin") {
-    return [
-      ...STAFF_NAV,
-      { href: "/miembros", label: "Miembros", icon: UsersRoundIcon },
-    ];
-  }
-  if (role === "administrativo") return STAFF_NAV;
+  if (role === "admin" || role === "administrativo") return staffNav(role === "admin");
   if (role === "docente") return DOCENTE_NAV;
-  // padre y alumno: solo su propio dashboard
+  // padre y alumno: lo de sus hijos / lo propio
   return FAMILY_NAV;
 }
 
@@ -162,42 +185,50 @@ function setSidebarMode(value: unknown) {
   sidebarListeners.forEach((l) => l());
 }
 
+// Altura fija (h-9) y shrink-0: en pantallas bajas el menú hace scroll en vez
+// de aplastar los ítems.
 const itemClass =
-  "flex items-center gap-2 overflow-hidden rounded-lg border-l-2 border-transparent px-3 py-2 text-sm whitespace-nowrap text-secondary-foreground transition-colors";
+  "flex h-9 shrink-0 items-center gap-3 overflow-hidden rounded-lg border-l-2 border-transparent px-3 text-sm whitespace-nowrap text-secondary-foreground transition-colors";
 
 function NavLinks({
-  items,
+  sections,
   pathname,
   collapsed = false,
   onNavigate,
 }: {
-  items: NavItem[];
+  sections: NavSection[];
   pathname: string;
   collapsed?: boolean;
   onNavigate?: () => void;
 }) {
   return (
-    <nav className="flex flex-1 flex-col gap-1 overflow-x-hidden overflow-y-auto p-2">
-      {items.map((item) => {
-        const active = pathname.startsWith(item.matchPrefix ?? item.href);
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={onNavigate}
-            title={collapsed ? item.label : undefined}
-            className={cn(
-              itemClass,
-              active
-                ? "border-l-primary bg-accent text-accent-foreground"
-                : "hover:bg-accent hover:text-accent-foreground"
-            )}
-          >
-            <item.icon className="size-4 shrink-0" />
-            {!collapsed && item.label}
-          </Link>
-        );
-      })}
+    <nav className="flex min-h-0 flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto overscroll-contain px-2 py-3 [scrollbar-width:thin]">
+      {sections.map((section, i) => (
+        <div key={section.label ?? i} className="flex flex-col gap-0.5">
+          {section.label &&
+            (collapsed ? (
+              <span className="mx-3 mb-1 h-px shrink-0 bg-border" aria-hidden="true" />
+            ) : (
+              <span className="flex h-6 shrink-0 items-center px-3 text-xs whitespace-nowrap text-muted-foreground uppercase">{section.label}</span>
+            ))}
+          {section.items.map((item) => {
+            const active = pathname.startsWith(item.matchPrefix ?? item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onNavigate}
+                title={collapsed ? item.label : undefined}
+                aria-current={active ? "page" : undefined}
+                className={cn(itemClass, active ? "border-l-primary bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground")}
+              >
+                <item.icon className="size-4 shrink-0" />
+                {!collapsed && <span className="truncate">{item.label}</span>}
+              </Link>
+            );
+          })}
+        </div>
+      ))}
     </nav>
   );
 }
@@ -235,7 +266,7 @@ export function AppShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const navItems = [...navForRole(role, isPlatformStaff), ACCOUNT_ITEM];
+  const navSections = navForRole(role, isPlatformStaff);
   // En pantallas angostas el menú vive en un panel que se abre con ☰.
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -254,7 +285,7 @@ export function AppShell({
           barra se expande por encima del contenido sin desplazarlo. */}
       <div
         className={cn(
-          "sticky top-0 z-40 hidden h-screen shrink-0 transition-[width] duration-200 md:block print:hidden",
+          "sticky top-0 z-40 hidden h-dvh shrink-0 transition-[width] duration-200 md:block print:hidden",
           sidebarMode === "expanded" ? "w-56" : "w-14"
         )}
       >
@@ -272,7 +303,7 @@ export function AppShell({
             </span>
           </div>
           <NavLinks
-            items={navItems}
+            sections={navSections}
             pathname={pathname}
             collapsed={!sidebarExpanded}
           />
@@ -317,11 +348,11 @@ export function AppShell({
 
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
         <SheetContent side="left" className="w-64 gap-0 bg-card p-0 md:hidden">
-          <div className="flex h-14 items-center border-b border-border px-4">
+          <div className="flex h-14 shrink-0 items-center border-b border-border px-4">
             <SheetTitle className="text-sm font-medium">Trilce</SheetTitle>
           </div>
-          <NavLinks items={navItems} pathname={pathname} onNavigate={() => setMenuOpen(false)} />
-          <div className="border-t border-border p-2">
+          <NavLinks sections={navSections} pathname={pathname} onNavigate={() => setMenuOpen(false)} />
+          <div className="shrink-0 border-t border-border p-2">
             <SignOutButton />
           </div>
         </SheetContent>
