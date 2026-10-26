@@ -301,7 +301,7 @@ export const ROWS: Row[] = [
   ["hiatos-h-1", (r) => choose(r, WELL, SET_HIATO)],
   ["hiatos-h-2", (r) => choose(r, WELL, SET_H)],
   ["hiatos-h-3", (r) => P2.spellHeard(r, "día país oído baúl maíz ahorro prohibir vehículo cohete zanahoria", "a e i o u í ú h b v")],
-  ["hiatos-h-4", (r) => mix(r, [(q) => choose(q, WELL, [...SET_CC, ...SET_EZ, ...SET_HIATO, ...SET_H]), (q) => P2.spellHeard(q, "acción lección vejez belleza país oído ahorro cohete", "a e i o u í ó c s z h")])],
+  ["hiatos-h-4", (r) => mix(r, [(q) => choose(q, WELL, [...SET_HIATO, ...SET_H]), (q) => P2.spellHeard(q, "país oído ahorro cohete búho vehículo", "a e i o u í ó ú h")])],
 
   ["tipos-oracion-1", (r) => choose(r, "", SENTENCE_KIND)],
   ["tipos-oracion-2", (r) => choose(r, "", FRAGMENTS)],

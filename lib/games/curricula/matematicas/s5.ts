@@ -119,7 +119,7 @@ const ROWS: Row[] = [
   ["ley-senos", "leyes", "Ley de senos", (r) => Ge.lawsTriangle(r, "sines")],
   ["ley-cosenos", "leyes", "Ley de cosenos", (r) => Ge.lawsTriangle(r, "cosines")],
   ["resolver-triangulo", "leyes", "Resuelve un triángulo cualquiera", (r) => Ge.lawsTriangle(r, "solve")],
-  ["area-seno", "leyes", "Área de un triángulo con el seno", mix((r) => Ge.lawsTriangle(r, "area"), (r) => Ge.lawsTriangle(r, "areaSines"), Ge.heron)],
+  ["area-seno", "leyes", "Área de un triángulo con el seno y con Herón", mix((r) => Ge.lawsTriangle(r, "area"), (r) => Ge.lawsTriangle(r, "areaSines"), Ge.heron)],
 
   ["razones-circulo", "circulo-unitario", "Razones en el círculo trigonométrico", mix(B.unitCirclePoint, (r) => B.exactTrig(r, "basic"), (r) => B.exactTrig(r, "reciprocal"), (r) => B.exactTrig(r, "all"), B.trigApprox)],
   ["inversas-trig", "circulo-unitario", "Funciones trigonométricas inversas", mix((r) => B.inverseTrig(r, "degrees"), (r) => B.inverseTrig(r, "radians"), (r) => B.inverseTrig(r, "reciprocal")), X],

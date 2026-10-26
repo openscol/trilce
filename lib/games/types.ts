@@ -175,6 +175,9 @@ type Base = {
   prompt: string;
   visual?: Visual;
   explanation: string;
+  // Pasos de la solución para «Aprender con un ejemplo». Si un generador no
+  // los da, el ejemplo muestra la explicación.
+  solution?: string[];
   // Sub-tema fino para el análisis de deficiencias (ej. "con-reagrupacion").
   tag?: string;
   // Texto que el botón 🔊 lee en voz alta (palabra, sonidos o cuento).
@@ -200,6 +203,8 @@ export type Skill = {
   title: string;
   icon: string;
   extended?: boolean;
+  // Idea clave de «Aprender con un ejemplo»: lo que hay que saber para resolver.
+  idea?: string;
   generate: (r: import("./rng").Rng) => Question;
 };
 

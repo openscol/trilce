@@ -128,7 +128,7 @@ const ROWS: Row[] = [
   ["fraccion-decimal", "decimales", "De fracción a decimal y de decimal a fracción", mix(G.decimalModel, (r) => G.fractionToDecimal3(r, false), (r) => G.fractionToDecimal3(r, true), (r) => G.decimalToFraction3(r, false), (r) => G.decimalToFraction3(r, true))],
   ["decimales-fracciones", "decimales", "Compara y ordena decimales y fracciones", mix(G.compareDecimalFraction, G.compareDecimalFraction3, (r) => G.orderMixedForms(r, false), (r) => G.orderMixedForms(r, true))],
   ["sumar-decimales", "operar-decimales", "Suma decimales", mix((r) => G.addSubDecimalBlocks(r, "+"), (r) => G.addSubDecimals3(r, "+"), G.addThreeDecimalsProperties)],
-  ["restar-decimales", "operar-decimales", "Resta decimales", mix((r) => G.addSubDecimalBlocks(r, "−"), (r) => G.addSubDecimals3(r, "−"), (r) => G.addSubDecimals3(r, "mixed"), G.compensation)],
+  ["restar-decimales", "operar-decimales", "Resta decimales y mezcla sumas y restas", mix((r) => G.addSubDecimalBlocks(r, "−"), (r) => G.addSubDecimals3(r, "−"), (r) => G.addSubDecimals3(r, "mixed"), G.compensation)],
   ["problemas-decimales", "operar-decimales", "Problemas de sumar y restar decimales", mix((r) => G.decimalProblem(r, r.chance(0.3)), G.chooseDecimals, G.completeDecimalSentence, G.decimalInequality)],
   ["estimar-decimales", "operar-decimales", "Estima y continúa secuencias con decimales", mix(G.decimalSequence, G.estimateDecimalRounding, G.estimateDecimalBenchmarks)],
   ["decimal-por-potencia", "operar-decimales", "Multiplica decimales por 10, 100 y 1 000", mix((r) => G.decimalPower(r, "×", false), (r) => G.byTenthHundredth(r, "×"), (r) => G.missingPower(r, "×"))],

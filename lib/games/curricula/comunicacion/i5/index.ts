@@ -70,7 +70,7 @@ export const GAMES: Game[] = [
   ["categorias", "palabras", "Agrupa por categorías", ["categorias-1", "categorias-2"]],
   ["varios-significados", "palabras", "Una palabra, varios significados", ["varios-significados"]],
 
-  ["contar-preguntar", "oraciones", "¿Cuenta algo o pregunta algo?", ["contar-preguntar-1", "contar-preguntar-2", "contar-preguntar-3"]],
+  ["contar-preguntar", "oraciones", "Arma oraciones: ¿cuentan o preguntan?", ["contar-preguntar-1", "contar-preguntar-2", "contar-preguntar-3"]],
   ["sustantivos", "oraciones", "Personas, animales, lugares y cosas", ["sustantivos-1", "sustantivos-2"]],
   ["verbos", "oraciones", "Palabras de acción", ["verbos-1", "verbos-2", "verbos-3"]],
   ["signos-mayusculas", "oraciones", "Signos y mayúsculas", ["signos-mayusculas-1", "signos-mayusculas-2", "signos-mayusculas-3"], X],

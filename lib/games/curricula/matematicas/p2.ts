@@ -68,7 +68,7 @@ const ROWS: Row[] = [
   ["restas-20", "suma-resta", "Restas rápidas hasta 20", mix((r) => G.subFacts(r, 9), (r) => G.subFacts(r, 18), G.subOneDigitFromTeen)],
   ["calculo-20", "suma-resta", "Sumas y restas mezcladas hasta 20", G.mixedFacts],
   ["dobles", "suma-resta", "Dobles y casi dobles", mix(G.doubles, (r) => G.doublesNear(r, 1), (r) => G.doublesNear(r, -1), G.subDoubles, G.doublesMixed)],
-  ["completar-10", "suma-resta", "Completa la decena", mix(G.makeTen, (r) => G.addMissing(r, 10), (r) => G.subMissing(r, 10))],
+  ["completar-10", "suma-resta", "Completa la decena", mix(G.makeTen, C.completeTen)],
   ["numero-escondido", "suma-resta", "El número escondido", mix((r) => G.addMissing(r, 18), (r) => G.subMissing(r, 18), G.completeEquation)],
   ["escondido-dos-cifras", "suma-resta", "El número escondido con dos cifras", mix(G.addMissingTwoDigit, G.subMissingTwoDigit)],
   ["familias", "suma-resta", "Familias de operaciones", mix(G.factFamily, G.relatedMixed, (r) => G.relatedAdd(r, 18), (r) => G.relatedSub(r, 18))],

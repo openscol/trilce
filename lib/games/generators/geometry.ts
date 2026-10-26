@@ -72,10 +72,10 @@ export function compareSolidParts(r: Rng): Question {
     const s = r.pick(SOLIDS);
     return {
       kind: "number",
-      prompt: `¿Cuántas ${wordPlural} tiene un ${s.name}?`.replace("Cuántas vértices", "Cuántos vértices"),
+      prompt: `¿Cuántas ${wordPlural} tiene ${s.name.startsWith("pirámide") ? "una" : "un"} ${s.name}?`.replace("Cuántas vértices", "Cuántos vértices"),
       visual: { kind: "solids", names: [s.name] },
       answer: s[what],
-      explanation: `Un ${s.name} tiene ${s.faces} caras, ${s.edges} aristas y ${s.vertices} vértices.`,
+      explanation: `${s.name.startsWith("pirámide") ? "Una" : "Un"} ${s.name} tiene ${s.faces} caras, ${s.edges} aristas y ${s.vertices} vértices.`,
       tag: wordPlural,
     };
   }
@@ -90,7 +90,7 @@ export function compareSolidParts(r: Rng): Question {
     visual: { kind: "solids", names: [x.name, y.name] },
     options: ["A", "B"],
     answer: win,
-    explanation: `El ${x.name} tiene ${x[what]} y el ${y.name} tiene ${y[what]}.`,
+    explanation: `${x.name.startsWith("pirámide") ? "La" : "El"} ${x.name} tiene ${x[what]} y ${y.name.startsWith("pirámide") ? "la" : "el"} ${y.name} tiene ${y[what]}.`,
     tag: wordPlural,
   };
 }

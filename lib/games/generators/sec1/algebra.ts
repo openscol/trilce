@@ -370,9 +370,9 @@ export function nextTerm(r: Rng, kind: "arithmetic" | "geometric" | "mixed"): Qu
 }
 
 // Sucesiones en problemas.
-export function sequenceProblem(r: Rng): Question {
+export function sequenceProblem(r: Rng, kind?: "arithmetic" | "geometric"): Question {
   const name = r.pick(NAMES);
-  if (r.chance(0.6)) {
+  if (kind ? kind === "arithmetic" : r.chance(0.6)) {
     const first = r.int(2, 20), d = r.int(2, 9), n = r.int(6, 12);
     const story = r.pick([`${name} ahorra ${first} soles la primera semana y cada semana ahorra ${d} soles más que la anterior. ¿Cuánto ahorra en la semana ${n}?`, `Un teatro tiene ${first} asientos en la primera fila y cada fila tiene ${d} asientos más que la anterior. ¿Cuántos asientos tiene la fila ${n}?`, `${name} corre ${first} minutos el primer día y cada día corre ${d} minutos más. ¿Cuántos minutos corre el día ${n}?`]);
     return numQ(first + (n - 1) * d, story, undefined, `Se suma ${d} un total de ${n - 1} veces: ${first} + ${n - 1} × ${d} = ${first + (n - 1) * d}.`, "aritmetica");

@@ -35,6 +35,8 @@ import { COMPUTACION_S3 } from "./curricula/computacion/secundaria/s3";
 import { COMPUTACION_S4 } from "./curricula/computacion/secundaria/s4";
 import { COMPUTACION_S5 } from "./curricula/computacion/secundaria/s5";
 import { GRADES, getGrade, type GradeKey } from "./grades";
+import { IDEAS } from "./ideas";
+import { resolveSkillUid } from "./legacy-ids";
 import type { GameMode } from "./modes";
 import type { Curriculum, Section, Skill } from "./types";
 
@@ -61,6 +63,14 @@ const CURRICULA: Record<string, Partial<Record<GradeKey, Curriculum>>> = {
     s5: COMPUTACION_S5,
   },
 };
+
+// Cada juego recibe su idea clave (lib/games/ideas).
+for (const [category, grades] of Object.entries(CURRICULA)) {
+  for (const [grade, curriculum] of Object.entries(grades)) {
+    const ideas = IDEAS[category]?.[grade as GradeKey];
+    if (curriculum && ideas) curriculum.skills = curriculum.skills.map((s) => (ideas[s.id] ? { ...s, idea: ideas[s.id] } : s));
+  }
+}
 
 export function getCurriculum(category: string, grade: string): Curriculum | undefined {
   return CURRICULA[category]?.[grade as GradeKey];
@@ -111,7 +121,10 @@ export type ResolvedSkill = Skill & {
   sessionLength?: number;
 };
 
-export function getSkill(uid: string): ResolvedSkill | undefined {
+// Acepta también ids antiguos (lib/games/legacy-ids.ts): devuelve el juego
+// actual, con su uid actual.
+export function getSkill(anyUid: string): ResolvedSkill | undefined {
+  const uid = resolveSkillUid(anyUid);
   const [category, grade, id] = uid.split("/");
   if (!category || !grade || !id) return undefined;
   const curriculum = getCurriculum(category, grade);

@@ -532,7 +532,8 @@ export function completeBlend(r: Rng, where: "start" | "middle"): Question {
 export function sortBlend(r: Rng): Question {
   const all = words(START_BLEND_WORDS + " " + "llave lluvia chocolate queso");
   const firstPart = (w: string) => startBlend(w) ?? w.slice(0, 2);
-  const groups = [...new Set(all.map((x) => firstPart(x.w)))].filter((b) => all.filter((x) => firstPart(x.w) === b).length >= 2);
+  // Solo se pregunta por trabadas de verdad; ll, ch y qu quedan como distractores.
+  const groups = [...new Set(all.map((x) => startBlend(x.w)).filter((b): b is string => !!b))].filter((b) => all.filter((x) => firstPart(x.w) === b).length >= 2);
   const b = r.pick(groups);
   const hits = all.filter((x) => firstPart(x.w) === b);
   const others = pickOthers(r, all.filter((x) => firstPart(x.w) !== b), [], 6 - hits.length);

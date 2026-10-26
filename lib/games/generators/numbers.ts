@@ -31,6 +31,11 @@ export function skipCount(r: Rng, steps: number[]): Question {
     visual: { kind: "text", text: shown.join("  ") },
     answer: items[hidden],
     explanation: `Sumamos ${step} cada vez: falta el ${items[hidden]}.`,
+    solution: [
+      `Mira dos números seguidos que se vean: de ${shown.find((x, i) => x !== "?" && shown[i + 1] && shown[i + 1] !== "?")} al siguiente se avanza ${step}.`,
+      `El número que falta está después del ${items[hidden - 1]}.`,
+      `Suma ${step}: ${items[hidden - 1]} + ${step} = ${items[hidden]}.`,
+    ],
     tag: `de-${step}`,
   };
 }

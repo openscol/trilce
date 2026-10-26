@@ -368,7 +368,7 @@ export const ROWS: Row[] = [
   ["cion-sion-b-v-1", (r) => choose(r, WELL, SET_CION)],
   ["cion-sion-b-v-2", (r) => choose(r, WELL, SET_BV)],
   ["cion-sion-b-v-3", (r) => P2.spellHeard(r, "solución decisión atención discusión situación observar estuvo obtuvo advertir evidente", "a e i o u ó c s z b v")],
-  ["cion-sion-b-v-4", (r) => mix(r, [(q) => choose(q, WELL, [...SET_H, ...SET_GJ, ...SET_CION, ...SET_BV]), (q) => P2.spellHeard(q, "vehículo ahorro escoger paisaje solución decisión observar evidente", "a e i o u í ó h g j c s b v")])],
+  ["cion-sion-b-v-4", (r) => mix(r, [(q) => choose(q, WELL, [...SET_CION, ...SET_BV]), (q) => P2.spellHeard(q, "solución decisión observar evidente acción obtuvo", "a e i o u ó c s b v")])],
 
   ["tipos-oracion", (r) => choose(r, "", SENTENCE_KIND)],
   ["sujeto-predicado-1", (r) => choose(r, "", SUBJECT_PREDICATE)],

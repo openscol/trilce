@@ -118,9 +118,9 @@ const ROWS: Row[] = [
   ["tasa-promedio", "funciones", "Tasa de cambio y tasa promedio", mix((r) => S.rateOfChange(r, "table"), (r) => S.rateOfChange(r, "graph"), A.averageRate)],
 
   ["pendiente", "funcion-lineal", "Pendiente", mix((r) => S.slope(r, true), (r) => S.slope(r, false), T.slopeFromTable, S.missingCoordinate)],
-  ["lineal-o-no", "funcion-lineal", "¿Es una función lineal?", mix((r) => T.linearOrNot(r, "graphEq"), (r) => T.linearOrNot(r, "table"), T.isLinearSolution, T.graphSolutions)],
+  ["lineal-o-no", "funcion-lineal", "¿Es lineal? Soluciones de una ecuación lineal", mix((r) => T.linearOrNot(r, "graphEq"), (r) => T.linearOrNot(r, "table"), T.isLinearSolution, T.graphSolutions)],
   ["pendiente-interseccion", "funcion-lineal", "La forma y = mx + b", mix(T.readSlopeIntercept, T.graphSlopeIntercept, T.writeFromGraph, T.writeFromSlopeIntercept, T.writeFromSlopePoint, T.writeFromTwoPoints, T.linearFromTable, T.toSlopeIntercept)],
-  ["forma-general", "funcion-lineal", "Forma general e interceptos", mix(A.writeStandard, A.standardIntercepts, T.graphStandard, A.slopeAndIntercepts, A.graphLineMixed, (r) => T.horizontalVertical(r, false), (r) => T.horizontalVertical(r, true))],
+  ["forma-general", "funcion-lineal", "Forma general, interceptos y rectas horizontales y verticales", mix(A.writeStandard, A.standardIntercepts, T.graphStandard, A.slopeAndIntercepts, A.graphLineMixed, (r) => T.horizontalVertical(r, false), (r) => T.horizontalVertical(r, true))],
   ["punto-pendiente", "funcion-lineal", "Forma punto-pendiente", mix(T.graphPointSlope, (r) => A.writePointSlope(r, false), (r) => A.writePointSlope(r, true))],
   ["paralelas-perpendiculares", "funcion-lineal", "Rectas paralelas y perpendiculares", mix(T.parallelPerpendicular, A.parallelPerpLine)],
   ["modelos-lineales", "funcion-lineal", "Modela con funciones lineales", mix((r) => T.linearTable(r, true), T.interpretPoint, (r) => S.rateOfChange(r, "constTable"), (r) => S.rateOfChange(r, "constGraph"), T.interpretSlopeIntercept, (r) => T.linearWord(r, false))],

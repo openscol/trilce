@@ -128,7 +128,7 @@ const ROWS: Row[] = [
 
   ["escribir-expresiones", "expresiones", "Escribe expresiones con variables", mix(G.writeVariableExpression, G.writeVariableExpression2, G.variableExpressionProblem)],
   ["evaluar-expresiones", "expresiones", "Evalúa expresiones", mix(S.evaluateLinear, G.evaluateMultiVariable, S.evaluateAbsolute, S.evaluateNonlinear)],
-  ["terminos", "expresiones", "Términos, coeficientes y factores", mix(G.termsCoefficients, G.factorsOfVariableExpression, (r) => G.namedProperty(r, r.pick(["suma", "multiplicacion"] as const)))],
+  ["terminos", "expresiones", "Términos, coeficientes, factores y propiedades", mix(G.termsCoefficients, G.factorsOfVariableExpression, (r) => G.namedProperty(r, r.pick(["suma", "multiplicacion"] as const)))],
   ["terminos-semejantes", "expresiones", "Reduce términos semejantes", mix((r) => S.combineLikeTerms(r, true), (r) => S.combineLikeTerms(r, false), S.addSubLinear, S.likeTermsExponents)],
   ["distributiva", "expresiones", "Propiedad distributiva y factor común", mix((r) => G.distribute(r, true), (r) => G.distribute(r, false), (r) => G.factorVariable(r, true), (r) => G.factorVariable(r, false))],
   ["expresiones-equivalentes", "expresiones", "Expresiones equivalentes", mix(G.equivalentByProperty, (r) => G.equivalentExpressions(r, false), (r) => G.equivalentExpressions(r, true), S.equivalentWord)],

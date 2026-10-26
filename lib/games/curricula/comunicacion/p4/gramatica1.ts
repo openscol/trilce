@@ -404,7 +404,7 @@ export const ROWS: Row[] = [
   ["g-j-c-s-z-1", (r) => choose(r, WELL, SET_GJ)],
   ["g-j-c-s-z-2", (r) => choose(r, WELL, SET_CSZ)],
   ["g-j-c-s-z-3", (r) => P2.spellHeard(r, "gente dijeron recoger viaje página mujer decir entonces empezar conocer cabeza parece", "a e i o u g j c s z")],
-  ["g-j-c-s-z-4", (r) => mix(r, [(q) => choose(q, WELL, [...SET_BV, ...SET_H, ...SET_GJ, ...SET_CSZ]), (q) => P2.spellHeard(q, "también había volver hacer ahora hambre gente viaje mujer decir empezar cabeza", "a e i o u b v h g j c s z")])],
+  ["g-j-c-s-z-4", (r) => mix(r, [(q) => choose(q, WELL, [...SET_GJ, ...SET_CSZ]), (q) => P2.spellHeard(q, "gente viaje mujer decir empezar cabeza", "a e i o u g j c s z")])],
 
   ["tipos-oracion", (r) => choose(r, "", SENTENCE_KIND)],
   ["sujeto-predicado-1", (r) => choose(r, "", SUBJECT)],

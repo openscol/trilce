@@ -29,6 +29,14 @@ export type OrderItem = Shown & { seq: string[]; blocks?: boolean; mono?: boolea
 // se muestra grande, igual que `pic`.
 const isSymbol = (t: string | undefined): t is string => !!t && [...t].length <= 8 && !/[\p{L}\p{N}]/u.test(t);
 
+// Consigna y dibujo de un ítem. Si el ítem no trae consigna, su texto es la
+// pregunta: va como consigna y no en un recuadro aparte.
+function shownAs(item: Shown & { p?: string }, prompt: string): { prompt: string; visual?: Visual } {
+  const p = item.p ?? prompt;
+  if (!p.trim() && item.t && !isSymbol(item.t) && !item.pic && !item.read && !item.code && !item.py) return { prompt: item.t };
+  return { prompt: p, visual: visualOf(item) };
+}
+
 function visualOf(item: Shown): Visual | undefined {
   if (item.code) return { kind: "scratch", code: item.code, title: item.t };
   if (item.py) return { kind: "code", text: item.py, title: item.t };
@@ -44,8 +52,7 @@ export function choose(r: Rng, prompt: string, items: ChoiceItem[]): Question {
   const item = r.pick(items);
   return {
     kind: "choice",
-    prompt: item.p ?? prompt,
-    visual: visualOf(item),
+    ...shownAs(item, prompt),
     options: uniqueOptions(r, item.a, item.d.filter((d) => d !== item.a)),
     answer: item.a,
     explanation: item.e ?? (item.blocks ? "Esa es la respuesta correcta." : `La respuesta correcta es «${item.a}».`),
@@ -60,8 +67,7 @@ export function chooseAll(r: Rng, prompt: string, items: MultiItem[]): Question 
   const item = r.pick(items);
   return {
     kind: "multi",
-    prompt: item.p ?? prompt,
-    visual: visualOf(item),
+    ...shownAs(item, prompt),
     options: r.shuffle(item.opts),
     answers: item.ans,
     explanation: item.e ?? `Las respuestas correctas son: ${item.ans.join(", ")}.`,
@@ -77,8 +83,7 @@ export function order(r: Rng, prompt: string, items: OrderItem[]): Question {
   if (tiles.every((t, i) => t === item.seq[i])) tiles = [...tiles.slice(1), tiles[0]];
   return {
     kind: "sequence",
-    prompt: item.p ?? prompt,
-    visual: visualOf(item),
+    ...shownAs(item, prompt),
     tiles,
     reuse: false,
     length: item.seq.length,

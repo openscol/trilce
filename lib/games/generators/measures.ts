@@ -3,12 +3,12 @@ import type { Question } from "../types";
 import { COUNTABLES, numberOptions, uniqueOptions } from "./common";
 
 export function measureWithObjects(r: Rng): Question {
-  const item = r.pick([["🖍️", "lápiz"], ["🥕", "zanahoria"], ["🪥", "cepillo"]]);
-  const unit = r.pick([["📎", "clips"], ["🧱", "bloques"], ["🍪", "galletas"]]);
+  const item = r.pick([["🖍️", "el lápiz"], ["🥕", "la zanahoria"], ["🪥", "el cepillo"]]);
+  const unit = r.pick([["📎", "clips", "Cuántos"], ["🧱", "bloques", "Cuántos"], ["🍪", "galletas", "Cuántas"]]);
   const count = r.int(2, 9);
   return {
     kind: "number",
-    prompt: `¿Cuántos ${unit[1]} mide el ${item[1]}?`,
+    prompt: `¿${unit[2]} ${unit[1]} mide ${item[1]}?`,
     visual: { kind: "measureObjects", itemEmoji: item[0], unitEmoji: unit[0], count },
     answer: count,
     explanation: `Contamos los ${unit[1]} de un extremo al otro: ${count}.`,

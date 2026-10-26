@@ -71,9 +71,9 @@ const ROWS: Row[] = [
   ["multiplicar-dividir-enteros", "enteros", "Multiplica, divide y evalúa con enteros", mix((r) => G.integerSign(r, ["×", "÷"]), (r) => G.integerOperation(r, ["×", "÷"]), G.integerExpression)],
 
   ["periodicos", "racionales", "Decimales periódicos y fracciones", mix(T.repeatingDecimal, (r) => (r.chance(0.5) ? G.fractionToDecimal3(r, r.chance(0.5)) : G.decimalToFraction3(r, r.chance(0.5))))],
-  ["ordenar-racionales", "racionales", "Compara y ordena racionales", mix((r) => G.compareRationals(r), G.orderRationals, G.reciprocal)],
+  ["ordenar-racionales", "racionales", "Compara y ordena racionales", mix((r) => G.compareRationals(r), G.orderRationals)],
   ["sumar-restar-racionales", "racionales", "Suma y resta racionales", mix((r) => S.rationalOperation(r, ["+", "−"]), (r) => T.rationalWord(r, "addsub"), S.addSubRules)],
-  ["multiplicar-dividir-racionales", "racionales", "Multiplica y divide racionales", mix((r) => S.rationalOperation(r, ["×", "÷"]), (r) => T.rationalWord(r, "multdiv"), S.multDivRules)],
+  ["multiplicar-dividir-racionales", "racionales", "Multiplica y divide racionales", mix((r) => S.rationalOperation(r, ["×", "÷"]), (r) => T.rationalWord(r, "multdiv"), S.multDivRules, G.reciprocal)],
   ["racionales-problemas", "racionales", "Problemas de varios pasos con racionales", mix(S.rationalExpression, G.decimalMultiStep, G.fractionMultiStep, (r) => T.rationalWord(r, r.pick(["addsub", "multdiv"] as const)))],
 
   ["potencias", "potencias", "Calcula potencias", mix(G.writeWithExponents, G.evaluatePower, S.variableExponent, S.negativeBasePower, G.powerOfDecimal, G.fractionPower)],
@@ -132,8 +132,8 @@ const ROWS: Row[] = [
   ["inecuaciones-varios-pasos", "inecuaciones", "Inecuaciones de varios pasos", mix((r) => T.multiStepInequality(r), (r) => T.multiStepInequality(r, true), (r) => T.bothSidesInequality(r), (r) => T.bothSidesInequality(r, true))],
   ["inecuaciones-problemas", "inecuaciones", "Inecuaciones: problemas", T.inequalityWord],
 
-  ["progresiones-aritmeticas", "progresiones", "Progresiones aritméticas", mix((r) => S.nextTerm(r, "arithmetic"), S.sequenceExpression, S.writeSequenceExpression, S.sequenceProblem)],
-  ["geometricas", "progresiones", "Sucesiones geométricas", mix(S.identifySequence, (r) => S.nextTerm(r, "geometric"), (r) => S.nextTerm(r, "mixed")), X],
+  ["progresiones-aritmeticas", "progresiones", "Progresiones aritméticas", mix((r) => S.nextTerm(r, "arithmetic"), S.sequenceExpression, S.writeSequenceExpression, (r) => S.sequenceProblem(r, "arithmetic"))],
+  ["geometricas", "progresiones", "Sucesiones geométricas", mix(S.identifySequence, (r) => S.nextTerm(r, "geometric"), (r) => S.nextTerm(r, "mixed"), (r) => S.sequenceProblem(r, "geometric")), X],
 
   ["identificar-funciones", "funciones", "¿Es una función?", mix(T.identifyFunction, T.functionGraph, (r) => G.independentDependent(r, r.chance(0.5)))],
   ["valores-funcion", "funciones", "Valores, dominio y rango", mix((r) => T.functionValues(r), (r) => T.functionValues(r, true), T.domainRange)],
@@ -166,7 +166,7 @@ const ROWS: Row[] = [
 
   ["clasificar", "poligonos", "Clasifica triángulos y cuadriláteros", mix(G.polygonSides, G.regularIrregular, G.classifyTriangle, (r) => G.identifyQuad(r, "Trapecio"), G.classifyQuad, G.allQuadNames, G.quadOtherNames, G.quadRelations, G.graphShapes)],
   ["angulos-triangulo", "poligonos", "Ángulos internos y externos del triángulo", mix((r) => G.missingAngle(r, r.pick(["triangle", "special"] as const)), S.triangleRatioAngles, T.triangleSumX, T.exteriorAngle)],
-  ["angulos-poligonos", "poligonos", "Ángulos de cuadriláteros y polígonos", mix((r) => G.missingAngle(r, "quad"), S.quadAngles2, (r) => G.missingAngle(r, "polygon"), S.circleParts)],
+  ["angulos-poligonos", "poligonos", "Ángulos de cuadriláteros y polígonos", mix((r) => G.missingAngle(r, "quad"), S.quadAngles2, (r) => G.missingAngle(r, "polygon"))],
 
   ["hipotenusa-cateto", "pitagoras", "Halla la hipotenusa o un cateto", mix((r) => T.pythagorean(r, "hypotenuse"), (r) => T.pythagorean(r, "leg"), (r) => T.pythagorean(r, "either"))],
   ["pitagoras-problemas", "pitagoras", "Pitágoras: perímetros y problemas", mix((r) => T.pythagorean(r, "perimeter"), (r) => T.pythagorean(r, "word"))],
@@ -186,7 +186,7 @@ const ROWS: Row[] = [
   ["repaso-transformaciones", "semejanza", "Repaso: transformaciones en el plano", mix((r) => T.imageCoordinates(r, ["translate", "reflect", "rotate", "dilate"]), (r) => T.writeRule(r, ["translate", "reflect", "rotate", "dilate"]))],
 
   ["perimetro-area", "area", "Perímetro y área de polígonos", mix(G.perimeter, G.perimeterMissingSide, (r) => G.shapeArea(r, ["parallelogram", "triangle", "trapezoid"]), G.areaWordProblem, G.perimeterAreaProblem)],
-  ["circulos", "area", "Círculos y semicírculos", mix((r) => S.circles(r, r.pick(["circumference", "area"] as const)), (r) => S.circles(r, "word"), (r) => S.circles(r, r.pick(["semicircle", "quarter"] as const)))],
+  ["circulos", "area", "Círculos y semicírculos", mix((r) => S.circles(r, r.pick(["circumference", "area"] as const)), (r) => S.circles(r, "word"), (r) => S.circles(r, r.pick(["semicircle", "quarter"] as const)), S.circleParts)],
   ["area-entre", "area", "Área entre dos figuras", mix(G.areaBetween, G.areaBetweenTriangles, (r) => S.circles(r, "between"))],
 
   ["elementos-cuerpos", "cuerpos", "Elementos, desarrollos y vistas", mix(T.solidParts, G.netOfSolid, G.solidViews)],

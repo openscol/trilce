@@ -12,6 +12,7 @@ import { getTopic, type Competency } from "@/lib/games/topics";
 import type { Section } from "@/lib/games/types";
 import { aggregate, MIN_ATTEMPTS, WEAK_ACCURACY, type SkillStat } from "@/lib/games/stats";
 import { cn } from "@/lib/utils";
+import { PreviewButton } from "./preview-button";
 
 export default async function GradoPage(props: PageProps<"/juegos/[categoria]/[grado]">) {
   const { categoria, grado } = await props.params;
@@ -31,6 +32,9 @@ export default async function GradoPage(props: PageProps<"/juegos/[categoria]/[g
     .eq("active", true)
     .maybeSingle();
   if (!category) notFound();
+
+  // Prototipo: el botón «Vista previa» solo en Matemáticas de 2.° de primaria.
+  const withPreview = categoria === "matematicas" && grado === "p2";
 
   const isStudent = ctx.role === "alumno" && ctx.targetId;
   let stats = new Map<string, SkillStat>();
@@ -93,12 +97,15 @@ export default async function GradoPage(props: PageProps<"/juegos/[categoria]/[g
                 const uid = skillUid(categoria, grado, skill.id);
                 const st = stats.get(uid);
                 const weak = st && st.total >= MIN_ATTEMPTS && st.accuracy < WEAK_ACCURACY;
-                return (
+                const card = (
                   <Link
                     key={skill.id}
                     id={skill.id}
                     href={skillHref(uid)}
-                    className="flex scroll-mt-24 items-start justify-between gap-2 rounded-xl border border-border p-3 transition-colors hover:bg-accent"
+                    className={cn(
+                      "flex scroll-mt-24 items-start justify-between gap-2 rounded-xl border border-border p-3 transition-colors hover:bg-accent",
+                      withPreview && "flex-1 rounded-none border-0"
+                    )}
                   >
                     <span className="flex flex-col gap-1">
                       <span className="text-sm">{skill.title}</span>
@@ -117,6 +124,15 @@ export default async function GradoPage(props: PageProps<"/juegos/[categoria]/[g
                       </span>
                     )}
                   </Link>
+                );
+                if (!withPreview) return card;
+                return (
+                  <div key={skill.id} className="flex items-stretch overflow-hidden rounded-xl border border-border">
+                    {card}
+                    <div className="flex items-start border-l border-border p-2">
+                      <PreviewButton uid={uid} href={skillHref(uid)} title={skill.title} section={section.name} />
+                    </div>
+                  </div>
                 );
               })}
             </div>

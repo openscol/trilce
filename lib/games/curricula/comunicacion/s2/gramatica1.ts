@@ -383,7 +383,7 @@ export const ROWS: Row[] = [
   ["g-tildes-1", (r) => choose(r, WELL, SET_G)],
   ["g-tildes-2", (r) => choose(r, WELL, SET_TILDE)],
   ["g-tildes-3", (r) => P2.spellHeard(r, "origen energía geografía imagen margen árbol también canción rápido difícil", "a e i o u á é í ó g j h")],
-  ["g-tildes-4", (r) => mix(r, [(q) => choose(q, WELL, [...SET_BA, ...SET_V, ...SET_G, ...SET_TILDE]), (q) => P2.spellHeard(q, "estaba recibir invierno adverbio origen energía después música", "a e i o u é ú b v g j")])],
+  ["g-tildes-4", (r) => mix(r, [(q) => choose(q, WELL, [...SET_G, ...SET_TILDE]), (q) => P2.spellHeard(q, "origen energía geografía después música", "a e i o u é ú í g")])],
 
   ["oracion-1", (r) => choose(r, "", SENTENCE_KIND)],
   ["oracion-2", (r) => choose(r, "", SUBJECT_PREDICATE)],

@@ -17,7 +17,28 @@ export function compareSymbol(r: Rng, max: number): Question {
         ? `${a} y ${b} son iguales.`
         : `${a} es ${answer === "<" ? "menor" : "mayor"} que ${b}: ${a} ${answer} ${b}.`,
     tag: answer === "=" ? "igual" : answer === "<" ? "menor-que" : "mayor-que",
+    solution: compareSteps(a, b, answer),
   };
+}
+
+// Comparar cifra por cifra, empezando por la de mayor valor.
+function compareSteps(a: number, b: number, answer: string): string[] {
+  const da = String(a).length;
+  const db = String(b).length;
+  const symbol = answer === "<" ? "< (menor que)" : answer === ">" ? "> (mayor que)" : "= (igual a)";
+  if (da !== db)
+    return [`${a} tiene ${da} cifra${da > 1 ? "s" : ""} y ${b} tiene ${db} cifra${db > 1 ? "s" : ""}.`, "El número con más cifras es el mayor.", `Por eso el símbolo es ${symbol}: ${a} ${answer} ${b}.`];
+  const names = da === 3 ? ["centenas", "decenas", "unidades"] : da === 2 ? ["decenas", "unidades"] : ["unidades"];
+  const sa = String(a);
+  const sb = String(b);
+  const i = [...sa].findIndex((c, k) => c !== sb[k]);
+  if (i === -1) return ["Los dos números tienen las mismas cifras en el mismo lugar.", `Son iguales: ${a} = ${b}.`];
+  return [
+    `Los dos tienen ${da} cifra${da > 1 ? "s" : ""}: compara desde la cifra de mayor valor.`,
+    ...(i > 0 ? [`Las ${names.slice(0, i).join(" y las ")} son iguales.`] : []),
+    `En las ${names[i]}, ${sa[i]} es ${Number(sa[i]) < Number(sb[i]) ? "menor" : "mayor"} que ${sb[i]}.`,
+    `Por eso el símbolo es ${symbol}: ${a} ${answer} ${b}.`,
+  ];
 }
 
 export function orderNumbers(r: Rng, max: number, count: number): Question {

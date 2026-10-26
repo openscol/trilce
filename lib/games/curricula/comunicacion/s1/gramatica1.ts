@@ -353,7 +353,7 @@ export const ROWS: Row[] = [
   ["x-h-1", (r) => choose(r, WELL, SET_X)],
   ["x-h-2", (r) => choose(r, WELL, SET_H)],
   ["x-h-3", (r) => P2.spellHeard(r, "examen exhausto extranjero excelente auxilio huella hielo hipótesis horizonte herencia", "a e i o u ó x s c h")],
-  ["x-h-4", (r) => mix(r, [(q) => choose(q, WELL, [...SET_LLY, ...SET_CSZ, ...SET_X, ...SET_H]), (q) => P2.spellHeard(q, "llovizna ensayo cereza escasez examen exhausto huella horizonte", "a e i o u ll y c s z x h")])],
+  ["x-h-4", (r) => mix(r, [(q) => choose(q, WELL, [...SET_X, ...SET_H]), (q) => P2.spellHeard(q, "examen exhausto texto huella horizonte hueso", "a e i o u x s c h")])],
 
   ["oracion-1", (r) => choose(r, "", SENTENCE_KIND)],
   ["oracion-2", (r) => choose(r, "", SUBJECT_PREDICATE)],

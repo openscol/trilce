@@ -1,6 +1,6 @@
 import type { Rng } from "../rng";
 import type { Question } from "../types";
-import { COUNTABLES, numberOptions, uniqueOptions } from "./common";
+import { COUNTABLES, columnAddSteps, numberOptions, solved, uniqueOptions } from "./common";
 
 function num(answer: number, prompt: string, text: string, explanation: string, tag?: string): Question {
   return { kind: "number", prompt, visual: { kind: "text", text }, answer, explanation, tag };
@@ -72,9 +72,12 @@ export function addMissing(r: Rng, max: number): Question {
   const c = r.int(3, max);
   const a = r.int(1, c - 1);
   const b = c - a;
-  return r.chance(0.5)
-    ? num(b, "¿Qué número falta?", `${a} + ? = ${c}`, `${a} + ${b} = ${c}.`)
-    : num(a, "¿Qué número falta?", `? + ${b} = ${c}`, `${a} + ${b} = ${c}.`);
+  const [known, missing, eq] = r.chance(0.5) ? [a, b, `${a} + ? = ${c}`] : [b, a, `? + ${b} = ${c}`];
+  return solved(num(missing, "¿Qué número falta?", eq, `${a} + ${b} = ${c}.`), [
+    `Falta un sumando: con ${known} hay que llegar a ${c}.`,
+    `La resta deshace la suma: ${c} − ${known} = ${missing}.`,
+    `Comprobamos: ${a} + ${b} = ${c}.`,
+  ]);
 }
 
 export function relatedAdd(r: Rng, max: number): Question {
@@ -96,12 +99,9 @@ export function addTwoDigitOne(r: Rng, regroup: boolean): Question {
     const b = r.int(1, 9);
     const a = tens * 10 + ones;
     if (regroup ? ones + b >= 10 && a + b < 100 : ones + b <= 9) {
-      return num(
-        a + b,
-        "Resuelve la suma.",
-        `${a} + ${b} = ?`,
-        `${a} + ${b} = ${a + b}.`,
-        regroup ? "con-reagrupacion" : "sin-reagrupacion"
+      return solved(
+        num(a + b, "Resuelve la suma.", `${a} + ${b} = ?`, `${a} + ${b} = ${a + b}.`, regroup ? "con-reagrupacion" : "sin-reagrupacion"),
+        columnAddSteps(a, b)
       );
     }
   }
@@ -114,12 +114,9 @@ export function addTwoTwo(r: Rng, regroup: boolean): Question {
     const onesSum = (a % 10) + (b % 10);
     const ok = regroup ? onesSum >= 10 && a + b < 100 : onesSum <= 9 && a + b < 100;
     if (ok) {
-      return num(
-        a + b,
-        "Resuelve la suma.",
-        `${a} + ${b} = ?`,
-        `${a} + ${b} = ${a + b}.`,
-        regroup ? "con-reagrupacion" : "sin-reagrupacion"
+      return solved(
+        num(a + b, "Resuelve la suma.", `${a} + ${b} = ?`, `${a} + ${b} = ${a + b}.`, regroup ? "con-reagrupacion" : "sin-reagrupacion"),
+        columnAddSteps(a, b)
       );
     }
   }
@@ -141,6 +138,11 @@ export function estimateTwoDigit(r: Rng, op: "+" | "−"): Question {
       options: uniqueOptions(r, String(est), [est + 10, est - 10, est + 20, est - 20].filter((n) => n >= 0).map(String)),
       answer: String(est),
       explanation: `${a} ≈ ${roundTen(a)} y ${b} ≈ ${roundTen(b)}; ${roundTen(a)} ${op} ${roundTen(b)} = ${est}.`,
+      solution: [
+        `Redondea ${a} a la decena más cercana: mira las unidades (${a % 10}); ${a % 10 >= 5 ? "como son 5 o más, sube" : "como son menos de 5, baja"} a ${roundTen(a)}.`,
+        `Redondea ${b} de la misma forma: ${b % 10 >= 5 ? "sube" : "baja"} a ${roundTen(b)}.`,
+        `Opera con los números redondeados: ${roundTen(a)} ${op} ${roundTen(b)} = ${est}.`,
+      ],
     };
   }
 }
@@ -160,7 +162,11 @@ export function doublesNear(r: Rng, delta: 1 | -1): Question {
 
 export function makeTen(r: Rng): Question {
   const a = r.int(1, 9);
-  return num(10 - a, "¿Cuánto falta para llegar a 10?", `${a} + ? = 10`, `${a} + ${10 - a} = 10.`);
+  return solved(num(10 - a, "¿Cuánto falta para llegar a 10?", `${a} + ? = 10`, `${a} + ${10 - a} = 10.`), [
+    `Hay que buscar el número que, sumado a ${a}, da 10.`,
+    `Cuenta desde ${a} hasta 10: ${Array.from({ length: 10 - a }, (_, i) => a + i + 1).join(", ")}. Son ${10 - a} saltos.`,
+    `${a} y ${10 - a} forman 10: ${a} + ${10 - a} = 10.`,
+  ]);
 }
 
 export function addTens(r: Rng): Question {

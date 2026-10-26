@@ -338,8 +338,8 @@ export const ROWS: Row[] = [
   ["hiatos-2", (r) => P2.spellHeard(r, "había país maíz oído todavía también siempre invierno cambio enviar empezar tiempo", "a e i o u í m n b v p")],
   ["mb-ll-y-2", (r) => choose(r, WELL, SET_LLY)],
   ["x-cc-sc-1", (r) => choose(r, WELL, SET_X)],
-  ["x-cc-sc-2", (r) => P2.spellHeard(r, "lluvia ayer calle desayuno orilla apoyo examen acción piscina explicar escena éxito", "a e i o u ll y x c s")],
-  ["x-cc-sc-3", (r) => mix(r, [(q) => choose(q, WELL, [...SET_HIATO, ...SET_MB, ...SET_LLY, ...SET_X]), (q) => P2.spellHeard(q, "país oído también invierno lluvia desayuno examen piscina tiempo orilla", "a e i o u í ll y x c s m n b v")])],
+  ["x-cc-sc-2", (r) => P2.spellHeard(r, "examen acción piscina explicar escena éxito lección exacto", "a e i o u x c s")],
+  ["x-cc-sc-3", (r) => mix(r, [(q) => choose(q, WELL, SET_X), (q) => P2.spellHeard(q, "texto oxígeno dicción ficción ascensor disciplina", "a e i o u í x c s")])],
 
   ["tipos-oracion", (r) => choose(r, "", SENTENCE_KIND)],
   ["sujeto-predicado-1", (r) => choose(r, "", SUBJECT_PREDICATE)],

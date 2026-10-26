@@ -2,9 +2,8 @@
 
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeftIcon, CheckCircle2Icon, Volume2Icon, XCircleIcon } from "lucide-react";
+import { ArrowLeftIcon, CheckCircle2Icon, LightbulbIcon, Volume2Icon, XCircleIcon } from "lucide-react";
 import { FractionCells, VisualView } from "@/components/games/visuals";
-import { ScratchBlocks } from "@/components/games/scratch-blocks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getSkill } from "@/lib/games/catalog";
@@ -14,6 +13,8 @@ import { makeRng, newSeed } from "@/lib/games/rng";
 import type { Question } from "@/lib/games/types";
 import { cn } from "@/lib/utils";
 import { recordAttempt } from "../../../actions";
+import { ExamplePanel } from "./example-panel";
+import { OptionLabel } from "./option-label";
 import { StudentPanel } from "./student-panel";
 
 export type Roster = {
@@ -45,12 +46,6 @@ function questionKey(q: Question) {
 
 // Cuántas preguntas recientes se evitan repetir al pasar a la siguiente.
 const RECENT = 12;
-
-// Texto de una opción, o el bloque de Scratch dibujado si la pregunta es de bloques.
-function OptionLabel({ text, blocks, mono }: { text: string; blocks?: boolean; mono?: boolean }) {
-  if (blocks) return <ScratchBlocks code={text} scale={0.9} />;
-  return mono ? <span className="whitespace-pre text-left font-mono text-sm">{text}</span> : <>{text}</>;
-}
 
 // Fichas largas (palabras, frases) no caben en casillas cuadradas.
 function isLongTile(tile: string) {
@@ -94,6 +89,8 @@ export function SkillPlayer({
   const [correctCount, setCorrectCount] = useState(0);
   const [saveError, setSaveError] = useState(false);
   const [player, setPlayer] = useState<{ id: string; name: string } | null>(null);
+  const [showExample, setShowExample] = useState(false);
+  const topRef = useRef<HTMLDivElement>(null);
   // Partida con número fijo de preguntas (sessionLength): al terminar se
   // muestra el resumen en vez de la siguiente pregunta.
   const [finished, setFinished] = useState(false);
@@ -212,6 +209,11 @@ export function SkillPlayer({
 
   const correctString = correctAnswerString(question);
 
+  function openExample() {
+    setShowExample(true);
+    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6">
       <div className="flex flex-col gap-1">
@@ -283,6 +285,19 @@ export function SkillPlayer({
               Elegir otro juego
             </Button>
           </div>
+        </div>
+      )}
+
+      {!needsStudent && !finished && (
+        <div ref={topRef} className="flex scroll-mt-4 flex-col gap-3">
+          {showExample ? (
+            <ExamplePanel skill={skill!} onClose={() => setShowExample(false)} />
+          ) : (
+            <Button type="button" variant="outline" className="w-fit" onClick={openExample}>
+              <LightbulbIcon />
+              Aprender con un ejemplo
+            </Button>
+          )}
         </div>
       )}
 
@@ -487,9 +502,17 @@ export function SkillPlayer({
               </p>
             )}
             <p className="text-center text-sm text-muted-foreground">{question.explanation}</p>
-            <Button onClick={next} autoFocus>
-              {lastQuestion ? "Ver resultados" : "Siguiente"}
-            </Button>
+            <div className="flex flex-wrap justify-center gap-2">
+              {status === "wrong" && !showExample && (
+                <Button variant="outline" onClick={openExample}>
+                  <LightbulbIcon />
+                  Aprender con un ejemplo
+                </Button>
+              )}
+              <Button onClick={next} autoFocus>
+                {lastQuestion ? "Ver resultados" : "Siguiente"}
+              </Button>
+            </div>
           </div>
         )}
       </div>

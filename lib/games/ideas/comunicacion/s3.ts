@@ -1,0 +1,57 @@
+import { IDEAS as S1 } from "./s1";
+import { IDEAS as S2 } from "./s2";
+
+// Ideas clave de Comunicación, 3.° de secundaria. Los juegos que repiten las
+// mismas formas de grados anteriores (con otros textos) usan la misma idea.
+const FROM_S1 = [
+  "personificacion", "analogias", "contexto", "diccionario", "prefijos", "sufijos", "griegas-latinas", "comas", "explicativos",
+  "punto-y-coma", "frase-proposicion", "subordinadas", "concordancia", "modificadores", "corregir", "falacias",
+];
+
+export const IDEAS: Record<string, string> = {
+  ...Object.fromEntries(FROM_S1.map((id) => [id, S1[id]])),
+  "voz-pasiva": S2["voz-pasiva"],
+  "ideas-principales": "La idea principal es lo esencial del texto; puede haber varias. Fíjate también en cómo avanza: qué conectores introducen contrastes (aun así), qué preguntas plantea y qué propone al final.",
+  "temas": "El tema es la idea sobre la vida que el texto desarrolla. Observa cómo se construye: qué hecho provoca el cambio de un personaje y qué simbolizan los objetos o gestos finales.",
+  "proposito": "Todo texto tiene un destinatario (a quién se dirige) y un propósito (para qué). La perspectiva del autor es su manera de ver el tema: qué valora y qué critica.",
+  "tono": "El tono objetivo informa sin opinar ni emocionarse; el subjetivo deja ver sentimientos y valoraciones (afectuoso, irónico, indignado). El registro formal es cuidado e impersonal.",
+  "argumentos": "Sigue el argumento: identifica la tesis o propuesta, el tipo de razonamiento (datos, comparación de costos y beneficios, autoridad) y cómo refuta los contraargumentos.",
+  "literarios": "Analiza el narrador (punto de vista), los personajes y la estructura: un final abierto deja la historia sin resolver; las últimas oraciones suelen sugerir el sentido del relato.",
+  "informativos-atenta": "En los textos informativos, la elección de palabras tiene efectos («ajuste de precios» suaviza «alza»; «arrebató» dramatiza «ganó»). Identifica también la estructura y la función de cada oración.",
+  "cuentos": "Al analizar un cuento, observa cómo cambian los personajes y por qué, qué sugieren los silencios y los hechos finales, y qué mensaje deja la historia.",
+  "alusiones": "Las alusiones remiten a relatos bíblicos, mitológicos, históricos o andinos: victoria pírrica (triunfo demasiado costoso), Sísifo (esfuerzo sin fin), Inkarri (renacimiento de lo perdido).",
+  "figuras": "Eufemismo: suaviza algo duro. Hipérbole: exagera. Oxímoron: une términos opuestos (dulce tormento). Paradoja: idea aparentemente contradictoria que encierra una verdad.",
+  "poesia": "La rima consonante repite vocales y consonantes finales; la asonante, solo vocales. El verso se mide en sílabas métricas (con sinalefa). El encabalgamiento continúa la idea en el verso siguiente.",
+  "ciudad-perros": "«La ciudad y los perros» de Mario Vargas Llosa transcurre en el colegio militar Leoncio Prado: la violencia forma parte del sistema y la institución prioriza su imagen sobre la verdad.",
+  "cvr": "El Informe Final de la Comisión de la Verdad y Reconciliación (2003) documentó la violencia de 1980-2000 (unas 69 000 víctimas, la mayoría quechuahablantes) para que la memoria evite que se repita.",
+  "retorica-historica": "En los discursos y textos históricos, identifica las estrategias para convencer: apelar a valores (la justicia, lo divino), criticar a los grupos de poder, plantear la raíz de un problema y su solución.",
+  "desarrollo": "Un texto informativo se desarrolla con una idea que lo une todo, ejemplos, datos, contrastes y una síntesis final. Identifica qué quiere demostrar el autor y qué función cumple cada oración.",
+  "trabajo": "Los textos del trabajo (correos, memorandos, cartas, avisos) tienen un propósito práctico, un tono formal y cordial y fórmulas de saludo y despedida (Atentamente). Busca los datos clave: qué, cuándo, dónde.",
+  "organizadores": "Reconoce el organizador (mapa conceptual, línea de tiempo, cuadro comparativo, tabla) y léelo según su lógica: jerarquía, orden cronológico o semejanzas y diferencias.",
+  "homofonos": "Los homófonos suenan igual y se escriben distinto: echo (de echar) / hecho (de hacer); asta (palo de bandera) / hasta (límite); haya / halla / aya. El contexto decide.",
+  "otras-lenguas": "Muchas expresiones vienen del latín (a posteriori: después; grosso modo: aproximadamente) y palabras del árabe (ojalá: deseo de que algo ocurra). Conocer su origen aclara su significado.",
+  "precision": "Elige la palabra exacta por su significado y su connotación: «declaró» el estado de emergencia, no «dijo»; «temerario» (sin medir el peligro) no es lo mismo que «valiente». Las locuciones latinas se escriben sin preposición: grosso modo.",
+  "prefijos-ortografia": "Los prefijos numerales bi- (dos), tri- (tres) y uni- (uno) se escriben unidos a la base; los sufijos -al, -ano y -ura forman adjetivos y sustantivos (regional, peruano, cultura).",
+  "bases-cultas": "Las bases cultas griegas forman palabras compuestas: bio (vida), geo (tierra), grafía (escritura), logía (estudio), foto (luz), tele (lejos). Conservan su escritura: fotografía, arqueología.",
+  "cc-ez": "Se escribe -cc- cuando en la familia aparece -ct- (perfección ← perfecto). Los sustantivos abstractos de cualidad terminan en -ez y -eza (vejez, pobreza).",
+  "hiatos-h": "El hiato con vocal cerrada tónica lleva tilde aunque rompa las reglas (país, oído, búho). La h intermedia se mantiene en palabras como prohibir, vehículo, ahorro, cohete.",
+  "diacritica": "La tilde diacrítica distingue palabras iguales: tú (pronombre) / tu (posesivo), él / el, sé (de saber o ser) / se, más (cantidad) / mas (pero), sí / si, té / te, dé / de.",
+  "mal-escritas": "Revisa las palabras que suelen escribirse mal: hubo (no «hubieron» un accidente), exhibir, prohibir, explosión, espontánea, excelente, imprescindible; él con tilde cuando es pronombre; al y del como contracciones.",
+  "raya-guion": "La raya introduce diálogos e incisos; el guion une adjetivos compuestos (teórico-práctico); los puntos suspensivos marcan una pausa o algo inconcluso y […] una omisión en una cita.",
+  "mayusculas": "Mayúscula en nombres propios, hechos históricos (Segunda Guerra Mundial) e instituciones. Títulos: solo la primera palabra con mayúscula; libros en cursiva, ensayos y cuentos entre comillas. Diálogos con raya.",
+  "tipos-oracion": "Reconoce la clase de oración (enunciativa, interrogativa, exclamativa, imperativa) y los errores: un fragmento está incompleto, las oraciones pegadas no tienen puntuación y el gerundio no debe indicar una acción posterior.",
+  "plurales": "Extranjerismos: récord → récords. La pertenencia conjunta usa un solo «de» (la casa de Rosa y Pedro, de los dos); la separada repite «de» (los perros de Rosa y de Pedro).",
+  "leismo": "Lo y la son objeto directo (la vi); le y les, objeto indirecto (le regalé una manta). Usar le como objeto directo de cosa es leísmo; la como indirecto, laísmo; lo como indirecto, loísmo.",
+  "sujeto-complemento": "Los pronombres cambian según su función: de sujeto (yo, tú, ella) o de complemento (me, mí, la). Tras «que» y «como» en una comparación va la forma de sujeto: más alta que ella.",
+  "relativos": "Quien y quienes se usan para personas y concuerdan en número; «el cual» y «la cual» exigen artículo; con preposición: la señora con quien hablé.",
+  "antecedentes": "Cada pronombre debe tener un antecedente claro. Si puede referirse a dos nombres, es ambiguo; no cambies de persona a mitad de la oración (si uno… se; no «si uno… te»).",
+  "tipos-verbos": "Verboides: el gerundio expresa causa, modo o tiempo; el participio funciona como adjetivo; el infinitivo, como sustantivo. Los verbos copulativos unen el sujeto con un atributo.",
+  "tiempos-modos": "Indicativo para hechos, subjuntivo para deseos, emociones y dudas (me alegra que hayas venido) e imperativo para órdenes. Usa formas progresivas para acciones en curso (estaba redactando).",
+  "adjetivos-adverbios": "«Bueno» y «malo» son adjetivos (modifican sustantivos) y «bien» y «mal», adverbios (modifican verbos). Los comparativos irregulares no llevan «más»: mejor, peor, mayor, menor.",
+  "organizar": "Una buena tesis es clara y discutible y anuncia razones. La oración temática resume cada párrafo. Ordena los temas de lo amplio a lo específico y ubica cada dato en su sección.",
+  "claridad": "Elimina las redundancias (novedad nueva), mantén el paralelismo (reducir, reutilizar y reciclar) y haz comparaciones completas y lógicas (la población de Lima es mayor que la de Arequipa).",
+  "evidencias": "Una evidencia sólida es verificable, pertinente y suficiente (cifras oficiales, estudios); una débil es anecdótica o no se relaciona con la afirmación. Distingue hechos de opiniones.",
+  "analisis": "El análisis explica cómo la evidencia apoya la afirmación. Las transiciones (además, sin embargo, en conclusión) unen las ideas. Una buena respuesta al contraargumento lo reconoce y lo refuta con razones.",
+  "persuasion": "Ethos: credibilidad de quien habla. Pathos: emociones del lector (imagina a una niña sin libros). Logos: datos y razonamiento.",
+  "apa": "En una referencia APA identifica autor, año, título y editorial o revista. Parafrasear y citar no es plagio; copiar sin citar, sí.",
+};

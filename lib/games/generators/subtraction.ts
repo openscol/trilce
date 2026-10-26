@@ -1,6 +1,6 @@
 import type { Rng } from "../rng";
 import type { Question } from "../types";
-import { COUNTABLES, uniqueOptions } from "./common";
+import { COUNTABLES, columnSubSteps, solved, uniqueOptions } from "./common";
 
 function num(answer: number, prompt: string, text: string, explanation: string, tag?: string): Question {
   return { kind: "number", prompt, visual: { kind: "text", text }, answer, explanation, tag };
@@ -33,8 +33,16 @@ export function subMissing(r: Rng, max: number): Question {
   const c = r.int(0, a - 1);
   const b = a - c;
   return r.chance(0.5)
-    ? num(b, "¿Qué número falta?", `${a} − ? = ${c}`, `${a} − ${b} = ${c}.`)
-    : num(a, "¿Qué número falta?", `? − ${b} = ${c}`, `${a} − ${b} = ${c}.`);
+    ? solved(num(b, "¿Qué número falta?", `${a} − ? = ${c}`, `${a} − ${b} = ${c}.`), [
+        `De ${a} se quitó un número y quedaron ${c}.`,
+        `Lo que se quitó es la diferencia: ${a} − ${c} = ${b}.`,
+        `Comprobamos: ${a} − ${b} = ${c}.`,
+      ])
+    : solved(num(a, "¿Qué número falta?", `? − ${b} = ${c}`, `${a} − ${b} = ${c}.`), [
+        `Falta el número del que se partió: al quitarle ${b}, quedaron ${c}.`,
+        `La suma deshace la resta: ${c} + ${b} = ${a}.`,
+        `Comprobamos: ${a} − ${b} = ${c}.`,
+      ]);
 }
 
 export function relatedSub(r: Rng, max: number): Question {
@@ -55,7 +63,7 @@ export function subTwoDigitOne(r: Rng, borrow: boolean): Question {
     const b = r.int(1, 9);
     const ones = a % 10;
     if (borrow ? b > ones : b <= ones) {
-      return num(a - b, "Resuelve la resta.", `${a} − ${b} = ?`, `${a} − ${b} = ${a - b}.`, borrow ? "con-llevadas" : "sin-llevadas");
+      return solved(num(a - b, "Resuelve la resta.", `${a} − ${b} = ?`, `${a} − ${b} = ${a - b}.`, borrow ? "con-llevadas" : "sin-llevadas"), columnSubSteps(a, b));
     }
   }
 }
@@ -66,7 +74,7 @@ export function subTwoTwo(r: Rng, borrow: boolean): Question {
     const b = r.int(10, a - 1);
     const needs = a % 10 < b % 10;
     if (needs === borrow) {
-      return num(a - b, "Resuelve la resta.", `${a} − ${b} = ?`, `${a} − ${b} = ${a - b}.`, borrow ? "con-llevadas" : "sin-llevadas");
+      return solved(num(a - b, "Resuelve la resta.", `${a} − ${b} = ?`, `${a} − ${b} = ${a - b}.`, borrow ? "con-llevadas" : "sin-llevadas"), columnSubSteps(a, b));
     }
   }
 }

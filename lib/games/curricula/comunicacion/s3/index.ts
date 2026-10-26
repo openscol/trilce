@@ -83,7 +83,7 @@ export const GAMES: Game[] = [
   ["raya-guion", "puntuacion", "Raya, guion y puntos suspensivos", ["raya-guion-1", "raya-guion-2", "raya-guion-3"]],
   ["mayusculas", "puntuacion", "Mayúsculas, títulos, citas y diálogos", ["mayusculas-1", "mayusculas-2", "mayusculas-3", "mayusculas-4", "mayusculas-5"]],
 
-  ["tipos-oracion", "oraciones", "Fragmentos y oraciones pegadas", ["tipos-oracion-1", "tipos-oracion-2", "tipos-oracion-3", "tipos-oracion-4"]],
+  ["tipos-oracion", "oraciones", "Clases de oración, fragmentos y oraciones pegadas", ["tipos-oracion-1", "tipos-oracion-2", "tipos-oracion-3", "tipos-oracion-4"]],
   ["frase-proposicion", "oraciones", "Frases, proposiciones y aposiciones", ["frase-proposicion-1", "frase-proposicion-2", "frase-proposicion-3"]],
   ["subordinadas", "oraciones", "Coordinación y subordinación", ["subordinadas-1", "subordinadas-2", "subordinadas-3"]],
   ["plurales", "oraciones", "Plurales y pertenencia", ["plurales-1", "plurales-2", "plurales-3", "plurales-4"]],
